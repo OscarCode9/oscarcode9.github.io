@@ -1,0 +1,167 @@
+<div class="parallax-container">
+  <div class="parallax"><img src="images/parallax1.jpg"></div>
+</div>
+<pre><code class="language-javascript">
+    function Bienvenidos() {
+      if (Coffee.IsReady) {
+        console.log("Bienvenidos a mi web");
+        return true;
+      }else {
+        console.log("Lo siento, no puede navegar por aqui");
+        return false;
+    }
+     
+</code></pre>
+
+
+<div class="container ">
+  <div class="row center">
+    <h2>¿Que es Oscar Code?</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col s12 m6 l4">
+    <div class="card">
+      <div class="card-image">
+        <a href="/blog"><img src="images/blog.jpg"></a>
+      </div>
+      <div class="card-content">
+        <p>Blog personal, aquí es donde publico temas relacionados con las tecnologías que conozco así como las cosas que estoy
+          aprendiendo. También publicó cosas personales relacionadas con libros, películas, viajes, ideas, en general temas
+          que me interesan.</p>
+      </div>
+      <div class="card-action text">
+        <a class="textLink" href="#">Ir al blog</a>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m6 l4">
+    <div id="cardtext" class="card">
+      <div class="card-image">
+        <img src="images/proyectos.jpg">
+      </div>
+      <div class="card-content">
+        <p>Apartado para dar un vistazo a mis diferentes proyectos, se da una breve explicación sobre el proyecto así como las
+          metodologías y tecnologías usadas.Público proyectos personales como profesionales.</p>
+
+      </div>
+      <div class="card-action text">
+        <a class="textLink" href="#">Ir a proyectos</a>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m6 l4">
+    <div id="cardtext" class="card">
+      <div class="card-image">
+        <img src="images/sample-1.jpg">
+      </div>
+      <div class="card-content">
+        <p>Aqui publicare experimentos y cosas cque hago con programacion web, compartir el codigo para que otros
+          puedan hacer lo mismo. 
+        </p>
+
+      </div>
+      <div class="card-action text">
+        <a class="textLink" href="#">Ir a proyectos</a>
+      </div>
+    </div>
+  </div>
+</div>
+<hr id="barra">
+
+<div class="container correo center ">
+  <div class="row center">
+    <h2>Enviame un correo :3 </h2>
+  </div>
+  <form id="addProductForm" enctype="multipart/form-data">
+    <div class="row ">
+      <div class="input-field col s12 m12 l6 offset-l3">
+        <input id="nombre" class="validate" type="text" name="nombre">
+        <label for="nombre">Nombre</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12 m12 l6 offset-l3">
+        <input id="email" type="email" class="validate" name="email">
+        <label for="email">Email</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12 m12 l6 offset-l3">
+        <textarea id="textarea1" class="materialize-textarea" name="requerim"></textarea>
+        <label for="textarea1">Contenido</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s12 m12 l12 offset-13">
+        <a class="waves-effect waves-light btn-large enviar">Enviar</a>
+      </div>
+    </div>
+
+
+  </form>
+</div>
+</div>
+
+
+
+<script>
+  $(document).ready(function () {
+    $(window).scroll(function (event) {
+    var nav = $('#navegador');
+
+      var color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+
+      var scroll = $(window).scrollTop();
+
+      if (scroll > 210) {
+
+        nav.addClass('navegador');
+        nav.css("background-color", color);
+
+      } else {
+
+        nav.removeClass('navegador');
+      }
+
+
+    });
+    
+    
+
+    $('.parallax').parallax();
+
+    
+    $('.enviar').click(function () {
+      
+      var formElement = document.getElementById('addProductForm');
+
+      Materialize.toast('El correo se esta enviado, por favor espere', 4000);
+
+      $('#email').val('')
+      $('#nombre').val('')
+      $('#textarea1').val('')
+
+      fetch('/send', {
+        method: 'POST',
+        body: new FormData(formElement)
+      })
+        .then(res => res.json())
+        .then((res) => {
+
+          Materialize.toast(res.enviado, 3000)
+
+          }
+        )
+        .catch(function (e) {
+
+          Materialize.toast(res.enviado, 3000)
+          
+        })
+    })
+  });
+
+</script>

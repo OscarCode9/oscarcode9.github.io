@@ -1,0 +1,32 @@
+
+
+
+<main>
+	
+	
+	<div class="adjoined-bottom">
+		<div class="grid-container">
+			<div class="grid-width-100">
+				<div id="editor">
+					<h1>Comienza a escribir aqui tu codigo</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</main>
+<button id="enviar">Enviar</button>
+
+<script>
+	$('#enviar').click(function(){
+		if($('.cke_source').val()===undefined){
+			alert("Precione el boton fuente HTML");
+		}else{
+			alert($('.cke_source').val());
+		}
+		
+	})
+	initSample();
+
+
+</script>

@@ -1,0 +1,189 @@
+{{#Frame}}{{/Frame}}
+<div id="blogID" class="parallax-container ">
+  <div class="parallax"><img src="images/proyectos.gif"></div>
+</div>
+<div class="container">
+  <h3>Prueba para mi blog
+    <h3/>
+    <p class="flow-text">
+
+      Si hay algo que caracteriza a JavaScript, es la asincronía que presentan algunas funciones. Concretamente las que realizan
+      operaciones de entrada/salida como escritura o lectura del disco o una petición AJAX.
+    </p>
+    <pre><code id="codeID" class="language-javascript">
+
+    function Bienvenidos() {
+      if (Coffee.IsReady) {
+        console.log("Bienvenidos a mi web");
+        return true;
+      }else {
+        console.log("Lo siento, no puede navegar por aqui");
+        return false;
+    }
+     
+</code></pre>
+
+    <div class="row">
+      <div class="col s12 m12 l6">Recomendar <i id="numLikes" class="fa fa-heart" aria-hidden="true">450</i> </div>
+      <div class="col s12 m12 l6">
+        <div id="fb-root"></div>
+
+        <!-- Your share button code -->
+        <div class="fb-share-button" data-href="https://www.w3schools.com/jquery/jquery_css.asp" data-layout="button_count" data-size="large"
+          data-mobile-iframe="true">
+          <a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.w3schools.com%2Fjquery%2Fjquery_css.asp&amp;src=sdkpreparse">
+   Share</a></div>
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col s12 m12 l6">
+        <h5>Hacer un comnetario...</h5>
+        <div class="row">
+
+          <div class="col s12 m12">
+
+            <div class="card grey lighten-3">
+              <div class="card-content black-text">
+                <form id="dataComen">
+                  <span class="card-title"> <input type="text" name="nombre"></span>
+                  <textarea id="textarea1" class="materialize-textarea" name="contenido"></textarea>
+                </form>
+              </div>
+              <div class="card-action">
+                <a id="comentar" class="waves-effect waves-light btn">Comentar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+</div>
+<div class="comments-container">
+  <p id="numComenta" class="flow-text">{{numeroComentario}} comentarios.</p>
+  <input id="numComentarios" type="text" value="{{numeroComentario}}">
+  <ul id="comments-list" class="comments-list">
+
+    {{#each comentarios}}
+
+    <li>
+      <div class="comment-main-level">
+        <!-- Avatar -->
+        <div class="comment-avatar"><img src={{urlPerfil}} alt=""></div>
+        <!-- Contenedor del Comentario -->
+        <div class="comment-box">
+          <div class="comment-head">
+            <h6 class="comment-name "><a href="http://creaticode.com/blog">{{usuarioname}}</a></h6>
+            <span>{{fecha}}</span>
+
+            <i class="fa fa-heart">{{likes}}</i>
+          </div>
+          <div class="comment-content">
+            {{contenido}}
+          </div>
+        </div>
+      </div>
+      <!-- Respuestas de los comentarios -->
+
+    </li>
+
+    {{/each}}
+
+
+  </ul>
+</div>
+<script>
+  (function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.10&appId=1892280774382480";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  var numCom = Number($('#numComentarios').val());
+
+  $('#numComentarios').hide();
+  
+
+  $(document).ready(function () {
+    $('.parallax').parallax();
+  });
+
+  var estadoLike = true;
+
+  $('#numLikes').click(function () {
+
+
+    if (estadoLike) {
+
+      var likes = Number($('#numLikes').text());
+      likes = likes + 1;
+      estadoLike = false;
+      var numLike = " " + likes.toString();
+      $('#numLikes').text(numLike)
+      $('#numLikes').css("color", "#d50000")
+
+    } else {
+      var likes = Number($('#numLikes').text());
+      likes = likes - 1;
+      estadoLike = true;
+      var numLike = " " + likes.toString();
+      $('#numLikes').text(numLike)
+      $('#numLikes').css("color", "black")
+      
+    }
+   
+
+
+
+  })
+
+   $('#comentar').click(function () {
+
+      alert();
+      var data = document.getElementById('dataComen');
+      fetch(`${window.location.href}`, {
+        method: 'POST',
+        body: new FormData(data)
+      })
+        .then(res => res.json())
+        .then((res) => {
+      
+          numCom= numCom+1;
+          var StrinCom = `${numCom} comentarios`
+          $('#numComenta').text(StrinCom);
+          var Newcomentario = `
+  <li>
+      <div class="comment-main-level">
+        <!-- Avatar -->
+        <div class="comment-avatar"><img src=${res.data[0].urlPerfil} alt=""></div>
+        <!-- Contenedor del Comentario -->
+        <div class="comment-box">
+          <div class="comment-head">
+            <h6 class="comment-name "><a href="">${res.data[0].usuarioname}</a></h6>
+            <span>${res.data[0].fecha}</span>
+
+            <i class="fa fa-heart">${res.data[0].likes}</i>
+          </div>
+          <div class="comment-content">
+            ${res.data[0].contenido}
+          </div>
+        </div>
+      </div>
+    </li>`
+
+  $('#comments-list').prepend(Newcomentario);
+          Materialize.toast(res.numero,3000)
+
+        }
+        )
+        .catch(function (e) {
+          Materialize.toast(e,3000)
+
+        })
+    })
+
+</script>
