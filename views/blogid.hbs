@@ -1,16 +1,16 @@
-{{#Frame}}{{/Frame}}
 <div id="blogID" class="parallax-container ">
-  <div class="parallax"><img src="images/proyectos.gif"></div>
+  <div class="parallax">
+    <img src="images/proyectos.gif">
+  </div>
 </div>
 <div class="container">
-  <h3>Prueba para mi blog
-    <h3/>
-    <p class="flow-text">
+  {{#Frame}}{{/Frame}}
+  <p class="flow-text">
 
-      Si hay algo que caracteriza a JavaScript, es la asincronía que presentan algunas funciones. Concretamente las que realizan
-      operaciones de entrada/salida como escritura o lectura del disco o una petición AJAX.
-    </p>
-    <pre><code id="codeID" class="language-javascript">
+    Si hay algo que caracteriza a JavaScript, es la asincronía que presentan algunas funciones. Concretamente las que realizan
+    operaciones de entrada/salida como escritura o lectura del disco o una petición AJAX.
+  </p>
+  <pre><code id="codeID" class="language-javascript">
 
     function Bienvenidos() {
       if (Coffee.IsReady) {
@@ -23,41 +23,46 @@
      
 </code></pre>
 
-    <div class="row">
-      <div class="col s12 m12 l6">Recomendar <i id="numLikes" class="fa fa-heart" aria-hidden="true">450</i> </div>
-      <div class="col s12 m12 l6">
-        <div id="fb-root"></div>
+  <div class="row">
+    <div class="col s12 m12 l6">Recomendar
+      <i id="numLikes" class="fa fa-heart" aria-hidden="true">{{#likeTotal}}{{/likeTotal}}</i>
+    </div>
+    <div class="col s12 m12 l6">
+      <div id="fb-root"></div>
 
-        <!-- Your share button code -->
-        <div class="fb-share-button" data-href="https://www.w3schools.com/jquery/jquery_css.asp" data-layout="button_count" data-size="large"
-          data-mobile-iframe="true">
-          <a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.w3schools.com%2Fjquery%2Fjquery_css.asp&amp;src=sdkpreparse">
-   Share</a></div>
+      <!-- Your share button code -->
+      <div class="fb-share-button" data-href="https://www.w3schools.com/jquery/jquery_css.asp" data-layout="button_count" data-size="large"
+        data-mobile-iframe="true">
+        <a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.w3schools.com%2Fjquery%2Fjquery_css.asp&amp;src=sdkpreparse">
+          Share</a>
       </div>
     </div>
-    <div class="row">
+  </div>
+  <div class="row">
 
-      <div class="col s12 m12 l6">
-        <h5>Hacer un comnetario...</h5>
-        <div class="row">
+    <div class="col s12 m12 l6">
+      <h5>Hacer un comnetario...</h5>
+      <div class="row">
 
-          <div class="col s12 m12">
+        <div class="col s12 m12">
 
-            <div class="card grey lighten-3">
-              <div class="card-content black-text">
-                <form id="dataComen">
-                  <span class="card-title"> <input type="text" name="nombre"></span>
-                  <textarea id="textarea1" class="materialize-textarea" name="contenido"></textarea>
-                </form>
-              </div>
-              <div class="card-action">
-                <a id="comentar" class="waves-effect waves-light btn">Comentar</a>
-              </div>
+          <div class="card grey lighten-3">
+            <div class="card-content black-text">
+              <form id="dataComen">
+                <span class="card-title">
+                  <input type="text" name="nombre">
+                </span>
+                <textarea id="textarea1" class="materialize-textarea" name="contenido"></textarea>
+              </form>
+            </div>
+            <div class="card-action">
+              <a id="comentar" class="waves-effect waves-light btn">Comentar</a>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
 
 </div>
@@ -71,11 +76,15 @@
     <li>
       <div class="comment-main-level">
         <!-- Avatar -->
-        <div class="comment-avatar"><img src={{urlPerfil}} alt=""></div>
+        <div class="comment-avatar">
+          <img src={{urlPerfil}} alt="">
+        </div>
         <!-- Contenedor del Comentario -->
         <div class="comment-box">
           <div class="comment-head">
-            <h6 class="comment-name "><a href="http://creaticode.com/blog">{{usuarioname}}</a></h6>
+            <h6 class="comment-name ">
+              <a href="http://creaticode.com/blog">{{usuarioname}}</a>
+            </h6>
             <span>{{fecha}}</span>
 
             <i class="fa fa-heart">{{likes}}</i>
@@ -94,6 +103,7 @@
 
   </ul>
 </div>
+
 <script>
   (function (d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
@@ -102,88 +112,117 @@
     js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.10&appId=1892280774382480";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-
+  var socket = io.connect('https://oscarcode.herokuapp.com', { 'forceNew': true });
   var numCom = Number($('#numComentarios').val());
-
   $('#numComentarios').hide();
-  
-
+  var idPost = {{{IdPost numero}}};
+  var numLikesHelp = Number({{{likeTotal likes}}});
   $(document).ready(function () {
     $('.parallax').parallax();
   });
 
-  var estadoLike = true;
-
+  let estadoLike = true;
   $('#numLikes').click(function () {
-
-
     if (estadoLike) {
-
-      var likes = Number($('#numLikes').text());
-      likes = likes + 1;
+      numLikesHelp++;
+      likes = numLikesHelp;
       estadoLike = false;
-      var numLike = " " + likes.toString();
+      let numLike = " " + likes.toString();
       $('#numLikes').text(numLike)
       $('#numLikes').css("color", "#d50000")
-
+      let newLike = {
+        likes: likes,
+        postId: idPost
+      }
+      socket.emit('new-like', newLike);
     } else {
-      var likes = Number($('#numLikes').text());
-      likes = likes - 1;
+      numLikesHelp--;
+      likes = numLikesHelp;
       estadoLike = true;
-      var numLike = " " + likes.toString();
+      let numLike = " " + likes.toString();
       $('#numLikes').text(numLike)
       $('#numLikes').css("color", "black")
-      
+      let newLike = {
+        likes: likes,
+        postId: idPost
+      }
+      socket.emit('new-like', newLike)
     }
-   
-
-
-
   })
 
-   $('#comentar').click(function () {
+  $('#comentar').click(function () {
+    $('#comentar').hide(40);
 
-      alert();
-      var data = document.getElementById('dataComen');
+    let data = document.getElementById('dataComen');
+/*
+    let dataForm = new FormData(data);
+    let result = {};
+
+    for (let entry of dataForm.entries())
+    {
+        result[entry[0]] = entry[1];
+    }
+     result = JSON.stringify(result)*/
+
+    let validar = true;
+    let elements = document.getElementById("dataComen").elements;
+    for (var i = 0, element; element = elements[i++];) {
+      if (element.type === "text" && element.value === "")
+            validar = false;
+    }
+    if (validar) {
       fetch(`${window.location.href}`, {
-        method: 'POST',
-        body: new FormData(data)
+      method: 'POST',
+      body: new FormData(data)
+    })
+      .then(res => res.json())
+      .then((res) => {
+        socket.emit('new-comment', res.data)
+        Materialize.toast(res.numero, 3000)
+        document.getElementById('dataComen').reset();
       })
-        .then(res => res.json())
-        .then((res) => {
-      
-          numCom= numCom+1;
-          var StrinCom = `${numCom} comentarios`
-          $('#numComenta').text(StrinCom);
-          var Newcomentario = `
+      .catch(function (e) {
+        Materialize.toast(e, 3000)
+      })
+    }else{
+      Materialize.toast('No puede dejar los campos vacios', 3000)
+      $('#comentar').show(40);
+    }
+  })
+  socket.on('newLike', function (data) {
+    console.log(data);
+    let likes = data.likes
+    var numLike = " " + likes.toString();
+    numLikesHelp = data.likes
+    $('#numLikes').text(numLike)
+  });
+
+  socket.on('newComment', function(res){
+    numCom = numCom + 1;
+        var StrinCom = `${numCom} comentarios`
+        $('#numComenta').text(StrinCom);
+        var Newcomentario = `
   <li>
       <div class="comment-main-level">
         <!-- Avatar -->
-        <div class="comment-avatar"><img src=${res.data[0].urlPerfil} alt=""></div>
+        <div class="comment-avatar"><img src=${res.urlPerfil} alt=""></div>
         <!-- Contenedor del Comentario -->
         <div class="comment-box">
           <div class="comment-head">
-            <h6 class="comment-name "><a href="">${res.data[0].usuarioname}</a></h6>
-            <span>${res.data[0].fecha}</span>
+            <h6 class="comment-name "><a href="">${res.usuarioname}</a></h6>
+            <span>${res.fecha}</span>
 
-            <i class="fa fa-heart">${res.data[0].likes}</i>
+            <i class="fa fa-heart">${res.likes}</i>
           </div>
           <div class="comment-content">
-            ${res.data[0].contenido}
+            ${res.contenido}
           </div>
         </div>
       </div>
     </li>`
-
-  $('#comments-list').prepend(Newcomentario);
-          Materialize.toast(res.numero,3000)
-
-        }
-        )
-        .catch(function (e) {
-          Materialize.toast(e,3000)
-
-        })
-    })
+     $('#comments-list').prepend(Newcomentario);
+     $('#comentar').show(40);
+    
+  });
 
 </script>

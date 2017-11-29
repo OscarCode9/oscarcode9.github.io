@@ -35,70 +35,41 @@
 
     <div class="col s9">
        <div class="row">
-      <h3>Entradas mas recientes</h3>
+      <h3>Entradas mas recientes ...</h3>
       </div>
 
        <div class="row">
+         
+         {{#each comentarios}}
 
-    <div class="col s12 m4 l4">
+         <div class="col s12 m4 l4">
       <div class="card">
         <div class="card-image">
-          <a href="?id=45643"><img src="images/sample-1.jpg"></a>
-          <span class="card-title">Consumir API desde reactJS</span>
+          <a href="/blog?tagId={{idPost}}"><img src="{{urlImg}}"></a>
+          <span class="card-title">{{titulo}}</span>
         </div>
         <div class="card-content">
-          <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+          <p>{{descripcion}}</p>
            <br>
-           <p>13/09/2017</p>
+           <p>{{fecha}}</p>
         </div>
        
         <div class="card-action">
-              <i class="fa fa-heart" aria-hidden="true">15   </i>
-              <i class="fa fa-comment" aria-hidden="true">789</i>
+          <i class="fa fa-heart" aria-hidden="true">{{likes}}</i>
+          <i class="fa fa-comment" aria-hidden="true">{{comment}}</i>
         </div>
-      </div>
-    </div>
-    <div class="col s12 m4 l4">
-      <div class="card">
-        <div class="card-image">
-          <img src="https://i.ytimg.com/vi/OXnjIOWHOJ8/maxresdefault.jpg">
-          <span class="card-title">ReactJS</span>
-        </div>
-        <div class="card-content">
-          <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
-        </div>
-      </div>
-    </div
-    >
-    <div class="col s12 m4 l4">
-      <div class="card">
-        <div class="card-image">
-          <img src="https://i.pinimg.com/736x/4a/19/2f/4a192f8127ddfb07bd305089e2e7983d--foto-tumblr-hipster-hipster-tumblr-pictures.jpg">
-          <span class="card-title">Objetos en JavaScript</span>
-        </div>
-        <div class="card-content">
-          <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
-        </div>
-        
       </div>
     </div>
 
-    <div class="col s12 m4 l4">
-      <div class="card">
-        <div class="card-image">
-          <img src="https://i.pinimg.com/736x/4a/19/2f/4a192f8127ddfb07bd305089e2e7983d--foto-tumblr-hipster-hipster-tumblr-pictures.jpg">
-          <span class="card-title">Objetos en JavaScript</span>
-        </div>
-        <div class="card-content">
-          <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
-        </div>
-      </div>
-    </div>
+         
+          {{/each}}
+
+
 
 
   </div>
     </div>
 
   </div>
-</div>
+
 

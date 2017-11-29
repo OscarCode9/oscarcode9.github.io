@@ -12,7 +12,75 @@ const hbs = require('express-handlebars');
 
 
 
+
+
+
+
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+const mysql2 = require('mysql');
+io.on('connection', function (socket) {
+  console.log('Un cliente se ha conectado');
+  socket.on('new-like', function (data) {
+    const connection = mysql2.createConnection({
+      host     : 'oscarcode.czpacbdn1bor.us-east-1.rds.amazonaws.com',
+      user     : 'triste99',
+      password : 'tristeGDA13##1',
+      database : 'oscarcode'
+    });
+    connection.connect();
+    connection.query('update Post set likes = ? where idPost = ?;', [data.likes, data.postId],
+     function (err, rows, fields) {
+      if (!err) {
+        connection.query('select * from Post where idPost = ?;', [data.postId],
+         function (err, rows, fields) {
+          if (!err) {
+            console.log('The solution is: ', rows);
+            let newLike = {
+              likes: rows[0].likes,
+              postId: rows[0].idPost,
+            }
+            connection.end();
+            io.sockets.emit('newLike', newLike);
+          } else {
+            connection.end();
+            console.log('Error while performing Query select .' +err);
+          }
+        });
+      } else {
+        connection.end();
+        console.log('Error while performing Query.' + err);
+      }
+    });
+  });
+
+  socket.on('new-comment', function(data){
+    const connection = mysql2.createConnection({
+      host     : 'oscarcode.czpacbdn1bor.us-east-1.rds.amazonaws.com',
+      user     : 'triste99',
+      password : 'tristeGDA13##1',
+      database : 'oscarcode'
+    });
+    connection.connect();
+    connection.query(`select * from  Comentarios where idComent = ${data}`,
+    function (err, rows, fields) {
+      if (err){
+        connection.end();
+        console.log('Error while performing Query.' + err);
+      }else{
+        connection.end();
+        console.log(rows[0])
+        io.sockets.emit('newComment', rows[0]);
+      }
+    });
+
+    /*data = JSON.parse(data)
+    console.log(data.nombre)*/
+    
+  });
+});
+
 
 // view engine setup
 
@@ -21,7 +89,9 @@ var app = express();
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(formidable({
@@ -43,3 +113,6 @@ app.use('/users', users);
 app.listen(config.port, () => {
   console.log(`API REST corriendo en http://localhost:${config.port}`)
 })
+
+server.listen(5050);
+
