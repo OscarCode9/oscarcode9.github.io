@@ -112,7 +112,15 @@
     js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.10&appId=1892280774382480";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-  var socket = io.connect('https://oscarcode.herokuapp.com', { 'forceNew': true });
+  var socket;
+
+  console.log(window.location.hostname);
+  if (window.location.hostname === 'oscarcode.herokuapp.com'){
+    socket = io.connect(window.location.hostname, { 'forceNew': true });
+  }else{
+    socket = io.connect('http://localhost:3000', { 'forceNew': true });
+  }
+  
   var numCom = Number($('#numComentarios').val());
   $('#numComentarios').hide();
   var idPost = {{{IdPost numero}}};

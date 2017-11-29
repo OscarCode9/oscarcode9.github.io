@@ -14,11 +14,11 @@ const hbs = require('express-handlebars');
 
 
 
-
-
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+
+
 const mysql2 = require('mysql');
 io.on('connection', function (socket) {
   console.log('Un cliente se ha conectado');
@@ -110,9 +110,8 @@ app.use('/users', users);
 
 
 
-app.listen(config.port, () => {
+
+server.listen(config.port, () => {
   console.log(`API REST corriendo en http://localhost:${config.port}`)
 })
-
-server.listen(5050);
 
