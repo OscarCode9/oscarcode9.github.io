@@ -60,16 +60,14 @@ function QueryPost(req, res, next) {
 
 
     let connection;
-    if(process.env.DATABASE_URL){
-      connection = mysql.createConnection(process.env.DATABASE_URLA);
-    }else{
+    
      connection = mysql2.createConnection({
         host     : 'oscarcode.czpacbdn1bor.us-east-1.rds.amazonaws.com',
         user     : 'triste97',
         password : 'tristeGDA13##11',
         database : 'oscarcode'
       });
-  }
+  
     connection.query(`select idPost,titulo, 
     contenido_html,likes,urlImg,
     descripcion, 
