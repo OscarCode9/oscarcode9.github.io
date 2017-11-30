@@ -57,12 +57,20 @@ function QueryPost(req, res, next) {
   const numerodos = req.query.tagR;
   
   if (req.query.tagId === undefined) {
-    let connection = mysql.createConnection({
+
+
+    let connection;
+    if(process.env.DATABASE_URL){
+      connection = mysql.createConnection(process.env.DATABASE_URL);
+
+    }else{
+    connection = mysql.createConnection({
       host     : 'oscarcode.czpacbdn1bor.us-east-1.rds.amazonaws.com',
       user     : 'triste99',
       password : 'tristeGDA13##1',
       database : 'oscarcode'
     });
+  }
     connection.query(`select idPost,titulo, 
     contenido_html,likes,urlImg,
     descripcion, 

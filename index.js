@@ -9,6 +9,7 @@ const config = require('./config')
 var index = require('./routes/index');
 var users = require('./routes/users');
 const hbs = require('express-handlebars');
+console.log(process.env.DATABASE_URL);
 
 
 
