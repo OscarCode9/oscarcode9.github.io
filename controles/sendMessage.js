@@ -4,15 +4,7 @@ var mysql = require('mysql');
 
 
 function sendMensaje(req, res, next) {
-  var transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // secure:true for port 465, secure:false for port 587
-    auth: {
-      user: 'oscar.99.tris@gmail.com',
-      pass: 'tristeGDA13##1'
-    }
-  });
+  var transporter = nodemailer.createTransport(process.env.DATABASE_URL);
 
 
   let mailOptions = {
