@@ -61,9 +61,9 @@ function QueryPost(req, res, next) {
 
     let connection;
     
-     connection = mysql2.createConnection(process.env.DATABASE_URL);
+     connection = mysql.createConnection(process.env.DATABASE_URL);
 
-     
+
   
     connection.query(`select idPost,titulo, 
     contenido_html,likes,urlImg,
