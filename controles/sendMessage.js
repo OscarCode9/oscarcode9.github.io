@@ -29,12 +29,7 @@ function sendMensaje(req, res, next) {
 
 function getCometarios(numero, query) {
   var myQuery = query;
-  var conn = mysql.createConnection({
-    host     : 'oscarcode.czpacbdn1bor.us-east-1.rds.amazonaws.com',
-    user     : 'triste99',
-    password : 'tristeGDA13##1',
-    database : 'oscarcode'
-  });
+  var conn = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
   
   const promise = new Promise(function (resolve, reject) {
     conn.query(myQuery, function (err, result) {
@@ -61,7 +56,7 @@ function QueryPost(req, res, next) {
 
     let connection;
     
-     connection = mysql.createConnection(process.env.DATABASE_URL);
+     connection = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
 
 
   
@@ -93,12 +88,7 @@ function QueryPost(req, res, next) {
       }
     });
   } else {
-    var conn = mysql.createConnection({
-      host     : 'oscarcode.czpacbdn1bor.us-east-1.rds.amazonaws.com',
-      user     : 'triste99',
-      password : 'tristeGDA13##1',
-      database : 'oscarcode'
-    });
+    var conn = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
     
     var sqlQueryComent = `select C.usuarioname, C.urlPerfil, 
             C.contenido,C.likes,C.idPost, CONCAT(DAY(C.fecha), '-',MONTH(C.fecha), '-',year(C.fecha)) as fecha
