@@ -1,0 +1,915 @@
+<div id="blogID" class="parallax-container ">
+    <div class="parallax">
+        <img src="images/tiempoReal2.png">
+    </div>
+</div>
+<div class="container">
+    {{#Frame}}{{/Frame}}
+
+    <p class="flow-text">
+        Aplicación web en tiempo real con Node Socket.IO y Mysql. En este pequeño tutorial vamos a aprender cómo crear un servidor
+        web en tiempo real para actualizar los “Me gusta de una tarjeta” usando NodeJS, Socket.IO y Mysql. El objetivo es
+        que cuando alguien haga un “Me gusta” en una tarjeta ese me gusta se visualiza en todos los clientes conectados al
+        servidor.</p>
+        <p class="flow-text">Aqui les dejo el repositorio del tutorial, para que sea mas sencillo seguirlo</p>
+    <a href="https://github.com/OscarCode9/TarjetaRealTime-OSCARCODE"><i class="fa fa-github fa-2x" aria-hidden="true"> Tarjeta tiempo real</i></a>
+    
+        <p class="flow-text"> Lo primero que vamos a hacer es correr los siguientes comandos en la terminal para configurar NodeJS con
+        el generado express 4.
+    </p>
+
+    
+
+
+    
+    <iframe width="100%" height="360" src="https://www.youtube.com/embed/_4ncWfQu4HI" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+
+    <pre><code class="language-javascript">
+    
+npm install express-generator -g
+     
+</code></pre>
+
+    <p class="flow-text">Después que se haya instalado el generado corremos el siguen comando</p>
+
+    <pre><code class="language-javascript">
+express --view=hbs myapp     
+</code></pre>
+
+    <p class="flow-text">
+        Este comando nos genera las vistan con el motor Handlebars.js puede ser configurado con diferentes motores, pero para este
+        caso vamos a hacerlo con Handlebars.js
+
+    </p>
+    <p class="flow-text">
+        Esta es la estructura de carpetas que nos genera express.
+    </p>
+
+    <pre><code class="language-javascript">
+└───myapp
+    ├───bin
+    ├───public
+    │   ├───images
+    │   ├───javascripts
+    │   └───stylesheets
+    ├───routes
+    └───views
+</code></pre>
+    <p class="flow-text">
+        Una vez que hayamos hecho esto vamos a instalar las dependencias a utilizar en nuestro proyecto nodejs.
+
+    </p>
+    <pre><code class="language-javascript">
+npm install 
+npm install --save socket.io mysql
+</code></pre>
+
+    <p class="flow-text">
+        Una vez que se hayan instaldo nuestras dependencias las requerimos en el archivo app.js después de la línea de la variable
+        app.
+
+    </p>
+    <pre><code class="language-javascript">
+
+var app = express();
+
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+
+</code></pre>
+
+
+    <p class="flow-text">
+        Creamos un nuevo archivo js en mi caso le he puesto tiempoReal.js
+    </p>
+
+    <div class="col s12 m6 l4 center">
+ 
+        <img src="images/tiempoReal.png">
+        
+    </div>
+
+    <p class="flow-text">
+
+        Eliminamos la carpeta bin, por ahora no la vamos a utilizar, una vez hecho esto agregamos la siguiente línea al final de
+        nuestro archivo app.js, esta línea configura el puerto donde va a correr nuestra aplicación, en este caso en el 3000
+
+    </p>
+    <pre><code class="language-javascript">
+    server.listen(3000, () => {
+  console.log(`APP web en tiempo real http://localhost:3000`)
+})
+
+</code></pre>
+
+    <p class="flow-text">
+        Después nos vamos el archivo packege.json y sustituimos la línea “hbs” por "express-handlebars"
+    </p>
+    <pre><code class="language-javascript">
+    "express-handlebars": "^3.0.0"
+</pre>
+    </code>
+
+
+    <p class="flow-text">
+        Y volvemos a correr npm install En nuestra carpeta de views creamos una carpeta llamada layouts y movemos el archivo layout.hbs
+        y le cambiamos el nombre a default.hbs, nos tiene que quedar algo así.
+        
+    </p>
+    <div class="col s12 m6 l4 center">
+ 
+        <img src="images/tiempoReal3.png">
+        
+    </div>
+     <p class="flow-text">
+        Nos vamos al archivo app.js y borramos esta línea, vamos a configurar manualmente las parte de las vistas con hbs.
+    </p>
+
+
+    <pre><code class="language-javascript">
+    app.set('views', path.join(__dirname, 'views')); //linea  a borrar
+</pre>
+    </code>
+
+
+    <p class="flow-text">
+        Una vez borrada agregamos las siguientes para configurar nuestras vistas y poder usar “helpers” de forma sencilla.
+    </p>
+
+    <pre><code class="language-javascript">
+    var hbs = require('express-handlebars');
+
+app.engine('.hbs', hbs({
+  defaultLayout: 'default',
+  extname: '.hbs'
+}))
+app.set('view engine', '.hbs');
+</pre>
+    </code>
+
+
+
+
+
+    <pre><code class="language-javascript">
+
+server.listen(3000, () => {
+  console.log(`APP web en tiempo real corriendo en http://localhost:3000`)
+})
+
+</pre>
+    </code>
+
+    <p class="flow-text">Dentro de nuestro archivo tiempoReal vamos a crear una función llamada socketIO y después exportarla para poder usarla
+        en nuestro servidor.
+    </p>
+    <pre><code class="language-javascript">
+function socketIO (socket) {
+    console.log('Un cliente conectado')
+}
+
+module.exports = {
+    socketIO
+  }
+</pre>
+    </code>
+
+    <p class="flow-text">
+        Dentro de nuestro archivo app.js requerimos el archivo tiempoReal para que la función socketIO pueda ser usada por socket.io
+        cada vez que alguien se conecte al servidor.
+    </p>
+
+    <pre><code class="language-javascript">
+var connectionSocket = require('./tiempoReal');
+
+io.on('connection', connectionSocket.socketIO);
+
+</pre>
+    </code>
+
+    <p class="flow-text">Ahora configuraremos el cliente, nos vamos a la parte de las views y en el archivo index.hbs Vamos a agregar el siguiente
+        script
+    </p>
+
+    <pre><code class="hljs xml">
+    &lt;script src="/socket.io/socket.io.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+    var socket = io.connect('http://localhost:3000');
+    &lt;/script&gt;
+</pre>
+    </code>
+
+
+
+    <p class="flow-text">
+        Para comprobar que todo está funcionado correctamente corremos en nuestra terminal el servidor.
+    </p>
+
+
+    <pre><code class="language-javascript">
+	$ node app
+</pre>
+    </code>
+
+    <p class="flow-text">
+        Si todo esta funcionado bien en la terminal se nos imprime el mensaje que le configuramos al momento de definir el puerto.
+    </p>
+    <pre><code class="language-javascript">
+	APP web en tiempo real corriendo http://localhost:3000
+</pre>
+    </code>
+
+    <p class="flow-text">
+        Para comprobar que el cliente funciona correctamente nos vamos al navegador a la dirección donde está corriendo a la aplicación,
+        si todo va bien nos imprimirá en la terminal el mensaje que le hemos configurado en la función socketIO dentro del
+        archivo tiempoReal.js
+    </p>
+    <pre><code class="language-javascript">
+	Un cliente conectado
+</pre>
+    </code>
+    <p class="flow-text">
+        Una vez que lo anterior haya salido bien vamos a configurar nuestra base de datos, crearemos una tabla en Mysql donde almacenaremos
+        la información de la tarjeta a la que le podremos dar me gusta.
+    </p>
+    <pre><code class="sql hljs">
+CREATE TABLE realTargeta (
+    ID int NOT NULL,
+    nombreUsuario varchar(255),
+    urlImg varchar(500),
+    meGusta int,
+    comentarios int,
+    CONSTRAINT PK_realTargeta PRIMARY KEY (ID)
+);
+</pre>
+    </code>
+
+
+    <p class="flow-text"></p>
+    Hacemos un insert a la tabla realTargeta.
+    <pre><code class="language-javascript">
+insert into realTargeta 
+values(1997,'OscarCode', 
+'https://i.pinimg.com/736x/ed/14/53/ed1453c600dee3cf56f50216c68d533e--edit-photos-wallpaper-backgrounds.jpg',
+0,0);
+</pre>
+    </code>
+
+    <p class="flow-text">
+
+        Una vez hecho esto vamos a mostrar la tarjeta en nuestro cliente. Para ello nos vamos a la carpeta de routers en el archivo
+        index.js ahí vamos a configurar la base de datos para que pueda ser usada por el servidor.
+
+    </p>
+    <pre><code class="language-javascript">
+
+var mysql      = require('mysql');
+
+router.get('/', function(req, res, next) {
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'me',
+  password : 'secret',
+  database : 'my_db'
+});
+
+
+
+  res.render('index', { title: 'Express' });
+});
+
+
+</pre>
+    </code>
+
+
+
+    <p class="flow-text">
+
+        Ahora vamos a enviarle la información de nuestra tarjeta al cliente para hacer esto debemos de ejecutar un query para que
+        nos traiga la información de la tarjeta, una vez que el query se ejecute enviar esa información al cliente.
+
+    </p>
+    <pre><code class="language-javascript">
+router.get('/', function(req, res, next) {
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'me',
+  password : 'secret',
+  database : 'my_db'
+});
+
+  connection.connect();
+  connection.query(`select * from realTargeta where ID = 1997}`,
+  function (err, rows, fields) {
+    if(err){
+	connection.end();
+      res.render('index', {err:'Error al ejecutar el query' });
+    }else{
+      var informacionTarjeta = rows[0];
+      connection.end();
+      res.render('index', {tarjeta:informacionTarjeta });
+    }
+  });  
+});
+ </pre>
+    </code>
+
+    <p class="flow-text">
+        De esta forma primero nos conectamos a la base de datos, después ejecutamos el query, el query recibe un callback con tres
+        parámetros, err, rows, fiels, voy a explicar brevemente que contiene cada parámetro, el primero la información de
+        error si es que se llega a producir, rows es un arreglo de la información que nos traemos de la base de datos por
+        ejemplo, si en nuestra base de datos tenemos 10 registros y hacemos un select * from mytable, estos registros van
+        a la variable rows para que puedan se recorridos con un ciclo si hacia se desea, fields trae información como el
+        nombre de los campos.
+
+    </p>
+    <p class="flow-text">
+        Ahora vamos a visualizar los datos que hemos enviado a nuestro cliente desde el servidor. Para hacer el trabajo más sencillo
+        vamos a utilizar un marco de trabajo para interfaces web llamado Materialize (http://materializecss.com/) para ello
+        vamos a configurarlo, nos vamos a la carpeta de views y abrimos el archivo layout.hbs ahí agregamos los link de javascript
+        y css de Materializa
+
+    </p>
+
+
+    <pre><code class="hljs xml">
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+
+&lt;head&gt;
+    &lt;title&gt;&#123;&#123;title&#125;&#125;&lt;/title&gt;
+    &lt;link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"&gt;
+    &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"&gt;
+    &lt;link rel='stylesheet' href='/stylesheets/style.css' /&gt;
+    &lt;script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"&gt;&lt;/script&gt;
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+    &#123;&#123;&#123;body&#125;&#125;&#125;
+&lt;/body&gt;
+
+&lt;/html&gt;
+</pre>
+    </code>
+
+
+    <p class="flow-text">
+        Una vez hecho esto ya podemos trabajar con Materialize.
+    </p>
+
+
+    <p class="flow-text">
+        Ahora es nuestro archivo index.hbs vamos a agregar una tarjeta (http://materializecss.com/cards.html) con la información
+        que hemos enviado desde el servidor.
+
+    </p>
+
+    <pre><code class="language-html">
+&lt;div class="container"&gt;
+   &lt;div class="row"&gt;
+     &lt;div class="col s16 m12 l6 "&gt;
+       &lt;div class="card small"&gt;
+         &lt;div class="card-image"&gt;
+           &lt;i id="id_noticia"&gt; &#123; &#123;tarjeta.ID&#125;&#125; &lt;/i&gt;
+           &lt;img src=" &#123; &#123;tarjeta.urlImg&#125;&#125;"&gt;
+           &lt;span class="card-title"&gt; &#123; &#123;tarjeta.nombreUsuario&#125;&#125; &lt;/span&gt;
+         &lt;/div&gt;
+         &lt;div class="card-action"&gt;
+           &lt;i id=" &#123; &#123;tarjeta.ID&#125;&#125;" class="fa fa-heart fa-2x corazon" aria-hidden="true"&gt;&nbsp;  &#123; &#123;tarjeta.meGusta&#125;&#125; &lt;/i&gt;
+           &lt;i class="fa fa-comment fa-2x" aria-hidden="true"&gt;&nbsp;  &#123; &#123;tarjeta.comentarios&#125;&#125; &lt;/i&gt;
+         &lt;/div&gt;
+       &lt;/div&gt;
+     &lt;/div&gt;
+   &lt;/div&gt;
+ &lt;/div&gt;
+
+</pre>
+    </code>
+
+
+    <p class="flow-text">
+        Ahora vamos a crear el evento para cambiar el número del corazón al hacer click sobre él. Para esto vamos a utilizar Jquery.
+        Pero antes le vamos crear un helpers en nuestro servidor con el número de “me gusta “ que tiene la tarjeta para poder
+        usarlo en el código javascript de nuestra vista hbs. En nuestro archivo índex de la carpeta routes agregamos nuestro
+        helper al momento de renderizar la vista.
+
+    </p>
+
+    <pre><code class="language-javascript">
+
+res.render('index', {
+          helpers: {
+            likeTotal: function () {
+              var likes = informacionTarjeta.meGusta;
+              return likes;
+            }
+          },
+          tarjeta: informacionTarjeta
+        });
+
+</pre>
+    </code>
+
+    <p class="flow-text">
+        Nos vamos a la vista default.hbs y en la parte de script agregamos el siguen código, el cual nos modifica el número de me
+        gustas al hacer click sobre el corazón.
+
+    </p>
+
+    <pre><code class="language-javascript">
+  $(document).ready(function (){
+    $('#id_noticia').hide();
+
+    var socket = io.connect('http://localhost:3000');
+    var numLikesHelp = Number(-likeTotal likes-); // sustituye el - por tre llaves ({)
+    var estadoLike = true;
+    $('.corazon').click(function (){
+      var elem = $(this);
+      var id = elem.parent().parent().find('#id_noticia').text();
+      var numLike;
+      if (estadoLike) {
+      numLikesHelp++;
+      estadoLike = false;
+      numLike = " " + numLikesHelp.toString();
+      $(this).text(numLike)
+      $(this).css("color", "#d50000")
+      }else{
+      numLikesHelp--;
+      estadoLike = true;
+      numLike = " " + numLikesHelp.toString();
+      $(this).text(numLike)
+      $(this).css("color", "black")
+      }
+    })
+  })
+
+</pre>
+    </code>
+
+
+    <p class="flow-text">
+        Ahora vamos a crear los eventos en nuestro archivo tiempoReal.js para poder acceder a ellos desde nuestro cliente, el evento
+        se escribe de la siguiente forma.
+
+    </p>
+
+    <pre><code class="language-javascript">
+
+function socketIO (socket) {
+    socket.on('new-like', function (data) {
+        console.log(data);
+        //Hacer algo aqui
+
+     });
+    console.log('Un cliente conectado')
+}
+
+</pre>
+    </code>
+
+    <p class="flow-text">
+        El primer argumento ‘new-like’ es el nombre por el cual se podrá acceder a ese evento desde el cliente, y el segundo argumento
+        recibe un callback con los datos que se han enviado desde el cliente. Vamos a la parte de las vistas al archivo index.hbs
+        para enviarle los datos al evento que hemos creado en el servidor. Para ellos creamos la siguiente función.
+
+    </p>
+    <pre><code class="language-javascript">
+
+function SocketLikes(numLikesHelp, id){
+      let newLike = {
+        likes: numLikesHelp,
+        ID: id
+      }
+      socket.emit('new-like', newLike);
+    }
+
+</pre>
+    </code>
+
+    <p class="flow-text">La función recibe dos parámetros, el primero numLikesHelp, es el número de likes que tiene la tarjeta, y el id, para
+        identificar la tarjeta que se va a actualizar, después creamos un nuevo objeto llamado newLike y lo enviamos con
+        socket.emit, donde recibe dos parámetros, el nombre del evento(tiene que ser igual que en la parte del servidor)
+        y los datos que se enviaran. Una vez que la función ha sido creada la llamamos después de que se cambia el estilo
+        del corazón, al final del if y el else. EL código nos queda así.
+
+    </p>
+    <pre><code class="language-javascript">
+
+$(document).ready(function (){
+    $('#id_noticia').hide();
+
+    var socket = io.connect('http://localhost:3000');
+    var numLikesHelp = Number(-likeTotal likes-); // sustituye el - por tre llaves ({)
+    var estadoLike = true;
+    $('.corazon').click(function (){
+      var elem = $(this);
+      var id = elem.parent().parent().find('#id_noticia').text();
+      var numLike;
+      if (estadoLike) {
+      numLikesHelp++;
+      estadoLike = false;
+      numLike = " " + numLikesHelp.toString();
+      $(this).text(numLike)
+      $(this).css("color", "#d50000")
+
+      SocketLikes(numLikesHelp,id)
+      
+      }else{
+      numLikesHelp--;
+      estadoLike = true;
+      numLike = " " + numLikesHelp.toString();
+      $(this).text(numLike)
+      $(this).css("color", "black")
+
+      SocketLikes(numLikesHelp,id)
+      
+      }
+    })
+
+    function SocketLikes(numLikesHelp, id){
+      let newLike = {
+        likes: numLikesHelp,
+        ID: id
+      }
+      socket.emit('new-like', newLike);
+    }
+  })
+
+</pre>
+    </code>
+
+    <p class="flow-text">
+        En nutro archivo tiempoReal.js Agregamos las siguiente variables
+    </p>
+
+
+    <pre><code class="language-javascript">
+var express = require('express');
+var mysql = require('mysql');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+</pre>
+    </code>
+
+    <p class="flow-text">Y después las exportamos al final </p>
+
+
+
+
+    <pre><code class="language-javascript">
+module.exports = {
+  socketIO,
+  app,
+  server, 
+  io,
+  express
+}
+
+</pre>
+    </code>
+
+    <p class="flow-text">
+        En nuestro archivo app.js borramos la primera línea, la variable express, después de nuestra variable connectionSocket igualamos
+        como se muestra en el código de abajo.
+    </p>
+
+
+    <pre><code class="language-javascript">
+
+var express = connectionSocket.express
+var app = connectionSocket.app
+var server = connectionSocket.server
+var io = connectionSocket.io
+
+</pre>
+    </code>
+
+
+    <p class="flow-text">
+        Una vez que se haya hecho esto, con los datos que le enviamos al servidor vamos a actualizar la base de datos con el número
+        de ‘me gusta ‘que corresponde a esa tarjeta, después que se haya actualizado vamos a enviar el número de ‘me gusta’
+        a todos los clientes conectados al servidor para que se visualice en tiempo real el número de me gusta de la tarjeta.
+        Para ello el siguiente código realiza esa función, se ven un poco complicado pero realmente es sencillo, analízalo
+        un poco y te darás cuenta que primero realiza la actualización con un ‘UPDATE’ después de que realiza la actualización
+        hace un ‘SELECT’ y emite lo datos, en caso de que haya un error manda un mensaje por console.log y termina la conexión.
+
+    </p>
+
+    <pre><code class="language-javascript">
+socket.on('new-like', function (data) {
+    console.log(data);
+var connection = mysql.createConnection({
+  	host     : 'localhost',
+  	user     : 'me',
+  	password : 'secret',
+  	database : 'my_db'
+});
+
+    
+    connection.connect();
+    connection.query('update realTargeta set meGusta = ? where ID = ?;', [data.likes, data.ID],
+      function (err, rows, fields) {
+        if (!err) {
+          connection.query('select meGusta from realTargeta where ID = ?;', [data.ID],
+            function (err, rows, fields) {
+              if (!err) {
+                connection.end();
+                var newLike = {
+                  ID:data.ID,
+                  likes: rows[0].meGusta
+                };
+                io.sockets.emit('newLike', newLike);
+              } else {
+                connection.end();
+                console.log('Error al enviar los nuevos datos')
+              }
+            })
+        } else {
+          connection.end();
+          console.log('Error while performing Query.' + err);
+        }
+      });
+
+  });
+
+</pre>
+    </code>
+
+    <p class="flow-text">
+        Lo último que vamos a hacer es agrega el evento en nuestra vista index.hbs, el evento tiene que tener el nombre de newLike
+        como lo hemos indicado en el servidor.
+    </p>
+
+
+    <pre><code class="language-javascript">
+socket.on('newLike', function (data) {
+      console.log(data);
+      var likes = data.likes
+      var numLike = " " + likes.toString();
+      numLikesHelp = data.likes
+      $(`#${data.ID}`).text(numLike)
+    });
+
+</pre>
+    </code>
+
+    <p class="flow-text">Una vez hecho esto ya tenemos nuestra tarjeta lista para que cuando alguien haga un ‘me gusta’ se actualice en la base
+        de datos y se vea reflejado en todos los clientes conectados al servidor.
+    </p>
+
+    <div class="row">
+        <div class="col s12 m12 l6">
+            <i id="numLikes" class="fa fa-heart fa-2x" aria-hidden="true">{{#likeTotal}}{{/likeTotal}}</i>
+            
+        </div>
+        <div class="col s12 m12 l6"><a id="fb_share_btn" class="waves-effect black btn">Compartir en <i class="fa fa-facebook-official" aria-hidden="true"></i></a></div>
+
+        <div class="col s12 m12 l6">
+            <div id="fb-root"></div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col s12 m12 l6">
+            <h5>Hacer un comnetario...</h5>
+            <div class="row">
+
+                <div class="col s12 m12">
+
+                    <div class="card grey lighten-3">
+                        <div class="card-content black-text">
+                            <form id="dataComen">
+                                <span class="card-title">
+                                    <input type="text" name="nombre">
+                                </span>
+                                <textarea id="textarea1" class="materialize-textarea" name="contenido"></textarea>
+                            </form>
+                        </div>
+                        <div class="card-action">
+                            <a id="comentar" class="waves-effect waves-light btn">Comentar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<div class="comments-container">
+    <p id="numComenta" class="flow-text">{{numeroComentario}} comentarios.</p>
+    <input id="numComentarios" type="text" value="{{numeroComentario}}">
+    <ul id="comments-list" class="comments-list">
+
+        {{#each comentarios}}
+
+        <li>
+            <div class="comment-main-level">
+                <!-- Avatar -->
+                <div class="comment-avatar">
+                    <img src={{urlPerfil}} alt="">
+                </div>
+                <!-- Contenedor del Comentario -->
+                <div class="comment-box">
+                    <div class="comment-head">
+                        <h6 class="comment-name ">
+                            <a href="http://creaticode.com/blog">{{usuarioname}}</a>
+                        </h6>
+                        <span>{{fecha}}</span>
+
+                        <i class="fa fa-heart">{{likes}}</i>
+                    </div>
+                    <div class="comment-content">
+                        {{contenido}}
+                    </div>
+                </div>
+            </div>
+            <!-- Respuestas de los comentarios -->
+
+        </li>
+
+        {{/each}}
+
+
+    </ul>
+</div>
+
+<script>
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.10&appId=1892280774382480";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    window.fbAsyncInit = function () {
+        var appId = '1400201486768599';
+        FB.init({
+            appId: appId,
+            xfbml: true,
+            version: 'v2.1'
+        });
+    };
+
+
+    $('#fb_share_btn').on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+                // Dynamically gather and set the FB share data. 
+                var FBDesc      = 'Aplicación web en tiempo real con Node Socket.IO y Mysql.';
+                var FBTitle     = 'NodeJS + Socket + MYSQL | OSCARCODE';
+                var FBLink      = window.location.href;
+                var FBPic       = 'https://s3.amazonaws.com/ovents/oscarcode/RealTimeBanner.jpg';
+
+                // Open FB share popup
+                FB.ui({
+                    method: 'share_open_graph',
+                    action_type: 'og.shares',
+                    action_properties: JSON.stringify({
+                        object: {
+                            'og:url': FBLink,
+                            'og:title': FBTitle,
+                            'og:description': FBDesc,
+                            'og:image': FBPic
+                        }
+                    })
+                },
+                function (response) {
+                    Materialize.toast('Gracias por comparti ', 3000)
+                // Action after response
+                })
+        })
+
+    var socket;
+
+    console.log(window.location.hostname);
+    if (window.location.hostname === 'oscarcode.herokuapp.com') {
+        socket = io.connect(window.location.hostname, { 'forceNew': true });
+    } else {
+        socket = io.connect('http://localhost:3000', { 'forceNew': true });
+    }
+
+    var numCom = Number($('#numComentarios').val());
+    $('#numComentarios').hide();
+    var idPost = {{{IdPost numero}}};
+    var numLikesHelp = Number({{{likeTotal likes}}});
+    $(document).ready(function () {
+        $('.parallax').parallax();
+    });
+
+    let estadoLike = true;
+    $('#numLikes').click(function () {
+        if (estadoLike) {
+            numLikesHelp++;
+            likes = numLikesHelp;
+            estadoLike = false;
+            let numLike = " " + likes.toString();
+            $('#numLikes').text(numLike)
+            $('#numLikes').css("color", "#d50000")
+            let newLike = {
+                likes: likes,
+                postId: idPost
+            }
+            socket.emit('new-like', newLike);
+        } else {
+            numLikesHelp--;
+            likes = numLikesHelp;
+            estadoLike = true;
+            let numLike = " " + likes.toString();
+            $('#numLikes').text(numLike)
+            $('#numLikes').css("color", "black")
+            let newLike = {
+                likes: likes,
+                postId: idPost
+            }
+            socket.emit('new-like', newLike)
+        }
+    })
+
+    $('#comentar').click(function () {
+        $('#comentar').hide(40);
+
+        let data = document.getElementById('dataComen');
+        /*
+            let dataForm = new FormData(data);
+            let result = {};
+        
+            for (let entry of dataForm.entries())
+            {
+                result[entry[0]] = entry[1];
+            }
+             result = JSON.stringify(result)*/
+
+        let validar = true;
+        let elements = document.getElementById("dataComen").elements;
+        for (var i = 0, element; element = elements[i++];) {
+            if (element.type === "text" && element.value === "")
+                validar = false;
+        }
+        if (validar) {
+            fetch(`${window.location.href}`, {
+                method: 'POST',
+                body: new FormData(data)
+            })
+                .then(res => res.json())
+                .then((res) => {
+                    socket.emit('new-comment', res.data)
+                    Materialize.toast(res.numero, 3000)
+                    document.getElementById('dataComen').reset();
+                })
+                .catch(function (e) {
+                    Materialize.toast(e, 3000)
+                })
+        } else {
+            Materialize.toast('No puede dejar los campos vacios', 3000)
+            $('#comentar').show(40);
+        }
+    })
+    socket.on('newLike', function (data) {
+        console.log(data);
+        let likes = data.likes
+        var numLike = " " + likes.toString();
+        numLikesHelp = data.likes
+        $('#numLikes').text(numLike)
+    });
+
+    socket.on('newComment', function (res) {
+        numCom = numCom + 1;
+        var StrinCom = `${numCom} comentarios`
+        $('#numComenta').text(StrinCom);
+        var Newcomentario = `
+  <li>
+      <div class="comment-main-level">
+        <!-- Avatar -->
+        <div class="comment-avatar"><img src=${res.urlPerfil} alt=""></div>
+        <!-- Contenedor del Comentario -->
+        <div class="comment-box">
+          <div class="comment-head">
+            <h6 class="comment-name "><a href="">${res.usuarioname}</a></h6>
+            <span>${res.fecha}</span>
+
+            <i class="fa fa-heart">${res.likes}</i>
+          </div>
+          <div class="comment-content">
+            ${res.contenido}
+          </div>
+        </div>
+      </div>
+    </li>`
+        $('#comments-list').prepend(Newcomentario);
+        $('#comentar').show(40);
+
+    });
+
+</script>

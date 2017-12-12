@@ -9,18 +9,14 @@ const config = require('./config')
 var index = require('./routes/index');
 var users = require('./routes/users');
 const hbs = require('express-handlebars');
-
-
-
-
-
-
 var app = express();
+
+
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-
-
 const mysql2 = require('mysql');
+
+
 io.on('connection', function (socket) {
   console.log('Un cliente se ha conectado');
   socket.on('new-like', function (data) {
@@ -100,9 +96,9 @@ app.use('/', index);
 app.use('/users', users);
 
 
-
-
 server.listen(config.port, () => {
   console.log(`API REST corriendo en http://localhost:${config.port}`)
 })
+
+ 
 

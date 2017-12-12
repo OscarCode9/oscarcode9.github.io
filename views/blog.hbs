@@ -25,11 +25,6 @@
         <img class="center-align"src="images/mongo.png" alt=""/>
       </a>
      
-     
-
-        <a href="#!" class="collection-item">ReactJS</a>
-        <a href="#!" class="collection-item">MySQL</a>
-        <a href="#!" class="collection-item">JavaScript</a>
       </div>
     </div>
 
@@ -42,11 +37,15 @@
          
          {{#each comentarios}}
 
-         <div class="col s12 m4 l4">
-      <div class="card">
+         <div class="col s12 m6 l12">
+           
+      <div class="card medium">
         <div class="card-image">
-          <a href="/blog?tagId={{idPost}}"><img src="{{urlImg}}"></a>
-          <span class="card-title">{{titulo}}</span>
+
+          <a href="/blog?tagId={{idPost}}&tagR={{idPost}}"><img src="{{urlImg}}"></a>
+
+          <a href="/blog?tagId={{idPost}}&tagR={{idPost}}"><span class="card-title">{{titulo}}</span></a>
+          
         </div>
         <div class="card-content">
           <p>{{descripcion}}</p>

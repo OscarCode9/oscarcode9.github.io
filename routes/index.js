@@ -27,8 +27,14 @@ router.get('/perfil', function (req, res, next) {
 	res.status(200).send({ Hola: "Hola mundo with express" })
 });
 
+router.get('/blogRealTime', function(req, res,next){
+	res.render('blogRealTime', { title: 'Blog | Oscar Code' })
+})
+
 
 
 router.post('/send', controles.sendMensaje);
 
 module.exports = router;
+
+

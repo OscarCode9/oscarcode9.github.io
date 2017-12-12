@@ -49,7 +49,8 @@ function getCometarios(numero, query) {
 function QueryPost(req, res, next) {
 
   const numero = req.query.tagId;
-  const numerodos = req.query.tagR;
+  const postTag = req.query.tagR;
+  console.log(postTag);
   
   if (req.query.tagId === undefined) {
 
@@ -59,7 +60,7 @@ function QueryPost(req, res, next) {
      connection = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
 
 
-  
+    connection.connect();
     connection.query(`select idPost,titulo, 
     contenido_html,likes,urlImg,
     descripcion, 
@@ -80,7 +81,7 @@ function QueryPost(req, res, next) {
             }, this);
           }, this);
           let comentarios = rows;
-          console.log(comentarios)
+          connection.end();
           res.render('blog', {
             title: 'Blog | Oscar Code', comentarios: comentarios
           })
@@ -118,28 +119,51 @@ function QueryPost(req, res, next) {
       })
       .then(function () {
         if (typeof comentarios !== 'undefined' && comentarios.length >= 0) {
-         
-          res.render('blogid', {
-            helpers: {
-              Frame: function () {
-                return infPost[0].contenido_html;
-              },
-              IdPost: function () {
-                return JSON.stringify(numero);
-
-              },
-              likeTotal: function () {
-                let likes = infPost[0].likes;
-                return likes;
-              }
-
-            },
-            place_urls: JSON.stringify(numero),
-            numeroComentario,
-            infPost,
-            comentarios,
-            title: 'Blog | Oscar Code',
-          });
+            if(Number(postTag) === 3){
+              res.render('1000', {
+                helpers: {
+                  Frame: function () {
+                    return infPost[0].contenido_html;
+                  },
+                  IdPost: function () {
+                    return JSON.stringify(numero);
+    
+                  },
+                  likeTotal: function () {
+                    let likes = infPost[0].likes;
+                    return likes;
+                  }
+    
+                },
+                place_urls: JSON.stringify(numero),
+                numeroComentario,
+                infPost,
+                comentarios,
+                title: 'Blog | Oscar Code',
+              });
+            }else{
+              res.render('blogid', {
+                helpers: {
+                  Frame: function () {
+                    return infPost[0].contenido_html;
+                  },
+                  IdPost: function () {
+                    return JSON.stringify(numero);
+    
+                  },
+                  likeTotal: function () {
+                    let likes = infPost[0].likes;
+                    return likes;
+                  }
+    
+                },
+                place_urls: JSON.stringify(numero),
+                numeroComentario,
+                infPost,
+                comentarios,
+                title: 'Blog | Oscar Code',
+              });
+            }
         } else {
           res.render('error');
         }
