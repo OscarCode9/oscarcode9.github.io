@@ -30,7 +30,7 @@ function sendMensaje(req, res, next) {
 function getCometarios(numero, query) {
   var myQuery = query;
   var conn = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
-  
+
   const promise = new Promise(function (resolve, reject) {
     conn.query(myQuery, function (err, result) {
       if (err) {
@@ -50,47 +50,48 @@ function QueryPost(req, res, next) {
 
   const numero = req.query.tagId;
   const postTag = req.query.tagR;
+  const postName = req.query.postName;
   console.log(postTag);
-  
+
   if (req.query.tagId === undefined) {
 
 
     let connection;
-    
-     connection = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
+
+    connection = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
 
 
     connection.connect();
-    connection.query(`select idPost,titulo, 
+    connection.query(`select idPost, 
     contenido_html,likes,urlImg,
     descripcion, 
-    DATE_FORMAT(fecha, "%W %M %e %Y") fecha from Post`,
-    function (err, rows, fields) {
-      if (err){
-        connection.end();
-        console.log('Error while performing Query.' + err);
-      }else{
-        connection.query(`select count(idComent) idComment, p.idPost
-        from Post p, Comentarios c 
-        where p.idPost = c.idPost group by p.idPost`, function (errComm, rowsComm, fieldsComm){
-          rows.forEach(function(elemt) {
-            rowsComm.forEach(function(elemtComm) {
-              if(elemt.idPost === elemtComm.idPost){
-                elemt.comment = elemtComm.idComment;
-              }
-            }, this);
-          }, this);
-          let comentarios = rows;
+    DATE_FORMAT(fecha, "%W %M %e %Y") fecha, namePost from Post`,
+      function (err, rows, fields) {
+        if (err) {
           connection.end();
-          res.render('blog', {
-            title: 'Blog | Oscar Code', comentarios: comentarios
-          })
-        })
-      }
-    });
+          console.log('Error while performing Query.' + err);
+        } else {
+          connection.query(`select count(idComent) idComment, p.idPost
+        from Post p, Comentarios c 
+        where p.idPost = c.idPost group by p.idPost`, function (errComm, rowsComm, fieldsComm) {
+              rows.forEach(function (elemt) {
+                rowsComm.forEach(function (elemtComm) {
+                  if (elemt.idPost === elemtComm.idPost) {
+                    elemt.comment = elemtComm.idComment;
+                  }
+                }, this);
+              }, this);
+              let comentarios = rows;
+              connection.end();
+              res.render('blog', {
+                title: 'Blog | Oscar Code', comentarios: comentarios
+              })
+            })
+        }
+      });
   } else {
     var conn = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
-    
+
     var sqlQueryComent = `select C.usuarioname, C.urlPerfil, 
             C.contenido,C.likes,C.idPost, CONCAT(DAY(C.fecha), '-',MONTH(C.fecha), '-',year(C.fecha)) as fecha
             from Post P inner join Comentarios C on P.idPost = C.idPost where C.idPost = ${numero} order by C.fecha desc`;
@@ -119,51 +120,28 @@ function QueryPost(req, res, next) {
       })
       .then(function () {
         if (typeof comentarios !== 'undefined' && comentarios.length >= 0) {
-            if(Number(postTag) === 3){
-              res.render('1000', {
-                helpers: {
-                  Frame: function () {
-                    return infPost[0].contenido_html;
-                  },
-                  IdPost: function () {
-                    return JSON.stringify(numero);
-    
-                  },
-                  likeTotal: function () {
-                    let likes = infPost[0].likes;
-                    return likes;
-                  }
-    
-                },
-                place_urls: JSON.stringify(numero),
-                numeroComentario,
-                infPost,
-                comentarios,
-                title: 'Blog | Oscar Code',
-              });
-            }else{
-              res.render('blogid', {
-                helpers: {
-                  Frame: function () {
-                    return infPost[0].contenido_html;
-                  },
-                  IdPost: function () {
-                    return JSON.stringify(numero);
-    
-                  },
-                  likeTotal: function () {
-                    let likes = infPost[0].likes;
-                    return likes;
-                  }
-    
-                },
-                place_urls: JSON.stringify(numero),
-                numeroComentario,
-                infPost,
-                comentarios,
-                title: 'Blog | Oscar Code',
-              });
-            }
+          res.render(postName, {
+            helpers: {
+              Frame: function () {
+                return infPost[0].contenido_html;
+              },
+              IdPost: function () {
+                return JSON.stringify(numero);
+
+              },
+              likeTotal: function () {
+                let likes = infPost[0].likes;
+                return likes;
+              }
+
+            },
+            place_urls: JSON.stringify(numero),
+            numeroComentario,
+            infPost,
+            comentarios,
+            title: 'Blog | Oscar Code',
+          });
+
         } else {
           res.render('error');
         }
@@ -194,7 +172,7 @@ function QueryComent(req, res, next) {
       console.log(data.insertId)
       res.send({
         numero: 'Gracias por comentar<3',
-        data:data.insertId
+        data: data.insertId
       });
     })
     .catch(function (e) {

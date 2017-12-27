@@ -1,0 +1,194 @@
+<div id="blogID" class="parallax-container ">
+    <div class="parallax">
+        <img src="https://www.fullstackreact.com/assets/images/temp/sample-code-3.png">
+    </div>
+</div>
+<h1>Mí experiencia aprendiendo redux. </h1>
+<div class="container">
+
+    <p class="flow-text">
+        Redux es un librería muy ligera, tan solo pesa 2kb, su arquitectura está basada en Flux, propuesta por facebook para el manejo
+        de los estados de una aplicación, muy fácil de testear y mantener. Es decir, con esta arquitectura podemos agregar
+        fácilmente nuevas funcionalidades a nuestra aplicación y en caso de que falle detectar rapidamente de donde viene
+        este fallo, además de definir todos los estados de la aplicación y tener un solo contenedor de datos, los cuales
+        pueden ser utilizados desde cualquier parte de la aplicación. Se puede utilizar para cualquier tecnologia del front-end,
+        pero es demasiado amigable para React.js.
+    </p>
+    <p class="flow-text">
+        Ahora que he dado una pequeña introducción les voy a contar cómo ha sido mi experiencia al aprender redux, la verdad es que
+        al principio me costó mucho, pues no entendía cómo funciona en absoluto, tan solo tenía una idea que se acercaba
+        un poco, ni siquiera leyendo la documentación oficial puede entenderlo, fue realmente que lo entendi cuando empecé
+        a escribir código, lo veo como cuando estás aprendiendo andar en bicicleta, de nada te sirve leerte un manual completo
+        sobre como andar en bicicleta si realmente tomas la bicicleta y comienzas a pedalear, la mayoría de las cosas que
+        tiene que ver con codigo se aplica este concepto. Me ha tomado aproximadamente una semana en aprender los conceptos
+        y aplicar lo aprendido. Lo bueno fue que encontre mucha informacion en español, hay una persona que se ha encargado
+        de traducir la documentación oficial, si hubiera sido en ingles me hubiera tomado más tiempo, aunque en estos últimos
+        días he estado investigando cosas en inglés así como viendo ejemplos en youtube, de esta manera puedo conocer nuevas
+        formas de aplicar y reforzar los conceptos. Al final de que lo entiendes te das cuenta que es muy sencillo.
+    </p>
+
+    <p class="flow-text">Voy a escribir un ejemplo sencillo, imaginemos que el estado de una aplicación para subir fotos se da por el siguiente
+        objeto. </p>
+
+    <pre><code class="language-javascript">
+    {
+        sesion: false,
+        misFotos : [ ]
+    }
+</pre>
+    </code>
+
+
+    <p class="flow-text"> Para que el estado pueda cambiar el estado de la aplicación debemos de enviar una acción que cambie el estado. Por ejemplo,
+        para cambiar el estado de la sesión, las acciones no son mas que otros objetos.
+    </p>
+
+    <pre><code class="language-javascript">
+{type: ‘Sesion iniciada’, sesion: true}
+</code></pre>
+
+    <h3>
+        Los reductores.
+    </h3>
+
+
+
+
+    <p class="flow-text">El reductor es una función que recibe el estado inicial y las acciones como argumentos, y de acuerdo a las acciones retorna
+        el siguiente estado de la aplicación. Lo que nos lleva a predecir exactamente de donde viene tal cambio, de esta
+        forma si se llega a producir un error sabemos exactamente donde esta el error y también conocemos exactamente el
+        estado de la aplicación después de que algo ha sucedido.
+    </p>
+
+    <p class="flow-text">Voy a escribir un ejemplo de un reductor.</p>
+
+
+    <p class="flow-text">accion:</p>
+
+
+
+
+    <pre><code class="language-javascript">
+
+{type: ‘Agregar_foto’, nuevaFoto }
+
+const estadoInicial  = {
+    misFotos : [ ]
+}
+
+function  misFotos (stado = estadoInicial  , accion ) {
+    switch (action.type){
+        case ‘Agregar_foto’ : {
+            return stado.concat(action.nuevaFoto);
+        }
+        default:{
+            return state;
+        }    
+    }
+}
+    </code></pre>
+
+    <p class="flow-text">En este caso mí reductor es la funcion misFotos, recibe mí estado inicial. Y si le llegase a pasar la action Agregar_foto,
+        me va a regresar un nuevo arreglo, con la foto que agregue.
+    </p>
+
+
+    <p class="flow-text">Se puede acceder al estado desde cualquier parte de nuestra app.
+    </p>
+
+
+    <p class="flow-text">Podemos escribir varios reductores, que se encargue de cada parte de nuestra aplicación, pues un solo reductor hace el
+        código más legible, lo cual queremos evitar.
+    </p>
+
+
+    <p class="flow-text">Y basicamente esto es todo Redux, al menos los conceptos. Redux no es más que Javascript bien aplicado, la API de Redux
+        y React-Redux nos ahorran escribir código que podria ser muy tardado de implementar, pero basicamente así funciona.
+        Escribiré otro post donde ya haga una aplicación con react, para que se entienda mejor.
+    </p>
+
+    <div class="row">
+
+        <div class="col s12 m12 l6">
+            <i id="numLikes" class="fa fa-heart fa-2x" aria-hidden="true">{{#likeTotal}}{{/likeTotal}}</i>
+        </div>
+        <div class="col s12 m12 l6">
+            <a id="fb_share_btn" class="waves-effect black btn">Compartir en
+                <i class="fa fa-facebook-official" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div class="col s12 m12 l6">
+            <div id="fb-root"></div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col s12 m12 l6">
+            <h5>Hacer un comnetario...</h5>
+            <div class="row">
+
+                <div class="col s12 m12">
+
+                    <div class="card grey lighten-3">
+                        <div class="card-content black-text">
+                            <form id="dataComen">
+                                <span class="card-title">
+                                    <input type="text" name="nombre">
+                                </span>
+                                <textarea id="textarea1" class="materialize-textarea" name="contenido"></textarea>
+                            </form>
+                        </div>
+                        <div class="card-action">
+                            <a id="comentar" class="waves-effect waves-light btn">Comentar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="comments-container">
+    <p id="numComenta" class="flow-text">{{numeroComentario}} comentarios.</p>
+    <input id="numComentarios" type="text" value="{{numeroComentario}}">
+    <ul id="comments-list" class="comments-list">
+
+        {{#each comentarios}}
+
+        <li>
+            <div class="comment-main-level">
+                <!-- Avatar -->
+                <div class="comment-avatar">
+                    <img src={{urlPerfil}} alt="">
+                </div>
+                <!-- Contenedor del Comentario -->
+                <div class="comment-box">
+                    <div class="comment-head">
+                        <h6 class="comment-name ">
+                            <a href="http://creaticode.com/blog">{{usuarioname}}</a>
+                        </h6>
+                        <span>{{fecha}}</span>
+
+                        <i class="fa fa-heart">{{likes}}</i>
+                    </div>
+                    <div class="comment-content">
+                        {{contenido}}
+                    </div>
+                </div>
+            </div>
+            <!-- Respuestas de los comentarios -->
+
+        </li>
+
+        {{/each}}
+
+
+    </ul>
+</div>
+
+
+<script src="/postID.js"></script>
