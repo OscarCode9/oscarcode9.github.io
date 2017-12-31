@@ -8,9 +8,9 @@ var knox = require('knox');
 var fs = require('fs');
 
 var client = knox.createClient({
-	key:process.env.KEY,
-	secret:process.env.SECRET,
-	bucket:process.env.BUCKET
+	key: process.env.KEY,
+	secret: process.env.SECRET,
+	bucket: process.env.BUCKET
 });
 
 
@@ -64,20 +64,15 @@ router.post('/addPost', function (req, res, next) {
 		const url = response.req.url;
 		var con = require('./defaultCon');
 
-		
-
 		var fileContent = con.contenido();
-
 
 		var filepath = `views/${postName}.hbs`;
 
 		fs.writeFile(filepath, fileContent, (err) => {
 			if (err) throw err;
 
-			console.log("The file was succesfully saved!");
-			console.log(response.req.url);
 
-			const conn = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
+			const conn = mysql.createConnection(process.env.DATABASE_URL);
 			conn.connect();
 			conn.query(`select max(idPost) maxNum from Post;`, function (err, rows, fields) {
 				if (err) {

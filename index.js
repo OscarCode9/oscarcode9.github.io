@@ -20,7 +20,7 @@ const mysql2 = require('mysql');
 io.on('connection', function (socket) {
   console.log('Un cliente se ha conectado');
   socket.on('new-like', function (data) {
-    const connection = mysql2.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
+    const connection = mysql2.createConnection(process.env.DATABASE_URL);
     connection.connect();
     connection.query('update Post set likes = ? where idPost = ?;', [data.likes, data.postId],
      function (err, rows, fields) {
@@ -48,7 +48,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('new-comment', function(data){
-    const connection = mysql2.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
+    const connection = mysql2.createConnection(process.env.DATABASE_URL);
     connection.connect();
     connection.query(`select * from  Comentarios where idComent = ${data}`,
     function (err, rows, fields) {

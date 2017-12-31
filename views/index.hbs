@@ -89,8 +89,8 @@
 
     <div class="row">
       <div class="input-field col s12 m12 l6 offset-l3">
-        <textarea id="textarea1" class="materialize-textarea" name="requerim"></textarea>
-        <label for="textarea1">Contenido</label>
+        <textarea id="textarea12" class="materialize-textarea" name="requerim"></textarea>
+        <label for="textarea12">Contenido</label>
       </div>
     </div>
 
@@ -138,9 +138,7 @@
 
       Materialize.toast('El correo se esta enviado, por favor espere', 4000);
 
-      $('#email').val('')
-      $('#nombre').val('')
-      $('#textarea1').val('')
+      
 
       fetch('/send', {
         method: 'POST',
@@ -149,14 +147,19 @@
         .then(res => res.json())
         .then((res) => {
 
-          Materialize.toast(res.enviado, 3000)
+          Materialize.toast(res.message, 3000)
+          $('#email').val('')
+          $('#nombre').val('')
+          $('#textarea1').val('')
+          
 
           }
         )
         .catch(function (e) {
-
-          Materialize.toast(res.enviado, 3000)
-          
+          Materialize.toast(e, 3000)
+          $('#email').val('')
+          $('#nombre').val('')
+          $('#textarea1').val('')
         })
     })
   });

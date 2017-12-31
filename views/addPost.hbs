@@ -43,6 +43,7 @@
 </div>
 
 <script>
+
   $(document).ready(function () {
 
 
@@ -52,9 +53,21 @@
 
       Materialize.toast('Los datos se estan enviado a nuestros servidores, porfavor espere', 4000);
 
-      const result = await fetch('/addPost', { method: 'POST', body: new FormData(formElement) });
-      let mensaje = await result.json();
-      Materialize.toast(mensaje.enviado, 3000);
+      try{
+
+        const result = await fetch('/addPost', { method: 'POST', body: new FormData(formElement) });
+
+        const mensaje = await result.json();
+
+        Materialize.toast(mensaje.enviado, 3000);
+
+      }catch(e){
+
+        Materialize.toast(e, 3000);
+      }
+
+      
+      
 
     })
   });

@@ -1,35 +1,46 @@
 const nodemailer = require('nodemailer');
-var mysql = require('mysql');
+const mysql = require('mysql');
+const postExist = require('./postExist');
+const saveCorreo = require('./saveCorreo');
+
+
+function isEmail(email){
+    const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    return re.test(email);
+}
 
 
 
-function sendMensaje(req, res, next) {
-  var transporter = nodemailer.createTransport(process.env.DATABASE_URL);
+async function sendMensaje(req, res, next) {
+
+  console.log('Yamaño del texto --->', req.fields.requerim.length);
+
+  if(req.fields.requerim.length === 0 || req.fields.nombre.length === 0 ){
+    return res.status(200).send({message: 'Campos vacios, porfavor llena los campos'});
+  }
 
 
-  let mailOptions = {
-    from: "'" + req.fields.nombre + "' <" + req.fields.email + ">", // sender address
-    to: "oscar.99.tris@gmail.com", // list of receivers
-    subject: 'Oscar Code mensaje', // Subject line
-    text: req.fields.requerim
-  };
+  const isValidEmail = isEmail(req.fields.email);
+  
+  if(!isValidEmail){
+    return res.status(200).send({message: 'Tu correo no es valido'});
+  }
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      res.status(404).send({
-        enviado: "Tu mensaje no se pudo enviar"
-      });
-    }
+  const idEmail = await saveCorreo(req.fields);
+  console.log(Number.isInteger(idEmail));
 
-    res.status(200).send({
-      enviado: "Tu mensaje fue enviado exitosamente"
-    });
-  });
+
+  if(Number.isInteger(idEmail)){
+    return res.status(200).send({message: 'Tu correo se ha enviado, gracias'});
+  }else{
+    return res.status(200).send({message: 'Hubo problemas al enviar el correo'});
+  }
+
 }
 
 function getCometarios(numero, query) {
   var myQuery = query;
-  var conn = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
+  var conn = mysql.createConnection(process.env.DATABASE_URL);
 
   const promise = new Promise(function (resolve, reject) {
     conn.query(myQuery, function (err, result) {
@@ -46,7 +57,7 @@ function getCometarios(numero, query) {
   return promise
 }
 
-function QueryPost(req, res, next) {
+async function QueryPost(req, res, next) {
 
   const numero = req.query.tagId;
   const postTag = req.query.tagR;
@@ -58,7 +69,7 @@ function QueryPost(req, res, next) {
 
     let connection;
 
-    connection = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
+    connection = mysql.createConnection(process.env.DATABASE_URL);
 
 
     connection.connect();
@@ -90,7 +101,19 @@ function QueryPost(req, res, next) {
         }
       });
   } else {
-    var conn = mysql.createConnection('mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff');
+    
+
+    const resultados = await postExist.postExist(postName);
+
+
+    console.log(resultados);
+
+    if(resultados){
+      return res.render('error', {message: 'Este post no existe en nuestro servidor'});
+    }
+    
+
+    var conn = mysql.createConnection(process.env.DATABASE_URL);
 
     var sqlQueryComent = `select C.usuarioname, C.urlPerfil, 
             C.contenido,C.likes,C.idPost, CONCAT(DAY(C.fecha), '-',MONTH(C.fecha), '-',year(C.fecha)) as fecha
@@ -133,7 +156,6 @@ function QueryPost(req, res, next) {
                 let likes = infPost[0].likes;
                 return likes;
               }
-
             },
             place_urls: JSON.stringify(numero),
             numeroComentario,

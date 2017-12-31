@@ -23,9 +23,9 @@ nav#navegador {
   width: 100%;
 }
 
-nav#navegador :hover{
-  color: #000000;
-  transition: 1s;
+nav#navegador :hover {
+  color: #039be5;
+  transition: .3s;
   background-color: rgb(0, 20, 26);
 }
 .card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating):hover {
@@ -149,3 +149,17 @@ hr#barra{
   position: relative;
   overflow: hidden;
   height: 350px; }
+  
+#comment {
+    padding: 24px;
+    border-radius: 0 0 2px 2px;
+    background-color: black;
+    color: #f8f8f2;
+
+}
+#black-text {
+  color: #fff !important;
+}
+#textarea1{
+  color: #fff !important;
+}
