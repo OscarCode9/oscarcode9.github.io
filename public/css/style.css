@@ -163,3 +163,21 @@ hr#barra{
 #textarea1{
   color: #fff !important;
 }
+.tecnologiaUsada{
+  width: 180px;
+  height: 180px;
+  padding: 10px;
+}
+.node{
+  width: 180px;
+  height: 80px;
+  padding: 10px;
+  top: 50%;
+
+}
+.icma{
+  padding: 20px;
+  -webkit-box-shadow: 6px 7px 13px 3px rgba(0,0,0,0.75);
+  -moz-box-shadow: 6px 7px 13px 3px rgba(0,0,0,0.75);
+  box-shadow: 6px 7px 13px 3px rgba(0,0,0,0.75);
+}

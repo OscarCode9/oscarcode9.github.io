@@ -98,7 +98,15 @@ router.post('/addPost', function (req, res, next) {
 
 });
 
+
+
 router.post('/send', controles.sendMensaje);
+
+router.get('/Proyectos', function (req, res, next) {
+	res.render('proyectos');
+
+});
+
 router.get('/newt', function (req, res, next) {
 	res.render('mynewfile')
 });
