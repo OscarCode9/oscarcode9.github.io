@@ -107,8 +107,8 @@ router.get('/Proyectos', function (req, res, next) {
 
 });
 
-router.get('/newt', function (req, res, next) {
-	res.render('mynewfile')
+router.get('/codeLife', function (req, res, next) {
+	res.render('codeLife')
 });
 
 module.exports = router;
