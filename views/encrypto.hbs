@@ -1,89 +1,89 @@
 <div class="parallax-container">
   <div class="parallax">
     <img src="/images/encrypto1.png">
-  </div>  
-  
   </div>
 
-
-  <div class="container">
-
-    <div class="row">
-      <h1>Mí primer algoritmo de encriptado</h1>
-      <p class="flow-text">Hoy estaba muy aburrido en la universidad entonces recordé que el profesor de seguridad informática nos había dejado
-        un trabajo, el trabajo consistió en crear nuestro propio algoritmo de encriptación entonces me puse pensar en uno
-        algoritmo para encriptar strigs, más o menos tarde unas 2 horas, pues lo estuve haciendo entre clases.
-      </p>
-
-      <form class="col s12 " id="encrypto" enctype="multipart/form-data">
-        <div class="row">
-
-          <div class="input-field col s12">
-            <input id="Titulo" type="text" name="texto" class="validate">
-            <label for="Titulo">Escribe texto a encriptar</label>
-          </div>
-
-          <div class="input-field col s12">
-            <textarea style={color: #000} id="textarea2" name="encriptar" class="materialize-textarea"></textarea>
-          </div>
-
-          <div class="row center">
-            <div class="col s12 m12 l12 ">
-              <a class="waves-effect waves-light btn-large encrypt">Encriptar</a>
-            </div>
-          </div>
-
-      </form>
+</div>
 
 
-      <form class="col s12 " id="dencrypto" enctype="multipart/form-data">
+<div class="container">
+
+  <div class="row">
+    <h1>Mí primer algoritmo de encriptado</h1>
+    <p class="flow-text">Hoy estaba muy aburrido en la universidad entonces recordé que el profesor de seguridad informática nos había dejado
+      un trabajo, el trabajo consistió en crear nuestro propio algoritmo de encriptación entonces me puse pensar en uno algoritmo
+      para encriptar strigs, más o menos tarde unas 2 horas, pues lo estuve haciendo entre clases.
+    </p>
+
+    <form class="col s12 " id="encrypto" enctype="multipart/form-data">
+      <div class="row">
+
         <div class="input-field col s12">
-          <input id="textEncryp" type="text" name="texto" class="validate">
-          <label for="textarea1">Escribe el texto para desencriptar</label>
+          <input id="Titulo" type="text" name="texto" class="validate">
+          <label for="Titulo">Escribe texto a encriptar</label>
         </div>
 
         <div class="input-field col s12">
-          <textarea id="textarea3" name="desencriptar" class="materialize-textarea"></textarea>
+          <textarea style={color: #000} id="textarea2" name="encriptar" class="materialize-textarea"></textarea>
         </div>
 
         <div class="row center">
           <div class="col s12 m12 l12 ">
-            <a class="waves-effect waves-light btn-large dencrypt">Desencriptar</a>
+            <a class="waves-effect waves-light btn-large encrypt">Encriptar</a>
           </div>
         </div>
-      </form>
+
+    </form>
 
 
-
-
-
-
-
+    <form class="col s12 " id="dencrypto" enctype="multipart/form-data">
+      <div class="input-field col s12">
+        <input id="textEncryp" type="text" name="texto" class="validate">
+        <label for="textarea1">Escribe el texto para desencriptar</label>
       </div>
 
-      <div class="row">
+      <div class="input-field col s12">
+        <textarea id="textarea3" name="desencriptar" class="materialize-textarea"></textarea>
+      </div>
 
-        <p class="flow-text">
-          Además hice una API super sencilla, aqui les dejo mi cuenta de GitHub el código del algoritmo y la API.
-        </p>
-        <p class="flow-text">
-          <i class="fa fa-github" aria-hidden="true">
-            <a href="https://github.com/OscarCode9/MI-algoritmo-de-encriptado">Aqui el repo</a>
-          </i>
-        </p>
+      <div class="row center">
+        <div class="col s12 m12 l12 ">
+          <a class="waves-effect waves-light btn-large dencrypt">Desencriptar</a>
+        </div>
+      </div>
+    </form>
 
 
-        <p class="flow-text">
-          Puede hacer al servicio de ecriptado de mí algotimot por medio de la API, haciendo una petición HTTP tipo POST.
-        </p>
 
-        <ul>
-          <li>Para encriptar : https://encryptar.herokuapp.com/encrypto</li>
-          <li>Para desepcriptar: https://encryptar.herokuapp.com/decrypto</li>
-        </ul>
 
-        <p class="flow-text">La api te arroja un objeto:</p>
-        <pre><code class="language-javascript">
+
+
+
+    </div>
+
+    <div class="row">
+
+      <p class="flow-text">
+        Además hice una API super sencilla, aqui les dejo mi cuenta de GitHub el código del algoritmo y la API.
+      </p>
+      <p class="flow-text">
+        <i class="fa fa-github" aria-hidden="true">
+          <a href="https://github.com/OscarCode9/MI-algoritmo-de-encriptado">Aqui el repo</a>
+        </i>
+      </p>
+
+
+      <p class="flow-text">
+        Puede hacer al servicio de ecriptado de mí algotimot por medio de la API, haciendo una petición HTTP tipo POST.
+      </p>
+
+      <ul>
+        <li>Para encriptar : https://encryptar.herokuapp.com/encrypto</li>
+        <li>Para desepcriptar: https://encryptar.herokuapp.com/decrypto</li>
+      </ul>
+
+      <p class="flow-text">La api te arroja un objeto:</p>
+      <pre><code class="language-javascript">
     { text: ‘Texto encriptado’ }
     </code></pre>
 
@@ -94,114 +94,111 @@
 
 
 
-      </div>
-
-
-      <p class="flow-text">
-        También tengo un diagrama para explicar su funcionamiento de forma gráfica, aquí les dejo el diagrama:
-      </p>
-
-      <img width="100%" src="/images/encrypto.png" alt="">
-
-      <p class="flow-text">Voy a explicar la idea que tuve, es super sencilla, se basa en multiplicacion de dos numero primos y conversión de
-        letras a codigo ASCII.
-      </p>
-      <p class="flow-text">Por ejemplo para esta cadena : ‘Osc’
-      </p>
-
-      <p class="flow-text">Primero separo la cadena, es decir: </p>
-
-      <p class="flow-text">my cadena separada = |O|s|c|</p>
-
-      <p class="flow-text">Después cada valor lo convierto cada valor a codigo ASCII
-      </p>
-
-      <p class="flow-text">
-        <ul>
-          <li>O = 79</li>
-          <li>s = 115</li>
-          <li>c = 99</li>
-        </ul>
-      </p>
-
-      <p class="flow-text">Entonces cada valor lo multiplicamos por dos numero primos. </p>
-
-      <ul>
-        <li>O = 79 * 7 * 3 = 1659;</li>
-        <li>s = 115 * 7 * 3 = 2415 ;</li>
-        <li>c= 99 * 7 * 3 = 2079;</li>
-      </ul>
-
-      <p class="flow-text">Entonces a cada número le damos un formato, para tener un control sobre esos números, para saber cuando empieza o termina
-        un dígito.</p>
-
-
-      <p class="flow-text">Por ejemplo: 001659 002415 002079</p>
-
-
-      <p class="flow-text">Después de hacer esto concateno todo los numeros en un solo string String = 001659 + 002415 + 002079 String = 001659002415002079
-      </p>
-
-      <p class="flow-text">Entonces de esa cadena de String remplazo numero 3 por $, el número 0 por ! y el número 1 por # por lo que el stirng
-        final quedaría así:
-
-      </p>
-      <p class="flow-text">String final = !!#659!!24#5!!2!79</p>
-
-
     </div>
 
 
+    <p class="flow-text">
+      También tengo un diagrama para explicar su funcionamiento de forma gráfica, aquí les dejo el diagrama:
+    </p>
+
+    <img width="100%" src="/images/encrypto.png" alt="">
+
+    <p class="flow-text">Voy a explicar la idea que tuve, es super sencilla, se basa en multiplicacion de dos numero primos y conversión de letras
+      a codigo ASCII.
+    </p>
+    <p class="flow-text">Por ejemplo para esta cadena : ‘Osc’
+    </p>
+
+    <p class="flow-text">Primero separo la cadena, es decir: </p>
+
+    <p class="flow-text">my cadena separada = |O|s|c|</p>
+
+    <p class="flow-text">Después cada valor lo convierto cada valor a codigo ASCII
+    </p>
+
+    <p class="flow-text">
+      <ul>
+        <li>O = 79</li>
+        <li>s = 115</li>
+        <li>c = 99</li>
+      </ul>
+    </p>
+
+    <p class="flow-text">Entonces cada valor lo multiplicamos por dos numero primos. </p>
+
+    <ul>
+      <li>O = 79 * 7 * 3 = 1659;</li>
+      <li>s = 115 * 7 * 3 = 2415 ;</li>
+      <li>c= 99 * 7 * 3 = 2079;</li>
+    </ul>
+
+    <p class="flow-text">Entonces a cada número le damos un formato, para tener un control sobre esos números, para saber cuando empieza o termina
+      un dígito.</p>
+
+
+    <p class="flow-text">Por ejemplo: 001659 002415 002079</p>
+
+
+    <p class="flow-text">Después de hacer esto concateno todo los numeros en un solo string String = 001659 + 002415 + 002079 String = 001659002415002079
+    </p>
+
+    <p class="flow-text">Entonces de esa cadena de String remplazo numero 3 por $, el número 0 por ! y el número 1 por # por lo que el stirng
+      final quedaría así:
+
+    </p>
+    <p class="flow-text">String final = !!#659!!24#5!!2!79</p>
 
 
   </div>
 
-  <script>
-
-    $(document).ready(function () {
-      $('.parallax').parallax();
-      $('.encrypt').click(async function () {
-
-        var formElement = document.getElementById('encrypto');
-
-        Materialize.toast('Los datos se estan enviado a nuestros servidores, porfavor espere', 4000);
-        const url = 'http://localhost:3002/encrypto'
-        try {
-
-          const result = await fetch(url, { method: 'POST', body: new FormData(formElement) });
-
-          const mensaje = await result.json();
-          console.log(mensaje.text);
-          $('#textarea2').val(mensaje.text);
-        } catch (e) {
-
-          Materialize.toast(e, 3000);
-        }
-      })
-
-      $('.dencrypt').click(async function () {
-        const formElement = document.getElementById('dencrypto');
-
-        Materialize.toast('Los datos se estan enviado a nuestros servidores, porfavor espere', 4000);
-        const url = 'http://localhost:3002/decrypto'
-        try {
-
-          const result = await fetch(url, { method: 'POST', body: new FormData(formElement) });
-          const mensaje = await result.json();
-          console.log(mensaje.text);
-          $('#textarea3').val(mensaje.text);
-        } catch (e) {
-
-          Materialize.toast(e, 3000);
-        }
-
-      })
-
-
-    });
 
 
 
+</div>
+
+<script>
+
+  $(document).ready(function () {
+    $('.parallax').parallax();
+    $('.encrypt').click(async function () {
+
+      var formElement = document.getElementById('encrypto');
+
+      Materialize.toast('Los datos se estan enviado a nuestros servidores, porfavor espere', 4000);
+      const url = 'https://encryptar.herokuapp.com/encrypto'
+      try {
+        const result = await fetch(url, { method: 'POST', body: new FormData(formElement) });
+        const mensaje = await result.json();
+        console.log(mensaje.text);
+        $('#textarea2').val(mensaje.text);
+      } catch (e) {
+
+        Materialize.toast(e, 3000);
+      }
+    })
+
+    $('.dencrypt').click(async function () {
+      const formElement = document.getElementById('dencrypto');
+
+      Materialize.toast('Los datos se estan enviado a nuestros servidores, porfavor espere', 4000);
+      const url = 'https://encryptar.herokuapp.com/decrypto'
+      try {
+        const result = await fetch(url, { method: 'POST', body: new FormData(formElement) });
+        const mensaje = await result.json();
+        console.log(mensaje.text);
+        $('#textarea3').val(mensaje.text);
+      } catch (e) {
+
+        Materialize.toast(e, 3000);
+      }
+
+    })
 
 
-  </script>
+  });
+
+
+
+
+
+</script>
