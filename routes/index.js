@@ -107,6 +107,10 @@ router.get('/Proyectos', function (req, res, next) {
 
 });
 
+router.get('/cyptoOscarCode', function (req, res, next) {
+	res.render('encrypto');
+});
+
 router.get('/codeLife', function (req, res, next) {
 	res.render('codeLife')
 });

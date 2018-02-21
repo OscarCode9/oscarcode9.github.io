@@ -1,5 +1,7 @@
 <div class="parallax-container">
-  <div class="parallax"><img src="images/parallax1.jpg"></div>
+  <div class="parallax">
+    <img src="images/parallax1.jpg">
+  </div>
 </div>
 <pre><code class="language-javascript">
     function Bienvenidos() {
@@ -23,7 +25,9 @@
   <div class="col s12 m12 l4">
     <div class="card">
       <div class="card-image">
-        <a href="/blog"><img src="images/blog.jpg"></a>
+        <a href="/blog">
+          <img src="images/blog.jpg">
+        </a>
       </div>
       <div class="card-content">
         <p>Blog personal, aquí es donde publico temas relacionados con las tecnologías que conozco así como las cosas que estoy
@@ -35,14 +39,19 @@
       </div>
     </div>
   </div>
+
   <div class="col s12 m12 l4">
+
+
     <div id="cardtext" class="card">
       <div class="card-image">
-        <a  href="/Proyectos"><img src="images/proyectos.jpg"></a>
+        <a href="/Proyectos">
+          <img src="images/proyectos.jpg">
+        </a>
       </div>
       <div class="card-content">
-        <p>Apartado para presentar  mis diferentes proyectos, se da una breve explicación sobre el proyecto así como las
-          metodologías y tecnologías usadas.Publico proyectos personales como profesionales.</p>
+        <p>Apartado para presentar mis diferentes proyectos, se da una breve explicación sobre el proyecto así como las metodologías
+          y tecnologías usadas.Publico proyectos personales como profesionales.</p>
       </div>
       <div class="card-action text">
         <a class="textLink" href="/Proyectos">Ir a proyectos</a>
@@ -52,12 +61,14 @@
   <div class="col s12 m12 l4">
     <div id="cardtext" class="card">
       <div class="card-image">
-        <a href="/codeLife"><img src="images/sample-1.jpg"></a>
-        
+        <a href="/codeLife">
+          <img src="images/sample-1.jpg">
+        </a>
+
       </div>
       <div class="card-content">
-        <p>Aqui publicaré experimentos y cosas que hago con programación web, compartir el código para que otros
-          puedan hacer lo mismo. 
+        <p>Aqui publicaré experimentos y cosas que hago con programación web, compartir el código para que otros puedan hacer
+          lo mismo.
         </p>
 
       </div>
@@ -67,10 +78,35 @@
     </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col s12 m12 l12">
+    <h3>Mí primer algoritmo de encriptado </h3>
+    <div id="cardtext" class="card">
+      <div class="card-image">
+        <a href="/cyptoOscarCode">
+          <img id="encrypto1" src="images/encrypto1.png" height="50%">
+        </a>
+
+      </div>
+      <div class="card-content">
+        <p>Hoy estaba muy aburrido en la universidad entonces recordé que el profesor de seguridad informática nos había dejado
+          un trabajo, el trabajo consistió en crear nuestro propio algoritmo de encriptación entonces me puse pensar en uno
+          algoritmo para encriptar strigs....
+        </p>
+
+      </div>
+      <div class="card-action text">
+        <a class="textLink" href="/cyptoOscarCode">Ir al post</a>
+      </div>
+    </div>
+  </div>
+
+</div>
 <hr id="barra">
 
 <div class="container correo center ">
-  <div id ="correo" class="row center">
+  <div id="correo" class="row center">
     <h2>Enviame un correo :3 </h2>
   </div>
   <form id="addProductForm" enctype="multipart/form-data">
@@ -109,7 +145,7 @@
 <script>
   $(document).ready(function () {
     $(window).scroll(function (event) {
-    var nav = $('#navegador');
+      var nav = $('#navegador');
 
       var color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
 
@@ -127,19 +163,19 @@
 
 
     });
-    
-    
+
+
 
     $('.parallax').parallax();
 
-    
+
     $('.enviar').click(function () {
-      
+
       var formElement = document.getElementById('addProductForm');
 
       Materialize.toast('El correo se esta enviado, por favor espere', 4000);
 
-      
+
 
       fetch('/send', {
         method: 'POST',
@@ -152,9 +188,9 @@
           $('#email').val('')
           $('#nombre').val('')
           $('#textarea1').val('')
-          
 
-          }
+
+        }
         )
         .catch(function (e) {
           Materialize.toast(e, 3000)
