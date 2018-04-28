@@ -1,0 +1,183 @@
+<div class="parallax-container">
+  <div class="parallax">
+    <img src="https://res.cloudinary.com/dqkikety1/image/upload/q_56/v1524877969/c27c43dcbfef11d6367e078da01ae6fc.jpg">
+  </div>
+</div>
+
+
+<div class="container">
+
+  <div>
+    <h1>React, el state, los props y todo lo demás.</h1>
+    <p class="flow-text">
+      Hace tiempo que que quería escribir algo para el sitio, pero no me daba el tiempo por la universidad y el trabajo y todas
+      esas cosas que decimos que nos mantienen ocupados, pero hoy sacrifique una una películas para darme el chance de hablar
+      un poco sobre Reactjs.
+    </p>
+    <p class="flow-text">
+      React es una de las librerías más populares para el desarrollo de interfaces de usuario, y claro, una de las más importantes,
+      pues detrás de su código hay miles de personas que contribuyen a su desarrollo todos los días, ya saben, código abierto,
+      inicialmente fue desarrollada por la gente de facebook (no todo es malo en facebook).
+    </p>
+  </div>
+
+  <div class="row center">
+    <img class="ReactJSEXAMPLE" src="http://res.cloudinary.com/dqkikety1/image/upload/q_84/v1524878252/facebook-13-980x646.jpg"
+      alt="">
+  </div>
+
+  <div class="row">
+    <p class="flow-text">
+      Me alegro mucho de que la gente de facebook nos haya dado una herramienta tan potente, en los últimos meses he estado trabajando
+      con esta tecnología, su línea de aprendizaje en mi opinión no es tan larga y se acelera cuando ya tienes nociones de
+      css, html y javascript moderno, en mi caso me ha tomado 3 meses contando su implementación con Redux.
+    </p>
+    <p class="flow-text">
+      Realmente nunca había aprendido algo que tuviera que ver con el frontend más allá de los básico, como Jquery o el javascript
+      puro sin librerías, sin duda ha sido buena experiencia comprender como función instagram, o ciertas partes de la interfaz
+      de usuario de facebook, ya que son hechas con Reactjs.
+    </p>
+
+    <p class="flow-text">
+      Reactjs nos facilita la vida al crear componentes que puede ser reutilizables en cualquier parte de nuestra aplicación, escribimos
+      una vez y lo podemos utilizar incluso en otra aplicación, por ejemplo una caja de chat, podría servir para cualquier
+      app. Realmente es muy sencillo de definir un componente en React y hay varias formas de escribirlos. Por ejemplo podemos
+      definirlo con una clases javascript.
+    </p>
+  </div>
+  <div class="row center">
+    <img class="ReactJSEXAMPLE" src="https://res.cloudinary.com/dqkikety1/image/upload/q_43/v1524876796/carbon.png" alt="">
+  </div>
+
+  <div class="row">
+    <p class="flow-text">
+      Este componente no hace nada más que mostrar el la pantalla el titulo “Hola mundo”, uno de los métodos más importantes dentro
+      de un Componente React es el render,
+      <strong>el render es un método que se ejecuta cada vez que el estado del componente cambia.
+      </strong> aunque esa es otra historia que mas adelante voy a explicar.</p>
+  </div>
+
+  <p class="flow-text">
+    Los componentes también se pueden definir funcionalmente, es decir, con funciones javascript que regresan cierta información,
+    por ejemplo, vamos a crear un componente que reciba dos números por sus props y que nos regrese la suma de esos números.
+  </p>
+
+
+  <div class="row center">
+    <img class="ReactJSEXAMPLE" src="http://res.cloudinary.com/dqkikety1/image/upload/v1524880483/carbon_1.png" alt="">
+  </div>
+
+  <p class="flow-text">
+    Para ser uso de este componente y sus props, debemos de escribirlo como una etiqueta html y escribiendo sus propiedades,
+    como se muestra en la siguiente image.
+  </p>
+
+  <div class="row center">
+    <img class="ReactJSEXAMPLE" src="http://res.cloudinary.com/dqkikety1/image/upload/v1524883904/carbon_2.png" alt="">
+  </div>
+
+  <p class="flow-text">
+    Debemos de mencionar que los componentes siempre deben de iniciar con mayúsculas, es buena práctica y es lo que nos dice
+    la documentación oficial de Facebook React
+  </p>
+
+  <p class="flow-text">
+    En este caso estamos usando arrow function o funciones de flecha, que es una forma más corta de escribir nuestras funciones
+    y hace nuestro código más legible. Estas funciones son funciones no relacionadas con métodos y no pueden ser usadas como
+    constructores.
+
+  </p>
+
+  <p class="flow-text">
+    Sin funciones de flecha el componente quedaría de la siguiente forma.
+  </p>
+
+  <div class="row center">
+    <img src="http://res.cloudinary.com/dqkikety1/image/upload/v1524886528/carbon_3.png" alt="" class="ReactJSEXAMPLE">
+  </div>
+
+
+  <p class="flow-text">
+    Cuando abrimos paréntesis después de la flecha, todo el contenido de esos paréntesis se van a retornar sin la necesidad de
+    escribir el return.
+  </p>
+
+
+  <div class="row center">
+    <img class="ReactJSEXAMPLE" src="http://res.cloudinary.com/dqkikety1/image/upload/v1524887364/carbon_4.png" alt="">
+  </div>
+
+  <p class="flow-text">
+    Quizás por ahora parezca un poco complicado, pero realmente son cosas muy sencillas que si lo pones en la práctica, poco
+    a poco te irás familiarizando y por lo tanto te resultará más sencillo entender.
+  </p>
+
+  <p class="flow-text">
+
+    Ahora pasemos a otros de los temas importantes de Reactjs, el state, el state es un objeto información que constantemente
+    está cambiando dentro de nuestro componente, por ejemplo, el valor de un input, alguna funcionalidad de likes, etc, etc.
+
+  </p>
+
+  <div class="row center">
+    <img class="ReactJSEXAMPLE" src="http://res.cloudinary.com/dqkikety1/image/upload/v1524888659/carbon_5.png" alt="">
+  </div>
+  <p class="flow-text">
+    Nuestro componente Increment cuenta con varios elementos, en primera, vamos con el más importante que es el state, el cual
+    define los datos que podrán ser cambiados dentro de este componente, en nuestro caso tenemos la propieda “num”, para
+    acceder a el valor de esta propiedad del objeto state del componente Increment, accedemos a ella como en cualquier objeto
+    javascript “this.state.num”.
+
+  </p>
+  <p class="flow-text">
+    Para cambiar el estado del componente, debemos de usar setState, el cual recibe una función con los parámetros del estado
+    previo y retorna el nuevo estado. No puedes cambiar el valor del state de ninguna forma más que con setSate().
+
+  </p>
+  <p class="flow-text">
+    En nuestro componente inicializamos en el constructor un método, que sin importar cómo es llamada, siempre apunte al mismo
+    componente, es por ellos la razón de escribir bind(this), recordemos que el constructor es el primer método que se ejecuta
+    cuando el componente es inicializado.
+
+  </p>
+  <p class="flow-text">
+    Al hacer click el botón se ejecuta este método “increment” que cambia el state y lo va incrementando de uno en uno, cada
+    vez que el state cambia, el componente se vuelve a renderizar, pero solo la parte que cambio, no todos los elementos
+    del componente. La palabra clave super es usada para llamar funciones de un objeto padre.
+
+  </p>
+
+  <div class="row center">
+    <img class="ReactJSEXAMPLE" src="https://cdn-images-1.medium.com/max/1600/1*9RGpVv6Mwjl6LApR7vsYqA.gif" alt="">
+  </div>
+
+
+  <p class="flow-text">
+    Hasta ahora lo vamos a dejar aquí, para no hacerlo más complicado y poder digerir estos conocimientos básico de reactjs,
+    hay que recordar que React nos sirve para crear interfaces de usuario, solo se encarga de la vista de nuestra aplicación,
+    de todo aquello que el usuario puede ver, es muy útil cuando se implementa con una API, la API se encarga de toda la
+    parte del backend y React del frontend, espero que le haya gustado y en algunos días estaré publicando temas ya un poco
+    más complejos sobre Reactjs como el consumo de alguna API por medio de axios o fetch.
+  </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<script>
+  $(document).ready(function () {
+    $('.parallax').parallax();
+  });
+</script>

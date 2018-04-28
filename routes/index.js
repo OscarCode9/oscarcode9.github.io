@@ -7,6 +7,7 @@ var mysql = require('mysql')
 var knox = require('knox');
 var fs = require('fs');
 
+/*
 var client = knox.createClient({
 	key: process.env.KEY,
 	secret: process.env.SECRET,
@@ -14,7 +15,7 @@ var client = knox.createClient({
 });
 
 
-
+*/
 
 
 router.get('/', function (req, res, next) {
@@ -114,6 +115,10 @@ router.get('/cyptoOscarCode', function (req, res, next) {
 router.get('/codeLife', function (req, res, next) {
 	res.render('codeLife')
 });
+
+router.get('/aboutReact', function(req, res, next){
+	res.render('aboutReact');
+})
 
 module.exports = router;
 
