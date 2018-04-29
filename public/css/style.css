@@ -182,8 +182,8 @@ hr#barra{
   box-shadow: 6px 7px 13px 3px rgba(0,0,0,0.75);
 }
 a img#encrypto1 {
-  height: 400px;
-  width: auto;
+  height: auto;
+  width: 50%;
   margin-top: auto;
   margin-right: auto;
   margin-left: auto;
