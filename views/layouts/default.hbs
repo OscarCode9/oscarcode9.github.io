@@ -10,11 +10,9 @@
   <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection" />
   <link rel="stylesheet" href="/css/font-awesome.css" />
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="js/sample.js"></script>
-	<link rel="stylesheet" href="css/samples.css">
-	<link rel="stylesheet" href="toolbarconfigurator/lib/codemirror/neo.css">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!-- Global Site Tag (gtag.js) - Google Analytics -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>
@@ -33,31 +31,110 @@
 
 <body>
   <ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">JavaScript</a></li>
-    <li><a href="#!">C#</a></li>
+    <li>
+      <a href="#!">JavaScript</a>
+    </li>
+    <li>
+      <a href="#!">C#</a>
+    </li>
     <li class="divider"></li>
-    <li><a href="#!">Inteligencia Artificial</a></li>
+    <li>
+      <a href="#!">Inteligencia Artificial</a>
+    </li>
   </ul>
   <nav id="navegador">
     <div class="nav-wrapper">
       <a href="/" class="brand-logo hide-on-med-and-down">O Code | Beta</a>
       <a href="/" class="brand-logo hide-on-large-only show-on-medium-and-down">O-Code</a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="/Oscar">Sobre mi</a></li>
-        <li><a href="/Ovetns">Ovents</a></li>
-        <li><a href="/Proyectos">Proyectos</a></li>
+
+        <li>
+          <a href="/Oscar">Sobre mi</a>
+        </li>
+        <li>
+          <a href="/Ovetns">Ovents</a>
+        </li>
+        <li>
+          <a href="/Proyectos">Proyectos</a>
+        </li>
         <!-- Dropdown Trigger -->
-        <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Blog<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li>
+          <a class="dropdown-button" href="#!" data-activates="dropdown1">Blog
+            <i class="material-icons right">arrow_drop_down</i>
+          </a>
+        </li>
       </ul>
+      <a href="#" data-activates="slide-out" class="button-collapse">
+        <i class="material-icons">menu</i>
+      </a>
+
     </div>
   </nav>
-  
+
+
+  <ul id="slide-out" class="side-nav">
+
+    <li>
+      <a href="/">Inicio</a>
+    </li>
+    <li>
+      <a href="/Oscar">Sobre mi</a>
+    </li>
+
+    <li>
+      <a href="/codeLife">Code life</a>
+    </li>
+
+    <li>
+      <a href="/Proyectos">Proyectos</a>
+    </li>
+    <li>
+      <div class="divider"></div>
+    </li>
+    <li>
+      <a class="subheader">Oscar Code</a>
+    </li>
+    <li>
+      <a class="waves-effect" href="/aboutReact">React...</a>
+    </li>
+  </ul>
+
+
+
   {{{body}}}
 
-
+  <style>
+    .side-nav {
+      z-index: 99999;
+    }
+  </style>
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $(".button-collapse").sideNav();
+      $(window).scroll(function (event) {
+        var nav = $('#navegador');
+
+        var color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+
+        var scroll = $(window).scrollTop();
+
+        if (scroll > 210) {
+
+          nav.addClass('navegador');
+          nav.css("background-color", color);
+
+        } else {
+
+          nav.removeClass('navegador');
+        }
+
+
+      });
+    });
+  </script>
   <footer class="page-footer">
     <div class="container">
       <div class="row">
@@ -69,9 +146,15 @@
           <h5 class="white-text">Contacto</h5>
           <ul>
             <li>
-              <a href="https://github.com/OscarCode9"  target="_blank"><i class="fa fa-github fa-3x" aria-hidden="true"></i> </a>
-              <a href="https://www.facebook.com/triste4/"  target="_blank"><i class="fa fa-facebook-official fa-3x"aria-hidden="true"> </i></a>
-              <a href="https://www.instagram.com/oscarcode/"  target="_blank"><i class="fa fa-instagram fa-3x" aria-hidden="true">  </i></a>
+              <a href="https://github.com/OscarCode9" target="_blank">
+                <i class="fa fa-github fa-3x" aria-hidden="true"></i>
+              </a>
+              <a href="https://www.facebook.com/triste4/" target="_blank">
+                <i class="fa fa-facebook-official fa-3x" aria-hidden="true"> </i>
+              </a>
+              <a href="https://www.instagram.com/oscarcode/" target="_blank">
+                <i class="fa fa-instagram fa-3x" aria-hidden="true"> </i>
+              </a>
           </ul>
         </div>
       </div>
@@ -83,7 +166,9 @@
       </div>
     </div>
   </footer>
+
+
 </body>
-  
+
 
 </html>

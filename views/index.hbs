@@ -183,25 +183,7 @@
 
 <script>
   $(document).ready(function () {
-    $(window).scroll(function (event) {
-      var nav = $('#navegador');
-
-      var color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
-
-      var scroll = $(window).scrollTop();
-
-      if (scroll > 210) {
-
-        nav.addClass('navegador');
-        nav.css("background-color", color);
-
-      } else {
-
-        nav.removeClass('navegador');
-      }
-
-
-    });
+    
 
 
 

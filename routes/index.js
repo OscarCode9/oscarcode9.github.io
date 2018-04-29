@@ -118,6 +118,10 @@ router.get('/codeLife', function (req, res, next) {
 
 router.get('/aboutReact', function(req, res, next){
 	res.render('aboutReact');
+});
+
+router.get('/reactAxiosFetch',function(req,res,next){
+	res.render('reactAxiosFetch');
 })
 
 module.exports = router;
