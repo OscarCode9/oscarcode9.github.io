@@ -122,7 +122,11 @@ router.get('/aboutReact', function(req, res, next){
 
 router.get('/reactAxiosFetch',function(req,res,next){
 	res.render('reactAxiosFetch');
-})
+});
+
+router.get('/workers',function(req,res,next){
+	res.render('webWorkers');
+});
 
 module.exports = router;
 

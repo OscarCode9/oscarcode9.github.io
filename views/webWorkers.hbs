@@ -1,0 +1,49 @@
+<button id="ini">Iniciar worke</button>
+<button id="det">Detener worker</button>
+
+Número
+<span id="numero">0</span>
+
+<script>
+
+
+
+
+    if (Notification.permission === 'granted') {
+        navigator.serviceWorker.getRegistration().then(reg => {
+            reg.showNotification('Hello word');
+        })
+    } else {
+        Notification.requestPermission((status) => {
+            console.log(status);
+            
+
+        });
+
+    }
+
+    /*
+    const ini = document.querySelector('#ini');
+    const det = document.querySelector('#det');
+    let myWorker;
+    myWorker = new Worker('worker.js');
+        myWorker.onmessage = (e)=>{
+            console.log(e);
+            document.querySelector('#numero').innerHTML = e.data;
+        }
+
+    ini.addEventListener('click', ()=>{
+        myWorker = new Worker('worker.js');
+        myWorker.onmessage = (e)=>{
+            console.log(e);
+            document.querySelector('#numero').innerHTML = e.data;
+        }
+
+    });
+
+    det.addEventListener('click', ()=>{
+        myWorker.terminate();
+        myWorker = undefined;
+    })*/
+
+</script>
