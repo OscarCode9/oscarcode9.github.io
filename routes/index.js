@@ -1,11 +1,93 @@
-
-
-var express = require('express');
+const express = require('express');
 var router = express.Router();
 var controles = require('../controles/sendMessage');
 var mysql = require('mysql')
 var knox = require('knox');
 var fs = require('fs');
+
+const webPush = require('web-push');
+const util = require('util');
+
+let subscribers = [];
+
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT;
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+
+const AUTH_SECRET = process.env.AUTH_SECRET;
+
+if (!VAPID_SUBJECT) {
+	return console.log('VAPID_SUBJECT env variable  not found.');
+} else if (!VAPID_PUBLIC_KEY) {
+	return console.log('VAPID_PUBLIC_KEY env varible not found.');
+} else if (!VAPID_PRIVATE_KEY) {
+	return console.log('VAPID_PIVATE_KEY env varible not found.');
+}
+
+webPush.setVapidDetails(
+	VAPID_SUBJECT,
+	VAPID_PUBLIC_KEY,
+	VAPID_PRIVATE_KEY
+);
+
+router.get('/status', (req, res) => {
+	res.status(200).send(webPush.generateVAPIDKeys());
+});
+
+router.post('/subscribe', (req, res) => {
+	const endPoint = req.fields['notificationEndPoint'];
+	const publicKey = req.fields['publicKey'];
+	const auth = req.fields['auth'];
+	const pushSubscription = {
+		endpoint: endPoint,
+		keys: {
+			p256dh: publicKey,
+			auth: auth
+		}
+	}
+	console.log(pushSubscription);
+	//Proceso para guardar en la base de datos
+	subscribers.push(pushSubscription);
+	res.status(200).send({isSubscribe:true});
+});
+
+router.post('/unsubscribe', (req, res) => {
+	const endPoint = req.fields['notificationEndPoint'];
+	subscribers = subscribers.filter(subs => { endPoint === subs.endpoint });
+});
+
+router.post('/notify/all', (req, res) => {
+	console.log(req.fields);
+	if (req.get('auth-secret') !== AUTH_SECRET) {
+		console.log('Missing or incorrect auth-secret header.');
+		return res.sendStatus(401);
+	}
+	const message = req.fields.message || "Willy Wonk's";
+	const clickTarget = req.fields.clickTarget || 'http://oscarcode.herokuapp.com/';
+	const title = req.fields.title || 'Push notification received!';
+
+	console.log('Info: ', message, clickTarget, title);
+
+	subscribers.forEach(pushSubscription => {
+		const payload = JSON.stringify({
+			message: message,
+			clickTarget: clickTarget,
+			title: title
+		});
+
+		webPush.sendNotification(pushSubscription, payload, {}).then((response) => {
+			console.log('Status:', util.inspect(response.statusCode));
+			console.log('Headers:', JSON.stringify(response.headers));
+			console.log('Body', JSON.stringify(response.body));
+		}).catch(err => {
+			console.log('Status:', util.inspect(err.statusCode));
+			console.log('Headers:', JSON.stringify(err.headers));
+			console.log('Body', JSON.stringify(err.body));
+		});
+	});
+	res.status(200).send('Subscription accepted');
+
+});
 
 /*
 var client = knox.createClient({
@@ -13,10 +95,7 @@ var client = knox.createClient({
 	secret: process.env.SECRET,
 	bucket: process.env.BUCKET
 });
-
-
 */
-
 
 router.get('/', function (req, res, next) {
 	res.render('index', { title: 'Oscar | Code' });
@@ -33,8 +112,6 @@ router.post('/Blog', controles.QueryComent);
 router.get('/editor', function (req, res, next) {
 	res.render('editor', { title: 'Blog | Oscar Code' })
 });
-
-
 
 router.get('/perfil', function (req, res, next) {
 	res.status(200).send({ Hola: "Hola mundo with express" })
@@ -99,8 +176,6 @@ router.post('/addPost', function (req, res, next) {
 
 });
 
-
-
 router.post('/send', controles.sendMensaje);
 
 router.get('/Proyectos', function (req, res, next) {
@@ -116,17 +191,19 @@ router.get('/codeLife', function (req, res, next) {
 	res.render('codeLife')
 });
 
-router.get('/aboutReact', function(req, res, next){
+router.get('/aboutReact', function (req, res, next) {
 	res.render('aboutReact');
 });
 
-router.get('/reactAxiosFetch',function(req,res,next){
+router.get('/reactAxiosFetch', function (req, res, next) {
 	res.render('reactAxiosFetch');
 });
 
-router.get('/workers',function(req,res,next){
+router.get('/workers', function (req, res, next) {
+
 	res.render('webWorkers');
 });
+
 
 module.exports = router;
 

@@ -1,26 +1,34 @@
-<button id="ini">Iniciar worke</button>
-<button id="det">Detener worker</button>
+<input id="notification-payload" placeholder="notification-payload" type="text">
+<input id="notification-delay" type="number">
+<input id="notification-ttl" type="number">
 
-Número
-<span id="numero">0</span>
+<button id="doIt">Send</button>
 
 <script>
 
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./worker.js').then((reg) => {
+        // Registration was successful
+        console.log(reg)
+      }).catch(err => {
+        console.log('ServiceWorker registration failed: ', err)
+      })
+    })
+  }
+
+  if (Notification.permission === 'granted') {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      reg.showNotification('Hello word');
+    })
+  } else {
+    Notification.requestPermission((status) => {
+      console.log(status);
 
 
+    });
 
-    if (Notification.permission === 'granted') {
-        navigator.serviceWorker.getRegistration().then(reg => {
-            reg.showNotification('Hello word');
-        })
-    } else {
-        Notification.requestPermission((status) => {
-            console.log(status);
-            
-
-        });
-
-    }
+  }
 
     /*
     const ini = document.querySelector('#ini');
