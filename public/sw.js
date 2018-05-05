@@ -15,7 +15,7 @@ self.addEventListener('push', function(event) {
     }
     var title = data.title;
     var message = data.message;
-    var icon = "img/FM_logo_2013.png";
+    var icon = "img/icon.png";
 
     self.clickTarget = data.clickTarget;
 

@@ -12,8 +12,7 @@ let subscribers = [];
 
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT;
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
-
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY; 
 const AUTH_SECRET = process.env.AUTH_SECRET;
 
 if (!VAPID_SUBJECT) {
@@ -79,13 +78,15 @@ router.post('/notify/all', (req, res) => {
 			console.log('Status:', util.inspect(response.statusCode));
 			console.log('Headers:', JSON.stringify(response.headers));
 			console.log('Body', JSON.stringify(response.body));
+			res.status(200).send('Subscription accepted');
 		}).catch(err => {
+
 			console.log('Status:', util.inspect(err.statusCode));
 			console.log('Headers:', JSON.stringify(err.headers));
 			console.log('Body', JSON.stringify(err.body));
 		});
 	});
-	res.status(200).send('Subscription accepted');
+	
 
 });
 

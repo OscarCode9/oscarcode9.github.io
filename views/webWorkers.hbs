@@ -35,8 +35,6 @@
     }
   });
   
-
-  
 function initialiseServiceWorker() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(serviceWorkerName).then(handleSWRegistration);
@@ -57,7 +55,6 @@ function handleSWRegistration(reg) {
     
     swRegistration = reg;
     
-    
     initialiseState(reg);
 }
 
@@ -65,18 +62,14 @@ function handleSWRegistration(reg) {
 function initialiseState(reg) {
     // Are Notifications supported in the service worker?
     if (!(reg.showNotification)) {
-        console.log('Notifications aren\'t supported on service workers.');
-        
+        console.log('Notifications aren\'t supported on service workers.');   
         return;
     }
-
     // Check if push messaging is supported
     if (!('PushManager' in window)) {
-        console.log('Push messaging isn\'t supported.');
-        
+        console.log('Push messaging isn\'t supported.');   
         return;
     }
-
     // We need the service worker registration to check for a subscription
     navigator.serviceWorker.ready.then(function (reg) {
         // Do we already have a push message subscription?
@@ -86,13 +79,10 @@ function initialiseState(reg) {
                     console.log('Not yet subscribed to Push');
                     isSubscribed = false;
                     subscribe();
-                    
                 } else {
                     // initialize status, which includes setting UI elements for subscribed status
                     // and updating Subscribers list via push
-                    isSubscribed = true;
-                    
-                    
+                    isSubscribed = true; 
                 }
             })
             .catch(function (err) {
@@ -113,8 +103,6 @@ function initialiseState(reg) {
         const endpoint = subs.endpoint;
         const key = subs.getKey('p256dh');
         const auth = subs.getKey('auth');
-
-        console.log('auth',auth);
 
         const formData = new FormData();
 
