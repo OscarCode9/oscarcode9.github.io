@@ -4,6 +4,7 @@ var controles = require('../controles/sendMessage');
 var mysql = require('mysql')
 var knox = require('knox');
 var fs = require('fs');
+const newSubscriptor = require('../controles/newSubcrition');
 
 const webPush = require('web-push');
 const util = require('util');
@@ -33,10 +34,13 @@ router.get('/status', (req, res) => {
 	res.status(200).send(webPush.generateVAPIDKeys());
 });
 
-router.post('/subscribe', (req, res) => {
+router.post('/subscribe', async(req, res) => {
 	const endPoint = req.fields['notificationEndPoint'];
 	const publicKey = req.fields['publicKey'];
 	const auth = req.fields['auth'];
+
+	const result = await newSubscriptor(endPoint,publicKey,auth);
+	console.log(result);
 	const pushSubscription = {
 		endpoint: endPoint,
 		keys: {
