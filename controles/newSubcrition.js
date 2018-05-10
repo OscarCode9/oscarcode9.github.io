@@ -18,7 +18,6 @@ const newSubcrition = async (endPoint, publicKey, auth) => {
     return error;
   }
 }
-
 module.exports = newSubcrition;
 
 

@@ -5,6 +5,7 @@ var mysql = require('mysql')
 var knox = require('knox');
 var fs = require('fs');
 const newSubscriptor = require('../controles/newSubcrition');
+const deleteSubscriptor = require('../controles/deleteSubcrition');
 
 const webPush = require('web-push');
 const util = require('util');
@@ -34,13 +35,13 @@ router.get('/status', (req, res) => {
 	res.status(200).send(webPush.generateVAPIDKeys());
 });
 
+
 router.post('/subscribe', async(req, res) => {
 	const endPoint = req.fields['notificationEndPoint'];
 	const publicKey = req.fields['publicKey'];
 	const auth = req.fields['auth'];
 
 	const result = await newSubscriptor(endPoint,publicKey,auth);
-	console.log(result);
 	const pushSubscription = {
 		endpoint: endPoint,
 		keys: {
@@ -54,8 +55,16 @@ router.post('/subscribe', async(req, res) => {
 	res.status(200).send({isSubscribe:true});
 });
 
-router.post('/unsubscribe', (req, res) => {
+router.post('/unsubscribe', async (req, res) => {
 	const endPoint = req.fields['notificationEndPoint'];
+	try {
+		const result = await deleteSubscriptor(endPoint);
+		console.log(result);
+		res.send({result});
+	} catch (error) {
+		console.log(error);
+		res.sendStatus(500);
+	}
 	subscribers = subscribers.filter(subs => { endPoint === subs.endpoint });
 });
 
