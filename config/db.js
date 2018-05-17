@@ -5,3 +5,4 @@ const db_config = {
     database: process.env.NAME_DB
 }
 module.exports = db_config;
+

@@ -6,11 +6,11 @@ var knox = require('knox');
 var fs = require('fs');
 const newSubscriptor = require('../controles/newSubcrition');
 const deleteSubscriptor = require('../controles/deleteSubcrition');
+const getSubscribers = require('../controles/getSubscribers');
 
 const webPush = require('web-push');
 const util = require('util');
 
-let subscribers = [];
 
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT;
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
@@ -31,7 +31,9 @@ webPush.setVapidDetails(
 	VAPID_PRIVATE_KEY
 );
 
-router.get('/status', (req, res) => {
+router.get('/status', async (req, res) => {
+	const result = await getSubscribers();
+	console.log('Result', result);
 	res.status(200).send(webPush.generateVAPIDKeys());
 });
 
@@ -42,16 +44,7 @@ router.post('/subscribe', async(req, res) => {
 	const auth = req.fields['auth'];
 
 	const result = await newSubscriptor(endPoint,publicKey,auth);
-	const pushSubscription = {
-		endpoint: endPoint,
-		keys: {
-			p256dh: publicKey,
-			auth: auth
-		}
-	}
-	console.log(pushSubscription);
-	//Proceso para guardar en la base de datos
-	subscribers.push(pushSubscription);
+
 	res.status(200).send({isSubscribe:true});
 });
 
@@ -68,7 +61,7 @@ router.post('/unsubscribe', async (req, res) => {
 	subscribers = subscribers.filter(subs => { endPoint === subs.endpoint });
 });
 
-router.post('/notify/all', (req, res) => {
+router.post('/notify/all', async(req, res) => {
 	console.log(req.fields);
 	if (req.get('auth-secret') !== AUTH_SECRET) {
 		console.log('Missing or incorrect auth-secret header.');
@@ -79,6 +72,10 @@ router.post('/notify/all', (req, res) => {
 	const title = req.fields.title || 'Push notification received!';
 
 	console.log('Info: ', message, clickTarget, title);
+	
+	const subscribers = await getSubscribers();
+	console.log(subscribers);
+
 
 	subscribers.forEach(pushSubscription => {
 		const payload = JSON.stringify({
@@ -86,12 +83,12 @@ router.post('/notify/all', (req, res) => {
 			clickTarget: clickTarget,
 			title: title
 		});
-
+		
 		webPush.sendNotification(pushSubscription, payload, {}).then((response) => {
 			console.log('Status:', util.inspect(response.statusCode));
 			console.log('Headers:', JSON.stringify(response.headers));
 			console.log('Body', JSON.stringify(response.body));
-			res.status(200).send('Subscription accepted');
+			
 		}).catch(err => {
 
 			console.log('Status:', util.inspect(err.statusCode));
@@ -99,8 +96,7 @@ router.post('/notify/all', (req, res) => {
 			console.log('Body', JSON.stringify(err.body));
 		});
 	});
-	
-
+	res.status(200).send('Subscription accepted');
 });
 
 /*
