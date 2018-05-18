@@ -15,7 +15,7 @@
   }
 
   const applicationServerPublicKey = 'BJAEj9QSBucrXrDb3JifjP0xEasvR5oP4Z73ukVGPVI8HftBinJRXMakAC6c4kgoe-4LIBwL_WrN7_S86UiqlX8';
-  const url = 'http://oscarcode.herokuapp.com/subscribe';
+  const url = 'https://oscarcode.herokuapp.com/subscribe';
   const serviceWorkerName = './sw.js';
   let swRegistration = null;
   let isSubscribed = false;
