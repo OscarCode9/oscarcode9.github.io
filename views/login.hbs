@@ -1,3 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{title}}</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection" />
+  <link rel="stylesheet" href="/css/font-awesome.css" />
+  <link rel=icon href='icon.png' sizes="32x32" type="image/png">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0 user-scalable=0" />
+  <!-- Global Site Tag (gtag.js) - Google Analytics -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105587501-1"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments) };
+    gtag('js', new Date());
+    gtag('config', 'UA-105587501-1');
+
+  </script>
   <style>
     body {
       display: flex;
@@ -13,10 +40,10 @@
       background: #fff;
     }
 
-    .input-field input[type=date]:focus + label,
-    .input-field input[type=text]:focus + label,
-    .input-field input[type=email]:focus + label,
-    .input-field input[type=password]:focus + label {
+    .input-field input[type=date]:focus+label,
+    .input-field input[type=text]:focus+label,
+    .input-field input[type=email]:focus+label,
+    .input-field input[type=password]:focus+label {
       color: #e91e63;
     }
 
@@ -31,7 +58,7 @@
 </head>
 
 <body>
-  <div class="section"></div>
+
   <main>
     <center>
       <img class="responsive-img" style="width: 250px;" src="https://i.imgur.com/ax0NCsK.gif" />
@@ -62,8 +89,10 @@
                 <label for='password'>Enter your password</label>
               </div>
               <label style='float: right;'>
-								<a class='pink-text' href='#!'><b>Forgot Password?</b></a>
-							</label>
+                <a class='pink-text' href='#!'>
+                  <b>Forgot Password?</b>
+                </a>
+              </label>
             </div>
 
             <br />
@@ -82,3 +111,10 @@
     <div class="section"></div>
   </main>
 
+</body>
+<script src="main.js"></script>
+
+
+</html>
+
+</head>
