@@ -7,6 +7,7 @@ var fs = require('fs');
 const newSubscriptor = require('../controles/newSubcrition');
 const deleteSubscriptor = require('../controles/deleteSubcrition');
 const getSubscribers = require('../controles/getSubscribers');
+const getEmails = require("../controles/getEmail");
 
 const webPush = require('web-push');
 const util = require('util');
@@ -32,9 +33,12 @@ webPush.setVapidDetails(
 );
 
 router.get('/status', async (req, res) => {
-	const result = await getSubscribers();
+	const result = await getEmails();
 	console.log('Result', result);
-	res.status(200).send(webPush.generateVAPIDKeys());
+	res.status(200).send({
+		APIKEY: webPush.generateVAPIDKeys(),
+		result 
+	});
 });
 
 
@@ -108,8 +112,9 @@ var client = knox.createClient({
 */
 
 router.get('/', function (req, res, next) {
+
 	res.render('index', { title: 'Oscar | Code' });
-})
+});
 router.get('/Oscar', function (req, res, next) {
 	res.render('sobre_mi', { title: 'Oscar CODE' });
 });
@@ -209,8 +214,7 @@ router.get('/reactAxiosFetch', function (req, res, next) {
 	res.render('reactAxiosFetch');
 });
 
-router.get('/workers', function (req, res, next) {
-
+router.get('/workers', function (req, res, next) { 
 	res.render('webWorkers');
 });
 
