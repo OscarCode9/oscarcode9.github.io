@@ -54,6 +54,9 @@
       border-bottom: 2px solid #e91e63;
       box-shadow: none;
     }
+    #errorMessage {
+      color: red;
+    }
   </style>
 </head>
 
@@ -61,50 +64,51 @@
 
   <main>
     <center>
-      <img class="responsive-img" style="width: 250px;" src="https://i.imgur.com/ax0NCsK.gif" />
-      <div class="section"></div>
 
-      <h5 class="indigo-text">Please, login into your account</h5>
       <div class="section"></div>
+      <img class="responsive-img" style="width: 250px;" src="./img/logoOscarCode.png" />
+      <h5 class="">Please, login into your account</h5>
+      <div class="secwetion"></div>
 
       <div class="container">
         <div class="z-depth-1 grey lighten-4 row" style="display: inline-block; padding: 32px 48px 0px 48px; border: 1px solid #EEE;">
 
-          <form class="col s12" method="post">
-            <div class='row'>
-              <div class='col s12'>
-              </div>
-            </div>
 
-            <div class='row'>
-              <div class='input-field col s12'>
-                <input class='validate' type='email' name='email' id='email' />
-                <label for='email'>Enter your email</label>
-              </div>
+          <div class='row'>
+            <div class='col s12'>
             </div>
+          </div>
 
-            <div class='row'>
-              <div class='input-field col s12'>
-                <input class='validate' type='password' name='password' id='password' />
-                <label for='password'>Enter your password</label>
-              </div>
-              <label style='float: right;'>
-                <a class='pink-text' href='#!'>
-                  <b>Forgot Password?</b>
-                </a>
-              </label>
+          <div class='row'>
+            <div class='input-field col s12'>
+              <input placeholder="Enter your email" class='validate' type='text' name='email' id='email' />
             </div>
+          </div>
 
-            <br />
-            <center>
-              <div class='row'>
-                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo'>Login</button>
-              </div>
-            </center>
-          </form>
+          <div class='row'>
+            <div class='input-field col s12'>
+              <input placeholder="Enter your password" class='validate' type='password' name='password' id='password' />
+
+            </div>
+            <label style='float: right;'>
+              <a class='blue-text' href='#!'>
+                <b>Forgot Password?</b>
+              </a>
+              <br>
+              <span id="errorMessage"></span>
+            </label>
+          </div>
+
+          <br />
+          <center>
+            <div class='row'>
+              <button id="login" name='btn_login' class='col s12 btn btn-large waves-effect black'>Login</button>
+              
+            </div>
+          </center>
+
         </div>
       </div>
-      <a href="#!">Create account</a>
     </center>
 
     <div class="section"></div>
@@ -113,6 +117,52 @@
 
 </body>
 <script src="main.js"></script>
+<script>
+ 
+  const emailInput = $('#email');
+  const passwordInput = $('#password');
+  const loginInput = $('#login');
+
+  let emailText = "";
+  let passwordText = "";
+
+  emailInput.change(() => {
+    emailText = emailInput.val();
+  });
+
+  passwordInput.change(() => {
+    passwordText = passwordInput.val();
+  });
+
+  async function login(formData) {
+    let token = await fetch('/login', { method: "post", body: formData });
+    token = await token.json();
+    console.log(token);
+    if(token.error){ 
+      $("#errorMessage").text(token.message);
+      passwordInput.val("");
+      emailInput.val("");
+    }else{
+      localStorage.setItem('token', JSON.stringify(token.token));
+      window.location.replace("/admin?token="+token.token);
+    } 
+  }
+
+  loginInput.click(async () => {
+    const formData = new FormData();
+    emailText = emailInput.val();
+    passwordText = passwordInput.val(); 
+    formData.append('username', emailText);
+    formData.append('password', passwordText);
+    await login(formData);
+    // ''
+
+  });
+
+
+
+
+</script>
 
 
 </html>

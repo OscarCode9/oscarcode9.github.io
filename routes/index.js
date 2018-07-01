@@ -13,9 +13,11 @@ const webPush = require('web-push');
 const util = require('util');
 
 
+
+
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT;
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY; 
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 const AUTH_SECRET = process.env.AUTH_SECRET;
 
 if (!VAPID_SUBJECT) {
@@ -32,24 +34,42 @@ webPush.setVapidDetails(
 	VAPID_PRIVATE_KEY
 );
 
+const jwt = require('../service/jwt');
+const SECRET_TOKE = require('../config/token').SECRET_TOKEN;
+
+router.get('/admin', async (req, res) => {
+	const token = req.query.token;
+	try {
+		const resultToken = await jwt.verifyToken(token, SECRET_TOKE, {});
+		console.log(token);
+		res.status(200).send({
+			resultToken
+		});
+	} catch (error) {
+		res.redirect('/login');
+		
+	}
+	
+});
+
 router.get('/status', async (req, res) => {
 	const result = await getEmails();
 	console.log('Result', result);
 	res.status(200).send({
 		APIKEY: webPush.generateVAPIDKeys(),
-		result 
+		result
 	});
 });
 
 
-router.post('/subscribe', async(req, res) => {
+router.post('/subscribe', async (req, res) => {
 	const endPoint = req.fields['notificationEndPoint'];
 	const publicKey = req.fields['publicKey'];
 	const auth = req.fields['auth'];
 
-	const result = await newSubscriptor(endPoint,publicKey,auth);
+	const result = await newSubscriptor(endPoint, publicKey, auth);
 
-	res.status(200).send({isSubscribe:true});
+	res.status(200).send({ isSubscribe: true });
 });
 
 router.post('/unsubscribe', async (req, res) => {
@@ -57,7 +77,7 @@ router.post('/unsubscribe', async (req, res) => {
 	try {
 		const result = await deleteSubscriptor(endPoint);
 		console.log(result);
-		res.send({result});
+		res.send({ result });
 	} catch (error) {
 		console.log(error);
 		res.sendStatus(500);
@@ -65,7 +85,7 @@ router.post('/unsubscribe', async (req, res) => {
 	subscribers = subscribers.filter(subs => { endPoint === subs.endpoint });
 });
 
-router.post('/notify/all', async(req, res) => {
+router.post('/notify/all', async (req, res) => {
 	console.log(req.fields);
 	if (req.get('auth-secret') !== AUTH_SECRET) {
 		console.log('Missing or incorrect auth-secret header.');
@@ -76,7 +96,7 @@ router.post('/notify/all', async(req, res) => {
 	const title = req.fields.title || 'Push notification received!';
 
 	console.log('Info: ', message, clickTarget, title);
-	
+
 	const subscribers = await getSubscribers();
 	console.log(subscribers);
 
@@ -87,12 +107,12 @@ router.post('/notify/all', async(req, res) => {
 			clickTarget: clickTarget,
 			title: title
 		});
-		
+
 		webPush.sendNotification(pushSubscription, payload, {}).then((response) => {
 			console.log('Status:', util.inspect(response.statusCode));
 			console.log('Headers:', JSON.stringify(response.headers));
 			console.log('Body', JSON.stringify(response.body));
-			
+
 		}).catch(err => {
 
 			console.log('Status:', util.inspect(err.statusCode));
@@ -214,13 +234,11 @@ router.get('/reactAxiosFetch', function (req, res, next) {
 	res.render('reactAxiosFetch');
 });
 
-router.get('/workers', function (req, res, next) { 
+router.get('/workers', function (req, res, next) {
 	res.render('webWorkers');
 });
 
-router.get('/login', (req, res, next) => {
-	res.render('login', {layout: false});
-});
+
 
 
 module.exports = router;

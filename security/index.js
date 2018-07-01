@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const algorithm = 'aes-256-ctr';
-const secretKey = '1997041813Oscar&%$12';
+const secretKey = 'kEY0G504901034I34093490';
 
 
 const encrypt = (text) =>{
