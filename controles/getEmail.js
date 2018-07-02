@@ -10,7 +10,7 @@ async function getEmails() {
        let Emails = rows;
        
        console.log(Emails);
-
+       connection.close();
        return Emails;
   
     } catch (error) {

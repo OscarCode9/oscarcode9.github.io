@@ -157,49 +157,56 @@ app.post('/login', async (req, res, next) => {
   const username = req.fields.username;
   const password = req.fields.password;
 
-  const conn = mysql.createConnection(process.env.DATABASE_URL);
+  const pool = mysql.createPool(process.env.DATABASE_URL);
   const querySql = "SELECT * FROM Users WHERE email =? AND password =?; ";
-  conn.query(querySql, [username, password], (err, results) => {
-    if (err) {
-      res.redirect('/');
-      //return someth6ing5 if there is error
-    } else if (results.length > 0) {
+  pool.getConnection(function (err, conn) {
+    // Do something with the connection
+    conn.query(querySql, [username, password], (err, results) => {
+      if (err) {
+        res.redirect('/');
+        //return someth6ing5 if there is error
+      } else if (results.length > 0) {
 
-      if (results[0].password === password) {
+        if (results[0].password === password) {
 
-        const user = results[0];
+          const user = results[0];
 
-        const payload = {
-          sub: user.userId,
-          name: user.firstName,
-          admin: true
+          const payload = {
+            sub: user.userId,
+            name: user.firstName,
+            admin: true
+          }
+
+          jwt.signToken(payload, SECRET_TOKEN, {}).then(token => {
+            console.log(token);
+            pool.releaseConnection(conn);
+            res.status(200).send({
+              token,
+              error: false
+            });
+          });
+
+        } else {
+          pool.releaseConnection(conn);
+          return res.status(401).send({
+            message: 'Contraseña incorrecta',
+            error: true
+          })
         }
 
-        jwt.signToken(payload, SECRET_TOKEN, {}).then(token => {
-          console.log(token);
-          res.status(200).send({
-            token,
-            error: false
-          });
-        });
-
       } else {
+        pool.releaseConnection(conn);
         return res.status(401).send({
-          message: 'Contraseña incorrecta',
+          message: "Email no existe o contraseña incorrecta",
           error: true
         })
       }
 
-    } else {
-      return res.status(401).send({
-        message: "Email no existe o contraseña incorrecta",
-        error: true
-      })
-    }
-
-  });
-
-
+    });
+    // Don't forget to release the connection when finished!
+    
+  })
+ 
 });
 
 

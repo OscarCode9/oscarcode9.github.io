@@ -36,15 +36,21 @@ webPush.setVapidDetails(
 
 const jwt = require('../service/jwt');
 const SECRET_TOKE = require('../config/token').SECRET_TOKEN;
+const getEmail = require('../controles/getEmail');
 
 router.get('/admin', async (req, res) => {
 	const token = req.query.token;
 	try {
 		const resultToken = await jwt.verifyToken(token, SECRET_TOKE, {});
-		console.log(token);
-		res.status(200).send({
-			resultToken
+		const emails = await getEmails();
+		console.log(emails);
+
+		res.render('admin',{
+			resultToken,
+			emails
+
 		});
+		
 	} catch (error) {
 		res.redirect('/login');
 		

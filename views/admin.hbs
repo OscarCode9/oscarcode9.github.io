@@ -1,0 +1,30 @@
+<br>
+<div class="container">
+    <h1> Administrados de Emails</h1>
+
+    <div class="row">
+
+        {{#each emails}}
+        <div style="padding:20px ;" class="col s12 l6 m12 itemEmail ">
+            <strong>
+                <span>Email:</span>
+            </strong>
+            {{email }}
+            <br>
+            <strong>
+                <span>Nombre:</span>
+            </strong>
+            {{ nombre}}
+
+            <div class="input-field ">
+                <textarea class="materialize-textarea"> {{ contenido }}</textarea>
+            </div>
+
+            <div class="deleteById">
+                Eliminar
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
