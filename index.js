@@ -33,7 +33,6 @@ passport.serializeUser((user, cb) => {
 });
 
 passport.deserializeUser((id, cb) => {
-  console.log("que onda user 11", id);
   const conn = mysql.createConnection("mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff");
   const sql = "SELECT * FROM Users WHERE userId =?;";
   conn.query(sql, [id], (err, result) => {
