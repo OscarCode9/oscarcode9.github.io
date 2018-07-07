@@ -16,15 +16,30 @@
             </strong>
             {{ nombre}}
 
+            <div class="idEmail">
+                {{ID}}
+            </div>
+
             <div class="input-field ">
                 <textarea class="materialize-textarea"> {{ contenido }}</textarea>
             </div>
 
-            <div class="deleteById">
-                Eliminar
-                <i class="fa fa-trash" aria-hidden="true"></i>
+            <div class="deleteById" id={{ID}}>
+
+                <i class="fa fa-trash delete" id={{ID}} aria-hidden="true"></i>
             </div>
         </div>
         {{/each}}
     </div>
 </div>
+
+<script>
+
+    //''
+    $('.delete').click(e => {
+        console.log(e.target)
+
+        const id = e.target.id;
+        alert(id);
+    });
+</script>

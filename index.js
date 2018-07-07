@@ -17,6 +17,7 @@ const Strategy = require("passport-local").Strategy;
 const mysql = require('mysql2');
 
 
+
 passport.use(new Strategy((username, password, cb) => {
   const conn = mysql.createConnection("mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff");
   const querySql = "SELECT * FROM Users WHERE email =? AND password =?; "
@@ -159,6 +160,12 @@ app.post('/login', async (req, res, next) => {
   const pool = mysql.createPool(process.env.DATABASE_URL);
   const querySql = "SELECT * FROM Users WHERE email =? AND password =?; ";
   pool.getConnection(function (err, conn) {
+    if(err){
+      return res.status(400).send({
+        err,
+        message: 'Error en conection'
+      });
+    }
     // Do something with the connection
     conn.query(querySql, [username, password], (err, results) => {
       if (err) {
