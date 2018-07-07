@@ -5,41 +5,85 @@
     <div class="row">
 
         {{#each emails}}
-        <div style="padding:20px ;" class="col s12 l6 m12 itemEmail ">
+        <div id={{ID}} style="padding:20px ;" class="col s12 l6 m12 itemEmail ">
             <strong>
                 <span>Email:</span>
             </strong>
             {{email }}
             <br>
-            <strong>
-                <span>Nombre:</span>
-            </strong>
-            {{ nombre}}
 
-            <div class="idEmail">
-                {{ID}}
+            <div>
+                <strong>
+                    <span>Nombre:</span>
+                </strong>
+                {{ nombre}}
             </div>
+
 
             <div class="input-field ">
                 <textarea class="materialize-textarea"> {{ contenido }}</textarea>
             </div>
 
-            <div class="deleteById" id={{ID}}>
+            <div class="deleteById">
 
-                <i class="fa fa-trash delete" id={{ID}} aria-hidden="true"></i>
+                <i style="cursor: pointer" class="fa fa-trash delete" id={{ID}} aria-hidden="true"></i>
             </div>
         </div>
         {{/each}}
     </div>
 </div>
 
+<!-- Modal Structure -->
+<div id="modal1" class="modal ">
+    <div class="modal-footer">
+
+        ¿Esta seguro de que desea eliminar este email?
+        <a id="cancelar" class="waves-effect waves-light btn">Cancelar</a>
+        <a id="aceptar" class="waves-effect waves-light btn">Aceptar</a>
+
+    </div>
+</div>
+
 <script>
+    $(document).ready(function () {
+
+
+        $('.modal').modal({
+            dismissible: true, // Modal can be dismissed by clicking outside of the modal
+            opacity: .2, // Opacity of modal background
+            inDuration: 200, // Transition in duration
+            outDuration: 100, // Transition out duration
+            startingTop: '4%', // Starting top style attribute
+            endingTop: '10%'  // Callback for Modal close
+        }
+        );
+
+        let id = 0;
+        
+        $('.delete').click(async e => {
+            id = e.target.id;
+            $('#modal1').modal('open');
+        });
+
+        const deleteEmailById = async (id) => {
+            const url = '/api/deleteEmailById/' + id;
+            let result = await fetch(url, { method: 'DELETE' });
+            result = await result.json();
+            const elementoRemove = '#' + id;
+            $(elementoRemove).remove();
+        }
+
+        $("#cancelar").click(e => {
+            $('#modal1').modal('close');
+        });
+
+        $("#aceptar").click(async e => {
+            await deleteEmailById(id);
+            $('#modal1').modal('close');
+        });
+
+    });
 
     //''
-    $('.delete').click(e => {
-        console.log(e.target)
 
-        const id = e.target.id;
-        alert(id);
-    });
 </script>
