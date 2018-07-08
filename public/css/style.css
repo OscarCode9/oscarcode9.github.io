@@ -164,8 +164,8 @@ hr#barra{
   color: #fff !important;
 }
 .tecnologiaUsada{
-  width: 180px;
-  height: 180px;
+  width: 100%;
+  height: auto;
   padding: 10px;
 }
 .node{
@@ -203,4 +203,9 @@ img.ReactJSEXAMPLE {
 .itemEmail {
   border: 1px solid rgb(65, 195, 255);
   padding: 20px;
+}
+
+.logoPartsBase { 
+  padding: 10px;
+  display: inline;
 }
