@@ -21,11 +21,13 @@ const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 const AUTH_SECRET = process.env.AUTH_SECRET;
 
 if (!VAPID_SUBJECT) {
-	return console.log('VAPID_SUBJECT env variable  not found.');
+	console.log('VAPID_SUBJECT env variable  not found.');
 } else if (!VAPID_PUBLIC_KEY) {
-	return console.log('VAPID_PUBLIC_KEY env varible not found.');
+	 console.log('VAPID_PUBLIC_KEY env varible not found.');
 } else if (!VAPID_PRIVATE_KEY) {
-	return console.log('VAPID_PIVATE_KEY env varible not found.');
+console.log('VAPID_PIVATE_KEY env varible not found.');
+}else{
+	console.log('Ready');
 }
 
 webPush.setVapidDetails(

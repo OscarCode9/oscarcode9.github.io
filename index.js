@@ -1,4 +1,4 @@
-var express = require('express');
+import express from'express';
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -16,7 +16,18 @@ const passport = require("passport");
 const Strategy = require("passport-local").Strategy;
 const mysql = require('mysql2');
 
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackConfig from './webpack.config';
 
+//middlewares
+
+app.use(webpackDevMiddleware(webpack(webpackConfig)));
+
+
+app.get('reacjs', function(req, res) {
+  res.sendfile('./src/client/index.html');
+});
 
 passport.use(new Strategy((username, password, cb) => {
   const conn = mysql.createConnection("mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff");
@@ -243,7 +254,7 @@ function isLoggedIn(req, res, next) {
 }
 
 app.use('/api', apiservice);
-app.use('/', index);
+app.use('/oscarcode', index);
 
 
 
