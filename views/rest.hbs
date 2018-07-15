@@ -1,0 +1,179 @@
+<div class="parallax-container">
+    <div class="parallax">
+        <img src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/5b168acf9b9797456c35d48a63921470.jpg">
+    </div>
+</div>
+
+
+<div class="container">
+    <h1>El arte de construir software (RESTFULL) </h1>
+    <p class="flow-text">
+        Construir un software es todo un arte y es tan parecido a construir un edificio, hay mejores creaciones que otras, algunas
+        creaciones simplemente son impresionantes y complejas, otras simplemente se derrumban al tocarlas, en el software
+        es exactamente lo mismo, existen diferentes arquitecturas, patrones de diseño, metodologías y practicas para conseguir
+        esas estructuras bonitas y robustas que tanto apreciamos y nos gustan.
+    </p>
+
+    <p class="flow-text">
+        En la actualidad todos hemos escuchando hablar sobre APIS, pero que es realmente, nadie nos dice que es una API o todo lo
+        que hay detrás de ua, en este pequeño escrito quiero hablar un poco sobre la arquitectura de estado representacional
+        e interfaces de programación, aunque por ahora no voy a crear una API, quiero introducir un poco a estos dos conceptos.
+    </p>
+
+
+    <div class="row center">
+        <img class="imgExample" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531682383/Carrera-de-arquitectura-2.jpg"
+            alt="">
+    </div>
+
+    <br>
+
+    <div class="row center">
+        <img class="imgExample" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_35/v1531682572/Software_Architecture_for_Cloud_Native_Apps.png"
+            alt="">
+    </div>
+
+    <h3>¿Que carajos es REST?</h3>
+
+    <p class="flow-text">
+        La transferencia de estado representación (en inglés representational state transfer) o REST es un estilo de arquitectura
+        software para sistemas hipermedia distribuidos como la internet. El término se originó en el año 2000, en una tesis
+        doctoral sobre la web escrita por Roy Fielding, uno de los principales autores de la especificación del protocolo
+        HTTP y ha pasado a ser ampliamente utilizado por la comunidad de desarrollo, en la actualidad no de puede pensar
+        una aplicación moderna sin este tipo de arquitectura, ya que es flexible y rápida de crear.
+    </p>
+
+    <p class="flow-text">
+        En la actualidad no existe proyecto o aplicación que no disponga de una API REST para la creación de servicios profesionales
+        a partir de ese software. Twitter, YouTube, los sistemas de identificación con Facebook… hay cientos de empresas
+        que generan negocio gracias a REST y las APIs REST, vendiendo directamente su tecnología o su negocio sin incluir
+        una interfaz grafica. Sin ellas, todo el crecimiento en horizontal sería prácticamente imposible. Esto es así porque
+        REST es el estándar más lógico, eficiente y habitual en la creación de APIs para servicios de Internet.
+    </p>
+
+    <p class="flow-text">
+        Una de las ventajas que nos ofrece esta arquitectura, es que una vez creada, podemos consumir sus recursos desde cualquier
+        dispositivo o desde cualquier lenguaje que soporte peticiones HTTP.
+    </p>
+
+    <div class="row center">
+        <img class="imgExample" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_36/v1531682570/API_arch1.jpg" alt="">
+    </div>
+
+
+    <p class="flow-text">
+        En este tipo de arquitectura, nuestro servidor no mantiene el estado del cliente, es decir, en nuestro servidor no recuerda
+        el estado de este cliente, en cada petición tiene que identificar al cliente, la información de identificación se
+        guarda en nuestro cliente, es decir, id, nombre,sesión, etc , comúnmente con tokens de acceso, los tokens de acceso
+        son strings encriptados por llaves publicas y privadas, para que no puedan ser descifrados al menos de que se obtengan
+        estas llaves, de esta forma el servidor con un Middleware, si el token contiene la información correcta el servidor
+        realizas las operaciones correspondientes a esa peticiona.
+    </p>
+
+    <p class="flow-text">
+        Aunque también se puede tener llamadas a la API que no necesiten de este token, ya que podemos tener operaciones publicas
+        u operaciones que son gratuitas en nuestro negocio.
+    </p>
+
+    <div class="row center">
+        <img class="imgExample" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531683352/00233.png" alt="">
+    </div>
+
+    <br>
+
+    <div class="row center">
+        <img class="imgExample" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531682569/1_mVANZPVjG2Vd-qn-0nkBxg.png"
+            alt="">
+    </div>
+
+    <p class="flow-text">
+        REST es cualquier interfaz entre sistemas que use HTTP para obtener datos o generar operaciones sobre esos datos en todos
+        los formatos posibles, como, TEXT, XML y JSON. A mi me gusta trabajar con JSON (JavaScript Object Notation), y es
+        lo mas habitual, ya que es muy fácil de manipular y entender.
+    </p>
+
+    <p class="flow-text">
+        Por ejemplo un Json para definir a una persona seria algo así.
+    </p>
+
+    <div class="row center">
+        <img class="imgExample" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531683913/carbon_16.png" alt="">
+    </div>
+
+    <p class="flow-text">
+        Las operaciones más importantes relacionadas con los datos en cualquier sistema REST y la especificación HTTP son cuatro:
+        POST (crear), GET (leer y consultar), PUT (editar) y DELETE (eliminar).
+    </p>
+
+    <div class="row center">
+        <img class="imgExample" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684083/swagger-petstore-endpoint-methods.png"
+            alt="">
+    </div>
+
+    <p class="flow-text">
+        La API REST siempre es independiente del tipo de plataformas o lenguajes: la API REST siempre se adapta al tipo de sintaxis
+        o plataformas con las que se estén trabajando, lo que ofrece una gran libertad a la hora de cambiar o probar nuevos
+        entornos dentro del desarrollo. Con una API REST se pueden tener servidores PHP, Java, Python o Node.js. Lo único
+        que es indispensable es que las respuestas a las peticiones se hagan siempre en el lenguaje de intercambio de información
+        usado, normalmente XML o JSON.
+    </p>
+
+    <p class="flow-text">
+        Ojala haya quedado mas claro estos conceptos, posteriormente voy a crear algún tutorial sencillo sobre la creación de una
+        API, con encriptado de datos, Middlewares y otra cuantas funcionalidades, see you later.
+    </p>
+
+
+
+
+
+
+
+
+
+    <div id="disqus_thread"></div>
+</div>
+
+<style>
+    .parallax-container {
+        height: 350px;
+    }
+
+    .imgExample {
+        width: 60%;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .imgExample {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://oscarcode.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+<script>
+    $(document).ready(function () {
+        $('.parallax').parallax();
+    });
+</script>

@@ -228,6 +228,10 @@ router.get('/cyptoOscarCode', function (req, res, next) {
 	res.render('encrypto');
 });
 
+router.get('/restfull', function (req, res, next) {
+	res.render('rest');
+});
+
 router.get('/codeLife', function (req, res, next) {
 	res.render('codeLife')
 });
