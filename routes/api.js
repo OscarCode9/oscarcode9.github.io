@@ -6,6 +6,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const deleteEmailByid = require('../controles/deleteEmail');
 const isAuth = require('../middleware/auth');
 
+
 const getAllEmail = require('../controles/getEmail');
 
 router.delete('/deleteEmailById/:id', async (req, res, next) => {
@@ -31,6 +32,13 @@ router.delete('/deleteEmailById/:id', async (req, res, next) => {
     });
 
   }
+});
+
+router.get('/getPosts', async (req,res, next)=>{
+  const post = require('../post/postsInfo.json').posts;
+  res.status(200).send({
+    post: post
+  });
 });
 
 
