@@ -112,6 +112,9 @@ $(document).ready(() => {
   const lightThema = 'LIGHT';
 
   const themaType =JSON.parse(localStorage.getItem('theme')); 
+  if(themaType === null){
+    changeTemaLight();
+  }
   console.log(themaType);
   switch (themaType.type) {
     case darkThema:
