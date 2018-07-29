@@ -1,0 +1,31 @@
+{
+  "posts" : [
+    {
+      "title":"El arte de construir software (RESTFULL)",
+       "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/5b168acf9b9797456c35d48a63921470.jpg",
+       "description":"Construir un software es todo un arte y es tan parecido a construir un edificio, hay mejores creaciones que otras, algunas creaciones simplemente son impresionantes y complejas, otras simplemente se derrumban al tocarlas, en el software es exactamente lo mismo....",
+       "date":"15-07-2018",
+       "tags": [ "software","rest", "restfull"],
+       "author":"Oscar Martínez",
+       "url":"/restfull"
+    },
+    {
+      "title":"React, el state, los props y todo lo demás.",
+       "urlImg":"https://res.cloudinary.com/dqkikety1/image/upload/q_56/v1524877969/c27c43dcbfef11d6367e078da01ae6fc.jpg",
+       "description":"Hace tiempo que que quería escribir algo para el sitio, pero no me daba el tiempo por la universidad y el trabajo y todas esas cosas que decimos que nos mantienen ocupados, pero hoy sacrifique una una películas para darme el chance de hablar un poco sobre Reactjs...",
+       "date":"28-04-2018",
+       "tags": [ "reactjs","javascript"],
+       "author":"Oscar Martínez Martínez", 
+       "url":"/aboutReact"
+    }, 
+    {
+      "title":"Mí primer algoritmo de encriptado",
+       "urlImg":"/images/encrypto1.png",
+       "description":"Hoy estaba muy aburrido en la universidad entonces recordé que el profesor de seguridad informática nos había dejado un trabajo, el trabajo consistió en crear nuestro propio algoritmo de encriptación entonces me puse pensar en uno algoritmo para encriptar strigs....",
+       "date":"10-02-2018",
+       "tags": [ "seguridad","encriptado", "javascript", "algoritmo"],
+       "author":"Oscar Martínez", 
+       "url":"/cyptoOscarCode"
+    }
+  ]
+}
