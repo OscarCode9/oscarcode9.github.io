@@ -18,4 +18,7 @@ const decrypt = (text) => {
 }
 
 
+
 const secretAuth = '​​​​​62225f3e95c1ed7bd423474edc77f093c466';
+
+module.exports = { encrypt , decrypt }
