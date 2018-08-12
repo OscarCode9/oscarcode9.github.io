@@ -71,7 +71,7 @@ router.get("/testUser", async (req, res, next) => {
       res.send(user);
     } else {
       res.send({
-        user: "th6is user don{'t exist"
+        user: "this user don{'t exist"
       })
     }
 
@@ -82,5 +82,12 @@ router.get("/testUser", async (req, res, next) => {
     return error;
   }
 })
+
+router.post('/updateFile', (req, res, next) => {
+
+  const file = req.file;
+  console.log(file);
+
+});
 
 module.exports = router;

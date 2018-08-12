@@ -209,3 +209,21 @@ img.ReactJSEXAMPLE {
   padding: 10px;
   display: inline;
 }
+
+
+.card .card-image .imgPoryects {
+  width: auto;  
+  height: 476px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+.welcome {
+
+
+  font-family: 'Open Sans', sans-serif;
+  font-family: 4em;
+
+
+}
