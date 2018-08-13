@@ -1,10 +1,14 @@
 {
   "name": "myapp",
   "version": "0.0.0",
-  "private": true,
+  "engines": {
+    "node": "8.11.3"
+  },
+  "private": false,
   "scripts": {
     "start": "nodemon index"
   },
+ 
   "dependencies": {
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
