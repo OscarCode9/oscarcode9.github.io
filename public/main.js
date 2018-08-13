@@ -108,11 +108,15 @@ function subscribe() {
 
 $(document).ready(() => {
 
+  $('#encryptFileInput').val('')
+  $('#dencryptFileInput').val('')
+  
+
   const darkThema = 'DARK';
   const lightThema = 'LIGHT';
 
-  const themaType =JSON.parse(localStorage.getItem('theme')); 
-  if(!(themaType === null)){
+  const themaType = JSON.parse(localStorage.getItem('theme'));
+  if (!(themaType === null)) {
     switch (themaType.type) {
       case darkThema:
         changeTemaDark();
@@ -123,11 +127,11 @@ $(document).ready(() => {
       default:
         break;
     }
-  }else{
+  } else {
     changeTemaLight();
 
   }
-  
+
 
 
 
@@ -143,7 +147,7 @@ $(document).ready(() => {
   });
 
   $('#changeThemalight').click(e => {
-  
+
     const themaObject = {
       'type': 'LIGHT'
     };
@@ -181,6 +185,115 @@ $(document).ready(() => {
     $('#changeThemalight').hide();
 
   }
+
+  //encryptData functionality
+
+  $('.btnencryptSendFile').click(async e => {
+    e.preventDefault();
+    const formEncrypt = $('#encryptFile')[0]; // You need to use standard javascript object here
+
+
+    const form = new FormData(formEncrypt);
+
+
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "/api/updateFile",
+      "method": "POST",
+      "headers": {
+        "Cache-Control": "no-cache",
+        "Postman-Token": "a7602c0e-4d1f-41f2-bece-da578abfabe3"
+      },
+      "processData": false,
+      "contentType": false,
+      "mimeType": "multipart/form-data",
+      "data": form
+    }
+
+    $.ajax(settings).done(function (response) {
+
+      console.log(response);
+
+      const result =JSON.parse(response);
+      console.log(result);
+      const fileName = result.fileName;
+      window.location.href = '/api/download/'+ fileName;
+      
+
+    }).fail(error=> {
+      const result =JSON.parse(error.responseText);
+      $('#encryptFileError').text(result.message);
+      $('#encryptFileError').css({
+        color: "red"
+      });
+    });
+    
+
+
+
+  });
+
+  $('#sendFileDencrypt').click(async e => {
+    e.preventDefault();
+    const formEncrypt = $('#dencryptFile')[0]; // You need to use standard javascript object here
+
+
+    const form = new FormData(formEncrypt);
+
+
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "/api/decryptFile",
+      "method": "POST",
+      "headers": {
+        "Cache-Control": "no-cache",
+        "Postman-Token": "a7602c0e-4d1f-41f2-bece-da578abfabe3"
+      },
+      "processData": false,
+      "contentType": false,
+      "mimeType": "multipart/form-data",
+      "data": form
+    }
+
+    $.ajax(settings).done(function (response) {
+
+      console.log(response);
+
+      const result =JSON.parse(response);
+      console.log(result);
+
+      const fileName = result.fileName;
+      window.location.href = '/api/download/'+ fileName;
+      
+
+    }).fail(error=> {
+      const result =JSON.parse(error.responseText);
+      $('#dencryptFileError').text(result.message);
+      $('#dencryptFileError').css({
+        color: "red"
+      });
+    });
+
+  })
+
+  $('#inputEncryptFile').change(function() {
+    let filename = $('#inputEncryptFile').val();
+    filename = ilename = filename.substring(12);
+
+    $('.btnencrypt').text(filename);
+  });
+
+  $('#inputDencryptFile').change(function() {
+
+    let filename = $('#inputDencryptFile').val();
+    filename = ilename = filename.substring(12);
+
+    $('.btndencrypt').text(filename);
+  });
+
+  
 
 });
 

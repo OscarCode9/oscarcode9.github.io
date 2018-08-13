@@ -227,3 +227,155 @@ img.ReactJSEXAMPLE {
 
 
 }
+
+#encryptImg {
+  width: 100%;
+  height: auto;
+
+}
+
+#encryptFileInput::-webkit-input-placeholder {
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#encryptFileInput:-moz-placeholder {
+  /* FF 4-18 */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#encryptFileInput::-moz-placeholder {
+  /* FF 19+ */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#encryptFileInput:-ms-input-placeholder {
+  /* IE 10+ */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#encryptFileInput::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#encryptFileInput::placeholder {
+  /* modern browser */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#dencryptFileInput::-webkit-input-placeholder {
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#dencryptFileInput:-moz-placeholder {
+  /* FF 4-18 */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#dencryptFileInput::-moz-placeholder {
+  /* FF 19+ */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#dencryptFileInput:-ms-input-placeholder {
+  /* IE 10+ */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#dencryptFileInput::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+#dencryptFileInput::placeholder {
+  /* modern browser */
+  color: rgb(0, 0, 0);
+  opacity: .6;
+}
+
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  float: right;
+  cursor: pointer;
+}
+
+.btnencrypt {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+
+#sendFileDencrypt {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.btndencrypt {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+
+}
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+button#sendFile {
+  float: left;
+}
+
+.btnencryptSendFile {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 600px) {
+  button#sendFile {
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .upload-btn-wrapper {
+    float: left;
+   
+  }
+}
+
+

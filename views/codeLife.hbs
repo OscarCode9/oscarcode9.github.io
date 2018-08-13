@@ -1,8 +1,112 @@
 <br>
 <div class="container">
+
+  <div class="row">
+    <h1>Encriptar y desencriptar archivo con base a una contraseña. </h1>
+
+    <p class="flow-text">
+
+      En esta ocasión estoy experimentando con los módulos de node dedicados a la seguridad informática, así como al manejo de
+      archivos dentro del servidor, es decir eliminar, crear, etc.
+
+    </p>
+
+    <p class="flow-text">
+      Un día atrás publique esta foto en mis redes sociales, una clase para encriptar archivos en nodejs, pero era mera teoría.
+    </p>
+
+    <div class="row center">
+      <div class="col l12">
+        <img id="encryptImg" src="/images/encrypt.png">
+
+      </div>
+    </div>
+
+    <p class="flow-text">
+      Entonces hoy se me ocurrió crear un servicio tipo REST para encriptar datos desde un interfaz gráfica y hacer uso de esta
+      clase que había hecho días anteriores, entonces comencé a trabajar en el código y salio esto. No me he tardado más
+      que unas cuantas horas para la implementación, acá puedes ver el código en mí repositorio de GitHub:
+      <a target="_blank" class="flow-text" href="https://github.com/OscarCode9/oscarcode9.github.io">oscarcode9.github.io</a>.
+    </p>
+
+    <div class="row">
+
+      <h5>Encriptar archivo</h5>
+      <form id="encryptFile" enctype="multipart/form-data">
+
+        <div class="row center">
+          <div class="col l6" style="margin-left: 30%;">
+            <input id="encryptFileInput" placeholder="Escribe una contraseña para encriptar tu archivo" type="password" name="passwordFile">
+          </div>
+        </div>
+
+        <div class="row center">
+
+          <div class="col l6 s12">
+            <div class="upload-btn-wrapper">
+              <button class="btnencrypt">Subir archivo</button>
+              <input id="inputEncryptFile" type="file" name="img" />
+            </div>
+          </div>
+
+          <div class="col l6 s12">
+            <div class="upload-btn-wrapper" style=" float: left;">
+              <button class="btnencryptSendFile">Encriptar archivo</button>
+            </div>
+          </div>
+          <span id="encryptFileError"></span>
+        </div>
+      </form>
+
+      <h5>Desencriptar archivo</h5>
+      <form id="dencryptFile" enctype="multipart/form-data">
+        <div class="row center">
+          <div class="col l6" style="margin-left: 30%;">
+            <input id="dencryptFileInput" placeholder="Escribe la contraseña para desencriptar archivo" type="password" name="passwordFile">
+          </div>
+        </div>
+
+        <div class="row center">
+
+          <div class="col l6 s12">
+            <div class="upload-btn-wrapper">
+              <button class="btndencrypt">Subir archivo</button>
+              <input id="inputDencryptFile" type="file" name="img" />
+            </div>
+          </div>
+
+          <div class="col l6 s12">
+            <div class="upload-btn-wrapper" style=" float: left;">
+              <button id="sendFileDencrypt">Desencriptar archivo</button>
+            </div>
+          </div>
+          <span id="dencryptFileError"></span>
+        </div>
+
+      </form>
+
+    </div>
+
+    <p class="flow-text">
+
+      En ocasiones tenemos archivos importantes que no queremos que nadie más los vea, o dentro de un servidor es importante que
+      la información del usuario esté segura para que en caso de un hackeo nadie pueda ver los archivos del usuario, en ambos
+      casos la herramienta que desarrolle es muy útil, encripta archivos con base a una contraseña, si queremos desencriptar
+      el archivo debemos de conocer la contraseña con la que fue encriptado de lo contrario jamás podremos desencriptar,
+      de estar forma nuestro archivo está bien protegido.
+
+    </p>
+
+
+  </div>
+
+
+
+
+
   <div class="row">
     <h1>Pokédex con Reacjs y redux</h1>
-    <img width="100%"  src="/img/poke/poke1.jpg" alt="">
+    <img width="100%" src="/img/poke/poke1.jpg" alt="">
 
     <p class="flow-text">En esta ocasion estoy experimentando con un tecnología de facebook llamada React, me agrada mucho porque te hace la vida
       más sencilla al manipular el DOM, React no usa el DOM del navegador, sino tiene su propio DOM virtual lo que hace a
@@ -19,18 +123,22 @@
 
     </p>
     <p class="flow-text">
-      <i class="fa fa-github" aria-hidden="true"><a  href="https://github.com/OscarCode9/ReactJS-ejemplos" >Aqui el repo</a> </i>
-      <i class="fa fa-globe" aria-hidden="true"><a  href="https://pokemonreactjs.herokuapp.com/" >Sitio web </a> </i>
-    
+      <i class="fa fa-github" aria-hidden="true">
+        <a href="https://github.com/OscarCode9/ReactJS-ejemplos">Aqui el repo</a>
+      </i>
+      <i class="fa fa-globe" aria-hidden="true">
+        <a href="https://pokemonreactjs.herokuapp.com/">Sitio web </a>
+      </i>
+
     </p>
 
     <h3>Eliminar un pokemon</h3>
-    
 
-    <img  src="/img/poke/poke2.jpg" alt="">
+
+    <img src="/img/poke/poke2.jpg" alt="">
 
     <h3>Boton de favorito</h3>
-    <img width="100%"  src="/img/poke/poke3.jpg" alt="">
+    <img width="100%" src="/img/poke/poke3.jpg" alt="">
 
 
 
@@ -39,8 +147,3 @@
   </div>
 
 </div>
-
-
-
-
-
