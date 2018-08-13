@@ -10,6 +10,14 @@ const fs = require('fs');
 
 const getAllEmail = require('../controles/getEmail');
 
+router.get('/testing', (req, res,next) => {
+  
+  res.status(200).send({
+    name: 'Oscar',
+    message: 'This is a test'
+  });
+});
+
 router.delete('/deleteEmailById/:id', async (req, res, next) => {
   const id = req.params.id;
   console.log(id);
