@@ -9,6 +9,7 @@ const EncryptFile = require('../service/encrypt');
 const fs = require('fs');
 
 const getAllEmail = require('../controles/getEmail');
+const sendEmailService = require('../controles/sendEmail');
 
 router.get('/testing', (req, res,next) => {
   
@@ -16,7 +17,9 @@ router.get('/testing', (req, res,next) => {
     name: 'Oscar',
     message: 'This is a test'
   });
-});
+})
+
+router.post('/sendEmailService', sendEmailService);
 
 router.delete('/deleteEmailById/:id', async (req, res, next) => {
   const id = req.params.id;
