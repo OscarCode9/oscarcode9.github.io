@@ -10,23 +10,25 @@ function sendEmail(req, res, next) {
   const email = req.fields.email;
   const emailTo = req.fields.emailTo;
 
-
+  nodemailer.createTestAccount((err, account) => {
+    // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
+      ervice: 'gmail',
       host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.EMAIL, // generated ethereal user
         pass: process.env.PASSWORDEMAIL // generated ethereal password
       }
     });
 
+
     // setup email data with unicode symbols
+    console.log(`"${name} 👻" <${email}>`)
     let mailOptions = {
       from: `"${name} 👻" <${email}>`, // sender address
       to: `${emailTo}`, // list of receivers
       subject: `${subject}`, // Subject line
-      text: `${message}`, // plain text body
+      text: `${name} 👻" <${email}: ${message}`, // plain text body
 
     };
 
@@ -40,13 +42,18 @@ function sendEmail(req, res, next) {
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
       res.send({
-        message: 'El mensaje ha sido enviado' 
+        message: 'El mensaje ha sido enviado'
       })
 
       // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
       // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
     });
- 
+  });
+
+
+
+
+
 
 }
 
