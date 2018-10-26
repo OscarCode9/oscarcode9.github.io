@@ -26,20 +26,26 @@ function sendEmail(req, res, next) {
       from: `"${name} 👻" <${email}>`, // sender address
       to: `${emailTo}`, // list of receivers
       subject: `${subject}`, // Subject line
-      text: `${message}`, // plain text body
+      text: `Enviado por: ${email}: ${message}`, // plain text body
 
     };
+
+    console.log(mailOptions);
 
     // send mail with defined transport object
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        return console.log(error);
+        res.status(400).send({
+          erro: true,
+          message: 'El mensaje no se ha enviado'
+        })
       }
       console.log('Message sent: %s', info.messageId);
       // Preview only available when sending through an Ethereal account
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
-      res.send({
+      res.status(200).send({
+        error: false,
         message: 'El mensaje ha sido enviado' 
       })
 
