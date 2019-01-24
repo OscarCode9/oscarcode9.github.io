@@ -1,6 +1,6 @@
 nav#navegador {
   color: #fff;
-  background-color: #000000;
+  background-color:  rgb(173, 239, 230, 0);
   width: 100%;
   height: 66px;
   line-height: 56px;
@@ -9,6 +9,12 @@ nav#navegador {
 .navegador{
   z-index: 10000;
   position: fixed;
+}
+
+.opacity {
+  z-index: 10000;
+  position: fixed;
+  background-color: rgb(173, 239, 230, 0);
 }
 
 #codeID{
@@ -375,6 +381,45 @@ button#sendFile {
   .upload-btn-wrapper {
     float: left;
    
+  }
+}
+
+@font-face {
+	font-family: Roboto;
+	src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.woff2")
+			format("woff2"),
+		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.woff")
+			format("woff"),
+		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.ttf")
+			format("ttf");
+	font-weight: 400;
+	font-style: normal;
+}
+
+#reg_ai{
+  display: table;
+  width: 100%;
+  height: 500px;
+  color: white;
+  background-color: black;
+}
+h1{
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	color:  white;
+}
+/* ================================= *
+ * AI Styling
+ ==================================== */
+ .typewriter:after {
+  border-right: 0.15em solid #7561ff;
+  animation: caret_typewriter 1s steps(1) infinite;
+  content: "";
+}
+@keyframes caret_typewriter {
+  50% {
+    border-color: transparent;
   }
 }
 

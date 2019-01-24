@@ -115,11 +115,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script>
     $(document).ready(function () {
+      var nav = $('#navegador');
+      nav.removeClass('navegador');
+      nav.addClass('opacity');
+      nav.css("background-color", 'rgb(173, 239, 230, 0)');
       $(".button-collapse").sideNav();
+      const typing = $('#reg_ai')
+      const blueColor = '#0089ec'
+      typing.css("background-color", blueColor);
+
       $(window).scroll(function (event) {
         var nav = $('#navegador');
 
-        var color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+        var color = 'black'
+       
 
         var scroll = $(window).scrollTop();
 
@@ -127,10 +136,16 @@
 
           nav.addClass('navegador');
           nav.css("background-color", color);
+          nav.removeClass('opacity');
+          typing.css("background-color", 'black')
+          
 
         } else {
-
+          
+          typing.css("background-color", blueColor);
           nav.removeClass('navegador');
+          nav.addClass('opacity');
+          nav.css("background-color", 'rgb(173, 239, 230, 0)');
         }
 
 
@@ -182,7 +197,7 @@
 <style>
   * {
     background: black,
-    color: white
+      color: white
   }
 </style>
 

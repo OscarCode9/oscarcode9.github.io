@@ -1,6 +1,5 @@
-<img width="100%" src="https://res.cloudinary.com/dqkikety1/image/upload/q_100/v1524891138/Oscar.jpg">
-
-
+<div id="reg_ai">
+	</div>
 
 
 
@@ -112,14 +111,15 @@
     <div id="cardtext" class="card">
       <div class="card-image darkTema">
         <a href="/restfull">
-          <img id="encrypto1" src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/5b168acf9b9797456c35d48a63921470.jpg">
+          <img id="encrypto1" src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1548315200/infographic-3.png">
         </a>
 
       </div>
       <div class="card-content darkTema">
-        <p>Connstruir un software es todo un arte y es tan parecido a construir un edificio, hay mejores creaciones que otras,
-          algunas creaciones simplemente son impresionantes y complejas, otras simplemente se derrumban al tocarlas, en el
-          software es exactamente lo mismo....
+        <p> Construir un software es todo un arte y es tan parecido a mantener un jardín, hay mejores jardines que otros, algunas creaciones
+        simplemente son impresionantes, complejas y super bonitas, otros simplemente mueren al cabo de unas semanas, marchitan
+        al cabo del tiempo, en el software es exactamente lo mismo, existen diferentes arquitecturas, patrones de diseño,
+        metodologías y buenas prácticas para conseguir esas estructuras bonitas y robustas que tanto apreciamos y nos gustan....
         </p>
         <hr id="barra">
 
@@ -276,5 +276,74 @@
         })
     })
   });
+
+  (function($) {
+	var aiMsg = ["Bienvenido a mi blog.", "I love coding 😍", "Oscar code n.n/"];
+var i = 0;
+	$(document).ready(function() {
+		var inputAI = $("#reg_ai");
+		
+		aiMSGLoop(aiMsg);
+		function aiMSGLoop(wordArray) {
+			// store new element so AI knows where to write
+			var newElement = $("<h1></h1>").appendTo(inputAI);
+			if(i < aiMsg.length){
+			//my type writer uses object function so no need to code 
+			//long function every time
+			newElement.writeText(wordArray[i]).then(function() {
+				setTimeout(function(){ 
+					newElement
+					.removeText(wordArray[i])
+					.then(function() {
+						i++;
+					aiMSGLoop(wordArray);
+						
+				});
+					 }, 2500);
+			});
+		}else{
+			i=0;
+			aiMSGLoop(wordArray);
+		}
+			
+		}
+	});
+	//AI Text typer
+	$.fn.writeText = function(content) {
+		var elem = this;
+		elem.addClass("typewriter");
+		return new Promise(function(resolve, reject) {
+			var contentArray = content.split(""),
+				current = 0;
+			var rand = 90;
+			setInterval(function() {
+				rand = Math.round(Math.random() * (300 + 1050));
+				if (current < contentArray.length) {
+					elem.text(elem.text() + contentArray[current++]);
+				} else {
+					resolve();
+				}
+			}, rand);
+		});
+	};
+	//AI Text Typer backspace
+	$.fn.removeText = function(content) {
+		var elem = this;
+		return new Promise(function(resolve, reject) {
+			var contentArray = content.split("");
+			var current = 0;
+			setInterval(function() {
+				if (current < contentArray.length) {
+					elem.text(elem.text().slice(0, -1));
+					current++;
+				} else {
+					elem.remove();
+					resolve();
+				}
+			}, 70);
+		});
+	};
+})(jQuery);
+
 
 </script>
