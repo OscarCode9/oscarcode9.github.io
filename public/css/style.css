@@ -423,4 +423,17 @@ h1{
   }
 }
 
+.imgKoa {
+  width: 100%;
+  height: auto;
+}
+
+
+.titlePost {
+      background-color: black;
+    position: fixed;
+    top: 15px;
+    z-index: 99999;
+    transition: '1s'
+}
 

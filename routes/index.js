@@ -248,6 +248,10 @@ router.get('/workers', function (req, res, next) {
 	res.render('webWorkers');
 });
 
+router.get('/KoaElastic', function(req,res,next){
+	res.render('KoaElastic');
+})
+
 
 
 

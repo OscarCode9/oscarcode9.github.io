@@ -74,7 +74,7 @@
   </nav>
 
 
-  <ul id="slide-out" class="side-nav">
+  <ul  style="z-index: 999999" id="slide-out" class="side-nav">
 
     <li>
       <a href="/">Inicio</a>
@@ -116,6 +116,8 @@
   <script>
     $(document).ready(function () {
       var nav = $('#navegador');
+      const title = $('#titlePost');
+
       nav.removeClass('navegador');
       nav.addClass('opacity');
       nav.css("background-color", 'rgb(173, 239, 230, 0)');
@@ -123,6 +125,7 @@
       const typing = $('#reg_ai')
       const blueColor = '#0089ec'
       typing.css("background-color", blueColor);
+      title.removeClass('titlePost')
 
       $(window).scroll(function (event) {
         var nav = $('#navegador');
@@ -137,11 +140,12 @@
           nav.addClass('navegador');
           nav.css("background-color", color);
           nav.removeClass('opacity');
-          typing.css("background-color", 'black')
+          typing.css("background-color", 'black');
+          title.addClass('titlePost')
           
 
         } else {
-          
+          title.removeClass('titlePost')
           typing.css("background-color", blueColor);
           nav.removeClass('navegador');
           nav.addClass('opacity');
