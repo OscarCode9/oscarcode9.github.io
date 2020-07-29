@@ -1,12 +1,12 @@
 nav#navegador {
   color: #fff;
-  background-color:  rgb(173, 239, 230, 0);
+  background-color: rgb(173, 239, 230, 0);
   width: 100%;
   height: 66px;
   line-height: 56px;
-  transition:.5s;
+  transition: 0.5s;
 }
-.navegador{
+.navegador {
   z-index: 10000;
   position: fixed;
 }
@@ -17,32 +17,33 @@ nav#navegador {
   background-color: rgb(173, 239, 230, 0);
 }
 
-#codeID{
-    font-size: 1em; 
-
+#codeID {
+  font-size: 1em;
 }
-#numLikes:hover{
-
+#numLikes:hover {
   cursor: pointer;
 }
-.container.correo{
+.container.correo {
   width: 100%;
 }
 
 nav#navegador :hover {
   color: #039be5;
-  transition: .3s;
+  transition: 0.3s;
   background-color: rgb(0, 20, 26);
 }
-.card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating):hover {
+.card
+  .card-action
+  a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating):hover {
   color: #000000;
 }
-.card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating) {
-  color: #00C7FF;
-
+.card
+  .card-action
+  a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating) {
+  color: #00c7ff;
 }
-hr#barra{
-  color: #00C7FF;
+hr#barra {
+  color: #00c7ff;
   size: 1em;
 }
 
@@ -128,21 +129,21 @@ hr#barra{
   color: #000;
 }
 /* label focus color */
-.input-field input[type=text]:focus + label {
+.input-field input[type="text"]:focus + label {
   color: #000;
 }
 /* label underline focus color */
-.input-field input[type=text]:focus {
+.input-field input[type="text"]:focus {
   border-bottom: 1px solid #000;
   box-shadow: 0 1px 0 0 #000;
 }
 /* valid color */
-.input-field input[type=text].valid {
+.input-field input[type="text"].valid {
   border-bottom: 1px solid #000;
   box-shadow: 0 1px 0 0 #000;
 }
 /* invalid color */
-.input-field input[type=text].invalid {
+.input-field input[type="text"].invalid {
   border-bottom: 1px solid #000;
   box-shadow: 0 1px 0 0 #000;
 }
@@ -154,38 +155,37 @@ hr#barra{
 #blogID {
   position: relative;
   overflow: hidden;
-  height: 350px; }
-  
-#comment {
-    padding: 24px;
-    border-radius: 0 0 2px 2px;
-    background-color: black;
-    color: #f8f8f2;
+  height: 350px;
+}
 
+#comment {
+  padding: 24px;
+  border-radius: 0 0 2px 2px;
+  background-color: black;
+  color: #f8f8f2;
 }
 #black-text {
   color: #fff !important;
 }
-#textarea1{
+#textarea1 {
   color: #fff !important;
 }
-.tecnologiaUsada{
+.tecnologiaUsada {
   width: 100%;
   height: auto;
   padding: 10px;
 }
-.node{
+.node {
   width: 180px;
   height: 80px;
   padding: 10px;
   top: 50%;
-
 }
-.icma{
+.icma {
   padding: 20px;
-  -webkit-box-shadow: 6px 7px 13px 3px rgba(0,0,0,0.75);
-  -moz-box-shadow: 6px 7px 13px 3px rgba(0,0,0,0.75);
-  box-shadow: 6px 7px 13px 3px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 6px 7px 13px 3px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 6px 7px 13px 3px rgba(0, 0, 0, 0.75);
+  box-shadow: 6px 7px 13px 3px rgba(0, 0, 0, 0.75);
 }
 a img#encrypto1 {
   height: auto;
@@ -204,110 +204,101 @@ img.ReactJSEXAMPLE {
   float: right;
 }
 
- 
-
 .itemEmail {
   border: 1px solid rgb(65, 195, 255);
   padding: 20px;
 }
 
-.logoPartsBase { 
+.logoPartsBase {
   padding: 10px;
   display: inline;
 }
 
-
 .card .card-image .imgPoryects {
-  width: auto;  
+  width: auto;
   height: 476px;
   margin-right: auto;
   margin-left: auto;
 }
 
-
 .welcome {
-
-
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-family: 4em;
-
-
 }
 
 #encryptImg {
   width: 100%;
   height: auto;
-
 }
 
 #encryptFileInput::-webkit-input-placeholder {
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #encryptFileInput:-moz-placeholder {
   /* FF 4-18 */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #encryptFileInput::-moz-placeholder {
   /* FF 19+ */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #encryptFileInput:-ms-input-placeholder {
   /* IE 10+ */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #encryptFileInput::-ms-input-placeholder {
   /* Microsoft Edge */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #encryptFileInput::placeholder {
   /* modern browser */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #dencryptFileInput::-webkit-input-placeholder {
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #dencryptFileInput:-moz-placeholder {
   /* FF 4-18 */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #dencryptFileInput::-moz-placeholder {
   /* FF 19+ */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #dencryptFileInput:-ms-input-placeholder {
   /* IE 10+ */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #dencryptFileInput::-ms-input-placeholder {
   /* Microsoft Edge */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #dencryptFileInput::placeholder {
   /* modern browser */
   color: rgb(0, 0, 0);
-  opacity: .6;
+  opacity: 0.6;
 }
 
 .upload-btn-wrapper {
@@ -328,7 +319,6 @@ img.ReactJSEXAMPLE {
   font-weight: bold;
 }
 
-
 #sendFileDencrypt {
   border: 2px solid gray;
   color: gray;
@@ -347,10 +337,9 @@ img.ReactJSEXAMPLE {
   border-radius: 8px;
   font-size: 20px;
   font-weight: bold;
-
 }
 
-.upload-btn-wrapper input[type=file] {
+.upload-btn-wrapper input[type="file"] {
   font-size: 100px;
   position: absolute;
   left: 0;
@@ -380,39 +369,38 @@ button#sendFile {
   }
   .upload-btn-wrapper {
     float: left;
-   
   }
 }
 
 @font-face {
-	font-family: Roboto;
-	src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.woff2")
-			format("woff2"),
-		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.woff")
-			format("woff"),
-		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.ttf")
-			format("ttf");
-	font-weight: 400;
-	font-style: normal;
+  font-family: Roboto;
+  src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.woff2")
+      format("woff2"),
+    url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.woff")
+      format("woff"),
+    url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/565097/Roboto-Regular.ttf")
+      format("ttf");
+  font-weight: 400;
+  font-style: normal;
 }
 
-#reg_ai{
+#reg_ai {
   display: table;
   width: 100%;
   height: 500px;
   color: white;
   background-color: black;
 }
-h1{
-	display: table-cell;
-	vertical-align: middle;
-	text-align: center;
-	color:  white;
+h1 {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  color: white;
 }
 /* ================================= *
  * AI Styling
  ==================================== */
- .typewriter:after {
+.typewriter:after {
   border-right: 0.15em solid #7561ff;
   animation: caret_typewriter 1s steps(1) infinite;
   content: "";
@@ -428,12 +416,121 @@ h1{
   height: auto;
 }
 
-
 .titlePost {
-      background-color: black;
-    position: fixed;
-    top: 15px;
-    z-index: 99999;
-    transition: '1s'
+  background-color: black;
+  position: fixed;
+  top: 15px;
+  z-index: 99999;
+  transition: "1s";
 }
 
+.styleExperience {
+  font-size: 1.5em;
+}
+
+.styleExperience li,
+.titleExpe {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.iconExpe {
+  width: 50%;
+}
+
+.textExpe {
+  padding-right: 10px;
+  display: inline;
+}
+
+#html5 {
+  width: 5%;
+}
+
+#server {
+  width: 5%;
+  margin-left: 10px;
+}
+
+#nodejs {
+  width: 50%;
+}
+
+#mongodb {
+  width: 20%;
+}
+
+#express {
+  width: 50%;
+}
+
+#html5Text {
+  display: inline;
+}
+
+#serverText {
+  padding-right: 10px;
+  display: inline;
+}
+#interfazText {
+  padding-right: 10px;
+}
+
+#elasticSearch {
+  width: 20%;
+}
+
+#net {
+  width: 20%;
+}
+
+#spring { 
+  width: 65%;
+}
+
+#kafka {
+  width: 50%;
+}
+
+#apache {
+  width: 50%;
+}
+
+#mule {
+  width: 50%;
+}
+
+#interfaz {
+  width: 6%;
+  margin-left: 10px;
+}
+
+#interfazText {
+  padding-left: 10px;
+}
+
+#redux {
+  width: 38%;
+}
+
+#material {
+  width: 15%;
+}
+
+#cloud {
+  width: 8%;
+  margin-left: 10px;
+}
+
+#docker {
+  padding-bottom: 8px;
+}
+#devops {
+  width: 8%;
+  margin-left: 10px;
+}
+
+#swarm {
+  width: 23%;
+}

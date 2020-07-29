@@ -14,6 +14,7 @@ const util = require('util');
 
 
 
+console.log( process.env.VAPID_SUBJECT)
 
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT;
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
@@ -252,7 +253,9 @@ router.get('/KoaElastic', function(req,res,next){
 	res.render('KoaElastic');
 })
 
-
+router.get('/microservices', (req, res, next) => {
+	res.render('blog/microservices');
+})
 
 
 module.exports = router;

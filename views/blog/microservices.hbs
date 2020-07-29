@@ -1,0 +1,1378 @@
+<div class="parallax-container">
+  <div class="parallax">
+    <img src="/images/blog/microservices.jpg">
+  </div>
+</div>
+
+
+<div class="container">
+
+  <h1 id="titlePost" class="titleMicro" style="background-color: black">Creando microservicios con Nodejs y Spring boot
+    para consulta de
+    cryptomonedas (Avanzado) </h1>
+
+  <p class="flow-text">
+    Esta tarde estuve pensando en una idea para conectar tres microservicios utilizando dos lenguajes de programación
+    diferentes, es decir, java y javascript con sus respectivos frameworks, nodejs y spring boot. </p>
+
+  <p class="flow-text">
+
+    Para ello considere
+    que seria sencillo consumir la APIS públicas de precios de criptomonedas de la API de Bitso, donde el servicio A
+    representa la consulta de precio de BTC, el servicio B la consulta de precio de ETH y un tercero que representará el
+    gateway pasa consumir el servicio A y B y arrojar una sola respuesta con el payload de A y B. Para cumplir
+    con las reglas y definición de microservicios y darle un toque especial los vamos a dokerizar con docker para
+    hacer un escalado sencillo y puédamos desplegar en cualquier lugar automatizando el proceso de despliegue.
+  </p>
+
+
+
+
+
+
+
+  <p class="flow-text">
+    Aquí les dejo un pequeño diagrama que representa mejor la idea entre la interacción de servicios.
+  </p>
+
+  <p class="flow-text">
+    No me quiero enfocar mucho en la definición de microservicios, para ello les puedo dejar el siguiente <a
+      href="https://medium.com/hashmapinc/the-what-why-and-how-of-a-microservices-architecture-4179579423a9">link</a>
+    para que puedan revisar los conceptos o ventajas por ustedes mismos, así como profundizar más en el tema.
+  </p>
+
+
+
+
+  <img class="center centerMicro" src="/images/blog/crypto.png" alt="crypto">
+
+    <div id="containerMicro">
+
+    <p class="flow-text">Índice</p>
+
+
+
+    <ol class="flow-text">
+      <li> <a href="#node">
+          <p class="flow-text"> Contruyendo servicio A con Nodejs. </p>
+        </a>
+      </li>
+
+      <li> <a href="#DockerizandoNode">
+          <p class="flow-text"> Dockerizando una nodejs app. </p>
+        </a>
+      </li>
+
+      <li> <a href="#ImageNode">
+          <p class="flow-text">Construyendo imagen node-web-app. </p>
+        </a>
+      </li>
+
+      <li> <a href="#ServiceA">
+          <p class="flow-text"> Construyendo contendor service A </p>
+        </a>
+      </li>
+
+      <li> <a href="#Compose">
+          <p class="flow-text">Automatizar contendor con docker-compose</p>
+        </a>
+      </li>
+
+      <li> <a href="#Spring">
+          <p class="flow-text"> Creando servicio B con spring boot.</p>
+        </a>
+      </li>
+
+      <li> <a href="#jar">
+          <p class="flow-text">Generando .jar para dockerizar.</p>
+        </a>
+      </li>
+
+      <li> <a href="#dockerSpring">
+          <p class="flow-text"> Dockerizando spring boot app.</p>
+        </a>
+      </li>
+      <li> <a href="#dockerSpringImage">
+          <p class="flow-text"> Construyendo imagen spring-web-app.</p>
+        </a>
+      </li>
+
+      <li> <a href="#dockerSpringImage">
+          <p class="flow-text"> Construyendo contendor spring boot.</p>
+        </a>
+      </li>
+
+      <li> <a href="#conteSpring">
+          <p class="flow-text"> Construyendo contendor spring boot. </p>
+        </a>
+      </li>
+
+      <li> <a href="#gateway">
+          <p class="flow-text"> Creando gateway </p>
+        </a>
+      </li>
+
+      <li> <a href="#gatewayDocker">
+          <p class="flow-text"> Dockerizando gateway </p>
+        </a>
+      </li>
+
+
+      <li> <a href="#scale">
+          <p class="flow-text">Escalando servicios con docker-compose. </p>
+        </a>
+      </li>
+
+
+
+    </ol>
+  </div>
+
+  <a name="node">
+    <h3> Contruyendo servicio A con Nodejs. </h3>
+  </a>
+
+  <p class="flow-text">
+    Para construir nuestro servicio A necesitamos express, un framework muy famoso que nos ayudará y nos facilitará la
+    vida al construir REST APIS así como definir rutas para nuestro servicio. Para ello necesitamos agregar las
+    siguientes librerías a nuestro proyecto de nodejs, deje un comentario en cada una y explicar para qué funciona
+    cada una.
+  </p>
+
+  <pre><code class="language-json">
+  
+"devDependencies": {
+    "nodemon": "^1.18.3" //Recargar sin apagar el server cada que haya un cambio
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3", //Parser del cuerpo de una petición 
+    "colors": "^1.4.0", // Darle color a conosle.log
+    "express": "^4.16.3", //Framework para crear APIS
+    "node-fetch": "^2.6.0" // Librería para consumir por HTTP
+  }
+
+
+</code></pre>
+
+
+  <p class="flow-text">Bien, una vez que agregamos nuestras librerías pasamos a instalar con el comando npm install para
+    así poder comenzar con nuestro archivo de configuración.
+  </p>
+
+  <p class="flow-text">Vamos a crear un archivo llamado index.js, que será nuestro archivo principal donde
+    configuraremos express y nuestras rutas en routes archivo btc, donde vamos a hacer la petición a la API de bitso.
+  </p>
+  <p class="flow-text">https://api.bitso.com/v3/</p>
+  <p class="flow-text"> Voy a explicar las lineas más importantes </p>
+
+  <pre><code class="language-javascript">
+  
+
+    const express = require('express') 
+    const bodyParser = require('body-parser')
+
+    const PORT = 3000 //puerto donde corre el server
+
+    const app = express()
+
+
+    const adminRoutes = require('./routes/btc') //Importamos nuestro ruta donde hacemos la llamada a la API de bitso
+
+    app.use(bodyParser.urlencoded({ extended: false }))
+
+    app.use('/api/v1', adminRoutes)  //Ruta por la que vamos a acceder a nuestro servicio
+
+
+    app.listen(PORT, () => {
+        console.log('Service is running ' +  PORT)
+    }) //Correr nuestro server en el puerto que indicamos en la variable PORT
+
+
+    // ---> routes/btc
+
+    
+    const express = require('express')
+    const fetch = require('node-fetch') 
+    const router = express.Router();
+    const colors = require('colors');
+
+
+    router.get('/btc', async (req, res, next) => {
+
+        const urlBtcInfo = 'https://api.bitso.com/v3/ticker/?book=btc_mxn' //Url de la API de bitso para consulta de precio de btc
+
+        try {
+
+            const request = await fetch(urlBtcInfo) //Request hacia la ruta de bitso
+            const result = await request.json() // Convertir en formato json la respuesta de nuestro request
+            
+            console.log('BTC last: ', result.payload.last.rainbow) 
+            res.status(200).send(result) //Mandar al cliente los resultados 
+            
+        } catch (error) {
+
+            res.status(400).send(error) // En caso de haya fallado mandar un 400 y la info de error
+        }
+
+    })
+
+
+    module.exports = router
+
+
+</code></pre>
+
+  <p class="flow-text">
+    Y básicamente es todo lo que hace nuestros servicio A, va a la API de bitso, para traer la información del precio de
+    BTC y lo manda al cliente quien hace el request. La estructura de folder es la siguiente.
+
+  </p>
+
+  <pre><code class="language-javascript">
+│─routes
+│ └────btc.js
+└─index.js
+  </code></pre>
+
+  <p class="flow-text">
+    Vamos a hacer un test con postman para ver que todo funciona correctamente.
+  </p>
+
+  <img class="center" src="/images/blog/testPostman.png" alt="testPostman">
+
+  <p class="flow-text">
+    Efectivamente como podemos observar, la respuesta es la esperada. Por ahora que hemos testeado podemos pasar al
+    siguiente paso, que es la dockerización.
+  </p>
+
+
+  <a name="DockerizandoNode">
+    <h3> Dockerizando una nodejs app. </h3>
+  </a>
+
+
+  <p class="flow-text">
+    Hay un articulo muy bueno publicado por el sitio oficial de nodejs para llevar el siguiente proceso, aquí se los voy
+    a dejar por si gustan revisarlo. <a href="https://nodejs.org/de/docs/guides/nodejs-docker-webapp/">Articulo aquí.
+    </a>
+
+  </p>
+
+  <p class="flow-text">
+    Ahora voy a explicar a grandes rasgos los pasos que tenemos que seguir para poder crear nuestro contendor de docker.
+
+  </p>
+
+  <ol>
+    <li>
+      <p class="flow-text">Escribir comandos para crear imagen.</p>
+    </li>
+    <li>
+      <p class="flow-text">Crear imagen de docker.</p>
+    </li>
+    <li>
+      <p class="flow-text">Crear nuestro contendor.</p>
+    </li>
+    <li>
+      <p class="flow-text">Automatizar nuestro contendor con docker-compose para desplegar con un solo comando. </p>
+    </li>
+  </ol>
+
+  <p class="flow-text">
+    Como primer paso vamos a crear un archivo llamado Dockerfile , el Dockerfile nos ayuda a definir los componentes que
+    necesita nuestra app en nodejs para que pueda correr dentro del contenedor Docker, desde dependencias de sistema,
+    archivos, variables de entorno, etc, vamos poner el archivo en la raíz de nuestro proyecto. Donde escribiremos el
+    siguiente script, en cada línea voy a dejar un comentario explicando para qué funciona.
+
+  </p>
+
+
+  <pre><code class="language-bash">
+#Imagen de nodejs base con versión 12
+FROM node:13 
+
+
+# Crear directorio de la app
+WORKDIR /usr/src/app
+
+
+#Copiar e instalar dependencias de la app
+
+COPY package*.json ./
+RUN npm install
+
+
+
+# Copiar codigo  de tu app, a la imagen
+COPY . .
+
+EXPOSE 8080
+
+#Correr comando para ejecutar el server
+CMD [ "node", "index.js" ]
+
+  </code></pre>
+
+  <p class="flow-text">
+    Después en la misma ruta vamos a crear un archivo llamado .dockerignore para que Docker sepa que ciertas carpetas no
+    serán copiadas a nuestra imagen para que sean ignoradas por Docker, vamos a escribir lo siguiente dentro del
+    archivo.
+  </p>
+
+  <pre><code class="language-bash">
+node_modules 
+npm-debug.log
+yarn-error.log
+
+  </code></pre>
+
+  <a name="ImageNode">
+    <h3> Construyendo imagen node-web-app </h3>
+  </a>
+
+
+  <p class="flow-text">
+    Para construir nuestra imagen utilizamos el siguiente comando.
+
+  </p>
+
+
+  <pre><code class="language-bash">
+  
+docker build -t yourUsername>/node-web-app .
+
+  </code></pre>
+
+
+  <p class="flow-text">
+    La bandera -t, representa el tag que le vamos a dar a nuestra imagen para identificarla después.
+
+  </p>
+
+
+  <p class="flow-text"> Vamos a correr el comando y tenemos que visualizar la siguiente info. </p>
+
+  <pre><code class="language-bash">
+
+docker build -t oscarcode/node-web-app .
+
+Sending build context to Docker daemon  82.43kB
+Step 1/7 : FROM node:13
+ ---> 2b9604a36e49
+Step 2/7 : WORKDIR /usr/src/app
+ ---> Using cache
+ ---> f0dbbcb695db
+Step 3/7 : COPY package*.json ./
+ ---> Using cache
+ ---> b0199c07ff32
+Step 4/7 : RUN npm install
+ ---> Using cache
+ ---> 6eef3937ed26
+Step 5/7 : COPY . .
+ ---> 6f98a2734147
+Step 6/7 : EXPOSE 3000
+ ---> Running in 1f593bcc90f7
+Removing intermediate container 1f593bcc90f7
+ ---> e474ed8cf5e0
+Step 7/7 : CMD [ "node", "index.js" ]
+ ---> Running in d4da1f1973ad
+Removing intermediate container d4da1f1973ad
+ ---> 99108c0ba307
+Successfully built 99108c0ba307
+Successfully tagged oscarcode/node-web-app:latest
+
+
+  </code></pre>
+
+<p class="flow-text">
+  Haremos una copia de nuestro archivo Dockerfile y la vamos a llamar Dockerfile.dev, archivo que vamos a utilizar en el documento de configuración de docker compose para construir nuestra imagen desde ahí.
+</p>
+
+
+  <p class="flow-text">
+    Para ver que se haya creado nuestra imagen tenemos que correr el siguiente comando para visualizar las imagenes que
+    tenemos en docker.
+
+  </p>
+
+
+  <pre><code class="language-bash">
+docker image ls
+
+REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+oscarcode/node-web-app   latest              e426a890da01        34 seconds ago      955MB
+node                     13                  2b9604a36e49        2 months ago        943MB
+  </code></pre>
+
+  <p class="flow-text">
+    Podemos observar que nuestra imagen ha sido creada con el tag que le nombramos.
+
+  </p>
+
+  <a name="ServiceA">
+    <h3>
+      Construyendo contendor service A
+    </h3>
+  </a>
+
+
+  <p class="flow-text">
+    Construir el contendor es una tarea sencilla, primero vamos a montarlo con un comando y después con docker-compose.
+
+  </p>
+
+  <p class="flow-text">
+    Para hacerlo con comando, escribimos lo siguiente.
+
+  </p>
+
+  <pre><code class="language-bash">
+
+  docker run -p 3000:3000 -d oscarcode/node-web-app
+  </code></pre>
+
+
+
+  <p class="flow-text">
+    el flag -p representa el puerto donde va a correr nuestra app en el contenedor y el puerto de nuestro sistema host
+    por
+    donde podremos acceder al contenedor. El flag -d indicamos que corra el contendor el segundo plano y que no nos
+    muestre
+    ningún log.
+  </p>
+
+  <p class="flow-text">
+    Ahora vamos a testear nuestro contenedor, para verificar que realmente está corriendo aplicamos el siguiente
+    comando.
+
+  </p>
+
+  <pre><code class="language-bash">
+
+  docker ps
+
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                    NAMES
+e5863c8e8659        oscarcode/node-web-app   "docker-entrypoint.s…"   3 seconds ago       Up 2 seconds        0.0.0.0:3000->3000/tcp   confident_jang
+
+
+  </code></pre>
+
+
+  <p class="flow-text">
+    Como podemos observar nuestro contenedor está corriendo en el puerto 3000, así que todo bien por ahora. Podemos
+    volver
+    a utilizar postman realizar el request para verificar que realmente está corriendo y funcionando.
+  </p>
+
+  <a name="compose">
+    <h3>
+      Automatizar contendor con docker-compose.
+    </h3>
+  </a>
+
+  <p class="flow-text">
+    “Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file
+    to
+    configure your application's services. Then, with a single command, you create and start all the services from your
+    configuration”.
+  </p>
+
+  <p class="flow-text">
+    Como se menciona en la definición de arriba compose nos ayuda a definir varios contenedores para correr al mismo
+    tiempo con un solo comando, nos ayuda a definir las imágenes que vamos a utilizar, los volúmenes, puertos, variables
+    de entorno, etc, etc, dentro de un archivo de configuración yaml.
+
+  </p>
+
+  <p class="flow-text">
+    A continuación vamos a escribir la siguiente configuración dentro de un archivo llamado docker-compose.yml para
+    levantar nuestro contendor con la imagen que habíamos creado anteriormente. El archivo está fuera de la carpeta de
+    nuestro servicio A. Yo he dejado la siguiente estructura de carpetas, donde cada folder representa un servicio.
+  </p>
+
+  <img class="center " src="images/blog/folders.png" alt="folders">
+
+
+  <p class="flow-text">Configuración para levantar nuestro servicios. </p>
+
+  <pre><code class="language-bash">
+   
+version: '3'
+
+services: #Definimos los servicios
+  btc-service: #Nombre de servicio
+    build: #Build de imagen de servicio
+      context: ./btcService #Ubicación
+      dockerfile: Dockerfile.dev #Nombre de archivo de construcción de imagen
+    volumes: #Volumenes
+      - ./btcService:/usr/src/app
+      - /usr/src/app/node_modules 
+
+  </code></pre>
+
+  <p class="flow-text">
+    Con el siguiente comando levantamos nuestro servicios y construimos nuestra imagen.
+
+  </p>
+
+
+  <pre><code class="language-bash">
+  docker-compose up --build
+</code></pre>
+
+
+  <p class="flow-text">
+    Ahora nuestro servicio está corriendo y debemos de ver la siguiente salida.
+
+  </p>
+
+
+  <pre><code class="language-bash">
+Creating microservicecrypto_btc-service_1     ... done
+btc-service_1      | Service is running 3000
+</code></pre>
+
+  <a name="Spring">
+    <h3>
+      Creando servicio B con spring boot.
+
+    </h3>
+  </a>
+
+
+  <p class="flow-text">
+    Como se ha mencionado en el principio del post y como hemos observado en el diagrama de nuestra arquitectura, el
+    funcionamiento del servicio B es ir a la API pública de bitso para consultar el precio de un Ether y después
+    regresar
+    el dato a el cliente que haga la petición a el servicio B.
+
+  </p>
+
+
+  <p class="flow-text">
+    Para cumplir con la función de nuestro servicio B vamos a utilizar spring boot, un framework que nos facilita las
+    cosas al construir servicios con java, es muy sencillo de utilizar y fácil de correr sin tantas configuraciones.
+
+    Voy a inicializar el proyecto con el generador web.
+  </p>
+
+
+  <p class="flow-text">
+    Vamos a inicializar el proyecto con el generador web.
+
+  </p>
+
+
+  <img class="center centerMicro" src="/images/blog/spring.png" alt="spring">
+
+
+
+  <p class="flow-text">Agregamos la dependencia de web, que realmente es la única que vamos a utilizar
+  </p>
+
+  <p class="flow-text">
+    Utilizaremos IntelliJ IDEA como nuestro entorno de desarrollo, donde vamos agregar el siguiente controlador a
+    nuestro proyecto, se explica en cada línea que es lo que hace.
+
+  </p>
+
+  <pre><code class="language-java">
+
+      package com.service.eth.ETH.service.controllers;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+@RestController
+@RequestMapping(value =  "/api/v1") //Definir ruta
+public class btcController {
+
+    @GetMapping(value= "/eth", produces = MediaType.APPLICATION_JSON_VALUE) //Tipo de metodo http, ruta y salida de  metodo http 
+    @ResponseBody
+    String getETH(){
+        final String uri = "https://api.bitso.com/v3/ticker/?book=eth_mxn"; //Ruta de la API de bitso
+
+        RestTemplate restTemplate = new RestTemplate(); 
+        String result = restTemplate.getForObject(uri, String.class); //Request y resultados 
+
+        System.out.println(result);
+        return result;  //Regresamos resultados con salida json
+    } 
+
+}
+
+
+</code></pre>
+
+  <p class="flow-text">
+    Y es todo lo que hace nuestro servicio en spring boot realmente, algo bastante sencillo como hemos observado en el
+    código de arriba.
+  </p>
+
+
+  <a name="Jar">
+    <h3>
+      Generando .jar para dockerizar
+    </h3>
+  </a>
+
+
+  <p class="flow-text">
+    En java una vez que terminamos de desarrollar tenemos que empaquetar nuestra app en un archivo .jar, este archivo
+    nos permite ejecutar nuestro desarrollo dentro de la máquina virtual de java, archivo que vamos a utilizar para
+    crear una imagen de docker.
+  </p>
+
+  <p class="flow-text">
+    Para generar nuestro archivo jar, abrimos el panel de maven, nos vamos lifecycle y le damos doble click en install y
+    automáticamente se va a correr el script que genera nuestro archivo jar.
+  </p>
+
+
+  <img class="center" src="/images/blog/maven.png" alt="spring">
+
+
+  <p class="flow-text">El script nos va a generar un archivo en la siguiente ruta. Este archivo es el que vamos a
+    utilizar para generar nuestra imagen de docker.
+  </p>
+
+
+  <img class="center" src="/images/blog/ruta.png" alt="spring">
+
+
+
+
+
+  <a name="dockerSpring">
+    <h3>
+      Dockerizando spring boot app
+    </h3>
+  </a>
+
+
+  <p class="flow-text">
+    El proceso para dockerizar nuestro servicio B es más sencillo que el de nodejs, ya que aquí (servio B) hemos hecho
+    el
+    proceso de instalación de dependencia en el empaquetado de nuestra app con el archivo .jar y sigue los mismos cuatro
+    pasos que el proceso de nodejs, así que lo primero que vamos a hacer, es crear nuestro archivo Dockerfile para
+    generar
+    nuestra imagen de docker con una aplicacion spring. Voy a dejar en cada linea un comentario y entender mejor para
+    que
+    funciona.
+  </p>
+
+
+  <pre><code class="language-bash">
+
+  FROM openjdk:11 #Imagen base, openjdk versión 11
+
+  COPY target/ETH-service-0.0.1-SNAPSHOT.jar /app/ETH-service-0.0.1-SNAPSHOT.jar #Copiamos el archivo a un a ruta de nuestra imagen
+
+  CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/ETH-service-0.0.1-SNAPSHOT.jar"] #Ejecutamos nuestro archivo jar
+
+</code></pre>
+
+
+  <p class="flow-text">
+
+    Haremos una copia de nuestro archivo Dockerfile y la vamos a llamar Dockerfile.dev, archivo que vamos a
+    utilizar
+    en el documento de configuración de docker compose para construir nuestra imagen desde ahí.
+
+  </p>
+
+  <a name="dockerSpringImage">
+    <h3>Construyendo imagen spring-web-app </h3>
+  </a>
+
+  <p class="flow-text">
+    Para construir nuestra imagen utilizamos el mismo comando que utilizamos para node ya que es el mismo proceso para
+    cualquier tipo de app.
+  </p>
+
+
+  <pre><code class="language-bash">
+  
+docker build -t yourUsername/spring-web-app .
+
+  </code></pre>
+
+  <p class="flow-text">
+    Como salida la terminal nos muestra la siguiente líneas, de cada paso para las construcción de nuestra imagen.
+
+  </p>
+
+  <pre><code class="language-bash">
+
+Sending build context to Docker daemon  16.76MB
+
+Step 1/3 : FROM openjdk:11
+ ---> 2f8bb350d21f
+Step 2/3 : COPY target/ETH-service-0.0.1-SNAPSHOT.jar /app/ETH-service-0.0.1-SNAPSHOT.jar
+ ---> 566cb23e59f9
+Step 3/3 : CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/ETH-service-0.0.1-SNAPSHOT.jar"]
+ ---> Running in c11358509452
+Removing intermediate container c11358509452
+ ---> ebc92136e862
+Successfully built ebc92136e862
+Successfully tagged oscarcode/spring-web-app:latest
+SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. All files and directories added to build context will have '-rwxr-xr-x' permissions. It is recommended to double check and reset permissions for sensitive files and directories.
+
+
+  </code></pre>
+
+  <p class="flow-text">
+    Podemos verificar que la imagen se haya creado con el siguiente comando.
+  </p>
+
+  <pre><code class="language-bash">
+
+docker image ls
+
+REPOSITORY                           TAG                 IMAGE ID            CREATED             SIZE
+oscarcode/spring-web-app             latest              ebc92136e862        4 minutes ago       644MB
+oscarcode/node-web-app               latest              e426a890da01        4 days ago          955MB
+openjdk                              11                  2f8bb350d21f        6 days ago          627MB
+node                                 13                  2b9604a36e49        2 months ago        943MB
+
+</code></pre>
+
+  <p class="flow-text">
+    Podemos observar que nuestra imagen ha sido creada con el tag oscarcode/spring-web-app.
+  </p>
+
+
+  <a name="conteSpring">
+    <h3>
+      Construyendo nuestro contendor spring boot
+    </h3>
+  </a>
+
+
+  <pre><code class="language-bash">
+  docker run -p 8080:8080 -d oscarcode/spring-web-app
+
+</code></pre>
+
+
+  <p class="flow-text">
+    Para verificar que nuestro contendor está corriendo necesitamos el id que se generó automáticamente
+    para
+    poder ver los logs y saber lo que está pasando dentro de nuestro contenedor.
+
+  </p>
+
+
+  <pre><code class="language-bash">
+  docker ps
+
+#salida
+CONTAINER ID        IMAGE                      COMMAND                  CREATED             STATUS              PORTS                    NAMES
+3c56b9805fee        oscarcode/spring-web-app   "java -Djava.securit…"   8 seconds ago       Up 7 seconds        0.0.0.0:8080->8080/tcp   quirky_wiles
+
+#Ver logs 
+docker container  logs 3c56b9805fee
+
+# Salida
+ .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.3.1.RELEASE)
+
+2020-07-29 01:06:47.419  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : Starting EthServiceApplication v0.0.1-SNAPSHOT on 3c56b9805fee with PID 1 (/app/ETH-service-0.0.1-SNAPSHOT.jar started by root in /)
+2020-07-29 01:06:47.422  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : No active profile set, falling back to default profiles: default
+2020-07-29 01:06:48.695  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-07-29 01:06:48.709  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-07-29 01:06:48.710  INFO 1 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.36]
+2020-07-29 01:06:48.796  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-07-29 01:06:48.796  INFO 1 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1309 ms
+2020-07-29 01:06:49.031  INFO 1 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-07-29 01:06:49.274  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-07-29 01:06:49.292  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : Started EthServiceApplication in 2.827 seconds (JVM running for 4.119)
+
+
+
+</code></pre>
+
+
+
+  <p class="flow-text">
+    Observamos que efectivamente nuestro contendor está corriendo en el puerto 8080, podemo utilizar postman para
+    verificar que todo esté funcionando correctamente apuntando a la ruta que definimos en el servicio B, es decir,
+    http://localhost:8080/api/v1/eth
+  </p>
+
+  <pre><code class="language-bash">
+    
+version: '3'
+
+services:
+  btc-service:
+    build:
+      context: ./btcService
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./btcService:/usr/src/app
+      - /usr/src/app/node_modules 
+
+  eth-service: #Nombre del nuevo servicio
+    build:
+      context: ./ethService/ETH-service #Ubicación de nuestro archivo Dockerfile
+      dockerfile: Dockerfile.dev #Nombre de nuestro Dockerfile
+    volumes: 
+      - ./ethService/ETH-service:/usr/src/app #Volumen de nuestra app
+
+
+</code></pre>
+
+  <p class="flow-text">
+    Vamos a levantar nuestros servicios con el siguiente comando y nos mostrará la siguiente salida.
+  </p>
+
+
+  <pre><code class="language-bash">
+    
+version: '3'
+
+services:
+  btc-service:
+    build:
+      context: ./btcService
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./btcService:/usr/src/app
+      - /usr/src/app/node_modules 
+
+  eth-service: #Nombre del nuevo servicio
+    build:
+      context: ./ethService/ETH-service #Ubicación de nuestro archivo Dockerfile
+      dockerfile: Dockerfile.dev #Nombre de nuestro Dockerfile
+    volumes: 
+      - ./ethService/ETH-service:/usr/src/app #Volumen de nuestra app
+</code></pre>
+  <p class="flow-text">
+
+    Observamos que no estamos agregando puertos de salida, ya que no es necesario, porque el único puerto de salida será
+    el gateway quién es el único servicio que será visible desde el exterior, si se busca hacer un request al servicio A
+    o
+    B desde el exterior no se podra ya que solo son visibles dentro de la red de docker.
+
+  </p>
+
+  <p class="flow-text">
+    Vamos a levantar nuestros servicios con el siguiente comando y nos mostrará la siguiente salida.
+
+  </p>
+
+
+
+  <pre><code class="language-bash">
+
+docker-compose up --build
+
+#Salida de comando 
+
+Building btc-service
+Step 1/7 : FROM node:13
+ ---> 2b9604a36e49
+Step 2/7 : WORKDIR /usr/src/app
+ ---> Using cache
+ ---> 34196043f12e
+Step 3/7 : COPY package*.json ./
+ ---> Using cache
+ ---> 407e83cf95be
+Step 4/7 : RUN npm install
+ ---> Using cache
+ ---> 1066eddbf6e5
+Step 5/7 : COPY . .
+ ---> Using cache
+ ---> 3e110699a95d
+Step 6/7 : EXPOSE 3000
+ ---> Using cache
+ ---> 73dc38307136
+Step 7/7 : CMD [ "node", "index.js" ]
+ ---> Using cache
+ ---> 8f0004ccffad
+Successfully built 8f0004ccffad
+Successfully tagged microservicecrypto_btc-service:latest
+Building eth-service
+Step 1/3 : FROM openjdk:11
+ ---> 2f8bb350d21f
+Step 2/3 : COPY target/ETH-service-0.0.1-SNAPSHOT.jar /app/ETH-service-0.0.1-SNAPSHOT.jar
+ ---> 973cf20efd90
+Step 3/3 : CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/ETH-service-0.0.1-SNAPSHOT.jar"]
+ ---> Running in 2931db035262
+Removing intermediate container 2931db035262
+ ---> b893fc19116d
+Successfully built b893fc19116d
+Successfully tagged microservicecrypto_eth-service:latest
+
+Starting microservicecrypto_btc-service_1       ... done
+Recreating microservicecrypto_eth-service_1     ... done
+
+Attaching to microservicecrypto_btc-service_1, microservicecrypto_eth-service_1, microservicecrypto_gateway-service_1
+btc-service_1      | Service is running 3000
+
+eth-service_1      | 
+eth-service_1      |   .   ____          _            __ _ _
+eth-service_1      |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+eth-service_1      | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+eth-service_1      |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+eth-service_1      |   '  |____| .__|_| |_|_| |_\__, | / / / /
+eth-service_1      |  =========|_|==============|___/=/_/_/_/
+eth-service_1      |  :: Spring Boot ::        (v2.3.1.RELEASE)
+eth-service_1      |
+eth-service_1      | 2020-07-29 04:43:09.757  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : Starting EthServiceApplication v0.0.1-SNAPSHOT on 4d6029518aab with PID 1 (/app/ETH-service-0.0.1-SNAPSHOT.jar started by root in /)
+eth-service_1      | 2020-07-29 04:43:09.760  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : No active profile set, falling back to default profiles: default
+eth-service_1      | 2020-07-29 04:43:10.917  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+eth-service_1      | 2020-07-29 04:43:10.939  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+eth-service_1      | 2020-07-29 04:43:10.939  INFO 1 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.36]
+eth-service_1      | 2020-07-29 04:43:11.049  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+eth-service_1      | 2020-07-29 04:43:11.049  INFO 1 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1234 ms
+eth-service_1      | 2020-07-29 04:43:11.350  INFO 1 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+eth-service_1      | 2020-07-29 04:43:11.557  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+eth-service_1      | 2020-07-29 04:43:11.576  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : Started EthServiceApplication in 2.643 seconds (JVM running for 3.265)
+eth-service_1      | 2020-07-29 04:43:12.621  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+eth-service_1      | 2020-07-29 04:43:12.621  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+eth-service_1      | 2020-07-29 04:43:12.629  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 8 ms
+
+</code></pre>
+
+
+  <p class="flow-text">
+    Por el momento al parecer todo ha salido bien, los dos servicios han sido construidos y levantados exitosamente.
+  </p>
+
+
+  <a name="gateway">
+    <h3>
+      Creando gateway
+    </h3>
+  </a>
+
+
+
+  <p class="flow-text">
+    Para crear nuestro gateway vamos a utilizar express, exactamente la misma estructura que el servicio A, pero a
+    diferencia que
+    ahora no apuntaremos el request a la API de bitso, sino a nuestros dos servicios A y B con dos request diferentes,
+    unos para la
+    consulta de BTC y el otro para ETH, y corriendo en el puerto 3001, vamos a utilizar Promise.all, el método
+    Promise.all(iterable) devuelve una
+    promesa
+    que termina correctamente cuando todas las promesas en el argumento iterable han sido concluidas con éxito, o bien
+    rechaza la petición con el motivo pasado por la primera promesa que es rechazada.
+
+  </p>
+
+
+  <p class="flow-text">
+    Aquí les dejo el código explicado paso a paso.
+  </p>
+
+  <pre><code class="language-javascript">
+
+const express = require("express") //Framework express
+const fetch = require("node-fetch") //Librería para hacer peteciones tipo http  
+const router = express.Router()
+const colors = require("colors") //Escribir en consola con colores
+
+router.get("/getPriceBtcAndEth", async (req, res, next) => { //Nombre de la ruta por donde se accede al servicio
+
+
+  //Primer request al service A
+
+  async function loader1() {
+    const requestBtc = await fetch("http://btc-service:3000/api/v1/btc") //El nombre de dominio de nuestro servicio es el mismo que definimos en docker-compose.yml
+    const resultBtc = await requestBtc.json()
+    return resultBtc
+
+  }
+
+  //Segundo request al service B
+
+  async function loader2() {
+    const requestEth = await fetch("http://eth-service:8080/api/v1/eth")
+    const resultEth = await requestEth.json()
+    return resultEth
+  }
+
+
+
+  try {
+
+    //Llamamos las dos funciones de nuestros servicios 
+
+    const result = await Promise.all([loader1(), loader2()])
+
+    //Regresamos la respuesta 
+    res.status(200).send({
+      results: result
+    })
+
+  } catch (error) {
+
+    //En caso de que haya error regresamos el error
+    res.status(400).send({
+      error,
+    })
+
+  }
+
+
+
+
+})
+
+module.exports = router
+
+
+</code></pre>
+
+  <p class="flow-text">Ahora vamos a Dockerizar nuestro gateway una vez que tenemos el llamado a los dos servicios.
+  </p>
+
+
+  <a name="gatewayDocker">
+    <h3>
+
+      Dockerizando gateway
+
+    </h3>
+  </a>
+
+
+  <p class="flow-text">
+    Dockerizando nuestro gateway, el proceso para dockerizar es exactamente el mismo que el servicio A, mismas
+    instrucciones en el Dockerfile.dev, así que me voy a pasar a la
+    parte de docker-compose explicando cada línea.
+  </p>
+
+
+  <pre><code class="language-bash">
+    
+version: '3'
+
+services:
+  btc-service:
+    build:
+      context: ./btcService
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./btcService:/usr/src/app
+      - /usr/src/app/node_modules 
+  eth-service:
+    build:
+      context: ./ethService/ETH-service
+      dockerfile: Dockerfile.dev
+    volumes: 
+      - ./ethService/ETH-service:/usr/src/app
+  gateway-service:  #Nombre de servicio 
+    build:
+      context: ./gatewayService #Ubicación de Dockerfile
+      dockerfile: Dockerfile.dev #Nombre de Dockerfile
+    volumes:
+      - ./gatewayService:/usr/src/app #Volumenes
+      - /usr/src/app/node_modules 
+    ports: #Puerto por donde accederemos desde el exterior 
+      - 3001:3001
+</code></pre>
+  <p class="flow-text">
+    Una vez que tengamos nuestros tres servicios definidos en el archivo de configuración docker-compose-yml vamos a
+    levantar todo con el siguiente comando y tenemos que ver la siguiente salida.
+
+  </p>
+
+  <pre><code class="language-bash">
+
+docker-compose up --build
+
+#Salida de comando 
+
+Building btc-service
+Step 1/7 : FROM node:13
+ ---> 2b9604a36e49
+Step 2/7 : WORKDIR /usr/src/app
+ ---> Using cache
+ ---> 34196043f12e
+Step 3/7 : COPY package*.json ./
+ ---> Using cache
+ ---> 407e83cf95be
+Step 4/7 : RUN npm install
+ ---> Using cache
+ ---> 1066eddbf6e5
+Step 5/7 : COPY . .
+ ---> Using cache
+ ---> 3e110699a95d
+Step 6/7 : EXPOSE 3000
+ ---> Using cache
+ ---> 73dc38307136
+Step 7/7 : CMD [ "node", "index.js" ]
+ ---> Using cache
+ ---> 8f0004ccffad
+Successfully built 8f0004ccffad
+Successfully tagged microservicecrypto_btc-service:latest
+Building eth-service
+Step 1/3 : FROM openjdk:11
+ ---> 2f8bb350d21f
+Step 2/3 : COPY target/ETH-service-0.0.1-SNAPSHOT.jar /app/ETH-service-0.0.1-SNAPSHOT.jar
+ ---> Using cache
+ ---> 973cf20efd90
+Step 3/3 : CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/ETH-service-0.0.1-SNAPSHOT.jar"]
+ ---> Using cache
+ ---> b893fc19116d
+Successfully built b893fc19116d
+Successfully tagged microservicecrypto_eth-service:latest
+Building gateway-service
+Step 1/7 : FROM node:13
+ ---> 2b9604a36e49
+Step 2/7 : WORKDIR /usr/src/app
+ ---> Using cache
+ ---> 34196043f12e
+Step 3/7 : COPY package*.json ./
+ ---> Using cache
+ ---> f3d1d561fe7a
+Step 4/7 : RUN npm install
+ ---> Using cache
+ ---> b44d14f48f06
+Step 5/7 : COPY . .
+ ---> Using cache
+ ---> 0f315bab1feb
+Step 6/7 : EXPOSE 3001
+ ---> Using cache
+ ---> 439ce83dcf97
+Step 7/7 : CMD [ "node", "index.js" ]
+ ---> Using cache
+ ---> f561e0b2aa40
+Successfully built f561e0b2aa40
+Successfully tagged microservicecrypto_gateway-service:latest
+Creating microservicecrypto_eth-service_1     ... done
+Creating microservicecrypto_btc-service_1     ... done
+Creating microservicecrypto_gateway-service_1 ... done
+Attaching to microservicecrypto_eth-service_1, microservicecrypto_gateway-service_1, microservicecrypto_btc-service_1
+gateway-service_1  | Service  gateway is running 3001
+btc-service_1      | Service is running 3000
+eth-service_1      | 
+eth-service_1      |   .   ____          _            __ _ _
+eth-service_1      |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+eth-service_1      | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+eth-service_1      |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+eth-service_1      |   '  |____| .__|_| |_|_| |_\__, | / / / /
+eth-service_1      |  =========|_|==============|___/=/_/_/_/
+eth-service_1      |  :: Spring Boot ::        (v2.3.1.RELEASE)
+eth-service_1      |
+eth-service_1      | 2020-07-29 05:37:01.384  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : Starting EthServiceApplication v0.0.1-SNAPSHOT on 0b5769dee38b with PID 1 (/app/ETH-service-0.0.1-SNAPSHOT.jar started by root in /)
+eth-service_1      | 2020-07-29 05:37:01.387  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : No active profile set, falling back to default profiles: default
+eth-service_1      | 2020-07-29 05:37:02.526  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+eth-service_1      | 2020-07-29 05:37:02.539  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+eth-service_1      | 2020-07-29 05:37:02.539  INFO 1 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.36]
+eth-service_1      | 2020-07-29 05:37:02.605  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+eth-service_1      | 2020-07-29 05:37:02.605  INFO 1 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1121 ms
+eth-service_1      | 2020-07-29 05:37:02.796  INFO 1 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+eth-service_1      | 2020-07-29 05:37:02.981  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+eth-service_1      | 2020-07-29 05:37:03.003  INFO 1 --- [           main] c.s.e.ETH.service.EthServiceApplication  : Started EthServiceApplication in 2.769 seconds (JVM running for 3.59)
+
+
+</code></pre>
+
+  <p class="flow-text">
+    Al parecer todo está funcionando correctamente, así que vamos a testear con postmen, vamos a hacer un request hacia
+    la siguiente ruta, que es donde se está ejecutando nuestro gateway.
+
+    http://localhost:3001/api/v1/getPriceBtcAndEth
+
+  </p>
+
+  <img class="center" src="/images/blog/finaltest.png">
+
+  <p class="flow-text">
+    Efectivamente como podemos observar, la respuesta es la esperada.
+  </p>
+
+
+  <a name="scale">
+    <h3>
+      Escalando servicios con docker-compose.
+
+    </h3>
+  </a>
+
+
+  <p class="flow-text">
+    Siempre hay una gran necesidad de escalar nuestra aplicación de acuerdo a la demanda que tenga, puede haber
+    ocasiones donde nuestro servicio tenga millones de peticiones al mismo tiempo y para balancear la carga lo más
+    conveniente es escalar nuestro servicios, es decir, tener muchas instancias de nuestros contendores para distribuir
+    la carga y el trabajo se reparta entre todas las instancias para mejor la respuesta, docker nos permite hacer esto
+    de forma sencilla, vamos escalar de tal forma que vamos a tener 10 instancias de los servicios a y b, finalmente
+    nuestro gateway como se muestra en el siguiente diagrama.
+
+  </p>
+
+
+  <img class="center centerMicro" src="/images/blog/cryptov2.png" alt="crypto">
+
+  <p class="flow-text">
+    Cada servicio definido en el docker-compose puede escalar usando el siguiente comando.
+
+  </p>
+
+  <pre><code class="language-bash">
+    docker-compose scale “service name” = “no of instances”
+
+</code></pre>
+
+  <p class="flow-text">Ejemplo, escalar servicio A, abrimos terminal y escribimos </p>
+
+
+  <pre><code class="language-bash">
+
+
+docker-compose scale btc-service=10
+
+WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
+Starting microservicecrypto_btc-service_1 ... done
+Creating microservicecrypto_btc-service_2  ... done
+Creating microservicecrypto_btc-service_3  ... done
+Creating microservicecrypto_btc-service_4  ... done
+Creating microservicecrypto_btc-service_5  ... done
+Creating microservicecrypto_btc-service_6  ... done
+Creating microservicecrypto_btc-service_7  ... done
+Creating microservicecrypto_btc-service_8  ... done
+Creating microservicecrypto_btc-service_9  ... done
+Creating microservicecrypto_btc-service_10 ... done
+
+
+</code></pre>
+
+  <p class="flow-text">Ejemplo, escalar servicio b, abrimos terminal y escribimos </p>
+
+
+  <pre><code class="language-bash">
+
+docker-compose scale eth-service=10
+
+WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
+Starting microservicecrypto_eth-service_1 ... done
+Creating microservicecrypto_eth-service_2  ... done
+Creating microservicecrypto_eth-service_3  ... done
+Creating microservicecrypto_eth-service_4  ... done
+Creating microservicecrypto_eth-service_5  ... done
+Creating microservicecrypto_eth-service_6  ... done
+Creating microservicecrypto_eth-service_7  ... done
+Creating microservicecrypto_eth-service_8  ... done
+Creating microservicecrypto_eth-service_9  ... done
+Creating microservicecrypto_eth-service_10 ... done
+
+</code></pre>
+
+  <p class="flow-text">
+    Y finalmente así es como escalamos nuestros servicios, ahora vamos a probar mandando múltiples request con el runner
+    de postman, guardamos la petición en una colección de postman y mandamos 100 resquest para hacer el test y comprobar
+    que llegue a diferentes servicios.
+  </p>
+
+  <img class="center" src="/images/blog/testServices.png" alt="crypto">
+
+  <img class="center" src="/images/blog/testServicesV2.png" alt="crypto">
+
+  <p class="flow-text">
+    En nuestra terminar tenemos que ver los logs de cada servicio.
+  </p>
+
+  <img class="center" src="/images/blog/testServicesV3.png" alt="crypto">
+
+  <p class="flow-text">
+    y así comprobamos que efectivamente los request se distribuyen entre las instancias de nuestro servicios
+
+  </p>
+
+
+  <h3>
+    Para terminar.
+  </h3>
+
+  <p class="flow-text">
+    Es posible utilizar diferentes lenguajes de programación para construir una aplicación, las ventajas de utilizar la
+    arquitectura de microservicios es que no está gobernada por un solo lenguaje, sino todo lo contrario, el lenguaje de
+    programación es indiferente mientras realice la tarea requerida del servicio, la arquitectura de microservicios nos
+    permite trabajar con múltiples lenguajes y comunicar a través de protocolos de comunicación, como en el caso de hoy
+    que fue http, pero algo interesante es que también podemos utilizar brokers de mensajería asíncrona.
+
+    Para terminar quiero mencionar que utilizar docker-compose para manejar servicios es una tarea muy sencilla, incluso
+    podemos distribuir entre una red de computadoras con orquestadores como docker-swarm.
+
+
+  </p>
+
+
+  <div id="disqus_thread"></div>
+
+</div>
+
+<style>
+  .centerMicro {
+    width: 100%;
+  }
+
+  .parallax-container {
+    height: 350px;
+  }
+
+  .imgExample {
+    width: 60%;
+  }
+
+  .titleMicro {
+    font-size: 44px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .titleMicro {
+      font-size: 24px;
+    }
+
+    .imgExample {
+      width: 100%;
+    }
+  }
+
+  #containerMicro {
+    padding: 40px;
+    border: 1px solid;
+    border-radius: 25px;
+    background-color: rgb(236 236 236 / 70%);
+    width: 50%;
+  }
+</style>
+
+<script>
+
+  /**
+  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+  /*
+  var disqus_config = function () {
+  this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+  };
+  */
+  (function () { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://oscarcode.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+<script>
+  $(document).ready(function () {
+    $('.parallax').parallax();
+  });
+</script>

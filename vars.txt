@@ -1,0 +1,29 @@
+
+SET AUTH_SECRET=OscarCode919970418
+ 
+SET DATABASE_URL=mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff
+ 
+SET HOST_DB=ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com
+ 
+SET JAWSDB_URL=mysql://j8zdtysyz41uv9iq:yniktu2ff31goblf@ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/wcrk58io9f4zgrff
+ 
+SET KEY=AKIAJYECBEDNP4ENJSUA
+ 
+SET MONGODB_URI=mongodb://heroku_5lc6f430:slo26g4vhd9cghh6bukp7hu53h@ds115701.mlab.com:15701/heroku_5lc6f430
+ 
+SET NAME_DB=wcrk58io9f4zgrff
+ 
+SET PASSWORD_DB=yniktu2ff31goblf
+ 
+SET SECRET=dxC6HqW0ACch5J4u4zdEpuZktZfAqQwhNEg1FhEj
+ 
+SET SECRET_TOKEN=62225f3e95c1ed7bd423474edc77f093c466
+ 
+SET USER_DB=j8zdtysyz41uv9iq
+ 
+SET VAPID_PRIVATE_KEY=8XQ-Jt216hxynGnllpDkgONNmqV3g5JIDNzD6XaNaJ0
+ 
+SET VAPID_PUBLIC_KEY=BJAEj9QSBucrXrDb3JifjP0xEasvR5oP4Z73ukVGPVI8HftBinJRXMakAC6c4kgoe-4LIBwL_WrN7_S86UiqlX8
+ 
+SET VAPID_SUBJECT=http://oscarcode.herokuapp.com/
+ 
