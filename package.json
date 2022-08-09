@@ -1,7 +1,6 @@
 {
   "name": "myapp",
   "version": "0.0.0",
- 
   "private": false,
   "scripts": {
     "start": "nodemon index"
