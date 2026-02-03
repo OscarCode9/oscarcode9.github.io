@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Primer Algoritmo de Encriptado | OscarCode</title>
+  <meta name="description" content="Creé mi propio algoritmo de encriptación basado en números primos y código ASCII. Aquí explico cómo funciona.">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <link rel="icon" href="public/icon.png" type="image/png">
+
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --primary: #00d4ff;
+      --accent: #7c3aed;
+      --success: #10b981;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: rgba(255, 255, 255, 0.1);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    nav {
+      background: rgba(10, 10, 15, 0.95) !important;
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .brand-logo {
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--primary) !important;
+      margin-left: 20px;
+    }
+
+    nav ul li a { color: var(--text-secondary) !important; font-weight: 500; }
+    nav ul li a:hover { color: var(--primary) !important; background: transparent !important; }
+
+    .hero-post {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('public/images/encrypto1.png');
+      background-size: cover;
+      background-position: center;
+      padding-top: 64px;
+      text-align: center;
+    }
+
+    .hero-post h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+
+    .hero-post .meta {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-post .meta i { margin-right: 8px; }
+
+    .content-section {
+      padding: 60px 0;
+      background: var(--bg-dark);
+    }
+
+    .content-section .container {
+      max-width: 800px;
+    }
+
+    .flow-text {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+
+    .flow-text a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .flow-text a:hover {
+      text-decoration: underline;
+    }
+
+    h2, h3 {
+      color: var(--text-primary);
+      margin: 40px 0 20px;
+    }
+
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.4rem; color: var(--primary); }
+
+    .blog-image {
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .blog-image img {
+      width: 100%;
+      display: block;
+    }
+
+    pre {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px !important;
+      margin: 25px 0 !important;
+      overflow-x: auto;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    footer {
+      background: var(--bg-card);
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      color: var(--text-muted);
+    }
+
+    .step-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 25px 0;
+    }
+
+    .step-box h4 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-box h4 .step-number {
+      background: var(--gradient-1);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .step-box ul {
+      padding-left: 20px;
+    }
+
+    .step-box li {
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .demo-box {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .demo-box h4 {
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .demo-box input {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+
+    .demo-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .demo-box .result {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+      font-family: 'Fira Code', monospace;
+      color: var(--success);
+      word-break: break-all;
+    }
+
+    .demo-box button {
+      background: var(--gradient-1);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 30px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 5px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .demo-box button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+    }
+
+    .api-endpoints {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 25px 0;
+    }
+
+    .api-endpoints li {
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero-post h1 { font-size: 1.8rem; }
+      .flow-text { font-size: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-logo">{ OscarCode }</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html#skills">Skills</a></li>
+          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#contact">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero-post">
+    <div class="container">
+      <h1>Mi Primer Algoritmo de Encriptado</h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> 10 de Febrero, 2018</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+
+      <p class="flow-text">
+        La criptografía siempre me ha fascinado. ¿Cómo es posible que un mensaje pueda viajar por internet sin que nadie (excepto el destinatario) pueda leerlo? Cuando en mi clase de <strong>Seguridad Informática</strong> nos pidieron crear nuestro propio algoritmo de encriptación, vi la oportunidad perfecta para explorar estos conceptos.
+      </p>
+
+      <p class="flow-text">
+        ⚠️ <strong>Disclaimer:</strong> Este algoritmo es un ejercicio educativo. No es criptográficamente seguro para uso real. Para aplicaciones reales, usa librerías probadas como bcrypt, crypto o AES.
+      </p>
+
+      <p class="flow-text">
+        🔗 <strong>Código fuente:</strong> <a href="https://github.com/OscarCode9/MI-algoritmo-de-encriptado" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> Ver repositorio en GitHub</a>
+      </p>
+
+      <h3>💡 La idea detrás del algoritmo</h3>
+
+      <p class="flow-text">
+        El algoritmo se basa en dos conceptos matemáticos simples pero poderosos: <strong>código ASCII</strong> y <strong>números primos</strong>. La belleza está en cómo los combinamos:
+      </p>
+
+      <p class="flow-text">
+        Veamos paso a paso cómo encriptamos la palabra <strong>"Osc"</strong>:
+      </p>
+
+      <div class="step-box">
+        <h4><span class="step-number">1</span> Descomponer en caracteres</h4>
+        <p style="color: var(--text-secondary);">Separamos cada letra: <code>['O', 's', 'c']</code></p>
+      </div>
+
+      <div class="step-box">
+        <h4><span class="step-number">2</span> Convertir a código ASCII</h4>
+        <p style="color: var(--text-secondary);">Cada carácter tiene un valor numérico único:</p>
+        <ul>
+          <li><code>'O'</code> → <strong>79</strong></li>
+          <li><code>'s'</code> → <strong>115</strong></li>
+          <li><code>'c'</code> → <strong>99</strong></li>
+        </ul>
+      </div>
+
+      <div class="step-box">
+        <h4><span class="step-number">3</span> Multiplicar por números primos</h4>
+        <p style="color: var(--text-secondary);">Usamos dos primos como "llaves": <strong>7</strong> y <strong>3</strong></p>
+        <ul>
+          <li>79 × 7 × 3 = <strong>1659</strong></li>
+          <li>115 × 7 × 3 = <strong>2415</strong></li>
+          <li>99 × 7 × 3 = <strong>2079</strong></li>
+        </ul>
+      </div>
+
+      <div class="step-box">
+        <h4><span class="step-number">4</span> Normalizar a 6 dígitos</h4>
+        <p style="color: var(--text-secondary);">Esto permite identificar dónde empieza y termina cada carácter:</p>
+        <p style="font-family: 'Fira Code', monospace; color: var(--primary);">001659 | 002415 | 002079</p>
+      </div>
+
+      <div class="step-box">
+        <h4><span class="step-number">5</span> Concatenar</h4>
+        <p style="font-family: 'Fira Code', monospace; color: var(--text-secondary);">001659002415002079</p>
+      </div>
+
+      <div class="step-box">
+        <h4><span class="step-number">6</span> Ofuscar con sustitución</h4>
+        <p style="color: var(--text-secondary);">Reemplazamos dígitos por símbolos para añadir confusión:</p>
+        <ul>
+          <li><code>0</code> → <code>!</code></li>
+          <li><code>1</code> → <code>#</code></li>
+          <li><code>3</code> → <code>$</code></li>
+        </ul>
+        <p style="color: var(--success); font-family: 'Fira Code', monospace; margin-top: 15px; font-size: 1.1rem;">
+          Resultado: <strong>!!#659!!24#5!!2!79</strong>
+        </p>
+      </div>
+
+      <h3>🧑‍💻 Implementación en JavaScript</h3>
+
+      <pre><code class="language-javascript">// Algoritmo de Encriptación
+function encrypt(text) {
+  const PRIME_1 = 7;
+  const PRIME_2 = 3;
+  
+  let result = '';
+  
+  for (let char of text) {
+    // Convertir a ASCII y multiplicar por primos
+    const ascii = char.charCodeAt(0);
+    const encrypted = ascii * PRIME_1 * PRIME_2;
+    
+    // Formatear a 6 dígitos
+    const formatted = encrypted.toString().padStart(6, '0');
+    result += formatted;
+  }
+  
+  // Reemplazar números por símbolos
+  return result
+    .replace(/0/g, '!')
+    .replace(/1/g, '#')
+    .replace(/3/g, '$');
+}
+
+// Algoritmo de Desencriptación
+function decrypt(encryptedText) {
+  const PRIME_1 = 7;
+  const PRIME_2 = 3;
+  
+  // Revertir reemplazos
+  let numbers = encryptedText
+    .replace(/!/g, '0')
+    .replace(/#/g, '1')
+    .replace(/\$/g, '3');
+  
+  let result = '';
+  
+  // Procesar en bloques de 6 dígitos
+  for (let i = 0; i < numbers.length; i += 6) {
+    const block = numbers.substring(i, i + 6);
+    const num = parseInt(block, 10);
+    
+    // Dividir por los primos para obtener ASCII
+    const ascii = num / (PRIME_1 * PRIME_2);
+    result += String.fromCharCode(ascii);
+  }
+  
+  return result;
+}
+
+// Ejemplos de uso
+console.log(encrypt('Osc'));    // !!#659!!24#5!!2!79
+console.log(decrypt('!!#659!!24#5!!2!79')); // Osc</code></pre>
+
+      <h3>🌐 API REST para el algoritmo</h3>
+
+      <p class="flow-text">
+        Para hacer el algoritmo accesible desde cualquier aplicación, creé una pequeña API REST:
+      </p>
+
+      <ul class="api-endpoints">
+        <li><span style="color: #3b82f6;">POST</span> /encrypto → Encriptar texto</li>
+        <li><span style="color: #22c55e;">POST</span> /decrypto → Desencriptar texto</li>
+      </ul>
+
+      <pre><code class="language-javascript">// Ejemplo de request
+fetch('/encrypto', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ text: 'Hola Mundo' })
+});
+
+// Response
+{
+  "success": true,
+  "original": "Hola Mundo",
+  "encrypted": "!!#5#2!!24!9!!#995!!2!#!..."
+}</code></pre>
+
+      <div class="blog-image">
+        <img src="public/images/encrypto.png" alt="Diagrama visual del algoritmo de encriptación">
+      </div>
+
+      <h3>🎓 Lecciones aprendidas</h3>
+
+      <p class="flow-text">
+        Este ejercicio me enseñó varios conceptos fundamentales de criptografía:
+      </p>
+
+      <ul class="flow-text" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+        <li><strong>Reversibilidad:</strong> Un buen algoritmo de encriptación simétrica debe poder revertirse</li>
+        <li><strong>Determinismo:</strong> El mismo input siempre produce el mismo output</li>
+        <li><strong>Ofuscación:</strong> La sustitución de caracteres añade una capa de complejidad visual</li>
+        <li><strong>Estructura:</strong> El padding (6 dígitos) permite parsear la cadena encriptada</li>
+      </ul>
+
+      <p class="flow-text">
+        Por supuesto, los algoritmos reales como AES, RSA o bcrypt son infinitamente más complejos y seguros. Pero entender estos principios básicos es el primer paso para comprender la criptografía moderna.
+      </p>
+
+      <p class="flow-text">
+        ¡La seguridad informática es fascinante! Si te interesa el tema, te recomiendo explorar conceptos como hashing, salt, criptografía asimétrica y firmas digitales.
+      </p>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

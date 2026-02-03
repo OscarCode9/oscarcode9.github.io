@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node.js con ElasticSearch | OscarCode</title>
+  <meta name="description" content="Tutorial sobre cómo integrar ElasticSearch con Node.js usando Koa framework para búsquedas extremadamente rápidas.">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <link rel="icon" href="public/icon.png" type="image/png">
+
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --primary: #00d4ff;
+      --accent: #7c3aed;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: rgba(255, 255, 255, 0.1);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    nav {
+      background: rgba(10, 10, 15, 0.95) !important;
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .brand-logo {
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--primary) !important;
+      margin-left: 20px;
+    }
+
+    nav ul li a { color: var(--text-secondary) !important; font-weight: 500; }
+    nav ul li a:hover { color: var(--primary) !important; background: transparent !important; }
+
+    .hero-post {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding-top: 64px;
+      text-align: center;
+    }
+
+    .hero-post h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+
+    .hero-post .meta {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-post .meta i { margin-right: 8px; }
+
+    .content-section {
+      padding: 60px 0;
+      background: var(--bg-dark);
+    }
+
+    .content-section .container {
+      max-width: 800px;
+    }
+
+    .flow-text {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+
+    .flow-text a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .flow-text a:hover {
+      text-decoration: underline;
+    }
+
+    h2, h3 {
+      color: var(--text-primary);
+      margin: 40px 0 20px;
+    }
+
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.4rem; color: var(--primary); }
+
+    .blog-image {
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .blog-image img {
+      width: 100%;
+      display: block;
+    }
+
+    pre {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px !important;
+      margin: 25px 0 !important;
+      overflow-x: auto;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+    }
+
+    .feature-list {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px 30px;
+      margin: 25px 0;
+    }
+
+    .feature-list li {
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      padding-left: 10px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    footer {
+      background: var(--bg-card);
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      color: var(--text-muted);
+    }
+
+    .note {
+      background: rgba(0, 212, 255, 0.1);
+      border-left: 4px solid var(--primary);
+      padding: 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 25px 0;
+    }
+
+    .note strong {
+      color: var(--primary);
+    }
+
+    @media (max-width: 600px) {
+      .hero-post h1 { font-size: 1.8rem; }
+      .flow-text { font-size: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-logo">{ OscarCode }</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html#skills">Skills</a></li>
+          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#contact">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero-post">
+    <div class="container">
+      <h1>Node.js con ElasticSearch</h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> 14 de Febrero, 2019</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+
+      <p class="flow-text">
+        Si alguna vez te has preguntado cómo servicios como Netflix, Uber o GitHub logran búsquedas tan rápidas entre millones de registros, la respuesta probablemente sea <strong>ElasticSearch</strong>. En este tutorial aprenderás a integrar este poderoso motor de búsquedas con Node.js utilizando el framework <strong>Koa</strong>.
+      </p>
+
+      <h3>🔍 ¿Qué es ElasticSearch?</h3>
+
+      <p class="flow-text">
+        <strong>ElasticSearch</strong> es un motor de búsqueda y análisis distribuido, de código abierto, construido sobre Apache Lucene. Es capaz de manejar grandes volúmenes de datos con tiempos de respuesta en milisegundos, lo que lo convierte en la opción preferida para aplicaciones que requieren búsquedas en tiempo real.
+      </p>
+
+      <p class="flow-text">
+        Aunque está escrito en Java, ElasticSearch expone una API REST que nos permite interactuar con él desde cualquier lenguaje de programación: JavaScript, Python, C#, Go, y más.
+      </p>
+
+      <h3>✨ Características principales</h3>
+
+      <ul class="feature-list">
+        <li><strong>Orientado a documentos:</strong> Almacena datos en formato JSON, ideal para JavaScript</li>
+        <li><strong>Schema-less:</strong> No requiere esquema predefinido (aunque puedes definir mappings)</li>
+        <li><strong>Distribuido:</strong> Escala horizontalmente de forma automática con alta disponibilidad</li>
+        <li><strong>API REST:</strong> Todas las operaciones se realizan mediante HTTP (GET, POST, PUT, DELETE)</li>
+        <li><strong>Full-text search:</strong> Búsquedas de texto completo con análisis de lenguaje natural</li>
+        <li><strong>Agregaciones:</strong> Análisis de datos en tiempo real similar a SQL GROUP BY</li>
+      </ul>
+
+      <div class="note">
+        <p><strong>📋 Requisitos previos:</strong> Asegúrate de tener instalado Node.js (v14+), npm o Yarn, y ElasticSearch (v7+) corriendo en tu máquina local.</p>
+      </div>
+
+      <h3>🚀 Configurando el proyecto con Koa</h3>
+
+      <p class="flow-text">
+        Usaremos <strong>Koa</strong>, un framework minimalista creado por el equipo detrás de Express. Koa aprovecha async/await de forma nativa, eliminando callbacks y haciendo el código más limpio y mantenible.
+      </p>
+
+      <pre><code class="language-bash"># Instalar el generador de Koa globalmente
+$ npm install -g koa-generator
+
+# Crear nuevo proyecto
+$ koa serverElastic --hbs
+
+# Entrar al directorio e instalar dependencias
+$ cd serverElastic && npm install</code></pre>
+
+      <h3>📦 Instalando el cliente oficial</h3>
+
+      <pre><code class="language-bash"># Cliente oficial de Elasticsearch para Node.js
+$ npm install @elastic/elasticsearch</code></pre>
+
+      <h3>🔌 Configurando la conexión</h3>
+
+      <p class="flow-text">
+        Primero, creamos un módulo para gestionar la conexión con ElasticSearch. Es buena práctica verificar la conexión al iniciar la aplicación:
+      </p>
+
+      <pre><code class="language-javascript">const { Client } = require('@elastic/elasticsearch');
+
+const client = new Client({
+  node: 'http://localhost:9200',
+  auth: {
+    username: 'elastic',
+    password: 'changeme'
+  }
+});
+
+// Verificar conexión
+async function checkConnection() {
+  try {
+    const health = await client.cluster.health();
+    console.log('ElasticSearch conectado:', health.status);
+  } catch (error) {
+    console.error('Error de conexión:', error);
+  }
+}
+
+checkConnection();</code></pre>
+
+      <h3>Creando un índice</h3>
+
+      <pre><code class="language-javascript">async function createIndex(indexName) {
+  try {
+    await client.indices.create({
+      index: indexName,
+      body: {
+        mappings: {
+          properties: {
+            title: { type: 'text' },
+            content: { type: 'text' },
+            author: { type: 'keyword' },
+            created_at: { type: 'date' }
+          }
+        }
+      }
+    });
+    console.log(`Índice ${indexName} creado`);
+  } catch (error) {
+    console.error('Error creando índice:', error);
+  }
+}
+
+createIndex('articles');</code></pre>
+
+      <h3>Insertando documentos</h3>
+
+      <pre><code class="language-javascript">async function indexDocument(index, document) {
+  try {
+    const result = await client.index({
+      index: index,
+      body: document
+    });
+    console.log('Documento indexado:', result._id);
+    return result;
+  } catch (error) {
+    console.error('Error indexando:', error);
+  }
+}
+
+// Ejemplo de uso
+indexDocument('articles', {
+  title: 'Introducción a ElasticSearch',
+  content: 'ElasticSearch es un motor de búsqueda distribuido...',
+  author: 'Oscar',
+  created_at: new Date()
+});</code></pre>
+
+      <h3>🔎 Implementando búsquedas</h3>
+
+      <p class="flow-text">
+        El poder real de ElasticSearch está en sus capacidades de búsqueda. Utilizamos <code>multi_match</code> para buscar en múltiples campos simultáneamente:
+      </p>
+
+      <pre><code class="language-javascript">async function search(index, query) {
+  try {
+    const result = await client.search({
+      index: index,
+      body: {
+        query: {
+          multi_match: {
+            query: query,
+            fields: ['title^2', 'content'], // title tiene peso x2
+            fuzziness: 'AUTO' // Tolerancia a errores tipográficos
+          }
+        },
+        highlight: {
+          fields: { title: {}, content: {} }
+        }
+      }
+    });
+    return result.hits.hits;
+  } catch (error) {
+    console.error('Error en búsqueda:', error);
+  }
+}
+
+// Ejemplo de uso
+const results = await search('articles', 'elasticsearch');
+console.log(results);</code></pre>
+
+      <h3>🌐 API REST con Koa</h3>
+
+      <p class="flow-text">
+        Finalmente, exponemos nuestra funcionalidad de búsqueda a través de una API REST limpia y eficiente:
+      </p>
+
+      <pre><code class="language-javascript">const Koa = require('koa');
+const Router = require('koa-router');
+const { Client } = require('@elastic/elasticsearch');
+
+const app = new Koa();
+const router = new Router();
+const client = new Client({ node: 'http://localhost:9200' });
+
+// Middleware para manejo de errores
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    ctx.status = err.status || 500;
+    ctx.body = { error: err.message };
+  }
+});
+
+// Endpoint de búsqueda
+router.get('/api/search', async (ctx) => {
+  const { q, page = 1, limit = 10 } = ctx.query;
+  
+  if (!q) {
+    ctx.status = 400;
+    ctx.body = { error: 'Query parameter "q" is required' };
+    return;
+  }
+  
+  const result = await client.search({
+    index: 'articles',
+    body: {
+      from: (page - 1) * limit,
+      size: limit,
+      query: {
+        multi_match: {
+          query: q,
+          fields: ['title^2', 'content']
+        }
+      }
+    }
+  });
+  
+  ctx.body = {
+    total: result.hits.total.value,
+    page: parseInt(page),
+    results: result.hits.hits.map(hit => ({
+      id: hit._id,
+      score: hit._score,
+      ...hit._source
+    }))
+  };
+});
+
+app.use(router.routes());
+app.listen(3000, () => {
+  console.log('🚀 Server running on http://localhost:3000');
+});</code></pre>
+
+      <h3>🎯 Conclusión</h3>
+
+      <p class="flow-text">
+        Has aprendido a configurar ElasticSearch con Node.js y Koa, crear índices, indexar documentos y realizar búsquedas avanzadas. Esta combinación es ideal para:
+      </p>
+
+      <ul class="feature-list">
+        <li><strong>Buscadores internos:</strong> Para tu aplicación o sitio web</li>
+        <li><strong>Análisis de logs:</strong> Junto con Logstash y Kibana (ELK Stack)</li>
+        <li><strong>E-commerce:</strong> Búsqueda de productos con filtros y facetas</li>
+        <li><strong>Autocompletado:</strong> Sugerencias en tiempo real mientras escribes</li>
+      </ul>
+
+      <p class="flow-text">
+        El rendimiento de ElasticSearch es impresionante: puede manejar millones de documentos con tiempos de respuesta de milisegundos. ¡Experimenta y lleva tus aplicaciones al siguiente nivel!
+      </p>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+</body>
+</html>

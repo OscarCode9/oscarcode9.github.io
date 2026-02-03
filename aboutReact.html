@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React, el State, los Props y Todo lo Demás | OscarCode</title>
+  <meta name="description" content="Introducción a React.js: componentes, state, props y todo lo que necesitas saber para empezar con esta librería.">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <link rel="icon" href="public/icon.png" type="image/png">
+
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --primary: #00d4ff;
+      --accent: #7c3aed;
+      --react-blue: #61dafb;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: rgba(255, 255, 255, 0.1);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    nav {
+      background: rgba(10, 10, 15, 0.95) !important;
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .brand-logo {
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--primary) !important;
+      margin-left: 20px;
+    }
+
+    nav ul li a { color: var(--text-secondary) !important; font-weight: 500; }
+    nav ul li a:hover { color: var(--primary) !important; background: transparent !important; }
+
+    .hero-post {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #20232a 0%, #282c34 100%);
+      padding-top: 64px;
+      text-align: center;
+    }
+
+    .hero-post .react-logo {
+      font-size: 5rem;
+      color: var(--react-blue);
+      margin-bottom: 20px;
+      animation: spin 10s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hero-post h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+
+    .hero-post .meta {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-post .meta i { margin-right: 8px; }
+
+    .content-section {
+      padding: 60px 0;
+      background: var(--bg-dark);
+    }
+
+    .content-section .container {
+      max-width: 800px;
+    }
+
+    .flow-text {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+
+    .flow-text a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .flow-text a:hover {
+      text-decoration: underline;
+    }
+
+    .flow-text strong {
+      color: var(--react-blue);
+    }
+
+    h2, h3 {
+      color: var(--text-primary);
+      margin: 40px 0 20px;
+    }
+
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.4rem; color: var(--react-blue); }
+
+    pre {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px !important;
+      margin: 25px 0 !important;
+      overflow-x: auto;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    footer {
+      background: var(--bg-card);
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      color: var(--text-muted);
+    }
+
+    .concept-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--react-blue);
+      border-radius: 0 12px 12px 0;
+      padding: 25px;
+      margin: 30px 0;
+    }
+
+    .concept-box h4 {
+      color: var(--react-blue);
+      margin-bottom: 10px;
+    }
+
+    .concept-box p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .hero-post h1 { font-size: 1.8rem; }
+      .flow-text { font-size: 1rem; }
+      .hero-post .react-logo { font-size: 3rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-logo">{ OscarCode }</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html#skills">Skills</a></li>
+          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#contact">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero-post">
+    <div class="container">
+      <div class="react-logo"><i class="fab fa-react"></i></div>
+      <h1>React, el State, los Props y Todo lo Demás</h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> 28 de Abril, 2018</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+
+      <p class="flow-text">
+        <strong>React</strong> ha revolucionado la forma en que construimos interfaces de usuario. Con más de 200,000 estrellas en GitHub y usado por empresas como Meta, Netflix, Airbnb y Uber, es una de las tecnologías más demandadas en el mercado laboral.
+      </p>
+
+      <p class="flow-text">
+        En este artículo vamos a desmitificar los conceptos fundamentales de React: <strong>componentes</strong>, <strong>props</strong> y <strong>state</strong>. Si vienes de HTML/CSS/JavaScript vanilla, verás que la curva de aprendizaje no es tan empinada como parece.
+      </p>
+
+      <h3>🧩 ¿Qué es un Componente?</h3>
+
+      <p class="flow-text">
+        En React, todo es un <strong>componente</strong>. Piensa en ellos como piezas de LEGO: pequeños bloques reutilizables que juntos forman interfaces complejas. Un botón, un menú, una tarjeta de producto... cada uno puede ser un componente independiente.
+      </p>
+
+      <p class="flow-text">
+        La magia está en que escribes el componente una vez y lo reutilizas en toda tu aplicación (o incluso en otros proyectos):
+      </p>
+
+      <pre><code class="language-jsx">// Componente de clase (forma tradicional)
+import React, { Component } from 'react';
+
+class Saludo extends Component {
+  render() {
+    return (
+      <div className="saludo">
+        <h1>¡Hola Mundo!</h1>
+        <p>Bienvenido a React</p>
+      </div>
+    );
+  }
+}
+
+export default Saludo;</code></pre>
+
+      <div class="concept-box">
+        <h4>💡 El método render()</h4>
+        <p>El <code>render()</code> es obligatorio en componentes de clase. Se ejecuta cada vez que el estado cambia, actualizando la UI automáticamente. React se encarga de optimizar qué partes del DOM realmente necesitan actualizarse.</p>
+      </div>
+
+      <h3>⚡ Componentes Funcionales (El estándar moderno)</h3>
+
+      <p class="flow-text">
+        Desde React 16.8, los <strong>componentes funcionales con Hooks</strong> se han convertido en la forma recomendada de escribir React. Son más concisos, fáciles de testear y permiten reutilizar lógica entre componentes:
+      </p>
+
+      <pre><code class="language-jsx">// Componente funcional moderno
+const Calculadora = ({ num1, num2 }) => {
+  const resultado = num1 + num2;
+  
+  return (
+    <div className="calculadora">
+      <p>{num1} + {num2} = <strong>{resultado}</strong></p>
+    </div>
+  );
+};
+
+// Uso del componente
+<Calculadora num1={5} num2={3} />  // Muestra: 5 + 3 = 8</code></pre>
+
+// Para usar el componente:
+<Suma num1={5} num2={3} /></code></pre>
+
+      <p class="flow-text">
+        Los componentes siempre deben iniciar con mayúsculas. Es buena práctica y es lo que nos dice la documentación oficial de React.
+      </p>
+
+      <h3>📨 Props: Comunicación entre componentes</h3>
+
+      <div class="concept-box">
+        <h4>¿Qué son los Props?</h4>
+        <p>Los <strong>props</strong> (propiedades) son el mecanismo de React para pasar datos de padres a hijos. Son <strong>inmutables</strong>: el componente hijo los recibe pero no puede modificarlos.</p>
+      </div>
+
+      <pre><code class="language-jsx">// Componente que recibe y muestra props
+const TarjetaUsuario = ({ nombre, rol, avatar }) => {
+  return (
+    <div className="tarjeta">
+      <img src={avatar} alt={nombre} />
+      <h2>{nombre}</h2>
+      <span className="rol">{rol}</span>
+    </div>
+  );
+};
+
+// Uso: el padre pasa los datos
+<TarjetaUsuario 
+  nombre="Oscar" 
+  rol="Full Stack Developer"
+  avatar="/images/oscar.jpg"
+/></code></pre>
+
+      <h3>🔄 State: Datos que cambian</h3>
+
+      <div class="concept-box">
+        <h4>¿Qué es el State?</h4>
+        <p>El <strong>state</strong> es el estado interno de un componente. A diferencia de los props, el state <strong>sí puede cambiar</strong>. Cuando cambia, React re-renderiza automáticamente el componente.</p>
+      </div>
+
+      <pre><code class="language-jsx">import React, { useState } from 'react';
+
+const Contador = () => {
+  // useState retorna: [valor actual, función para actualizarlo]
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className="contador">
+      <h2>Contador: {count}</h2>
+      <button onClick={() => setCount(count + 1)}>
+        ➕ Incrementar
+      </button>
+      <button onClick={() => setCount(count - 1)}>
+        ➖ Decrementar
+      </button>
+      <button onClick={() => setCount(0)}>
+        🔄 Reiniciar
+      </button>
+    </div>
+  );
+};</code></pre>
+
+      <h3>🆚 Props vs State: La diferencia clave</h3>
+
+      <pre><code class="language-jsx">// Props: datos que VIENEN del padre (read-only)
+// State: datos que PERTENECEN al componente (read-write)
+
+const ArticuloCard = ({ titulo, autor }) => {  // Props ↓
+  const [likes, setLikes] = useState(0);        // State ↓
+  const [saved, setSaved] = useState(false);    // State ↓
+  
+  return (
+    <article>
+      <h1>{titulo}</h1>           {/* Prop: no cambia */}
+      <p>Por: {autor}</p>         {/* Prop: no cambia */}
+      
+      <div className="actions">
+        <button onClick={() => setLikes(likes + 1)}>
+          ❤️ {likes}               {/* State: cambia */}
+        </button>
+        <button onClick={() => setSaved(!saved)}>
+          {saved ? '🔖' : '📑'}    {/* State: cambia */}
+        </button>
+      </div>
+    </article>
+  );
+};</code></pre>
+
+      <h3>🔗 useEffect: El ciclo de vida moderno</h3>
+
+      <p class="flow-text">
+        El hook <code>useEffect</code> nos permite ejecutar efectos secundarios: llamadas a APIs, suscripciones, manipulación del DOM, etc.
+      </p>
+
+      <pre><code class="language-jsx">import React, { useState, useEffect } from 'react';
+
+const UserProfile = ({ userId }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Se ejecuta cuando userId cambia
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/users/${userId}`);
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
+        setError('Error cargando usuario');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [userId]); // Dependencia: se re-ejecuta si userId cambia
+
+  if (loading) return <div className="skeleton">Cargando...</div>;
+  if (error) return <div className="error">{error}</div>;
+  
+  return (
+    <div className="profile">
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+};</code></pre>
+
+      <h3>🎯 Conclusión</h3>
+
+      <p class="flow-text">
+        Estos tres conceptos —<strong>componentes</strong>, <strong>props</strong> y <strong>state</strong>— son los pilares de React. Una vez que los domines, estarás listo para explorar patrones más avanzados como Context, useReducer, custom hooks y más.
+      </p>
+
+      <p class="flow-text">
+        React potencia aplicaciones como Instagram, WhatsApp Web, Netflix y Airbnb. Aprenderlo es una inversión que vale la pena. ¡Ahora es tu turno de experimentar!
+      </p>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+</body>
+</html>

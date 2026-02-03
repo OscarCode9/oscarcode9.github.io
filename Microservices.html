@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microservicios con Node.js y Spring Boot | OscarCode</title>
+  <meta name="description" content="Conectando tres microservicios utilizando Java y JavaScript con Node.js y Spring Boot para consumir APIs de criptomonedas de Bitso.">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <link rel="icon" href="public/icon.png" type="image/png">
+
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --primary: #00d4ff;
+      --accent: #7c3aed;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: rgba(255, 255, 255, 0.1);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    nav {
+      background: rgba(10, 10, 15, 0.95) !important;
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .brand-logo {
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--primary) !important;
+      margin-left: 20px;
+    }
+
+    nav ul li a { color: var(--text-secondary) !important; font-weight: 500; }
+    nav ul li a:hover { color: var(--primary) !important; background: transparent !important; }
+
+    .hero-post {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('public/images/blog/microservices.jpg');
+      background-size: cover;
+      background-position: center;
+      padding-top: 64px;
+      text-align: center;
+    }
+
+    .hero-post h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+
+    .hero-post .meta {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-post .meta i { margin-right: 8px; }
+
+    .content-section {
+      padding: 60px 0;
+      background: var(--bg-dark);
+    }
+
+    .content-section .container {
+      max-width: 800px;
+    }
+
+    .flow-text {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+
+    .flow-text a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .flow-text a:hover {
+      text-decoration: underline;
+    }
+
+    h2, h3 {
+      color: var(--text-primary);
+      margin: 40px 0 20px;
+    }
+
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.4rem; color: var(--primary); }
+
+    .blog-image {
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .blog-image img {
+      width: 100%;
+      display: block;
+    }
+
+    pre {
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px !important;
+      margin: 25px 0 !important;
+      overflow-x: auto;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+    }
+
+    .index-list {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .index-list h4 {
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    .index-list ol {
+      padding-left: 20px;
+    }
+
+    .index-list li {
+      margin-bottom: 10px;
+    }
+
+    .index-list a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .index-list a:hover {
+      text-decoration: underline;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    footer {
+      background: var(--bg-card);
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      .hero-post h1 { font-size: 1.8rem; }
+      .flow-text { font-size: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-logo">{ OscarCode }</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html#skills">Skills</a></li>
+          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#contact">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero-post">
+    <div class="container">
+      <h1>Creando microservicios con Node.js y Spring Boot para consulta de cryptomonedas</h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> 29 de Julio, 2020</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+
+      <p class="flow-text">
+        En el mundo del desarrollo moderno, los <strong>microservicios</strong> se han convertido en la arquitectura preferida para construir aplicaciones escalables y mantenibles. En este artículo, te mostraré cómo conectar tres microservicios utilizando dos tecnologías diferentes: <strong>Node.js</strong> y <strong>Spring Boot</strong>.
+      </p>
+
+      <p class="flow-text">
+        El objetivo es crear un sistema que consulte precios de criptomonedas en tiempo real utilizando la API de Bitso. La arquitectura consiste en:
+      </p>
+
+      <ul class="flow-text" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+        <li><strong>Servicio A (Node.js):</strong> Consulta el precio de Bitcoin (BTC)</li>
+        <li><strong>Servicio B (Spring Boot):</strong> Consulta el precio de Ethereum (ETH)</li>
+        <li><strong>Gateway (Node.js):</strong> Orquesta ambos servicios y unifica las respuestas</li>
+      </ul>
+
+      <p class="flow-text">
+        Además, containerizaremos todo con <strong>Docker</strong> para facilitar el despliegue y escalamiento en cualquier entorno de producción.
+      </p>
+
+      <div class="blog-image">
+        <img src="public/images/blog/crypto.png" alt="Diagrama de arquitectura de microservicios">
+      </div>
+
+      <p class="flow-text">
+        🔗 <strong>Código fuente:</strong> <a href="https://github.com/OscarCode9/microservices" target="_blank" rel="noopener noreferrer">Ver repositorio completo en GitHub</a>
+      </p>
+
+      <div class="index-list">
+        <h4>📋 Contenido</h4>
+        <ol>
+          <li><a href="#node">Servicio A: API de Bitcoin con Node.js</a></li>
+          <li><a href="#dockerNode">Containerización del servicio Node.js</a></li>
+          <li><a href="#spring">Servicio B: API de Ethereum con Spring Boot</a></li>
+          <li><a href="#dockerSpring">Containerización del servicio Spring Boot</a></li>
+          <li><a href="#gateway">Gateway: Orquestador de servicios</a></li>
+          <li><a href="#scale">Escalamiento con Docker Compose</a></li>
+        </ol>
+      </div>
+
+      <h3 id="node">Servicio A: API de Bitcoin con Node.js</h3>
+
+      <p class="flow-text">
+        Comenzaremos construyendo el primer microservicio con <strong>Express.js</strong>, el framework más popular de Node.js para crear APIs REST. Este servicio se encargará exclusivamente de consultar el precio actual de Bitcoin.
+      </p>
+
+      <pre><code class="language-javascript">const express = require('express');
+const axios = require('axios');
+const app = express();
+
+app.get('/btc', async (req, res) => {
+  try {
+    const response = await axios.get('https://api.bitso.com/v3/ticker/?book=btc_mxn');
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching BTC price' });
+  }
+});
+
+app.listen(3001, () => {
+  console.log('Service A running on port 3001');
+});</code></pre>
+
+      <h3 id="dockerNode">Dockerizando una Node.js app</h3>
+
+      <p class="flow-text">
+        Para dockerizar nuestra aplicación de Node.js, necesitamos crear un Dockerfile que defina cómo construir nuestra imagen.
+      </p>
+
+      <pre><code class="language-dockerfile">FROM node:14-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3001
+CMD ["node", "index.js"]</code></pre>
+
+      <h3 id="spring">Servicio B: API de Ethereum con Spring Boot</h3>
+
+      <p class="flow-text">
+        Para demostrar la interoperabilidad entre tecnologías, construiremos el segundo servicio con <strong>Spring Boot</strong> y Java. Este microservicio consultará el precio de Ethereum de forma independiente.
+      </p>
+
+      <pre><code class="language-java">@RestController
+public class EthController {
+    
+    @GetMapping("/eth")
+    public ResponseEntity<?> getEthPrice() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://api.bitso.com/v3/ticker/?book=eth_mxn";
+        return restTemplate.getForEntity(url, String.class);
+    }
+}</code></pre>
+
+      <h3 id="dockerSpring">Containerización del servicio Spring Boot</h3>
+
+      <p class="flow-text">
+        El proceso para containerizar una aplicación Spring Boot requiere primero compilar el proyecto y generar el archivo <code>.jar</code>, y luego crear el Dockerfile correspondiente:
+      </p>
+
+      <pre><code class="language-dockerfile">FROM openjdk:11-jre-slim
+COPY target/service-b-0.0.1.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]</code></pre>
+
+      <h3 id="gateway">Gateway: El orquestador de servicios</h3>
+
+      <p class="flow-text">
+        El <strong>API Gateway</strong> es el punto de entrada único para los clientes. Su función es consumir ambos microservicios de forma paralela usando <code>Promise.all()</code> y devolver una respuesta unificada con los precios de ambas criptomonedas.
+      </p>
+
+      <pre><code class="language-javascript">const express = require('express');
+const axios = require('axios');
+const app = express();
+
+app.get('/prices', async (req, res) => {
+  try {
+    // Consultas paralelas para mejor rendimiento
+    const [btc, eth] = await Promise.all([
+      axios.get('http://service-a:3001/btc'),
+      axios.get('http://service-b:8080/eth')
+    ]);
+    
+    res.json({
+      btc: btc.data,
+      eth: eth.data,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching prices' });
+  }
+});
+
+app.listen(3000, () => {
+  console.log('🚀 Gateway running on port 3000');
+});</code></pre>
+
+      <h3 id="scale">Orquestación y escalamiento con Docker Compose</h3>
+
+      <p class="flow-text">
+        <strong>Docker Compose</strong> nos permite definir y ejecutar aplicaciones multi-contenedor. Con un solo archivo YAML podemos levantar toda nuestra arquitectura de microservicios:
+      </p>
+
+      <pre><code class="language-yaml">version: '3.8'
+services:
+  service-a:
+    build: ./service-a
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    
+  service-b:
+    build: ./service-b
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    
+  gateway:
+    build: ./gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - service-a
+      - service-b
+    restart: unless-stopped</code></pre>
+
+      <h3>🎯 Conclusión</h3>
+
+      <p class="flow-text">
+        Con esta arquitectura logramos varios objetivos clave del desarrollo moderno:
+      </p>
+
+      <ul class="flow-text" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+        <li><strong>Desacoplamiento:</strong> Cada servicio es independiente y puede evolucionar por separado</li>
+        <li><strong>Escalabilidad:</strong> Podemos escalar horizontalmente cualquier servicio según la demanda</li>
+        <li><strong>Flexibilidad tecnológica:</strong> Usamos la mejor herramienta para cada tarea (Node.js y Java)</li>
+        <li><strong>Portabilidad:</strong> Docker garantiza que funcione igual en desarrollo y producción</li>
+      </ul>
+
+      <p class="flow-text">
+        Esta es la base sobre la cual puedes construir sistemas más complejos, agregando balanceadores de carga, service discovery, circuit breakers y más. ¡El límite es tu imaginación!
+      </p>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+</body>
+</html>

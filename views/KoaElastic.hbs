@@ -6,71 +6,93 @@
 
 
 <div class="container">
-    <h1 id="titlePost"  style="background-color: black">Nodejs con ElasticSearch</h1>
-    <p class="flow-text">
-        Hace tiempo que no escribía algo para el blog, en los últimos meses he estado muy ocupado con la universidad, cosas de trabajo, en mis proyectos personales o entretenido en algún otro hobbie  como patinando o perdiendo tiempo viendo series y ya no me he dado el tiempo de escribir para el blog,  pero hoy me he decidido a actualizar algunas cosas de esta web y de paso hacer un pequeño tutorial sobre  nodejs y el motor de búsquedas elasticsearch mientras escucho un buen álbum The Smiths, ya saben me gusta compartir las cosas  y reafirmar conocimientos.
-    </p>
-
-    <p class="flow-text">
-       Antes de comenzar me gustaría explicar que es elasticsearch, uno de los motores de búsquedas más rápidos que existen en el mercado de software y sobre todo, de código abierto, es decir, cualquiera puede modificar el código con el que está construido.
-
- </p>
+  <h1 id="titlePost" style="background-color: black">Nodejs con ElasticSearch</h1>
   <p class="flow-text">
-    Elasticsearch se trata de un motor de búsqueda y análisis. Es distribuido y fácilmente escalable, enfocado sobre todo al mundo empresarial y científico, aunque puede ser usado para cualquier caso que requieran consultas realmente rápida. Es accesible a través de una extensa y elaborada API. Con esta herramienta podemos impulsar búsquedas extremadamente rápidas que respalden nuestras aplicaciones de descubrimientos de datos.
-Está escrito en Java, sin embargo lo podemos utilizar con cualquier lenguaje que se no venga a la cabeza, ok no, con ensamblador no podemos, sería regresar a los dinosaurios,  pero si con javascript, c#, python, etc, elastic utiliza una  filosofía de desarrollo de código abierto y utiliza una licencia Apache.
-
- </p>
-  <p class="flow-text">
-    Características principales de elasticsearch 
- </p>
- <div style="padding: 10px; font-size: 11px">
-  <lu>
-  <li class="flow-text">
-  Es orientado a documentos: Utiliza JSON
-  </li >
-  <li class="flow-text">No utiliza esquemas, aunque si son necesarios se pueden llegar a definir
-</li>
-  <li class="flow-text">Distribuido: Realiza escalado de manera dinámica, implementar alta disponibilidad (HA)</li>
-  <li class="flow-text">Utiliza una potente API: expone prácticamente todas sus funcionalidades utiliza una API REST, de decir, PUT, GET, DELETE, POST</li>
-  <li class="flow-text">Permite búsquedas tanto estructuras como no estructuradas.</li>
-</lu>
-
-   
- </div>
+    Hace tiempo que no escribía algo para el blog, en los últimos meses he estado muy ocupado con la universidad, cosas
+    de trabajo, en mis proyectos personales o entretenido en algún otro hobbie como patinando o perdiendo tiempo viendo
+    series y ya no me he dado el tiempo de escribir para el blog, pero hoy me he decidido a actualizar algunas cosas de
+    esta web y de paso hacer un pequeño tutorial sobre nodejs y el motor de búsquedas elasticsearch mientras escucho un
+    buen álbum The Smiths, ya saben me gusta compartir las cosas y reafirmar conocimientos.
+  </p>
 
   <p class="flow-text">
-    Para fines prácticos de este tutorial nos vamos a enfocar solo en <a href="https://github.com/elastic/elasticsearch-js">Official Elasticsearch client library for Node.js  </a> y lo montaremos sobre un web framework de nodejs  llamado Koa, quien fue desarrollado por los creadores del ya famoso Express,con Koa podemos manejar asincronicidad de una forma increíble y jamás bloquear el server,  ya sin tanto rodeo comencemos con los primeros  pasos. 
- </p>
+    Antes de comenzar me gustaría explicar que es elasticsearch, uno de los motores de búsquedas más rápidos que existen
+    en el mercado de software y sobre todo, de código abierto, es decir, cualquiera puede modificar el código con el que
+    está construido.
 
- <p class="flow-text">
-   En otras palabras un server elastic y node, es fácil de desarrollar y su rendimiento es impresionante y listo para manejar millones de datos. 
- </p>
+  </p>
+  <p class="flow-text">
+    Elasticsearch se trata de un motor de búsqueda y análisis. Es distribuido y fácilmente escalable, enfocado sobre
+    todo al mundo empresarial y científico, aunque puede ser usado para cualquier caso que requieran consultas realmente
+    rápida. Es accesible a través de una extensa y elaborada API. Con esta herramienta podemos impulsar búsquedas
+    extremadamente rápidas que respalden nuestras aplicaciones de descubrimientos de datos.
+    Está escrito en Java, sin embargo lo podemos utilizar con cualquier lenguaje que se no venga a la cabeza, ok no, con
+    ensamblador no podemos, sería regresar a los dinosaurios, pero si con javascript, c#, python, etc, elastic utiliza
+    una filosofía de desarrollo de código abierto y utiliza una licencia Apache.
+
+  </p>
+  <p class="flow-text">
+    Características principales de elasticsearch
+  </p>
+  <div style="padding: 10px; font-size: 11px">
+    <lu>
+      <li class="flow-text">
+        Es orientado a documentos: Utiliza JSON
+      </li>
+      <li class="flow-text">No utiliza esquemas, aunque si son necesarios se pueden llegar a definir
+      </li>
+      <li class="flow-text">Distribuido: Realiza escalado de manera dinámica, implementar alta disponibilidad (HA)</li>
+      <li class="flow-text">Utiliza una potente API: expone prácticamente todas sus funcionalidades utiliza una API
+        REST, de decir, PUT, GET, DELETE, POST</li>
+      <li class="flow-text">Permite búsquedas tanto estructuras como no estructuradas.</li>
+    </lu>
+
+
+  </div>
+
+  <p class="flow-text">
+    Para fines prácticos de este tutorial nos vamos a enfocar solo en <a
+      href="https://github.com/elastic/elasticsearch-js">Official Elasticsearch client library for Node.js </a> y lo
+    montaremos sobre un web framework de nodejs llamado Koa, quien fue desarrollado por los creadores del ya famoso
+    Express,con Koa podemos manejar asincronicidad de una forma increíble y jamás bloquear el server, ya sin tanto rodeo
+    comencemos con los primeros pasos.
+  </p>
+
+  <p class="flow-text">
+    En otras palabras un server elastic y node, es fácil de desarrollar y su rendimiento es impresionante y listo para
+    manejar millones de datos.
+  </p>
   <p class="flow-text">
     <strong>
-      Nota: 
+      Nota:
     </strong>
-    tienes que tener instalado node, yarn y elasticsearch para poder seguir el tutorial, de preferencia en un sistema operativo linux sin embargo los comandos son los mismo para windows 10. 
- </p>
-   <p class="flow-text">
-    Como instalar  <a href="https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04">node</a> y <a href="https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elastic-stack-on-ubuntu-18-04">elasticsearch</a>
- </p>
+    tienes que tener instalado node, yarn y elasticsearch para poder seguir el tutorial, de preferencia en un sistema
+    operativo linux sin embargo los comandos son los mismo para windows 10.
+  </p>
+  <p class="flow-text">
+    Como instalar <a
+      href="https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04">node</a> y <a
+      href="https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elastic-stack-on-ubuntu-18-04">elasticsearch</a>
+  </p>
 
   <p class="flow-text">
-    Antes que nada vamos a instalar el generado automatizado de koa para ya no complicarnos tanto en la configuración de nuestro servidor nodejs. 
+    Antes que nada vamos a instalar el generado automatizado de koa para ya no complicarnos tanto en la configuración de
+    nuestro servidor nodejs.
 
-Vamos escribir en la terminal . 
+    Vamos escribir en la terminal .
 
- </p>
- <pre><code class="language-javascript">
+  </p>
+  <pre><code class="language-javascript">
   $ sudo npm install -g koa-generator
 
 </code></pre>
 
   <p class="flow-text">
-    Una vez que se haya terminado de instalar corremos el comando para generar un nuevo proyecto llamado serverElastic con las vista tipo hbs. 
- </p>
+    Una vez que se haya terminado de instalar corremos el comando para generar un nuevo proyecto llamado serverElastic
+    con las vista tipo hbs.
+  </p>
 
- <pre><code class="language-javascript">
+  <pre><code class="language-javascript">
  $ koa serverElastic --hbs
 
 </code></pre>
@@ -80,54 +102,59 @@ Vamos escribir en la terminal .
 
 
   <p class="flow-text">
-    y automáticamente se nos va a generar la arquitectura de el proyecto. 
+    y automáticamente se nos va a generar la arquitectura de el proyecto.
 
- </p>
+  </p>
 
- <img class="imgKoa" src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550022263/oscarcode/Captura_de_pantalla_2019-02-12_19-41-06.png">
+  <img class="imgKoa"
+    src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550022263/oscarcode/Captura_de_pantalla_2019-02-12_19-41-06.png">
 
   <p class="flow-text">
-accedemos al folder con 
-    </p>
-     <pre><code class="language-javascript">
+    accedemos al folder con
+  </p>
+  <pre><code class="language-javascript">
  $ cd serverElastic 
 
 </code></pre>
 
-    <p class="flow-text">
+  <p class="flow-text">
 
-e instalamos las dependencias
+    e instalamos las dependencias
 
-con yarn si lo tienes instalado o con npm en caso contrario 
+    con yarn si lo tienes instalado o con npm en caso contrario
 
-    </p>
-  
-         <pre><code class="language-javascript">
+  </p>
+
+  <pre><code class="language-javascript">
   $ yarn install 
         </code></pre>
 
-    <p class="flow-text">
-      Posteriormente vamos a instalar el cliente de elasticsearch 
-    </p>
- <pre><code class="language-javascript">
+  <p class="flow-text">
+    Posteriormente vamos a instalar el cliente de elasticsearch
+  </p>
+  <pre><code class="language-javascript">
 $ yard add elasticsearch
 
 </code></pre>
 
-    <p class="flow-text">
-      Ya tenemos nuestro ambiente preparado, para comenzar a construir nuestro servidor conectado a elasticsearch, los bueno de una Koa, es que cuenta con un contexto, es decir, podemos extender funcionalidades a través de el contexto sin tener que declarar la variable en cada archivo en el que se requiera por ejemplo el cliente de elastic y es extremadamente bueno trabajando con asincronicidad . 
-    </p>
-    <h3>
-      Configurando elasticsearch en el server. 
-    </h3>
-    <p class="flow-text">
-      Vamos a configurar nuestro server de elasticsearch dentro de nuestro proyecto node, agregamos el cliente en el archivo app.js, que es donde habita toda la configuración de nuestro servidor web.
-    </p>
-    <p class="flow-text">
-      Requerimos elastic con la siguiente línea para que puedas estar disponible dentro del proyecto. 
+  <p class="flow-text">
+    Ya tenemos nuestro ambiente preparado, para comenzar a construir nuestro servidor conectado a elasticsearch, los
+    bueno de una Koa, es que cuenta con un contexto, es decir, podemos extender funcionalidades a través de el contexto
+    sin tener que declarar la variable en cada archivo en el que se requiera por ejemplo el cliente de elastic y es
+    extremadamente bueno trabajando con asincronicidad .
+  </p>
+  <h3>
+    Configurando elasticsearch en el server.
+  </h3>
+  <p class="flow-text">
+    Vamos a configurar nuestro server de elasticsearch dentro de nuestro proyecto node, agregamos el cliente en el
+    archivo app.js, que es donde habita toda la configuración de nuestro servidor web.
+  </p>
+  <p class="flow-text">
+    Requerimos elastic con la siguiente línea para que puedas estar disponible dentro del proyecto.
 
-    </p>
-     <pre><code class="language-javascript">
+  </p>
+  <pre><code class="language-javascript">
   const elasticsearch = require('elasticsearch');
 
 
@@ -135,12 +162,12 @@ $ yard add elasticsearch
 
 
 
-    <p class="flow-text">
-      y lo agregamos al contexto.
+  <p class="flow-text">
+    y lo agregamos al contexto.
 
-    </p>
+  </p>
 
-     <pre><code class="language-javascript">
+  <pre><code class="language-javascript">
   app.context.client = new elasticsearch.Client({
     host: 'localhost:9200',
     log: 'trace'
@@ -149,20 +176,26 @@ $ yard add elasticsearch
 
 </code></pre>
 
-    <img class="imgKoa"  src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550120651/oscarcode/Captura_de_pantalla_2019-02-13_23-02-22.png">
-    <p class="flow-text">
+  <img class="imgKoa"
+    src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550120651/oscarcode/Captura_de_pantalla_2019-02-13_23-02-22.png">
+  <p class="flow-text">
 
-Nuestro cliente recibe la URL donde habita nuestro servidor elasticsearch por lo general es el puerto 9200. De esta forma el cliente está disponible en todos los métodos de Koa donde se requiera. Antes de seguir con el siguiente paso vamos a crear el index que utilizaremos, los index son un tipo de recurso donde podemos guardar documentos, cada documento puede tener un tipo, quien define el tipo de documento con el que vamos a trabajar, donde meteremos/agregaremos todos los registros(documentos), así como modificarlos , por llamarlo de una forma no tan formal. 
+    Nuestro cliente recibe la URL donde habita nuestro servidor elasticsearch por lo general es el puerto 9200. De esta
+    forma el cliente está disponible en todos los métodos de Koa donde se requiera. Antes de seguir con el siguiente
+    paso vamos a crear el index que utilizaremos, los index son un tipo de recurso donde podemos guardar documentos,
+    cada documento puede tener un tipo, quien define el tipo de documento con el que vamos a trabajar, donde
+    meteremos/agregaremos todos los registros(documentos), así como modificarlos , por llamarlo de una forma no tan
+    formal.
 
-    </p>
-<h3>Crando un index con node</h3>
+  </p>
+  <h3>Crando un index con node</h3>
 
 
-    <p class="flow-text">
-    creamos un archivo llamado createIndex.js 
-    </p>
+  <p class="flow-text">
+    creamos un archivo llamado createIndex.js
+  </p>
 
-      <pre><code class="language-javascript">
+  <pre><code class="language-javascript">
     const elasticsearch = require('elasticsearch');
 
     const exists = await client.indices.exists({
@@ -179,57 +212,65 @@ Nuestro cliente recibe la URL donde habita nuestro servidor elasticsearch por lo
      
 </code></pre>
 
-<p   class="flow-text">Para correr el archivo escribimos en la terminal 
-</p>
-<pre><code class="language-javascript">
+  <p class="flow-text">Para correr el archivo escribimos en la terminal
+  </p>
+  <pre><code class="language-javascript">
   $ node createIndex.js  
 </code></pre>
 
-<p class="flow-text">
-  De esta forma nuestro index ya fue creado para ser usado.
+  <p class="flow-text">
+    De esta forma nuestro index ya fue creado para ser usado.
 
-todos estos métodos del cliente los nos encontramos en la documentación oficial de elastic. una vez que se haya creado nuestro index comenzamos con la configuración de nuestro servidor. 
+    todos estos métodos del cliente los nos encontramos en la documentación oficial de elastic. una vez que se haya
+    creado nuestro index comenzamos con la configuración de nuestro servidor.
 
-Nuestro servidor tiene la siguiente arquitectura de folders, explicare brevemente en qué consiste cada folder. 
-
-
-</p>
+    Nuestro servidor tiene la siguiente arquitectura de folders, explicare brevemente en qué consiste cada folder.
 
 
-    <div class="row center">
-        <img  class="center" src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550023378/oscarcode/Captura_de_pantalla_2019-02-12_20-01-54.png">
-         </div>
+  </p>
+
+
+  <div class="row center">
+    <img class="center"
+      src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550023378/oscarcode/Captura_de_pantalla_2019-02-12_20-01-54.png">
+  </div>
 
 
 
-<p class="flow-text">
-           Routers = se definen las rutas de nuestro servidor y los controladores <br>
-Public =  archivos public estáticos (archivos que se puede ver desde un cliente, css, js, imgs, pdfs, etc ) <br>
-Views = vistas del server web(cosas visuales), en esta caso con hbs <br>
-App.js =  donde tenemos la configuración de nuestro server. 
-</p>
-<p class="flow-text">
-  Vamos a agregar un nuevo archivo  al  folder routes, ahí creamos un archivo llamado Employee.js  donde tendremos todos los métodos HTTP para trabajar con el index que hicimos anteriormente. Comencemos a escribir 
+  <p class="flow-text">
+    Routers = se definen las rutas de nuestro servidor y los controladores <br>
+    Public = archivos public estáticos (archivos que se puede ver desde un cliente, css, js, imgs, pdfs, etc ) <br>
+    Views = vistas del server web(cosas visuales), en esta caso con hbs <br>
+    App.js = donde tenemos la configuración de nuestro server.
+  </p>
+  <p class="flow-text">
+    Vamos a agregar un nuevo archivo al folder routes, ahí creamos un archivo llamado Employee.js donde tendremos todos
+    los métodos HTTP para trabajar con el index que hicimos anteriormente. Comencemos a escribir
 
-</p>
+  </p>
 
-<h3>Obtener todos los registro de un index por un tipo. </h3>
+  <h3>Obtener todos los registro de un index por un tipo. </h3>
 
-<p class="flow-text">
-  Vamos a trabajar con nuestra primer método, obtener todos los empleados de nuestro index ( client.search ) 
-Lo bonito de utilizar nodejs es que los querys se crean de forma nativa, utilizando Query DSL   y para traernos todos los registros de un index utilizamos match_all, si quiere saber mas puede ingresar a la <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
+  <p class="flow-text">
+    Vamos a trabajar con nuestra primer método, obtener todos los empleados de nuestro index ( client.search )
+    Lo bonito de utilizar nodejs es que los querys se crean de forma nativa, utilizando Query DSL y para traernos todos
+    los registros de un index utilizamos match_all, si quiere saber mas puede ingresar a la <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
 "> doocumentacion oficial. </a>
-</p>
+  </p>
 
-<p class="flow-text">
-Match_all 
-</p>
+  <p class="flow-text">
+    Match_all
+  </p>
 
-<p class="flow-text">
-  Un match_all es similar a un select * from table de SQL, pero aquí no nos va a traer todos los registros, por defecto elastic obtiene solo 10 registros, una vez que le pasamos la propiedad size al objeto, podemos indicar el número de registros que queremos, si quieres traer todos los documento tienes que usar scroll o contar todos los documentos y pasarlo al campo size.  Espero no confundirlos, pero un registro es lo mismo que un documento o al menos me refiero a lo mismo. 
-</p>
+  <p class="flow-text">
+    Un match_all es similar a un select * from table de SQL, pero aquí no nos va a traer todos los registros, por
+    defecto elastic obtiene solo 10 registros, una vez que le pasamos la propiedad size al objeto, podemos indicar el
+    número de registros que queremos, si quieres traer todos los documento tienes que usar scroll o contar todos los
+    documentos y pasarlo al campo size. Espero no confundirlos, pero un registro es lo mismo que un documento o al menos
+    me refiero a lo mismo.
+  </p>
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
   const count = 1000;
   const response = await ctx.client.search({
       index: 'employees',
@@ -244,21 +285,27 @@ Match_all
 
 </code></pre>
 
-<p class="flow-text">
-  Vamos a comenzar con querys realmente sencillos, las cosas se van poniendo cada vez más complejas una vez que avanzamos ya que hay que entender muchos conceptos para que quede bien claro todo. 
-</p>
+  <p class="flow-text">
+    Vamos a comenzar con querys realmente sencillos, las cosas se van poniendo cada vez más complejas una vez que
+    avanzamos ya que hay que entender muchos conceptos para que quede bien claro todo.
+  </p>
 
-<p class="flow-text">
-  Client.search, recibe un objeto donde indicamos a que index va a ir a buscar y el tipo de documento que va obtener, el query que con el va hacer match y posteriormente procesar los resultados que se van a obtener de acuerdo a nuestro query.  Aquí escribiré el código  de mí método para obtener los employees con algunos comentarios para que se más fácil de entender. 
+  <p class="flow-text">
+    Client.search, recibe un objeto donde indicamos a que index va a ir a buscar y el tipo de documento que va obtener,
+    el query que con el va hacer match y posteriormente procesar los resultados que se van a obtener de acuerdo a
+    nuestro query. Aquí escribiré el código de mí método para obtener los employees con algunos comentarios para que se
+    más fácil de entender.
 
-</p>
+  </p>
 
-<p class="flow-text">
-  Quiero mencionar que koa-router recibe dos parámetros, el nombre del método con un string con el que se accedera a través de HTTP, en este caso “/employees//getAllEmployees”  y un función asíncrona que se ejecuta cuando accedes al método.
+  <p class="flow-text">
+    Quiero mencionar que koa-router recibe dos parámetros, el nombre del método con un string con el que se accedera a
+    través de HTTP, en este caso “/employees//getAllEmployees” y un función asíncrona que se ejecuta cuando accedes al
+    método.
 
-</p>
+  </p>
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
   const router = require('koa-router')() //requerimos koa-router
   router.prefix('/employees') //definimos el nombre de las rutas
 
@@ -284,75 +331,81 @@ Match_all
 
 
 
-<p class="flow-text">
-  Recordemos que podemos acceder al contexto del server desde cualquier método y por lo tanto al cliente que definimos en nuestro archivo app.js, es por ello que podemos acceder al cliente con ctx.client.search  al final enviamos la respuesta con ctx.body  a nuestro cliente con status 200 de “ok”
+  <p class="flow-text">
+    Recordemos que podemos acceder al contexto del server desde cualquier método y por lo tanto al cliente que definimos
+    en nuestro archivo app.js, es por ello que podemos acceder al cliente con ctx.client.search al final enviamos la
+    respuesta con ctx.body a nuestro cliente con status 200 de “ok”
 
-</p>
-<p class="flow-text">
-  
-Ahora que ya agregamos un método y una ruta, vamos a configurar la ruta en nuestro archivo app.js 
+  </p>
+  <p class="flow-text">
 
-requerimos nuestro archivo de la ruta de employees. 
+    Ahora que ya agregamos un método y una ruta, vamos a configurar la ruta en nuestro archivo app.js
 
-</p>
+    requerimos nuestro archivo de la ruta de employees.
 
-<pre><code class="language-javascript">
+  </p>
+
+  <pre><code class="language-javascript">
 
   const employees = require('./routes/employee')
 
 </code></pre>
 
-<p class="flow-text">
-  Y posteriormente configuramos permitiendo todos los métodos con 
+  <p class="flow-text">
+    Y posteriormente configuramos permitiendo todos los métodos con
 
-</p>
+  </p>
 
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
   app.use(employees.routes(), employees.allowedMethods())
 
 </code></pre>
 
 
-<p class="flow-text">
-  De esta forma nuestras rutas de employees ya son visibles para el servidor y podemos acceder a ellas por medio de HTTP. 
+  <p class="flow-text">
+    De esta forma nuestras rutas de employees ya son visibles para el servidor y podemos acceder a ellas por medio de
+    HTTP.
 
-Para correr nuestro servidor y verificar que todo esté funcionando bien corremos el comando.
+    Para correr nuestro servidor y verificar que todo esté funcionando bien corremos el comando.
 
-</p>
+  </p>
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
   $ npm start
 
 </code></pre>
 
-<p  class="flow-text">
-  Yo voy a utilizar postman para hacer un pequeño test y poder comprobar que mí API está funcionando correctamente.
-</p>
+  <p class="flow-text">
+    Yo voy a utilizar postman para hacer un pequeño test y poder comprobar que mí API está funcionando correctamente.
+  </p>
 
 
 
-<img  class="imgKoa" src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550113452/oscarcode/Captura_de_pantalla_2019-02-13_21-02-59.png">
+  <img class="imgKoa"
+    src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550113452/oscarcode/Captura_de_pantalla_2019-02-13_21-02-59.png">
 
-<p class="flow-text">
-  Yo ya tenía algunos documentos en mí index
-</p>
-
-
-<h3>
-  Agregando  un employee
-
-</h3>
-
-<p class="flow-text">
-  Para agregar un employee a a nuestro index es necesario contar con el cuerpo de la petición, el cuerpo de la petición debe llevar la información que vamos a guardar dentro de elasticsearch, para este ejemplo voy a utilizar el siguiente modelo json para enviarlo a mí server. 
-
-</p>
+  <p class="flow-text">
+    Yo ya tenía algunos documentos en mí index
+  </p>
 
 
-<pre><code class="language-javascript">
+  <h3>
+    Agregando un employee
+
+  </h3>
+
+  <p class="flow-text">
+    Para agregar un employee a a nuestro index es necesario contar con el cuerpo de la petición, el cuerpo de la
+    petición debe llevar la información que vamos a guardar dentro de elasticsearch, para este ejemplo voy a utilizar el
+    siguiente modelo json para enviarlo a mí server.
+
+  </p>
+
+
+  <pre><code class="language-javascript">
 
 {
   "first_name": "Oscar",
@@ -366,16 +419,19 @@ Para correr nuestro servidor y verificar que todo esté funcionando bien corremo
 
 </code></pre>
 
-<p class="flow-text">
-  Para obtener el cuerpo de nuestra petición Koa prove la propiedad request, donde encontraremos toda la información de el request(petición) y por lo tanto el cuerpo de la petición. 
-</p>
+  <p class="flow-text">
+    Para obtener el cuerpo de nuestra petición Koa prove la propiedad request, donde encontraremos toda la información
+    de el request(petición) y por lo tanto el cuerpo de la petición.
+  </p>
 
-<p class="flow-text">
-  Vamos a crear una nueva ruta con el nombre de “/Addemployee” tipo POST (ya que vamos a agregar documentos a elastic) y  vamos a pasar una función asíncrona llamada addEmployee, es recomendable siempre nombrar las funciones para hacer un mejor test, debugging o un mejor manejo de errores. 
+  <p class="flow-text">
+    Vamos a crear una nueva ruta con el nombre de “/Addemployee” tipo POST (ya que vamos a agregar documentos a elastic)
+    y vamos a pasar una función asíncrona llamada addEmployee, es recomendable siempre nombrar las funciones para hacer
+    un mejor test, debugging o un mejor manejo de errores.
 
-</p>
+  </p>
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 
 router.post('/addEmployee', async function addEmployee(ctx, next) {
@@ -385,13 +441,13 @@ router.post('/addEmployee', async function addEmployee(ctx, next) {
 
 </code></pre>
 
-<p class="flow-text">
-  Dentro de nuestra función guardamos el cuerpo de la petición en una constante llamada employee.
-</p>
+  <p class="flow-text">
+    Dentro de nuestra función guardamos el cuerpo de la petición en una constante llamada employee.
+  </p>
 
 
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 
 router.post('/addEmployee', async function addEmployee(ctx, next) {
@@ -401,13 +457,14 @@ const employee = ctx.request.body
 
 </code></pre>
 
-<p class="flow-text">
-  
-Para agregar un nuevo registro debemos de utilizar el método index y pasarle un objeto donde indicamos al index donde se va a guardar nuestro nuevo registro , el type de documento y el cuerpo de nuestro documento. 
+  <p class="flow-text">
 
-</p>
+    Para agregar un nuevo registro debemos de utilizar el método index y pasarle un objeto donde indicamos al index
+    donde se va a guardar nuestro nuevo registro , el type de documento y el cuerpo de nuestro documento.
 
-<pre><code class="language-javascript">
+  </p>
+
+  <pre><code class="language-javascript">
 
 
 router.post('/addEmployee', async function addEmployee(ctx, next) {
@@ -423,12 +480,12 @@ router.post('/addEmployee', async function addEmployee(ctx, next) {
 
 </code></pre>
 
-<p class="flow-text">
-  Toda función async/await debe de llevar un try,catch en cada de que haya errores poder manejarlos .
-</p>
+  <p class="flow-text">
+    Toda función async/await debe de llevar un try,catch en cada de que haya errores poder manejarlos .
+  </p>
 
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 
 router.post('/addEmployee', async function addEmployee(ctx, next) {
@@ -453,11 +510,11 @@ router.post('/addEmployee', async function addEmployee(ctx, next) {
 
 </code></pre>
 
-<p class="flow-text">
-  Una vez que hayamos creado el nuevo Employee, enviamos la respuesta con ctx.body .
-</p>
+  <p class="flow-text">
+    Una vez que hayamos creado el nuevo Employee, enviamos la respuesta con ctx.body .
+  </p>
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 
 
@@ -486,37 +543,40 @@ router.post('/addEmployee', async function addEmployee(ctx, next) {
 
 </code></pre>
 
-<p class="flow-text">
-  De esta forma creamos el nuevo employee y lo enviamos a el cliente, no es para nada complicado, este mismo método, quiero decir client.index se utiliza para actualizar, lo veremos más adelante.
-</p>
+  <p class="flow-text">
+    De esta forma creamos el nuevo employee y lo enviamos a el cliente, no es para nada complicado, este mismo método,
+    quiero decir client.index se utiliza para actualizar, lo veremos más adelante.
+  </p>
 
-<h3>
-  Obtener un employee por medio de parámetros. 
-</h3>
+  <h3>
+    Obtener un employee por medio de parámetros.
+  </h3>
 
-<p class="flow-text">
-  Ahora vamos a obtener el documento por un id. <br>
+  <p class="flow-text">
+    Ahora vamos a obtener el documento por un id. <br>
 
-Para acceder a parámetros de la url o nombre que definiremos, vamos a escribir el nombre del método Koa de la siguiente forma, con dos punto seguido del nombre del parámetro. <br>
-
- 
- <strong>
-   “/getEmployeeById/:employeeId”
- </strong>
+    Para acceder a parámetros de la url o nombre que definiremos, vamos a escribir el nombre del método Koa de la
+    siguiente forma, con dos punto seguido del nombre del parámetro. <br>
 
 
-</p>
-
-<p class="flow-text">
-  Los dos puntos  le indica que es un parámetro y ese parámetro puede obtener cualquier valores. 
-
-</p>
-<p class="flow-text">
-  Para poder acceder al parámetro, nuestro contexto cuenta con propiedad llamado params, donde encontraremos los parámetros de nuestra url 
-</p>
+    <strong>
+      “/getEmployeeById/:employeeId”
+    </strong>
 
 
-<pre><code class="language-javascript">
+  </p>
+
+  <p class="flow-text">
+    Los dos puntos le indica que es un parámetro y ese parámetro puede obtener cualquier valores.
+
+  </p>
+  <p class="flow-text">
+    Para poder acceder al parámetro, nuestro contexto cuenta con propiedad llamado params, donde encontraremos los
+    parámetros de nuestra url
+  </p>
+
+
+  <pre><code class="language-javascript">
 
 
 
@@ -527,12 +587,12 @@ const employeeId = ctx.params.employeeId
 </code></pre>
 
 
-<p class="flow-text">
-  Vamos a crear el método tipo get, le vamos a pasar el nombre del método y la función asíncrona  getEmployeeById
+  <p class="flow-text">
+    Vamos a crear el método tipo get, le vamos a pasar el nombre del método y la función asíncrona getEmployeeById
 
-</p>
+  </p>
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 router.get('/getEmployeeById/:employeeId', async function getEmployeeById(ctx, next) {
   const employeeId = ctx.params.employeeId //obtenemos el id y guardamos en la constante
@@ -541,15 +601,16 @@ router.get('/getEmployeeById/:employeeId', async function getEmployeeById(ctx, n
 </code></pre>
 
 
-<p class="flow-text">
-  Vamos a utilizar esta variable employeeId para crear un query que acceda al documento, utilizando <strong>
-     client.search,
-  </strong> quien recibe un objeto, donde tenemos el index a buscar y el type, así como el query. Dentro de query, hay otro objeto, comple la funcion de hacer match con el documento que corresponda a ese id. 
+  <p class="flow-text">
+    Vamos a utilizar esta variable employeeId para crear un query que acceda al documento, utilizando <strong>
+      client.search,
+    </strong> quien recibe un objeto, donde tenemos el index a buscar y el type, así como el query. Dentro de query, hay
+    otro objeto, comple la funcion de hacer match con el documento que corresponda a ese id.
 
-</p>
+  </p>
 
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 
 router.get('/getEmployeeById/:employeeId', async function getEmployeeById(ctx, next) {
@@ -577,22 +638,27 @@ router.get('/getEmployeeById/:employeeId', async function getEmployeeById(ctx, n
 
 </code></pre>
 
-<p class="flow-text">
-  Realmente el código es muy parecido al obtener todos los registros, la única diferencia es que recibe el query con el que se hace match de un id  y una vez que encuentra el documento que coincide con este id después  lo manda al cliente por medio de ctx.body con un status 200
-</p>
+  <p class="flow-text">
+    Realmente el código es muy parecido al obtener todos los registros, la única diferencia es que recibe el query con
+    el que se hace match de un id y una vez que encuentra el documento que coincide con este id después lo manda al
+    cliente por medio de ctx.body con un status 200
+  </p>
 
-<h3>Borrar un employee por medio de parámetros. </h3>
+  <h3>Borrar un employee por medio de parámetros. </h3>
 
-<p class="flow-text">
-  Para borrar un documento utilizamos el método  <strong>client.deleteByQuery,</strong> que como ya es costumbre, recibe un objeto, con el  index a buscar,  el tipo y el cuerpo con el query que hará match para posteriormente eliminar y claro a través de los parámetros de la URL. 
-</p>
-<p class="flow-text">
-  Entonces vamos a crear un nuevo método tipo DELETE, pasando el nombre del método y una función asíncrona llamada deleteEmployeeById
+  <p class="flow-text">
+    Para borrar un documento utilizamos el método <strong>client.deleteByQuery,</strong> que como ya es costumbre,
+    recibe un objeto, con el index a buscar, el tipo y el cuerpo con el query que hará match para posteriormente
+    eliminar y claro a través de los parámetros de la URL.
+  </p>
+  <p class="flow-text">
+    Entonces vamos a crear un nuevo método tipo DELETE, pasando el nombre del método y una función asíncrona llamada
+    deleteEmployeeById
 
-</p>
+  </p>
 
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 
 router.delete('/deleteEmployeeById/:employeeId', async function deleteEmployeeById(ctx, next) {
@@ -601,12 +667,13 @@ router.delete('/deleteEmployeeById/:employeeId', async function deleteEmployeeBy
 
 </code></pre>
 
-<p class="flow-text">
-  Ahora en lugar de hacer una búsqueda, vamos a eliminar por un query, 
-la única diferencia con el método de obtener employee por id, es el método que usamos en el cliente de elastic, ahora como menciono arriba vamos a utilizar deleteByQuery. 
+  <p class="flow-text">
+    Ahora en lugar de hacer una búsqueda, vamos a eliminar por un query,
+    la única diferencia con el método de obtener employee por id, es el método que usamos en el cliente de elastic,
+    ahora como menciono arriba vamos a utilizar deleteByQuery.
 
-</p>
-<pre><code class="language-javascript">
+  </p>
+  <pre><code class="language-javascript">
 
 router.delete('/deleteEmployeeById/:employeeId', async function deleteEmployeeById(ctx, next) {
   const employeeId = ctx.params.employeeId
@@ -635,26 +702,30 @@ router.delete('/deleteEmployeeById/:employeeId', async function deleteEmployeeBy
 
 </code></pre>
 
-<h3>
-  Actualizar un employee por medio de parámetros. 
-</h3>
+  <h3>
+    Actualizar un employee por medio de parámetros.
+  </h3>
 
-<p class="flow-text">
-Entre crear y actualizar no existe ninguna diferencia, o mejor dicho, se utiliza el mismo método  de elastic para hacerlo, es decir, client.index, en caso de que encuentre el index, solo lo va actualizar, en caso de que no lo encuentre lo va a generar, aquí habría que validar para no generar un nuevo registro, pues ese no el caso para este método que es de tipo PUT. 
+  <p class="flow-text">
+    Entre crear y actualizar no existe ninguna diferencia, o mejor dicho, se utiliza el mismo método de elastic para
+    hacerlo, es decir, client.index, en caso de que encuentre el index, solo lo va actualizar, en caso de que no lo
+    encuentre lo va a generar, aquí habría que validar para no generar un nuevo registro, pues ese no el caso para este
+    método que es de tipo PUT.
 
-</p>
+  </p>
 
-<p class="flow-text">
-  
-Vamos a crear un método tipo PUT (ya que vamos actualizar el documento) , recibe el nombre y una funciona asíncrona llamada updateEmployeeByid.
+  <p class="flow-text">
 
-</p>
+    Vamos a crear un método tipo PUT (ya que vamos actualizar el documento) , recibe el nombre y una funciona asíncrona
+    llamada updateEmployeeByid.
 
-<p class="flow-text">
-  Guardamos el cuerpo de nuestra información y el employeeId que queremos actualizar. 
+  </p>
 
-</p>
-<pre><code class="language-javascript">
+  <p class="flow-text">
+    Guardamos el cuerpo de nuestra información y el employeeId que queremos actualizar.
+
+  </p>
+  <pre><code class="language-javascript">
 
 const employee = ctx.request.body
 const employeeId = ctx.params.employeeId
@@ -662,14 +733,14 @@ const employeeId = ctx.params.employeeId
 
 </code></pre>
 
-<p class="flow-text">
-  
-Posteriormente le pasamos esa información a nuestro objeto que se pasa por medio de index()
+  <p class="flow-text">
 
-</p>
+    Posteriormente le pasamos esa información a nuestro objeto que se pasa por medio de index()
+
+  </p>
 
 
-<pre><code class="language-javascript">
+  <pre><code class="language-javascript">
 
 router.put('/updateEmployeeById/:employeeId', async function updateEmployeeById(ctx, next) {
   const employee = ctx.request.body
@@ -697,49 +768,63 @@ router.put('/updateEmployeeById/:employeeId', async function updateEmployeeById(
 
 </code></pre>
 
-<h3>Testiando con POSTMAN </h3>
+  <h3>Testiando con POSTMAN </h3>
 
-<img class="imgKoa" src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550125975/oscarcode/Captura_de_pantalla_2019-02-14_00-30-32.png">
+  <img class="imgKoa"
+    src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550125975/oscarcode/Captura_de_pantalla_2019-02-14_00-30-32.png">
 
-<img src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550126053/oscarcode/Captura_de_pantalla_2019-02-14_00-34-00.png" class="imgKoa">
-  
-</img>
+  <img
+    src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550126053/oscarcode/Captura_de_pantalla_2019-02-14_00-34-00.png"
+    class="imgKoa">
 
-<img  class="imgKoa" src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550126123/oscarcode/Captura_de_pantalla_2019-02-14_00-34-55.png">
+  </img>
 
-<img class="imgKoa" src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550126238/oscarcode/Captura_de_pantalla_2019-02-14_00-37-05.png">
+  <img class="imgKoa"
+    src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550126123/oscarcode/Captura_de_pantalla_2019-02-14_00-34-55.png">
 
-<h3>Conclusiones y comentarios.</h3>
+  <img class="imgKoa"
+    src="https://res.cloudinary.com/ddnlc2jur/image/upload/v1550126238/oscarcode/Captura_de_pantalla_2019-02-14_00-37-05.png">
 
-<p class="flow-text">
-  Node y elastic son dos herramientas demasiado modernas, menos de 10 años en el mercado, algunos dicen que no por ser bueno tiene que ser mejor, pero node y elastic son la excepción, están aquí para revolucionar el mundo del backend,  si comparamos un servidor SQL con elastic, SQL se queda corto, y ahora en combinación con node, nuestra app va a volar, nuestro desarrollo será más rápido, pues no hay que compilar absolutamente nada y con lo sencillo que es javascript vas a conseguir un desarrollo en cuestión de horas que con otros lenguajes como  java o c# te tomaría días. Una vez que hayas creado un server, todo los clientes que se conecten vana recibir respuestas en cuestión de segundo, lo que hace que la experiencia de usuario mejore y la calidad de tu software aumente.
-</p>
+  <h3>Conclusiones y comentarios.</h3>
 
-<h3>
-  Futuro. 
+  <p class="flow-text">
+    Node y elastic son dos herramientas demasiado modernas, menos de 10 años en el mercado, algunos dicen que no por ser
+    bueno tiene que ser mejor, pero node y elastic son la excepción, están aquí para revolucionar el mundo del backend,
+    si comparamos un servidor SQL con elastic, SQL se queda corto, y ahora en combinación con node, nuestra app va a
+    volar, nuestro desarrollo será más rápido, pues no hay que compilar absolutamente nada y con lo sencillo que es
+    javascript vas a conseguir un desarrollo en cuestión de horas que con otros lenguajes como java o c# te tomaría
+    días. Una vez que hayas creado un server, todo los clientes que se conecten vana recibir respuestas en cuestión de
+    segundo, lo que hace que la experiencia de usuario mejore y la calidad de tu software aumente.
+  </p>
 
-</h3>
+  <h3>
+    Futuro.
 
-<p class="flow-text">
-  
-En un trabajo futuro, voy a crear un post para explicar como  hacer un deploy a heroku, consumir datos desde un cliente Android con React Native, para seguir experimentando con esta tecnología. 
+  </h3>
 
-</p>
-<div id="disqus_thread"></div>
+  <p class="flow-text">
+
+    En un trabajo futuro, voy a crear un post para explicar como hacer un deploy a heroku, consumir datos desde un
+    cliente Android con React Native, para seguir experimentando con esta tecnología.
+
+  </p>
+  <div id="disqus_thread"></div>
 </div>
 
 <style>
-     .parallax-container {
-      height: 350px;
+  .parallax-container {
+    height: 350px;
+  }
+
+  .imgExample {
+    width: 60%;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .imgExample {
+      width: 100%;
     }
-    .imgExample{
-        width: 60%;
-    }
-    @media only screen and (max-width: 600px) {
-    .imgExample{
-        width: 100%;
-    }
-}
+  }
 </style>
 
 <script>
