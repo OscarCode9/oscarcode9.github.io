@@ -830,15 +830,15 @@
     .sidenav li a { color: var(--text-primary) !important; }
 
     @media (max-width: 992px) {
-      .hero .container { flex-direction: column-reverse; text-align: center; }
+      .hero .container { flex-direction: column; text-align: left; }
       .hero-content { text-align: left; max-width: 100%; }
-      .hero-image-wrapper { width: 200px; height: 200px; margin-bottom: 30px; }
+      .hero-image { display: none; }
       .hero-title { font-size: 2.2rem; }
       .hero-stats { gap: 25px; }
     }
 
     @media (max-width: 600px) {
-      .hero { padding-top: 90px; }
+      .hero { padding-top: 100px; }
       .hero-title { font-size: 1.8rem; }
       .hero-stats { flex-direction: column; gap: 15px; }
       .stat-item { text-align: left; }
