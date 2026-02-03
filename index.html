@@ -16,7 +16,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- DEVICON - Iconos de tecnologías con colores -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
-  <link rel="icon" href="public/icon.png" type="image/png">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="public/image.png">
 
   <style>
     :root {
@@ -80,13 +81,52 @@
       overflow: hidden;
     }
 
-    .hero .container {
-      max-width: 1200px;
+    .hero > .container {
+      width: 90%;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 60px;
     }
 
     .hero-content {
       text-align: left;
-      max-width: 700px;
+      max-width: 650px;
+      flex: 1;
+    }
+
+    .hero-image {
+      flex-shrink: 0;
+    }
+
+    .hero-image-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+    }
+
+    .hero-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+    }
+
+    .hero-image-glow {
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      right: -15px;
+      bottom: -15px;
+      background: var(--gradient-1);
+      border-radius: 50%;
+      opacity: 0.2;
+      filter: blur(25px);
+      z-index: -1;
     }
 
     .hero::before {
@@ -225,6 +265,12 @@
     /* SECTIONS */
     .section { padding: 100px 0; }
 
+    .section > .container {
+      width: 90%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
     .section-header { text-align: left; margin-bottom: 60px; }
 
     .section-title {
@@ -332,13 +378,172 @@
     .devicon-git-plain { color: #f05032 !important; }
     .devicon-graphql-plain { color: #e10098 !important; }
 
+    /* ABOUT SECTION */
+    .about-section {
+      background: linear-gradient(180deg, var(--bg-dark) 0%, #0d0d14 100%);
+    }
+
+    .about-container {
+      max-width: 900px;
+    }
+
+    .about-content {
+      max-width: 900px;
+    }
+
+    .about-intro h3 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .about-intro .highlight {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .about-tagline {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+    }
+
+    .code-tag {
+      color: var(--primary);
+    }
+
+    .about-text p {
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 15px;
+    }
+
+    .company-highlight {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .about-love-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 30px 0;
+    }
+
+    .about-love-section h4 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .about-love-section h4 i {
+      color: #f7df1e;
+    }
+
+    .about-love-section h4 i.devicon-typescript-plain {
+      color: #3178c6;
+    }
+
+    .about-love-section h4 i.fa-robot {
+      color: #7c3aed;
+    }
+
+    .about-love-section .heart {
+      color: #e74c3c;
+      animation: heartbeat 1.5s infinite;
+    }
+
+    .about-love-section .ai-badge {
+      animation: pulse-ai 2s infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    @keyframes pulse-ai {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    .about-love-section.ai-section {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
+      border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    .about-love-section.ai-section:hover {
+      border-color: rgba(124, 58, 237, 0.5);
+    }
+
+    .about-love-section p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .about-fun-facts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .fun-fact {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      transition: all 0.3s;
+    }
+
+    .fun-fact:hover {
+      border-color: var(--primary);
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .fun-fact-icon {
+      font-size: 1.3rem;
+    }
+
+    .about-quote {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .about-quote blockquote {
+      font-family: 'Fira Code', monospace;
+      font-size: 1rem;
+      color: var(--primary);
+      padding: 20px;
+      background: rgba(0, 212, 255, 0.05);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      margin: 0;
+    }
+
+    @media (max-width: 900px) {
+      .about-fun-facts {
+        grid-template-columns: 1fr;
+      }
+    }
+
     /* EXPERIENCE TIMELINE */
     .experience-section { background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); }
 
     .timeline {
       position: relative;
-      max-width: 850px;
-      margin: 0 auto;
+      max-width: 900px;
     }
 
     .timeline::before {
@@ -455,90 +660,80 @@
     /* BLOG */
     .blog-section { background: var(--bg-dark); }
 
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 30px;
+    .blog-list {
+      max-width: 900px;
     }
 
-    .blog-card {
-      background: var(--bg-card);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-    }
-
-    .blog-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(0, 212, 255, 0.3);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .blog-card a {
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-
-    .blog-image {
-      width: 100%;
-      height: 200px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    }
-
-    .blog-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s;
-    }
-
-    .blog-card:hover .blog-image img {
-      transform: scale(1.05);
-    }
-
-    .blog-content {
-      padding: 25px;
-    }
-
-    .blog-date {
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .blog-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 10px;
+      justify-content: space-between;
+      padding: 25px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.3s;
     }
 
-    .blog-content h3 {
-      font-size: 1.15rem;
+    .blog-item:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .blog-item:hover {
+      padding-left: 15px;
+      background: linear-gradient(90deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+    }
+
+    .blog-item-content {
+      flex: 1;
+    }
+
+    .blog-item-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .blog-item-title {
+      font-size: 1.1rem;
       font-weight: 600;
-      margin: 0 0 12px 0;
-      line-height: 1.4;
       color: var(--text-primary);
+      margin: 0 0 6px 0;
+      transition: color 0.3s;
     }
 
-    .blog-content p {
+    .blog-item:hover .blog-item-title {
+      color: var(--primary);
+    }
+
+    .blog-item-excerpt {
       font-size: 0.9rem;
       color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 15px;
+      margin: 0;
+      max-width: 600px;
     }
 
-    .blog-link {
+    .blog-item-arrow {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      margin-left: 20px;
+    }
+
+    .blog-item:hover .blog-item-arrow {
       color: var(--primary);
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: gap 0.3s;
+      transform: translateX(5px);
     }
 
-    .blog-card:hover .blog-link {
-      gap: 10px;
+    .blog-item-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--primary);
+      border-radius: 4px;
+      margin-right: 10px;
+      font-family: 'Fira Code', monospace;
     }
 
     /* CONTACT */
@@ -635,6 +830,9 @@
     .sidenav li a { color: var(--text-primary) !important; }
 
     @media (max-width: 992px) {
+      .hero .container { flex-direction: column-reverse; text-align: center; }
+      .hero-content { text-align: left; max-width: 100%; }
+      .hero-image-wrapper { width: 200px; height: 200px; margin-bottom: 30px; }
       .hero-title { font-size: 2.2rem; }
       .hero-stats { gap: 25px; }
     }
@@ -650,7 +848,9 @@
       .timeline-dot { left: -1px; }
       .timeline-header { flex-direction: column; }
       .btn-secondary { margin-left: 0; margin-top: 10px; }
-      .blog-grid { grid-template-columns: 1fr; }
+      .blog-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+      .blog-item-arrow { display: none; }
+      .hero-image-wrapper { width: 150px; height: 150px; }
     }
   </style>
 </head>
@@ -666,6 +866,7 @@
         <ul class="right hide-on-med-and-down">
           <li><a href="#skills">Skills</a></li>
           <li><a href="#experience">Experiencia</a></li>
+          <li><a href="#about">Sobre Mí</a></li>
           <li><a href="#blog">Blog</a></li>
           <li><a href="#contact">Contacto</a></li>
         </ul>
@@ -676,6 +877,7 @@
   <ul class="sidenav" id="mobile-nav">
     <li><a href="#skills">Skills</a></li>
     <li><a href="#experience">Experiencia</a></li>
+    <li><a href="#about">Sobre Mí</a></li>
     <li><a href="#blog">Blog</a></li>
     <li><a href="#contact">Contacto</a></li>
   </ul>
@@ -715,6 +917,96 @@
           </a>
         </div>
       </div>
+
+      <div class="hero-image">
+        <div class="hero-image-wrapper">
+          <div class="hero-image-glow"></div>
+          <img src="public/image.png" alt="Oscar Martínez">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE MÍ -->
+  <section id="about" class="section about-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Sobre Mí</h2>
+        <p class="section-subtitle">Un poco de mi historia y lo que me apasiona</p>
+      </div>
+
+      <div class="about-container">
+        <div class="about-content">
+          <div class="about-intro">
+            <h3>Hey, soy <span class="highlight">Oscar Martínez</span> 👋</h3>
+            <p class="about-tagline">
+              <span class="code-tag">&lt;developer&gt;</span> construyendo software que importa <span class="code-tag">&lt;/developer&gt;</span>
+            </p>
+          </div>
+
+          <div class="about-text">
+            <p>
+              Siempre me ha gustado resolver problemas complejos. De chico consideré estudiar 
+              astrofísica o matemáticas, pero cuando descubrí la programación en la prepa, 
+              supe que era lo mío. Combina lógica, creatividad y la satisfacción de ver 
+              algo funcionando.
+            </p>
+            <p>
+              Soy <strong>Ingeniero en Sistemas</strong> por la Universidad Politécnica de 
+              Aguascalientes. Mi camino profesional me ha llevado por empresas como 
+              <span class="company-highlight">ICMA</span>, <span class="company-highlight">FrontRunner</span>, 
+              <span class="company-highlight">Softtek</span>, <span class="company-highlight">DensityLabs</span>, 
+              <span class="company-highlight">MUBAI</span> y actualmente en 
+              <span class="company-highlight">Truck Drivers</span> y <span class="company-highlight">PROAN</span>, 
+              donde me especializo en arquitecturas de microservicios y desarrollo full-stack.
+            </p>
+          </div>
+
+          <div class="about-love-section">
+            <h4><i class="devicon-typescript-plain"></i> JavaScript & TypeScript <span class="heart">♥</span></h4>
+            <p>
+              <strong>JavaScript y TypeScript son mi stack principal.</strong> Desde APIs robustas con 
+              Node.js hasta interfaces reactivas con React — domino el ecosistema completo. 
+              TypeScript me permite escribir código más seguro y mantenible a escala enterprise.
+            </p>
+          </div>
+
+          <div class="about-love-section ai-section">
+            <h4><i class="fas fa-robot"></i> AI-Augmented Developer <span class="ai-badge">🚀</span></h4>
+            <p>
+              Integro <strong>Inteligencia Artificial en mi flujo de trabajo diario</strong> para 
+              maximizar productividad y calidad. Desde pair programming con AI, generación de 
+              tests automatizados, hasta optimización de código — aprovecho las herramientas 
+              modernas para entregar soluciones más rápido sin sacrificar calidad.
+            </p>
+          </div>
+
+          <div class="about-fun-facts">
+            <div class="fun-fact">
+              <span class="fun-fact-icon">📸</span>
+              <span>Fotografía y video como hobby creativo</span>
+            </div>
+            <div class="fun-fact">
+              <span class="fun-fact-icon">🚀</span>
+              <span>Side project: OventsLabs</span>
+            </div>
+            <div class="fun-fact">
+              <span class="fun-fact-icon">☕</span>
+              <span>Café + lo-fi = productividad</span>
+            </div>
+            <div class="fun-fact">
+              <span class="fun-fact-icon">📚</span>
+              <span>Siempre leyendo algo técnico</span>
+            </div>
+          </div>
+
+          <div class="about-quote">
+            <blockquote>
+              "Build things, break things, learn from both."
+            </blockquote>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -726,81 +1018,71 @@
         <p class="section-subtitle">Cosas que escribo cuando no estoy debuggeando</p>
       </div>
 
-      <div class="blog-grid">
+      <div class="blog-list">
         <!-- Post 1: Microservices -->
-        <article class="blog-card">
-          <a href="Microservices.html">
-            <div class="blog-image">
-              <img src="public/images/blog/microservices.jpg" alt="Microservicios con Node.js y Spring Boot">
+        <a href="Microservices.html" class="blog-item">
+          <div class="blog-item-content">
+            <div class="blog-item-date">
+              <span class="blog-item-tag">Microservices</span>
+              29 Jul 2020
             </div>
-            <div class="blog-content">
-              <span class="blog-date"><i class="far fa-calendar-alt"></i> 29-07-2020</span>
-              <h3>Microservicios con Node.js y Spring Boot para Cryptomonedas</h3>
-              <p>Conectando tres microservicios utilizando Java y JavaScript con sus respectivos frameworks para consumir APIs de criptomonedas de Bitso...</p>
-              <span class="blog-link">Leer más <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        </article>
+            <h3 class="blog-item-title">Microservicios con Node.js y Spring Boot para Cryptomonedas</h3>
+            <p class="blog-item-excerpt">Arquitectura de tres microservicios conectando Java y JavaScript para consumir APIs de Bitso</p>
+          </div>
+          <i class="fas fa-arrow-right blog-item-arrow"></i>
+        </a>
 
         <!-- Post 2: Elasticsearch -->
-        <article class="blog-card">
-          <a href="KoaElastic.html">
-            <div class="blog-image">
-              <img src="public/images/nodejs.png" alt="Node.js con Elasticsearch">
+        <a href="KoaElastic.html" class="blog-item">
+          <div class="blog-item-content">
+            <div class="blog-item-date">
+              <span class="blog-item-tag">Backend</span>
+              14 Feb 2019
             </div>
-            <div class="blog-content">
-              <span class="blog-date"><i class="far fa-calendar-alt"></i> 14-02-2019</span>
-              <h3>Node.js con ElasticSearch</h3>
-              <p>Hace tiempo que no escribía algo para el blog, pero hoy toca hablar sobre cómo integrar ElasticSearch con Node.js...</p>
-              <span class="blog-link">Leer más <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        </article>
+            <h3 class="blog-item-title">Node.js con ElasticSearch</h3>
+            <p class="blog-item-excerpt">Integrando el motor de búsqueda más potente con Node.js para búsquedas en tiempo real</p>
+          </div>
+          <i class="fas fa-arrow-right blog-item-arrow"></i>
+        </a>
 
         <!-- Post 3: RESTFUL -->
-        <article class="blog-card">
-          <a href="restfull.html">
-            <div class="blog-image">
-              <img src="public/images/blog/ruta.png" alt="REST API">
+        <a href="restfull.html" class="blog-item">
+          <div class="blog-item-content">
+            <div class="blog-item-date">
+              <span class="blog-item-tag">Arquitectura</span>
+              15 Jul 2018
             </div>
-            <div class="blog-content">
-              <span class="blog-date"><i class="far fa-calendar-alt"></i> 15-07-2018</span>
-              <h3>El Arte de Construir Software (RESTFUL)</h3>
-              <p>Construir software es todo un arte, tan parecido a mantener un jardín. Existen arquitecturas, patrones y buenas prácticas...</p>
-              <span class="blog-link">Leer más <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        </article>
+            <h3 class="blog-item-title">El Arte de Construir Software (RESTFUL)</h3>
+            <p class="blog-item-excerpt">Patrones, buenas prácticas y la filosofía detrás de las APIs REST bien diseñadas</p>
+          </div>
+          <i class="fas fa-arrow-right blog-item-arrow"></i>
+        </a>
 
         <!-- Post 4: React -->
-        <article class="blog-card">
-          <a href="aboutReact.html">
-            <div class="blog-image">
-              <img src="public/images/reactjs.png" alt="React.js">
+        <a href="aboutReact.html" class="blog-item">
+          <div class="blog-item-content">
+            <div class="blog-item-date">
+              <span class="blog-item-tag">Frontend</span>
+              28 Apr 2018
             </div>
-            <div class="blog-content">
-              <span class="blog-date"><i class="far fa-calendar-alt"></i> 28-04-2018</span>
-              <h3>React, el State, los Props y Todo lo Demás</h3>
-              <p>Hace tiempo que quería escribir algo sobre Reactjs. Hoy sacrifiqué una película para hablar sobre state, props y componentes...</p>
-              <span class="blog-link">Leer más <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        </article>
+            <h3 class="blog-item-title">React, el State, los Props y Todo lo Demás</h3>
+            <p class="blog-item-excerpt">Fundamentos de React: componentes, estado y el flujo de datos unidireccional</p>
+          </div>
+          <i class="fas fa-arrow-right blog-item-arrow"></i>
+        </a>
 
         <!-- Post 5: Encriptado -->
-        <article class="blog-card">
-          <a href="cyptoOscarCode.html">
-            <div class="blog-image">
-              <img src="public/images/encrypto1.png" alt="Algoritmo de encriptación">
+        <a href="cyptoOscarCode.html" class="blog-item">
+          <div class="blog-item-content">
+            <div class="blog-item-date">
+              <span class="blog-item-tag">Seguridad</span>
+              10 Feb 2018
             </div>
-            <div class="blog-content">
-              <span class="blog-date"><i class="far fa-calendar-alt"></i> 10-02-2018</span>
-              <h3>Mi Primer Algoritmo de Encriptado</h3>
-              <p>Hoy estaba en la universidad y recordé que el profesor de seguridad nos dejó crear nuestro propio algoritmo de encriptación...</p>
-              <span class="blog-link">Leer más <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-        </article>
+            <h3 class="blog-item-title">Mi Primer Algoritmo de Encriptado</h3>
+            <p class="blog-item-excerpt">Creando un algoritmo de encriptación desde cero — aprendiendo los fundamentos de la criptografía</p>
+          </div>
+          <i class="fas fa-arrow-right blog-item-arrow"></i>
+        </a>
       </div>
     </div>
   </section>
@@ -1153,8 +1435,8 @@
   <footer>
     <div class="social-links">
       <a href="https://github.com/oscarcode9" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-      <a href="https://linkedin.com/in/oscarcode" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-      <a href="mailto:oscar@example.com" title="Email"><i class="fas fa-envelope"></i></a>
+      <a href="https://www.linkedin.com/in/oscarmtzmtz/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="mailto:oscar.martinez.mtz.97@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
     </div>
     <p>© 2026 Oscar Code — Hecho con ☕ y código</p>
   </footer>
