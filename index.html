@@ -833,8 +833,9 @@
 
     @media (max-width: 992px) {
       .hero .container { flex-direction: column; text-align: left; }
-      .hero-content { text-align: left; max-width: 100%; }
-      .hero-image { display: none; }
+      .hero-content { text-align: left; max-width: 100%; order: 2; }
+      .hero-image { order: 1; margin-bottom: 30px; }
+      .hero-image-wrapper { width: 180px; height: 180px; }
       .hero-title { font-size: 2.2rem; }
       .hero-stats { gap: 25px; }
     }
@@ -852,7 +853,7 @@
       .btn-secondary { margin-left: 0; margin-top: 10px; }
       .blog-item { flex-direction: column; align-items: flex-start; gap: 15px; }
       .blog-item-arrow { display: none; }
-      .hero-image-wrapper { width: 150px; height: 150px; }
+      .hero-image-wrapper { width: 140px; height: 140px; }
     }
   </style>
 </head>
