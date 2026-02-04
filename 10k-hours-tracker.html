@@ -184,6 +184,34 @@
       line-height: 1.9;
     }
 
+    /* Imágenes en entradas */
+    .timeline-image {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .timeline-image img {
+      max-width: 280px;
+      width: 100%;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .timeline-image img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 50px rgba(38,166,154,0.2);
+      border-color: var(--primary);
+    }
+
+    .timeline-image figcaption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
     /* Footer */
     .post-footer {
       text-align: center;
@@ -265,6 +293,13 @@
             minute: '2-digit'
           });
 
+          const imageHtml = entry.image ? `
+            <figure class="timeline-image">
+              <img src="${entry.image}" alt="${entry.imageCaption || entry.title}" loading="lazy">
+              ${entry.imageCaption ? `<figcaption>${entry.imageCaption}</figcaption>` : ''}
+            </figure>
+          ` : '';
+
           entryDiv.innerHTML = `
             <div class="timeline-header">
               <h3 class="timeline-title">
@@ -277,6 +312,7 @@
               </span>
             </div>
             <p class="timeline-text">${entry.text}</p>
+            ${imageHtml}
           `;
 
           timeline.appendChild(entryDiv);
