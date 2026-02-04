@@ -237,6 +237,10 @@ router.get('/codeLife', function (req, res, next) {
 	res.render('codeLife')
 });
 
+router.get('/10k-hours-tracker', function (req, res, next) {
+	res.render('10k-hours-tracker');
+});
+
 router.get('/aboutReact', function (req, res, next) {
 	res.render('aboutReact');
 });

@@ -1,6 +1,15 @@
 {
   "posts" : [
     {
+      "title":"10K Hours Tracker: El viaje hacia la maestría",
+       "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/github-contributions.jpg",
+       "description":"Una bitácora cronológica sobre el desarrollo de una aplicación para trackear las 10,000 horas de práctica deliberada. Inspirado en la teoría de Malcolm Gladwell y el contribution graph de GitHub, este post se actualiza en tiempo real mientras construyo la aplicación...",
+       "date":"04-02-2026",
+       "tags": [ "proyecto","desarrollo", "10k-hours", "tracking", "ia"],
+       "author":"Oscar Martínez",
+       "url":"/10k-hours-tracker"
+    },
+    {
       "title":"El arte de construir software (RESTFULL)",
        "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/5b168acf9b9797456c35d48a63921470.jpg",
        "description":"Construir un software es todo un arte y es tan parecido a construir un edificio, hay mejores creaciones que otras, algunas creaciones simplemente son impresionantes y complejas, otras simplemente se derrumban al tocarlas, en el software es exactamente lo mismo....",

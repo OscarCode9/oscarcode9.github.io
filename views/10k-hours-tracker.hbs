@@ -1,0 +1,119 @@
+<div class="parallax-container">
+  <div class="parallax">
+    <img src="https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/github-contributions.jpg">
+  </div>
+</div>
+
+<div class="container">
+
+  <div>
+    <h1 id="titlePost">10K Hours Tracker: El viaje hacia la maestría</h1>
+    <p class="flow-text" style="font-style: italic; color: #888; border-left: 4px solid #26a69a; padding-left: 20px; margin: 30px 0;">
+      📝 <strong>Sobre este post:</strong> Esta es una bitácora cronológica en vivo. Cada entrada representa un momento específico en el desarrollo de esta aplicación. 
+      El post se actualiza continuamente mientras construyo el proyecto, documentando ideas, decisiones técnicas, y el progreso hacia las 10,000 horas de práctica deliberada.
+    </p>
+  </div>
+
+  <div class="row" id="timeline-container">
+    <!-- Las entradas se cargarán dinámicamente desde el JSON -->
+  </div>
+
+</div>
+
+<style>
+  .timeline-entry {
+    margin: 40px 0;
+    padding: 25px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 5px solid #26a69a;
+    transition: all 0.3s ease;
+  }
+
+  .timeline-entry:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateX(5px);
+  }
+
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+
+  .timeline-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #26a69a;
+    margin: 0;
+  }
+
+  .timeline-date {
+    color: #888;
+    font-size: 0.9em;
+    font-style: italic;
+  }
+
+  .timeline-text {
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-line;
+  }
+
+  .timeline-number {
+    display: inline-block;
+    background: #26a69a;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    margin-right: 10px;
+    font-weight: bold;
+  }
+</style>
+
+<script>
+  // Cargar las entradas cronológicas
+  fetch('/post/10k-hours-tracker-entries.json')
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById('timeline-container');
+      
+      // Ordenar entradas por timestamp (más reciente primero)
+      const entries = data.entries.sort((a, b) => 
+        new Date(b.timestamp) - new Date(a.timestamp)
+      );
+
+      entries.forEach((entry, index) => {
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'timeline-entry';
+        
+        const date = new Date(entry.timestamp);
+        const formattedDate = date.toLocaleDateString('es-ES', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        entryDiv.innerHTML = `
+          <div class="timeline-header">
+            <h3 class="timeline-title">
+              <span class="timeline-number">${entries.length - index}</span>
+              ${entry.title}
+            </h3>
+            <span class="timeline-date">${formattedDate}</span>
+          </div>
+          <p class="timeline-text flow-text">${entry.text}</p>
+        `;
+
+        container.appendChild(entryDiv);
+      });
+    })
+    .catch(error => console.error('Error cargando las entradas:', error));
+</script>

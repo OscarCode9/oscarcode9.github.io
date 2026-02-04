@@ -1,0 +1,11 @@
+{
+  "postId": "10k-hours-tracker",
+  "entries": [
+    {
+      "id": 1,
+      "timestamp": "2026-02-04T00:00:00Z",
+      "title": "Idea: Aplicación 10K Hours Tracker",
+      "text": "Se me ocurrió crear una aplicación para trackear las horas que dedico a diferentes temas o habilidades. La inspiración viene de la Teoría de las 10,000 horas de Malcolm Gladwell, que propone que se necesitan aproximadamente 10,000 horas de práctica deliberada para alcanzar el nivel de experto en cualquier disciplina.\n\nConcepto de la interfaz: La visualización estaría inspirada en el contribution graph de GitHub (ese calendario con cuadros verdes que muestra la actividad de commits). Quiero que el usuario pueda ver su progreso de forma visual y clara, similar a cómo GitHub representa la actividad diaria.\n\nFuncionalidad principal: El usuario podrá registrar su progreso día a día. Por ejemplo: 'Hoy practiqué 3 horas de piano' se registra, y la app irá acumulando y visualizando todo el historial de práctica, mostrando el avance hacia la meta de las 10,000 horas.\n\nPróximos pasos: Tengo planeada una integración adicional con IA, pero eso lo detallaré en la siguiente nota."
+    }
+  ]
+}
