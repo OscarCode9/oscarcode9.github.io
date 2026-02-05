@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>10K Hours Tracker: El viaje hacia la maestría | Oscar Code</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     :root {
       --primary: #26a69a;
@@ -180,8 +181,56 @@
 
     .timeline-text {
       color: var(--text-secondary);
-      white-space: pre-line;
       line-height: 1.9;
+    }
+
+    .timeline-text h2 {
+      color: var(--primary);
+      font-size: 1.3em;
+      margin: 20px 0 15px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(38,166,154,0.3);
+    }
+
+    .timeline-text h3 {
+      color: var(--text-primary);
+      font-size: 1.1em;
+      margin: 18px 0 10px 0;
+    }
+
+    .timeline-text ul, .timeline-text ol {
+      margin: 10px 0;
+      padding-left: 25px;
+    }
+
+    .timeline-text li {
+      margin: 6px 0;
+    }
+
+    .timeline-text strong {
+      color: var(--primary);
+    }
+
+    .timeline-text em {
+      color: var(--text-muted);
+    }
+
+    .timeline-text hr {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin: 20px 0;
+    }
+
+    .timeline-text p {
+      margin: 10px 0;
+    }
+
+    .timeline-text code {
+      background: rgba(38,166,154,0.15);
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
     }
 
     /* Imágenes en entradas */
@@ -311,7 +360,7 @@
                 ${formattedDate}
               </span>
             </div>
-            <p class="timeline-text">${entry.text}</p>
+            <div class="timeline-text">${marked.parse(entry.text)}</div>
             ${imageHtml}
           `;
 
