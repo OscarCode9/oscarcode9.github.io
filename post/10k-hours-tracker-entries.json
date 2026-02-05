@@ -26,6 +26,14 @@
       "text": "Al final, si optamos por usar el tema verde, entonces así vamos a diseñar la aplicación con ese tema verde-cinch. Ya logramos crear el login conectado con el backend. Lancé unas pruebas y todo pasó correctamente. También logramos conectar Nodemailer para mandar correos de verificación en el login, con un código de verificación que el usuario debe ingresar cuando se registra.\n\nVi un diseño de navegador, un tabulador (App Tab) en Google que me gustó mucho. El modelo lo replicó muy bien; se ve excelente.\n\nLogré crear la sección de perfil donde se muestran los datos del usuario: correo, nombre, la opción para cambiar contraseña y un botón para cerrar sesión. Sin embargo, el botón para cerrar sesión no está funcionando correctamente; devuelve una excepción. Voy a investigar por qué ocurre esto.\n\nHasta aquí mi reporte.",
       "image": "post/entry-4-app-tab.png",
       "imageCaption": "Diseño del App Tab replicado por el modelo"
+    },
+    {
+      "id": 5,
+      "timestamp": "2026-02-05T02:14:37Z",
+      "title": "Módulo de Skills, Cronómetro y Rachas",
+      "text": "## Resumen del avance del 4 de febrero de 2026\n\nHoy implementamos el módulo completo de **Skills** con las siguientes funcionalidades:\n\n### CRUD de Skills\n- **Crear** un nuevo skill para dar seguimiento a las 10,000 horas\n- **Editar** skill: cambiar título, emoji y color de la interfaz\n- **Eliminar** skills\n\n### Cronómetro de Práctica\nImplementamos un cronómetro que cuenta las horas de práctica en tiempo real:\n- En la interfaz se visualiza el tiempo transcurrido\n- En la app móvil funciona en background con notificaciones mostrando el progreso\n- Al detener el cronómetro se genera automáticamente una nueva entrada de sesión\n\n### Sesiones Manuales\nTambién se puede crear una sesión de forma manual con:\n- Título personalizado\n- Comentarios sobre la práctica\n- Fecha específica\n\n*Aunque el cronómetro es más intuitivo y conveniente.*\n\n### Sistema de Rachas (Streaks)\nAgregamos la funcionalidad de rachas en el header:\n- Muestra el número de días consecutivos de práctica\n- Sirve como incentivo y motivación para no perder la racha\n\n### Visualizador tipo GitHub\nImplementamos un visualizador de actividad estilo GitHub (contribution graph). Por el momento funciona bien, pero se puede mejorar en futuras iteraciones.\n\n---\n\n**Estado:** Las funcionalidades principales están completas. Quedan algunos ajustes de UI por pulir.",
+      "image": "post/entry-5-skills-module.png",
+      "imageCaption": "Módulo de Skills con cronómetro y visualizador de actividad"
     }
   ]
 }
