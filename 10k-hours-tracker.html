@@ -261,6 +261,46 @@
       font-style: italic;
     }
 
+    /* Galería de múltiples imágenes */
+    .timeline-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .timeline-gallery figure {
+      margin: 0;
+      text-align: center;
+    }
+
+    .timeline-gallery figure img {
+      max-width: 280px;
+      width: 100%;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .timeline-gallery figure.gallery-wide img {
+      max-width: 600px;
+    }
+
+    .timeline-gallery figure img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 50px rgba(38,166,154,0.2);
+      border-color: var(--primary);
+    }
+
+    .timeline-gallery figcaption {
+      margin-top: 10px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
     /* Footer */
     .post-footer {
       text-align: center;
@@ -342,12 +382,26 @@
             minute: '2-digit'
           });
 
-          const imageHtml = entry.image ? `
-            <figure class="timeline-image">
-              <img src="${entry.image}" alt="${entry.imageCaption || entry.title}" loading="lazy">
-              ${entry.imageCaption ? `<figcaption>${entry.imageCaption}</figcaption>` : ''}
-            </figure>
-          ` : '';
+          let imageHtml = '';
+          if (entry.images && entry.images.length > 0) {
+            const imagesMarkup = entry.images.map(img => {
+              const isWide = img.src.includes('web');
+              return `
+                <figure class="${isWide ? 'gallery-wide' : ''}">
+                  <img src="${img.src}" alt="${img.caption || entry.title}" loading="lazy">
+                  ${img.caption ? `<figcaption>${img.caption}</figcaption>` : ''}
+                </figure>
+              `;
+            }).join('');
+            imageHtml = `<div class="timeline-gallery">${imagesMarkup}</div>`;
+          } else if (entry.image) {
+            imageHtml = `
+              <figure class="timeline-image">
+                <img src="${entry.image}" alt="${entry.imageCaption || entry.title}" loading="lazy">
+                ${entry.imageCaption ? `<figcaption>${entry.imageCaption}</figcaption>` : ''}
+              </figure>
+            `;
+          }
 
           entryDiv.innerHTML = `
             <div class="timeline-header">
