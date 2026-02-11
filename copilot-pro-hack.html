@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Copilot Pro Casi Gratis — Método Económico | Oscar Code</title>
+  <meta name="description" content="Método paso a paso para usar GitHub Copilot Pro por ~$20 MXN al mes. Incluye advertencias sobre violación de ToS y los riesgos involucrados.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #00897b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a0e 50%, #2d1f00 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,171,64,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(255,107,107,0.04) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite;
+    }
+
+    @keyframes headerGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.15em;
+      color: var(--text-secondary);
+      max-width: 650px;
+      margin: 0 auto 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.9em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: rgba(255,171,64,0.15);
+      color: var(--accent-orange);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin: 0 4px;
+      border: 1px solid rgba(255,171,64,0.3);
+    }
+
+    .post-tag.danger {
+      background: rgba(255,107,107,0.15);
+      color: var(--accent-red);
+      border-color: rgba(255,107,107,0.3);
+    }
+
+    /* ========== CONTENT ========== */
+    .post-content {
+      padding: 60px 0;
+    }
+
+    .post-content h2 {
+      font-size: 1.6em;
+      margin: 50px 0 20px;
+      color: var(--text-primary);
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(255,171,64,0.3);
+    }
+
+    .post-content h3 {
+      font-size: 1.25em;
+      margin: 35px 0 15px;
+      color: var(--accent-orange);
+    }
+
+    .post-content p {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      font-size: 1.05em;
+    }
+
+    /* ========== WARNING BOX ========== */
+    .warning-box {
+      background: rgba(255,107,107,0.08);
+      border: 1px solid rgba(255,107,107,0.3);
+      border-left: 4px solid var(--accent-red);
+      border-radius: 0 12px 12px 0;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+
+    .warning-box h4 {
+      color: var(--accent-red);
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .warning-box p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* ========== INFO BOX ========== */
+    .info-box {
+      background: rgba(79,195,247,0.08);
+      border: 1px solid rgba(79,195,247,0.3);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 0 12px 12px 0;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+
+    .info-box h4 {
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .info-box p, .info-box li {
+      color: var(--text-secondary);
+    }
+
+    /* ========== TIP BOX ========== */
+    .tip-box {
+      background: rgba(105,240,174,0.08);
+      border: 1px solid rgba(105,240,174,0.3);
+      border-left: 4px solid var(--accent-green);
+      border-radius: 0 12px 12px 0;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+
+    .tip-box h4 {
+      color: var(--accent-green);
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .tip-box p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* ========== STEP LIST ========== */
+    .steps-list {
+      counter-reset: step-counter;
+      list-style: none;
+      padding: 0;
+      margin: 30px 0;
+    }
+
+    .steps-list li {
+      counter-increment: step-counter;
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 25px 25px 25px 70px;
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .steps-list li:hover {
+      border-color: rgba(255,171,64,0.3);
+      transform: translateX(5px);
+    }
+
+    .steps-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 20px;
+      top: 22px;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9em;
+    }
+
+    .steps-list li strong {
+      color: var(--text-primary);
+    }
+
+    .steps-list li code {
+      background: rgba(255,171,64,0.12);
+      color: var(--accent-orange);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9em;
+    }
+
+    .step-detail {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.95em;
+      color: var(--text-muted);
+    }
+
+    .step-detail ul {
+      margin: 8px 0 0 20px;
+    }
+
+    .step-detail li {
+      background: none;
+      border: none;
+      padding: 4px 0;
+      margin: 0;
+    }
+
+    .step-detail li::before {
+      content: '•';
+      position: static;
+      background: none;
+      color: var(--accent-orange);
+      width: auto;
+      height: auto;
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    .step-detail li:hover {
+      transform: none;
+      border-color: transparent;
+    }
+
+    /* ========== SUMMARY BOX ========== */
+    .summary-box {
+      background: linear-gradient(135deg, rgba(255,171,64,0.08) 0%, rgba(255,107,107,0.08) 100%);
+      border: 1px solid rgba(255,171,64,0.25);
+      border-radius: 16px;
+      padding: 35px;
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .summary-box h3 {
+      color: var(--accent-orange);
+      margin-bottom: 15px;
+      font-size: 1.5em;
+    }
+
+    .summary-box .price {
+      font-size: 3em;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 10px 0;
+    }
+
+    .summary-box .vs {
+      color: var(--text-muted);
+      font-size: 1.1em;
+      text-decoration: line-through;
+    }
+
+    .summary-box p {
+      color: var(--text-secondary);
+    }
+
+    /* ========== TABLE ========== */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .comparison-table th {
+      background: rgba(255,171,64,0.15);
+      color: var(--accent-orange);
+      padding: 14px 20px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.95em;
+    }
+
+    .comparison-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      font-size: 0.95em;
+    }
+
+    .comparison-table tr:nth-child(even) td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .comparison-table tr:hover td {
+      background: rgba(255,171,64,0.05);
+    }
+
+    /* ========== FOOTER ========== */
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+
+    .post-footer p {
+      color: var(--text-muted);
+    }
+
+    .post-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .post-footer a:hover {
+      color: var(--accent-orange);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.8em; }
+      .post-subtitle { font-size: 1em; }
+      .steps-list li { padding-left: 60px; }
+      .summary-box .price { font-size: 2.2em; }
+    }
+  </style>
+  <script src="public/i18n.js"></script>
+</head>
+<body>
+
+  <header class="post-header">
+    <a class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px;z-index:10;"></a>
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
+      </a>
+      <h1 class="post-title"><span class="lang-es">GitHub Copilot Pro Casi Gratis</span><span class="lang-en">GitHub Copilot Pro Almost for Free</span></h1>
+      <p class="post-subtitle"><span class="lang-es">Método "económico" para usar Copilot Pro por ~$20 MXN al mes. Viola ToS — el riesgo es tuyo.</span><span class="lang-en">"Budget" method to use Copilot Pro for ~$20 MXN/month. Violates ToS — risk is yours.</span></p>
+      <div class="post-meta">
+        <span class="post-tag">Copilot</span>
+        <span class="post-tag">GitHub</span>
+        <span class="post-tag danger"><span class="lang-es">⚠️ Viola ToS</span><span class="lang-en">⚠️ Violates ToS</span></span>
+        <br><br>
+        <span><span class="lang-es">📅 11 de Febrero, 2026 · ⏱️ 5 min de lectura</span><span class="lang-en">📅 February 11, 2026 · ⏱️ 5 min read</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+
+      <!-- WARNING -->
+      <div class="warning-box">
+        <h4><span class="lang-es">⚠️ Disclaimer Importante</span><span class="lang-en">⚠️ Important Disclaimer</span></h4>
+        <p><span class="lang-es">Este método <strong>viola los Términos de Servicio de GitHub</strong>. Lo documento con fines informativos. Si decides usarlo, el riesgo es completamente tuyo: GitHub puede banear tu cuenta, tu IP, o tomar acciones legales. <strong>No me hago responsable.</strong></span><span class="lang-en">This method <strong>violates GitHub's Terms of Service</strong>. I'm documenting it for informational purposes only. If you choose to use it, the risk is entirely yours: GitHub can ban your account, your IP, or take legal action. <strong>I take no responsibility.</strong></span></p>
+      </div>
+
+      <!-- TL;DR -->
+      <div class="summary-box">
+        <h3><span class="lang-es">💰 Resumen</span><span class="lang-en">💰 Summary</span></h3>
+        <p class="vs"><span class="lang-es">Precio oficial: $10 USD/mes (~$200 MXN)</span><span class="lang-en">Official price: $10 USD/month (~$200 MXN)</span></p>
+        <div class="price">~$20 MXN</div>
+        <p><span class="lang-es">Solo el costo de un chip Bait de Bodega Aurrera</span><span class="lang-en">Just the cost of a Bait SIM card from Bodega Aurrera</span></p>
+      </div>
+
+      <!-- WHAT YOU GET -->
+      <h2><span class="lang-es">🤖 ¿Qué incluye Copilot Pro?</span><span class="lang-en">🤖 What Does Copilot Pro Include?</span></h2>
+
+      <p><span class="lang-es">Antes de entrar al método, vale la pena entender qué estás obteniendo:</span><span class="lang-en">Before getting into the method, it's worth understanding what you're getting:</span></p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Feature</span><span class="lang-en">Feature</span></th>
+            <th><span class="lang-es">Copilot Free</span><span class="lang-en">Copilot Free</span></th>
+            <th><span class="lang-es">Copilot Pro</span><span class="lang-en">Copilot Pro</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="lang-es">Autocompletado inline</span><span class="lang-en">Inline autocomplete</span></td>
+            <td><span class="lang-es">Limitado</span><span class="lang-en">Limited</span></td>
+            <td><span class="lang-es">Ilimitado ✅</span><span class="lang-en">Unlimited ✅</span></td>
+          </tr>
+          <tr>
+            <td>Premium requests</td>
+            <td>~50/mes</td>
+            <td>~300/mes</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Modelos disponibles</span><span class="lang-en">Available models</span></td>
+            <td>GPT-4o</td>
+            <td>Claude Sonnet, GPT-4o, o1, etc.</td>
+          </tr>
+          <tr>
+            <td>Agent mode</td>
+            <td>❌</td>
+            <td>✅</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Overages configurables</span><span class="lang-en">Configurable overages</span></td>
+            <td>❌</td>
+            <td><span class="lang-es">✅ ($0.04/request extra)</span><span class="lang-en">✅ ($0.04/extra request)</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- REQUIREMENTS -->
+      <h2><span class="lang-es">🛒 Lo que necesitas</span><span class="lang-en">🛒 What You Need</span></h2>
+
+      <div class="info-box">
+        <h4><span class="lang-es">📋 Lista de materiales</span><span class="lang-en">📋 Materials List</span></h4>
+        <ul style="margin: 10px 0 0 20px;">
+          <li><span class="lang-es"><strong>Chip Bait</strong> — ~$20 MXN en Bodega Aurrera (número nuevo para la cuenta Google)</span><span class="lang-en"><strong>Bait SIM card</strong> — ~$20 MXN at Bodega Aurrera (new number for the Google account)</span></li>
+          <li><span class="lang-es"><strong>Tarjeta virtual</strong> — Con saldo mínimo o cero (para el trial)</span><span class="lang-en"><strong>Virtual card</strong> — With minimal or zero balance (for the trial)</span></li>
+          <li><span class="lang-es"><strong>15 minutos</strong> — Para configurar todo</span><span class="lang-en"><strong>15 minutes</strong> — To set everything up</span></li>
+        </ul>
+      </div>
+
+      <!-- STEPS -->
+      <h2><span class="lang-es">📝 Paso a Paso</span><span class="lang-en">📝 Step by Step</span></h2>
+
+      <ol class="steps-list">
+        <li>
+          <strong><span class="lang-es">Compra un chip Bait</span><span class="lang-en">Buy a Bait SIM card</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Ve a cualquier Bodega Aurrera y compra un chip Bait por ~$20 MXN. Es un chip prepagado de Walmart/Telcel que te da un número nuevo para crear la cuenta.</span><span class="lang-en">Go to any Bodega Aurrera and buy a Bait SIM card for ~$20 MXN. It's a prepaid Walmart/Telcel SIM that gives you a new number to create the account.</span>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Crea una cuenta Google nueva</span><span class="lang-en">Create a new Google account</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Usa el número del chip Bait para verificar la cuenta. Esta será tu cuenta "desechable" para GitHub.</span><span class="lang-en">Use the Bait SIM number to verify the account. This will be your "disposable" account for GitHub.</span>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Loguéate en GitHub</span><span class="lang-en">Log into GitHub</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Crea cuenta de GitHub usando la cuenta Google nueva, o loguéate directamente con Google OAuth.</span><span class="lang-en">Create a GitHub account using the new Google account, or log in directly with Google OAuth.</span>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Activa Copilot Pro — Trial de 30 días</span><span class="lang-en">Activate Copilot Pro — 30-Day Trial</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Agrega una tarjeta virtual con saldo mínimo o cero. GitHub no cobra nada al inicio del trial. Obtienes acceso completo durante 30 días: autocompletado inline ilimitado y ~300 premium requests por mes.</span><span class="lang-en">Add a virtual card with minimal or zero balance. GitHub doesn't charge anything at the start of the trial. You get full access for 30 days: unlimited inline autocomplete and ~300 premium requests per month.</span>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Usa intensivamente durante el trial</span><span class="lang-en">Use it intensively during the trial</span></strong>
+          <div class="step-detail">
+            <ul>
+              <li><span class="lang-es">Inline completions: <strong>ilimitadas</strong></span><span class="lang-en">Inline completions: <strong>unlimited</strong></span></li>
+              <li><span class="lang-es">Premium requests: <strong>~300/mes</strong> (se renuevan el 1ro del mes UTC)</span><span class="lang-en">Premium requests: <strong>~300/month</strong> (reset on the 1st of each month UTC)</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Si agotas los 300 o se acerca el fin del trial: activa suscripción de pago</span><span class="lang-en">If you exhaust the 300 or trial end approaches: activate paid subscription</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Activa la suscripción de pago ($10 USD/mes). Obtienes <strong>300 requests extra inmediatos</strong> para el nuevo ciclo. GitHub intenta autorizar/cobrar los $10 al momento de activar, pero el cargo real se hace al cierre del ciclo mensual. Aparece como "pendiente" en tu banco.</span><span class="lang-en">Activate the paid subscription ($10 USD/month). You get <strong>300 extra requests immediately</strong> for the new cycle. GitHub tries to authorize/charge the $10 upon activation, but the actual charge is made at the end of the monthly billing cycle. It shows as "pending" in your bank.</span>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Configura budget para overages (opcional)</span><span class="lang-en">Configure overage budget (optional)</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Si superas las 300 requests, puedes habilitar overages a <code>$0.04/request extra</code>. No pagas de antemano — se acumulan y facturan al final del ciclo. Puedes poner un límite bajo para controlar el gasto.</span><span class="lang-en">If you exceed 300 requests, you can enable overages at <code>$0.04/extra request</code>. You don't pay upfront — they accumulate and bill at end of cycle. You can set a low limit to control spending.</span>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Antes del cobro final: bloquea la tarjeta</span><span class="lang-en">Before the final charge: block the card</span></strong>
+          <div class="step-detail">
+            <ul>
+              <li><span class="lang-es">Asegúrate de que la tarjeta virtual no tenga fondos</span><span class="lang-en">Make sure the virtual card has no funds</span></li>
+              <li><span class="lang-es">Elimina o desactiva la tarjeta virtual</span><span class="lang-en">Delete or deactivate the virtual card</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Cuando GitHub intenta cobrar → falla</span><span class="lang-en">When GitHub tries to charge → it fails</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Al intentar cobrar los $10 USD + overages al fin del ciclo, el cobro falla. La suscripción se suspende automáticamente. No se paga nada.</span><span class="lang-en">When trying to charge the $10 USD + overages at end of cycle, the charge fails. The subscription is automatically suspended. Nothing is paid.</span>
+          </div>
+        </li>
+
+        <li>
+          <strong><span class="lang-es">Abandona/borra la cuenta. Repite el mes siguiente.</span><span class="lang-en">Abandon/delete the account. Repeat next month.</span></strong>
+          <div class="step-detail">
+            <span class="lang-es">Crea una nueva cuenta con otro chip o número y repite el proceso. Cada ciclo te cuesta solo un chip nuevo (~$20 MXN).</span><span class="lang-en">Create a new account with another SIM or number and repeat the process. Each cycle costs you only a new SIM (~$20 MXN).</span>
+          </div>
+        </li>
+      </ol>
+
+      <!-- RESULT -->
+      <div class="summary-box">
+        <h3><span class="lang-es">📊 Resultado</span><span class="lang-en">📊 Result</span></h3>
+        <p><span class="lang-es">~1 mes de Copilot Pro completo por</span><span class="lang-en">~1 month of full Copilot Pro for</span></p>
+        <div class="price">~$20 MXN</div>
+        <p><span class="lang-es">vs. $10 USD (~$200 MXN) de precio oficial</span><span class="lang-en">vs. $10 USD (~$200 MXN) official price</span></p>
+      </div>
+
+      <!-- RISKS -->
+      <h2><span class="lang-es">🚨 Riesgos y Consecuencias</span><span class="lang-en">🚨 Risks and Consequences</span></h2>
+
+      <div class="warning-box">
+        <h4><span class="lang-es">Lo que puede pasar</span><span class="lang-en">What Can Happen</span></h4>
+        <p><span class="lang-es"><strong>Ban de cuenta:</strong> GitHub puede detectar el patrón y banear la cuenta (y futuras cuentas con la misma IP/dispositivo).<br><br>
+        <strong>Blacklist de tarjeta:</strong> El emisor de la tarjeta virtual puede marcarte por fraude.<br><br>
+        <strong>Cobro retroactivo:</strong> GitHub puede enviar la deuda a collections, aunque para cantidades pequeñas es poco probable.<br><br>
+        <strong>Violación de ToS:</strong> Estás violando explícitamente los términos de servicio. Si alguna vez quieres usar GitHub profesionalmente con tu identidad real, ten cuidado.</span><span class="lang-en"><strong>Account ban:</strong> GitHub can detect the pattern and ban the account (and future accounts with the same IP/device).<br><br>
+        <strong>Card blacklist:</strong> The virtual card issuer may flag you for fraud.<br><br>
+        <strong>Retroactive charge:</strong> GitHub could send the debt to collections, though for small amounts it's unlikely.<br><br>
+        <strong>ToS violation:</strong> You're explicitly violating the terms of service. If you ever want to use GitHub professionally with your real identity, be careful.</span></p>
+      </div>
+
+      <!-- TIPS -->
+      <h2><span class="lang-es">💡 Tips Extra</span><span class="lang-en">💡 Extra Tips</span></h2>
+
+      <div class="tip-box">
+        <h4><span class="lang-es">🔄 Sobre la renovación de requests</span><span class="lang-en">🔄 About Request Renewal</span></h4>
+        <p><span class="lang-es">Los premium requests se renuevan el <strong>1ro de cada mes UTC</strong>, no desde la fecha de activación. Si activas el trial a mediados de mes, aprovechas los requests restantes de ese mes y luego el reset del 1ro.</span><span class="lang-en">Premium requests reset on the <strong>1st of each month UTC</strong>, not from the activation date. If you activate the trial in the middle of the month, you use the remaining requests for that month and then get the 1st-of-month reset.</span></p>
+      </div>
+
+      <div class="tip-box">
+        <h4><span class="lang-es">🛡️ Sobre los overages</span><span class="lang-en">🛡️ About Overages</span></h4>
+        <p><span class="lang-es">No necesitas "cargar" $100 de antemano. Los overages se <strong>acumulan y se facturan al final</strong> del ciclo de billing. Puedes configurar un límite bajo (ej: $2 USD) para que se detengan automáticamente cuando lo alcances.</span><span class="lang-en">You don't need to "load" $100 upfront. Overages <strong>accumulate and bill at the end</strong> of the billing cycle. You can set a low limit (e.g., $2 USD) so they automatically stop when reached.</span></p>
+      </div>
+
+      <div class="info-box">
+        <h4><span class="lang-es">🤔 ¿Vale la pena?</span><span class="lang-en">🤔 Is It Worth It?</span></h4>
+        <p><span class="lang-es">Si puedes pagar los $10 USD/mes, <strong>hazlo legítimamente</strong>. Es una herramienta increíble que te hace más productivo. Este hack es para quienes genuinamente no tienen los recursos y quieren experimentar lo que ofrece Copilot Pro antes de comprometerse con la suscripción.</span><span class="lang-en">If you can afford $10 USD/month, <strong>pay for it legitimately</strong>. It's an incredible tool that makes you more productive. This hack is for those who genuinely don't have the resources and want to experience what Copilot Pro offers before committing to the subscription.</span></p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="post-footer">
+    <div class="container">
+      <p><span class="lang-es">Escrito por <strong>Oscar Martínez</strong> — 11 de febrero de 2026</span><span class="lang-en">Written by <strong>Oscar Martínez</strong> — February 11, 2026</span></p>
+      <p style="margin-top: 10px;">
+        <a href="index.html"><span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span></a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

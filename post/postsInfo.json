@@ -1,6 +1,15 @@
 {
   "posts" : [
     {
+      "title":"GitHub Copilot Pro Casi Gratis",
+       "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/github-contributions.jpg",
+       "description":"Método económico paso a paso para usar GitHub Copilot Pro por ~$20 MXN al mes. Incluye advertencias sobre violación de ToS y los riesgos involucrados.",
+       "date":"11-02-2026",
+       "tags": ["copilot", "github", "hack", "tos"],
+       "author":"Oscar Martínez",
+       "url":"/copilot-pro-hack"
+    },
+    {
       "title":"Cómo Construí un Agente de IA con Tool Calling",
        "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/github-contributions.jpg",
        "description":"Deep dive técnico sobre la arquitectura de un AI Coach para TenK: agentic loop con 5 herramientas, OAuth PKCE con Claude, stealth headers, manejo de rate limits end-to-end y optimización de latencia de 39s a 8s.",
