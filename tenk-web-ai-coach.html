@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>De App Móvil a Plataforma Web: Cómo Llevé TenK al Browser con AI Coach Integrado | Oscar Code</title>
+  <meta name="description" content="Deep dive técnico sobre la transformación de TenK de app Flutter a plataforma web completa con sidebar persistente, tablas responsive, OAuth UX y un AI Coach que analiza tus datos de práctica en tiempo real.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #00897b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #0d2137 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(38,166,154,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(79,195,247,0.05) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.2em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+    }
+
+    .post-tag.ai { background: var(--accent-purple); }
+    .post-tag.frontend { background: var(--accent-blue); color: #000; }
+    .post-tag.infra { background: var(--accent-orange); color: #000; }
+    .post-tag.ux { background: var(--accent-green); color: #000; }
+
+    /* ========== CONTENT ========== */
+    .post-content {
+      padding: 60px 0 80px;
+    }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--primary);
+      border-bottom: 2px solid rgba(38,166,154,0.3);
+      padding-bottom: 10px;
+    }
+
+    .post-content h2:first-child {
+      margin-top: 0;
+    }
+
+    .post-content h3 {
+      font-size: 1.35em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content h4 {
+      font-size: 1.1em;
+      margin: 25px 0 10px;
+      color: var(--accent-green);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong {
+      color: var(--text-primary);
+    }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover {
+      border-bottom-color: var(--primary);
+    }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li {
+      margin-bottom: 8px;
+    }
+
+    .post-content code {
+      background: rgba(38,166,154,0.15);
+      color: var(--primary);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+    }
+
+    .post-content pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 20px 0 25px;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .post-content pre code {
+      background: none;
+      color: #e0e0e0;
+      padding: 0;
+      font-size: 0.88em;
+      line-height: 1.6;
+    }
+
+    .code-label {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 0.7em;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.warning {
+      border-left-color: var(--accent-orange);
+    }
+
+    .callout.danger {
+      border-left-color: var(--accent-red);
+    }
+
+    .callout.info {
+      border-left-color: var(--accent-blue);
+    }
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .callout p:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    /* Diagrams / ASCII art */
+    .diagram {
+      background: var(--bg-code);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 25px 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .diagram pre code {
+      color: var(--primary);
+      font-size: 0.82em;
+    }
+
+    .diagram-caption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Tables */
+    .post-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 25px;
+      font-size: 0.92em;
+    }
+
+    .post-content th {
+      background: rgba(38,166,154,0.15);
+      color: var(--primary);
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 2px solid rgba(38,166,154,0.3);
+    }
+
+    .post-content td {
+      padding: 10px 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+    }
+
+    .post-content tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* Comparison boxes */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .comparison-box {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .comparison-box.bad {
+      border-color: rgba(255,107,107,0.3);
+    }
+
+    .comparison-box.good {
+      border-color: rgba(38,166,154,0.3);
+    }
+
+    .comparison-box h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .comparison-box.bad h4 { color: var(--accent-red); }
+    .comparison-box.good h4 { color: var(--accent-green); }
+
+    /* Section numbers */
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-right: 12px;
+    }
+
+    /* Key takeaways */
+    .takeaways {
+      background: linear-gradient(135deg, rgba(38,166,154,0.1) 0%, rgba(79,195,247,0.05) 100%);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+
+    .takeaways h3 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+
+    .takeaways ol {
+      color: var(--text-secondary);
+    }
+
+    .takeaways li {
+      margin-bottom: 12px;
+    }
+
+    /* Images */
+    .post-image {
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .post-image img {
+      max-width: 100%;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .post-image figcaption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .post-gallery {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
+
+    .post-gallery img {
+      max-width: 260px;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .post-gallery img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 15px 50px rgba(38,166,154,0.2);
+      border-color: var(--primary);
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 25px 0;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card .stat-value {
+      font-size: 2em;
+      font-weight: bold;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* Feature cards */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(38,166,154,0.3);
+    }
+
+    .feature-card .feature-icon {
+      font-size: 1.8em;
+      margin-bottom: 12px;
+    }
+
+    .feature-card h4 {
+      margin-top: 0;
+      color: var(--text-primary);
+    }
+
+    .feature-card p {
+      margin-bottom: 0;
+      font-size: 0.92em;
+    }
+
+    /* Footer */
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+
+    .post-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.7em; }
+      .post-header { padding: 60px 15px 40px; }
+      .comparison { grid-template-columns: 1fr; }
+      .post-content pre { padding: 15px; }
+      .post-content h2 { font-size: 1.4em; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Volver al inicio
+      </a>
+      <h1 class="post-title">De App Móvil a Plataforma Web con AI Coach</h1>
+      <p class="post-subtitle">Sidebar persistente, tablas AI-generated, Connection Gate Pattern y un sistema de despliegue a prueba de balas — cómo TenK se convirtió en una plataforma completa</p>
+      <div class="post-meta">
+        <span class="post-tag frontend">Flutter Web</span>
+        <span class="post-tag ai">AI Coach</span>
+        <span class="post-tag ux">UX</span>
+        <span class="post-tag infra">DevOps</span>
+        <br><br>
+        <i class="far fa-clock"></i> 12 de febrero de 2026 &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Martínez &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> ~18 min de lectura
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="post-content">
+    <div class="container">
+
+      <!-- INTRO -->
+      <div class="callout info">
+        <p><strong>TL;DR:</strong> TenK pasó de ser una app móvil de tracking a una <strong>plataforma web completa</strong> con sidebar de navegación persistente, un AI Coach que genera tablas de práctica personalizadas, un flujo de conexión OAuth con UX cuidada, y un protocolo de despliegue que <strong>nunca pierde datos de producción</strong>. En este post explico cada decisión técnica, los problemas que encontré y cómo los resolví.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value">5</span>
+          <span class="stat-label">AI Tools integradas</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">280px</span>
+          <span class="stat-label">Sidebar fijo desktop</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">4.7x</span>
+          <span class="stat-label">Más rápido (39s → 8s)</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">0</span>
+          <span class="stat-label">Datos perdidos en deploy</span>
+        </div>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 1 ==================== -->
+      <h2><span class="section-number">1</span> El Problema: Una App Móvil en un Browser</h2>
+
+      <p>TenK nació como una app Flutter para iOS y Android. Cuando decidí llevarla a la web, el primer instinto fue compilar con <code>flutter build web</code> y listo. Error.</p>
+
+      <p>Flutter web por defecto renderiza todo como si fuera un teléfono — <strong>navegación por tabs en bottom bar</strong>, layouts angostos, y cero aprovechamiento del espacio horizontal. En un monitor de 1440px, tu app de teléfono se ve ridícula centrada en medio de todo ese espacio vacío.</p>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4>❌ Flutter Web "naive"</h4>
+          <p>Bottom navigation bar en desktop. Contenido centrado y angosto. Sin sidebar. El usuario hace click donde haría tap — se siente como usar un emulador de celular.</p>
+        </div>
+        <div class="comparison-box good">
+          <h4>✅ Layout adaptive</h4>
+          <p>Sidebar fijo de 280px con navegación y skills. Contenido expandido al 100%. Top bar contextual. El bottom nav <strong>desaparece</strong> y se reemplaza por la sidebar.</p>
+        </div>
+      </div>
+
+      <p>La solución: <strong>dos layouts completamente diferentes</strong> dependiendo del ancho de pantalla, con un breakpoint en 900px.</p>
+
+
+      <!-- ==================== SECCIÓN 2 ==================== -->
+      <h2><span class="section-number">2</span> Sidebar Persistente: IndexedStack + Row Layout</h2>
+
+      <p>El sidebar no es un <code>Drawer</code> de Material Design. Es un componente <strong>siempre visible</strong> en desktop que muestra 4 cosas: logo, navegación, lista de skills con progreso, y botón de agregar skill.</p>
+
+      <h3>La Arquitectura del Layout</h3>
+
+      <div class="diagram">
+        <pre><code>┌──────────────────────────────────────────────────────────┐
+│                     HomeWebLayout                        │
+│                                                          │
+│  ┌─────────────┐  ┌──────────────────────────────────┐   │
+│  │  WebSidebar  │  │          Main Content            │   │
+│  │   280px      │  │                                  │   │
+│  │             │  │  ┌──────────────────────────────┐ │   │
+│  │  🏠 Inicio   │  │  │     TopBar (64px)           │ │   │
+│  │  📊 Progreso │  │  │  Title + Timer FAB           │ │   │
+│  │  👤 Perfil   │  │  └──────────────────────────────┘ │   │
+│  │             │  │                                  │   │
+│  │  ┌─ AI ────┐ │  │  ┌──────────────────────────────┐ │   │
+│  │  │ 💬 Chat │ │  │  │                              │ │   │
+│  │  │ 📋 Plan │ │  │  │     IndexedStack             │ │   │
+│  │  └─────────┘ │  │  │     (5 children)             │ │   │
+│  │             │  │  │                              │ │   │
+│  │  Skills:     │  │  │  [0] Home                    │ │   │
+│  │  🎸 Guitarra │  │  │  [1] Progress                │ │   │
+│  │  ████░░ 127h │  │  │  [2] Profile                 │ │   │
+│  │  🎨 Diseño   │  │  │  [3] AI Chat                 │ │   │
+│  │  ██░░░░  45h │  │  │  [4] Weekly Plan             │ │   │
+│  │             │  │  │                              │ │   │
+│  │  [+ Skill]   │  │  └──────────────────────────────┘ │   │
+│  └─────────────┘  └──────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption">Layout web: Row con sidebar fijo + main content con IndexedStack</p>
+      </div>
+
+      <h3>¿Por qué IndexedStack?</h3>
+
+      <p>El truco está en <code>IndexedStack</code>. A diferencia de un <code>Navigator.push</code> o un <code>PageView</code>, <strong>IndexedStack mantiene el estado de TODAS las tabs en memoria</strong>. Cuando cambias de "AI Chat" a "Progreso" y vuelves, tu conversación sigue exactamente donde la dejaste — no se reconstruye el widget, no se pierde el scroll, no se re-fetchean los datos.</p>
+
+      <pre><code class="language-dart">// home_web_layout.dart — Layout principal
+class HomeWebLayout extends StatefulWidget {
+  @override
+  State&lt;HomeWebLayout&gt; createState() =&gt; _HomeWebLayoutState();
+}
+
+class _HomeWebLayoutState extends State&lt;HomeWebLayout&gt; {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // Sidebar fijo de 280px
+        WebSidebar(
+          currentIndex: _currentIndex,
+          onIndexChanged: (i) =&gt; setState(() =&gt; _currentIndex = i),
+        ),
+        
+        // Contenido principal expandido
+        Expanded(
+          child: Column(
+            children: [
+              _TopBar(currentIndex: _currentIndex),
+              Expanded(
+                child: IndexedStack(
+                  index: _currentIndex,
+                  children: const [
+                    HomeTab(),        // 0
+                    ProgressTab(),    // 1
+                    ProfileTab(),     // 2
+                    EmbeddedAiChat(), // 3 — estado persistente
+                    WeeklyPlanTab(),  // 4
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <h3>Skills con Barras de Progreso en el Sidebar</h3>
+
+      <p>Cada skill muestra un <code>LinearProgressIndicator</code> con el color personalizado del skill. El truco de parseo de color hexadecimal:</p>
+
+      <pre><code class="language-dart">// web_sidebar.dart — Parseo de color hex del modelo
+final skillColor = Color(
+  int.parse(skill.color.replaceFirst('#', '0xFF'))
+);
+
+// Barra de progreso hacia las 10,000 horas
+LinearProgressIndicator(
+  value: skill.totalHours / 10000,
+  backgroundColor: skillColor.withOpacity(0.15),
+  valueColor: AlwaysStoppedAnimation&lt;Color&gt;(skillColor),
+)</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <div class="callout">
+        <p><strong>Detalle UX:</strong> Las secciones de AI Chat y Plan Semanal tienen un estilo visual diferente al resto — contenedores con borde y un ícono de flecha <code>→</code> para diferenciarse de la navegación estándar. Son <em>features premium</em>, no mera navegación.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 3 ==================== -->
+      <h2><span class="section-number">3</span> Responsive Breakpoints: Dos Apps en Una</h2>
+
+      <p>No hay media queries de CSS aquí. Todo se decide en Dart con <code>MediaQuery.of(context).size.width</code>:</p>
+
+      <pre><code class="language-dart">// app_scaffold.dart — Decisión de layout
+@override
+Widget build(BuildContext context) {
+  final isDesktop = MediaQuery.of(context).size.width &gt;= 900;
+  
+  if (isDesktop) {
+    return HomeWebLayout(
+      currentIndex: currentIndex,
+      onIndexChanged: onIndexChanged,
+    );
+  }
+  
+  return Scaffold(
+    body: body,
+    bottomNavigationBar: BottomNavigation(
+      currentIndex: currentIndex,
+      onTap: onIndexChanged,
+    ),
+  );
+}</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <p>Por debajo de 900px: <strong>bottom navigation bar</strong> móvil con 3 tabs. Por encima: <strong>sidebar + top bar</strong> con 5 tabs (se agregan AI Chat y Weekly Plan que en móvil se acceden por otras rutas).</p>
+
+      <p>Lo importante: no es solo "ocultar el bottom bar". Es un <strong>layout completamente distinto</strong>. En móvil usas <code>Navigator.push</code> para ir al chat. En web, haces click en el sidebar y <code>IndexedStack</code> muestra el tab — sin navegación, sin animación de push, instantáneo.</p>
+
+
+      <!-- ==================== SECCIÓN 4 ==================== -->
+      <h2><span class="section-number">4</span> Connection Gate: El Patrón de 3 Estados</h2>
+
+      <p>Cuando el usuario llega al AI Chat por primera vez, no debería ver un chat vacío con un cursor parpadeando. Debería ver un <strong>call-to-action claro</strong>: "Conecta tu AI Coach".</p>
+
+      <p>Esto requiere un patrón que llamo <strong>Connection Gate</strong> — un tri-state que controla toda la UI de la página:</p>
+
+      <div class="diagram">
+        <pre><code>initState()
+    │
+    ▼
+_checkClaudeStatus()
+    │
+    ├─── Loading ──▶ CircularProgressIndicator
+    │
+    ├─── Not Connected ──▶ _NotConnectedView
+    │       │                 │
+    │       │                 ├── Ícono 🧠 (88px)
+    │       │                 ├── "Conecta tu AI Coach"
+    │       │                 ├── 3 feature bullets
+    │       │                 └── [Conectar Claude] button
+    │       │                        │
+    │       │                        ▼
+    │       │               ClaudeConnectSheet.show()
+    │       │                        │
+    │       │                        ▼ (OAuth flow completo)
+    │       │               _checkClaudeStatus() // re-check
+    │       │
+    │       └─── Ahora conectado ──▶ Chat View
+    │
+    └─── Connected ──▶ ConversationList / ChatView</code></pre>
+        <p class="diagram-caption">Connection Gate: 3 estados que controlan toda la página</p>
+      </div>
+
+      <h3>Implementación en Flutter</h3>
+
+      <pre><code class="language-dart">// embedded_ai_chat_page.dart — Estado tri-partito
+class _EmbeddedAiChatPageState extends State&lt;EmbeddedAiChatPage&gt; {
+  bool _connected = false;
+  bool _checking = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkClaudeStatus();
+  }
+
+  Future&lt;void&gt; _checkClaudeStatus() async {
+    try {
+      final ds = getIt&lt;ClaudeOAuthRemoteDatasource&gt;();
+      final result = await ds.getStatus();
+      setState(() {
+        _connected = result['connected'] == true;
+        _checking = false;
+      });
+    } catch (e) {
+      setState(() { _checking = false; });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_checking) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (!_connected) {
+      return _NotConnectedView(onConnect: _openConnect);
+    }
+    // Estado normal: lista de conversaciones o chat
+    return _inChat ? _buildChatView() : _buildListView();
+  }
+}</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <h3>La Vista de "No Conectado"</h3>
+
+      <p>En vez de un triste "Error: no hay conexión", diseñé un <strong>onboarding en contexto</strong> que vende las features del AI Coach:</p>
+
+      <pre><code class="language-dart">// _NotConnectedView — 3 features + CTA
+class _NotConnectedView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Ícono amarillo psychology (88px circle)
+          Container(
+            width: 88, height: 88,
+            decoration: BoxDecoration(
+              color: Colors.amber.shade100,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(LucideIcons.brain, size: 44,
+                        color: Colors.amber.shade700),
+          ),
+          const SizedBox(height: 24),
+          Text('Conecta tu AI Coach',
+               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 32),
+          
+          // Feature rows
+          _FeatureRow(
+            icon: LucideIcons.messageSquare,
+            text: 'Chat personalizado sobre tu práctica',
+          ),
+          _FeatureRow(
+            icon: LucideIcons.calendarDays,
+            text: 'Planes semanales optimizados',
+          ),
+          _FeatureRow(
+            icon: LucideIcons.trendingUp,
+            text: 'Análisis de patrones y tendencias',
+          ),
+          
+          const SizedBox(height: 32),
+          FilledButton.icon(
+            onPressed: onConnect,
+            icon: const Icon(LucideIcons.zap),
+            label: const Text('Conectar Claude'),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.accent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <div class="callout warning">
+        <p><strong>⚠️ Detalle clave:</strong> Después de completar el flujo OAuth, <code>_checkClaudeStatus()</code> se ejecuta de nuevo automáticamente. Si la conexión fue exitosa, la vista transiciona de <code>_NotConnectedView</code> al chat sin que el usuario haga nada — <strong>zero friction</strong>.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 5 ==================== -->
+      <h2><span class="section-number">5</span> OAuth PKCE: Del Click al AI Coach</h2>
+
+      <p>El flujo BYOK (Bring Your Own Key) es central en TenK. Cada usuario conecta <strong>su propia cuenta de Claude</strong> — la app no paga un centavo de API costs.</p>
+
+      <h3>4 Endpoints OAuth</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Ruta</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/api/claude-oauth/init</code></td>
+            <td>Genera PKCE challenge y retorna <code>authUrl</code> + <code>state</code></td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/api/claude-oauth/exchange</code></td>
+            <td>Intercambia authorization code por access + refresh tokens</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/api/claude-oauth/status</code></td>
+            <td>Retorna <code>{ connected: bool }</code></td>
+          </tr>
+          <tr>
+            <td><code>DELETE</code></td>
+            <td><code>/api/claude-oauth/disconnect</code></td>
+            <td>Elimina tokens almacenados</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>El Model BYOK</h3>
+
+      <pre><code>// schema.prisma — Credenciales OAuth per-user
+model ClaudeCredential {
+  id           String   @id @default(cuid())
+  userId       String   @unique @map("user_id")
+  accessToken  String   @map("access_token") @db.Text
+  refreshToken String   @map("refresh_token") @db.Text
+  expiresAt    DateTime @map("expires_at")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("claude_credentials")
+}</code></pre>
+      <span class="code-label">Prisma Schema</span>
+
+      <p>Con <code>@unique</code> en <code>userId</code>, cada usuario tiene exactamente <strong>un par de tokens</strong>. Si reconecta, se sobrescriben. Si elimina su cuenta, <code>onDelete: Cascade</code> limpia todo.</p>
+
+      <h3>El Flutter Side</h3>
+
+      <pre><code class="language-dart">// claude_oauth_datasource.dart — 4 métodos limpios
+abstract class ClaudeOAuthRemoteDatasource {
+  Future&lt;Map&lt;String, dynamic&gt;&gt; initOAuth();
+  Future&lt;Map&lt;String, dynamic&gt;&gt; exchangeCode(String rawCode);
+  Future&lt;Map&lt;String, dynamic&gt;&gt; getStatus();
+  Future&lt;void&gt; disconnect();
+}
+
+// Implementación con Dio — extracto de getStatus()
+@override
+Future&lt;Map&lt;String, dynamic&gt;&gt; getStatus() async {
+  final response = await dio.get(ApiEndpoints.claudeOAuthStatus);
+  return response.data['data'] as Map&lt;String, dynamic&gt;;
+}</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <p>La abstracción es clave: el <code>EmbeddedAiChatPage</code> solo llama <code>getStatus()</code> sin saber nada de HTTP, Dio, o endpoints. Clean Architecture en acción.</p>
+
+
+      <!-- ==================== SECCIÓN 6 ==================== -->
+      <h2><span class="section-number">6</span> Tablas AI-Generated: De Markdown a Widget Tree</h2>
+
+      <p>Cuando el AI Coach genera un plan semanal, responde en <strong>markdown con tablas</strong>. El reto: Flutter no renderiza markdown tables nativamente de forma bonita. La solución: <strong>parsear el markdown y construir un widget tree custom</strong>.</p>
+
+      <h3>El Parsing Pipeline</h3>
+
+      <div class="diagram">
+        <pre><code>Claude Response (raw markdown)
+         │
+         ▼
+_parseSections(content)
+         │
+         ├── Detecta filas con "|"
+         │   └── split('|') → trim() → replaceAll('**', '')
+         │
+         ├── Filtra separadores (---+---)
+         │
+         ├── Primera fila → headers[]
+         │
+         └── Resto → rows[][]
+         │
+         ▼
+TableData(headers, rows)
+         │
+         ▼
+WeeklyPlanTable widget
+         │
+         ├── Header row: gradient background
+         ├── Data rows: zebra striping
+         ├── Total row: auto-detect + special styling
+         └── Last column: primary tint overlay</code></pre>
+        <p class="diagram-caption">Pipeline de transformación: Markdown → TableData → Widget</p>
+      </div>
+
+      <h3>Stripping Markdown Bold Markers</h3>
+
+      <p>Claude a veces responde con <code>**Lun**</code> en vez de <code>Lun</code>. Sin limpiar, esos asteriscos aparecen como texto literal en la tabla. El fix:</p>
+
+      <pre><code class="language-dart">// weekly_plan_card.dart — Limpieza de celdas
+final cells = line
+    .split('|')
+    .map((c) =&gt; c.trim().replaceAll('**', ''))
+    .where((c) =&gt; c.isNotEmpty)
+    .toList();</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <div class="callout">
+        <p><strong>Lección:</strong> Nunca confíes en que un LLM va a respetar el formato exacto que le pides. Siempre sanitiza la salida. Un <code>replaceAll('**', '')</code> de 20 caracteres evita un bug visual que confunde a todos los usuarios.</p>
+      </div>
+
+      <h3>Detección Automática de Fila Total</h3>
+
+      <p>El AI Coach genera tablas con una fila final de "Total" o "Suma". El widget la detecta automáticamente y la renderiza diferente:</p>
+
+      <pre><code class="language-dart">// weekly_plan_table.dart — Auto-detect total row
+final isTotal = _dataRows.isNotEmpty &&
+    _dataRows.last[0].toLowerCase().contains(RegExp(r'total|suma'));
+
+// Si es total, no va en el loop de data rows
+final displayRows = isTotal 
+    ? _dataRows.sublist(0, _dataRows.length - 1) 
+    : _dataRows;
+
+// Render de la fila total con estilo especial
+if (isTotal) {
+  Container(
+    decoration: BoxDecoration(
+      color: AppColors.primary.withOpacity(0.08),
+      border: Border(
+        top: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+      ),
+    ),
+    child: Row(/* total row cells, bold */),
+  );
+}</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <h3>Zebra Striping + Last Column Highlight</h3>
+
+      <p>La tabla usa <strong>colores alternos</strong> por fila (zebra striping) y la última columna tiene un tint del color primario — diseñada para que el "total semanal" destaque visualmente:</p>
+
+      <pre><code class="language-dart">// Zebra striping
+final rowColor = index.isEven 
+    ? theme.colorScheme.background 
+    : theme.colorScheme.surface;
+
+// Last column highlight
+final isLastCol = cellIndex == row.length - 1;
+final cellColor = isLastCol
+    ? AppColors.primary.withOpacity(0.06)
+    : Colors.transparent;</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+
+      <!-- ==================== SECCIÓN 7 ==================== -->
+      <h2><span class="section-number">7</span> El System Prompt: El 80% del Comportamiento</h2>
+
+      <p>El system prompt del TenK Coach no es un párrafo genérico. Es un documento de <strong>100+ líneas</strong> con reglas estrictas que transforman a Claude de un chatbot genérico en un coach de práctica especializado.</p>
+
+      <h3>Niveles de Maestría</h3>
+
+      <p>El prompt define 5 niveles que Claude usa para contextualizar el feedback:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Emoji</th>
+            <th>Nivel</th>
+            <th>Horas</th>
+            <th>Fase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🌱</td>
+            <td>Principiante</td>
+            <td>0 — 100h</td>
+            <td>Fundamentos y hábito</td>
+          </tr>
+          <tr>
+            <td>📚</td>
+            <td>Aprendiz</td>
+            <td>100 — 1,000h</td>
+            <td>Técnica y consistencia</td>
+          </tr>
+          <tr>
+            <td>🔧</td>
+            <td>Intermedio</td>
+            <td>1,000 — 3,000h</td>
+            <td>Práctica deliberada</td>
+          </tr>
+          <tr>
+            <td>⚡</td>
+            <td>Avanzado</td>
+            <td>3,000 — 5,000h</td>
+            <td>Especialización</td>
+          </tr>
+          <tr>
+            <td>👑</td>
+            <td>Maestro</td>
+            <td>5,000 — 10,000h</td>
+            <td>Dominio y mentoría</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Reglas Clave del Prompt</h3>
+
+      <ul>
+        <li><strong>Nunca inventar datos</strong> — si no tiene información, debe usar las herramientas primero</li>
+        <li><strong>Máximo 300 palabras</strong> — respuestas concisas, no ensayos</li>
+        <li><strong>Parallel tool calls</strong> — llamar TODAS las herramientas necesarias en una sola respuesta, no secuencialmente</li>
+        <li><strong>Plan semanal estructurado</strong> — 4 secciones: resumen semana anterior, distribución horaria, foco de práctica, meta semanal</li>
+        <li><strong>Idioma español</strong> — siempre responde en español, sin importar el idioma del input</li>
+      </ul>
+
+      <pre><code>// system-prompt.ts — Extract del prompt
+const MASTERY_LEVELS = `
+Niveles de maestría TenK:
+🌱 Principiante (0-100h) — Enfócate en establecer el hábito
+📚 Aprendiz (100-1000h) — Trabaja en técnica y consistencia
+🔧 Intermedio (1000-3000h) — Práctica deliberada
+⚡ Avanzado (3000-5000h) — Especialización profunda  
+👑 Maestro (5000-10000h) — Dominio y dar mentoría
+`;
+
+// Regla de parallel tool calls
+const TOOL_RULES = `
+IMPORTANTE: Cuando necesites múltiples datos, llama TODAS 
+las herramientas necesarias en una SOLA respuesta. 
+NO hagas una llamada por iteración.
+
+Ejemplo correcto:
+→ Llamar get_user_skills + get_journey_stats + 
+  analyze_practice_patterns en paralelo
+
+Ejemplo incorrecto:
+→ Iteración 1: get_user_skills
+→ Iteración 2: get_journey_stats  
+→ Iteración 3: analyze_practice_patterns
+`;</code></pre>
+      <span class="code-label">TypeScript</span>
+
+      <div class="callout info">
+        <p><strong>Insight:</strong> La instrucción de parallel tool calls redujo las iteraciones promedio de <strong>4-5 a 1-2</strong>. Esto no solo es más rápido — ahorra tokens (y por lo tanto, cuota del rate limit del usuario).</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 8 ==================== -->
+      <h2><span class="section-number">8</span> Las 5 Tools del Agent</h2>
+
+      <p>El AI Coach tiene acceso a 5 herramientas que cubren todo el ciclo de datos del usuario:</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h4>get_user_skills</h4>
+          <p>Retorna skills con horas acumuladas, nivel de maestría y estado activo/archivado.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⏱️</div>
+          <h4>get_practice_sessions</h4>
+          <p>Historial de sesiones: duración, fecha, notas. Filtrable por skill y rango de días.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h4>get_journey_stats</h4>
+          <p>Estadísticas globales: horas totales, promedios, rachas, datos mensuales, proyecciones.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h4>analyze_practice_patterns</h4>
+          <p>Análisis avanzado: distribución por día, tendencias, gaps, detección de plateaus.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <h4>save_weekly_plan</h4>
+          <p>Persiste el plan generado con insights tipados: progress, plateau, streak, milestone.</p>
+        </div>
+      </div>
+
+      <h3>Tool Definitions en JSON Schema</h3>
+
+      <pre><code>// tool-definitions.ts — Ejemplo: analyze_practice_patterns
+{
+  name: 'analyze_practice_patterns',
+  description: 'Análisis avanzado de patrones de práctica: '
+    + 'distribución por día de semana, tendencias, gaps, '
+    + 'detección de plateaus',
+  input_schema: {
+    type: 'object',
+    properties: {
+      skillId: {
+        type: 'string',
+        description: 'ID del skill a analizar. Si no se provee, '
+          + 'analiza todos los skills del usuario'
+      },
+      days: {
+        type: 'number',
+        description: 'Últimos N días a analizar',
+        default: 90
+      }
+    }
+  }
+}</code></pre>
+      <span class="code-label">TypeScript</span>
+
+      <div class="callout warning">
+        <p><strong>⚠️ Seguridad:</strong> Nota que ninguna tool recibe <code>userId</code> como input. El userId <strong>siempre se extrae del JWT en el backend</strong>, nunca del prompt. Esto previene prompt injection attacks donde un usuario intente hacer que el modelo consulte datos de otro usuario.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 9 ==================== -->
+      <h2><span class="section-number">9</span> Weekly Plan: Cards Expandibles con Insights</h2>
+
+      <p>El plan semanal no se muestra como un muro de texto. Es una <strong>card expandible</strong> con animación que revela el contenido gradualmente.</p>
+
+      <h3>Anatomía de un WeeklyPlanCard</h3>
+
+      <div class="diagram">
+        <pre><code>┌──────────────────────────────────────────────┐
+│  📋  Plan Semanal                            │
+│      10 Feb - 16 Feb, 2026               ▼   │
+│                                              │
+│  Skills: [🎸 Guitarra ↑] [🎨 Diseño →]      │
+│                                              │
+│  ─── AnimatedCrossFade (collapsed) ────────  │
+│                                              │
+│  ┌─── Expanded content ───────────────────┐  │
+│  │                                        │  │
+│  │  📝 Resumen semana anterior            │  │
+│  │  "Practicaste 12.5h, 3h más que..."    │  │
+│  │                                        │  │
+│  │  ┌─ Tabla ─────────────────────────┐   │  │
+│  │  │ Skill  │ Lun │ Mar │ ... │ Total│   │  │
+│  │  │ Guitar │ 1h  │ 1.5 │ ... │ 8.5h │   │  │
+│  │  │ Diseño │ 0.5 │ 1h  │ ... │ 4h   │   │  │
+│  │  │ TOTAL  │ 1.5 │ 2.5 │ ... │ 12.5 │   │  │
+│  │  └────────────────────────────────┘   │  │
+│  │                                        │  │
+│  │  💡 Insights                           │  │
+│  │  📈 Tu consistencia mejoró un 23%      │  │
+│  │  🔥 Racha de 12 días consecutivos      │  │
+│  │  🏆 A 73h de alcanzar nivel Intermedio │  │
+│  └────────────────────────────────────────┘  │
+└──────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption">Anatomía del WeeklyPlanCard con contenido expandible</p>
+      </div>
+
+      <h3>Insights Tipados con Switch Expressions</h3>
+
+      <p>Los insights usan <strong>Dart 3 switch expressions</strong> para mapear el tipo de insight a un ícono:</p>
+
+      <pre><code class="language-dart">// weekly_plan_card.dart — Dart 3 patterns
+final icon = switch (insight.type) {
+  'progress'  =&gt; Icons.trending_up_rounded,
+  'plateau'   =&gt; Icons.horizontal_rule_rounded,
+  'streak'    =&gt; Icons.local_fire_department_rounded,
+  'milestone' =&gt; Icons.emoji_events_rounded,
+  _           =&gt; Icons.lightbulb_outline_rounded,
+};
+
+// Los insights vienen tipados del backend
+model WeeklyPlanInsight {
+  type: 'progress' | 'plateau' | 'streak' | 'suggestion' | 'milestone';
+  text: string;
+}</code></pre>
+      <span class="code-label">Dart / Flutter</span>
+
+      <h3>Trend Indicators en Skill Chips</h3>
+
+      <p>Cada skill chip muestra una flecha de tendencia:</p>
+
+      <ul>
+        <li><strong style="color: var(--accent-green);">↑ Verde</strong> — tendencia creciente, está practicando más</li>
+        <li><strong style="color: var(--accent-red);">↓ Rojo</strong> — tendencia decreciente, está bajando el ritmo</li>
+        <li><strong style="color: var(--text-muted);">→ Gris</strong> — estable, mantiene el ritmo</li>
+      </ul>
+
+
+      <!-- ==================== SECCIÓN 10 ==================== -->
+      <h2><span class="section-number">10</span> Backend: 7 Endpoints del AI Module</h2>
+
+      <p>El módulo AI sigue la <strong>arquitectura controller → service → repository</strong> de Hono. Todos los endpoints están protegidos con <code>authMiddleware</code>:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Ruta</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/api/ai/chat</code></td>
+            <td>Envía mensaje → respuesta del agente con tool calling</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/api/ai/conversations</code></td>
+            <td>Lista todas las conversaciones</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/api/ai/conversations/:id</code></td>
+            <td>Conversación con sus mensajes</td>
+          </tr>
+          <tr>
+            <td><code>DELETE</code></td>
+            <td><code>/api/ai/conversations/:id</code></td>
+            <td>Eliminar conversación</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/api/ai/weekly-plan</code></td>
+            <td>Generar plan semanal on-demand</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/api/ai/weekly-plans</code></td>
+            <td>Listar todos los planes</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/api/ai/weekly-plans/current</code></td>
+            <td>Plan de la semana actual</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <pre><code>// ai.controller.ts — Estructura limpia con Hono
+export const aiController = new Hono()
+  .use('/*', authMiddleware)
+  
+  .post('/chat', zValidator('json', chatRequestSchema), async (c) =&gt; {
+    const userId = c.get('userId');
+    const { message, conversationId } = c.req.valid('json');
+    const result = await aiService.chat(userId, message, conversationId);
+    return c.json(successResponse(result));
+  })
+  
+  .post('/weekly-plan', async (c) =&gt; {
+    const userId = c.get('userId');
+    const plan = await aiService.generateWeeklyPlan(userId);
+    return c.json(successResponse(plan), 201);
+  })
+  
+  .get('/weekly-plans/current', async (c) =&gt; {
+    const userId = c.get('userId');
+    const plan = await aiService.getCurrentWeeklyPlan(userId);
+    return c.json(successResponse(plan));
+  });</code></pre>
+      <span class="code-label">TypeScript / Hono</span>
+
+      <div class="callout">
+        <p><strong>Nota:</strong> El endpoint <code>/weekly-plan</code> (POST) usa el patrón de <strong>pre-fetch</strong> — carga todos los datos del usuario con <code>Promise.all</code> y hace una sola llamada a Claude con todo embebido en el prompt. Resultado: <strong>~8 segundos</strong> vs los 39 que tomaba el agent loop.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 11 ==================== -->
+      <h2><span class="section-number">11</span> Despliegue: El Protocolo Anti-Pérdida de Datos</h2>
+
+      <p>TenK corre en <strong>AWS EC2</strong> con 3 contenedores Docker. La regla #1: <strong>los datos de producción NUNCA se pierden</strong>.</p>
+
+      <h3>Arquitectura de Producción</h3>
+
+      <div class="diagram">
+        <pre><code>Internet → ALB (tenk.oventlabs.com, SSL)
+             │
+             ▼
+EC2 Instance (Amazon Linux 2023)
+  ├── tenk-web      :8888  → Nginx + Flutter Web
+  │     └── /api/*  proxy  → tenk-api:4000
+  ├── tenk-api      :4000  → Bun + Hono + Prisma
+  └── tenk-postgres :5433  → PostgreSQL 16 (volumen persistente)</code></pre>
+        <p class="diagram-caption">3 contenedores: Web (Nginx proxy), API (Bun), Database (PostgreSQL)</p>
+      </div>
+
+      <h3>Los 8 Pasos Obligatorios</h3>
+
+      <ol>
+        <li><strong>SSH al servidor</strong></li>
+        <li><strong>Backup de la DB</strong> — <code>pg_dump</code> con timestamp, verificar que NO sea 0 bytes</li>
+        <li><strong>Contar registros ANTES</strong> — users, skills, sessions, weekly_plans</li>
+        <li><strong>git pull origin main</strong></li>
+        <li><strong>Build + recreate</strong> — <code>docker build --no-cache</code> + <code>docker compose up --force-recreate</code></li>
+        <li><strong>Migraciones</strong> — <code>prisma migrate deploy</code> (solo aplica pendientes, nunca destructivo)</li>
+        <li><strong>Contar registros DESPUÉS</strong> — comparar con el paso 3. Si alguno bajó → restaurar backup</li>
+        <li><strong>Health check</strong> — curl al endpoint de salud + test de login</li>
+      </ol>
+
+      <pre><code class="language-bash"># Paso 2: Backup obligatorio
+docker exec tenk-postgres pg_dump -U postgres tenk_prod \
+  &gt; ~/backups/tenk_$(date +%Y%m%d_%H%M%S).sql
+
+# Verificar que tiene contenido
+wc -l ~/backups/tenk_*.sql | tail -2
+# Si es 0 bytes → DETENER EL DESPLIEGUE
+
+# Paso 3: Conteo ANTES
+docker exec tenk-postgres psql -U postgres -d tenk_prod -c "
+  SELECT 'users' as tabla, COUNT(*) FROM users
+  UNION ALL SELECT 'skills', COUNT(*) FROM skills
+  UNION ALL SELECT 'sessions', COUNT(*) FROM sessions
+  UNION ALL SELECT 'weekly_plans', COUNT(*) FROM weekly_plans;
+" | tee /tmp/counts_before.txt
+
+# Paso 7: Conteo DESPUÉS y comparación
+docker exec tenk-postgres psql -U postgres -d tenk_prod -c "
+  SELECT 'users' as tabla, COUNT(*) FROM users
+  UNION ALL SELECT 'skills', COUNT(*) FROM skills;
+" | tee /tmp/counts_after.txt
+
+diff /tmp/counts_before.txt /tmp/counts_after.txt</code></pre>
+      <span class="code-label">Bash</span>
+
+      <h3>Comandos Prohibidos en Producción</h3>
+
+      <div class="callout danger">
+        <p><strong>🚨 NUNCA ejecutar en producción:</strong></p>
+        <p><code>docker compose down -v</code> — Borra el volumen de PostgreSQL → <strong>PIERDE TODOS LOS DATOS</strong></p>
+        <p><code>prisma migrate reset</code> — Borra y recrea la base de datos</p>
+        <p><code>DELETE FROM tabla</code> (sin WHERE) — Borra todos los registros</p>
+        <p><code>TRUNCATE TABLE</code> — Borra todos los registros sin posibilidad de rollback</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 12 ==================== -->
+      <h2><span class="section-number">12</span> Docker Cache: El Bug Invisible de Flutter Web</h2>
+
+      <p>Este fue un bug que me costó horas. Deployé cambios al frontend, verifiqué que el build pasó, reinicié el contenedor... y la versión vieja seguía apareciendo.</p>
+
+      <h3>El Problema</h3>
+
+      <p>Docker cachea capas del build. Si tus archivos Dart cambiaron pero la layer de <code>flutter build web</code> está cacheada, el <code>main.dart.js</code> compilado es el <strong>viejo</strong>. Docker no invalida la capa porque el <code>Dockerfile</code> no cambió.</p>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4>❌ Build con cache</h4>
+          <pre><code>docker compose build tenk-web
+# Usa capa cacheada
+# → JS viejo en producción</code></pre>
+        </div>
+        <div class="comparison-box good">
+          <h4>✅ Build sin cache</h4>
+          <pre><code>docker build --no-cache \
+  -t tenk_app-tenk-web .
+# Rebuild completo
+# → JS nuevo</code></pre>
+        </div>
+      </div>
+
+      <h3>El Segundo Gotcha: Nombre de Imagen</h3>
+
+      <p>Docker Compose genera imágenes con nombre <code>tenk_app-tenk-web</code> (prefijo del directorio + servicio). Si construyes con <code>docker build -t tenk-web .</code>, creaste una imagen con nombre diferente — Compose sigue usando la vieja.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Comando</th>
+            <th>Imagen generada</th>
+            <th>¿La usa Compose?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>docker build -t tenk-web .</code></td>
+            <td>tenk-web</td>
+            <td>❌ NO</td>
+          </tr>
+          <tr>
+            <td><code>docker build -t tenk_app-tenk-web .</code></td>
+            <td>tenk_app-tenk-web</td>
+            <td>✅ SÍ</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout warning">
+        <p><strong>⚠️ Lección dolorosa:</strong> Siempre verifica el nombre de imagen que Compose espera con <code>docker images | grep tenk</code> antes de hacer un build manual. Un nombre incorrecto = deploy silenciosamente roto.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 13 ==================== -->
+      <h2><span class="section-number">13</span> Nginx Cache Policy: El Tercer Layer de Cache</h2>
+
+      <p>Aún con Docker correcto, el <strong>browser puede cachear</strong> el <code>main.dart.js</code>. Nginx necesita headers explícitos para los entry points de Flutter:</p>
+
+      <pre><code class="language-nginx"># nginx.conf — Cache policy para Flutter Web
+
+# Entry points: NUNCA cachear
+location ~ ^/(main\.dart\.js|flutter_service_worker\.js|
+                flutter_bootstrap\.js|version\.json)$ {
+    expires -1;
+    add_header Cache-Control "no-store, no-cache, must-revalidate";
+}
+
+# index.html: NUNCA cachear
+location = /index.html {
+    add_header Cache-Control "no-store, no-cache";
+}
+
+# JS/CSS generales: 7 días con revalidación
+location ~* \.(js|css)$ {
+    expires 7d;
+    add_header Cache-Control "public, must-revalidate";
+}
+
+# Assets estáticos (fonts, imágenes): 1 año inmutable
+location ~* \.(woff2?|ttf|eot|svg|png|jpg|gif|ico)$ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+}
+
+# Proxy reverso a la API
+location /api/ {
+    proxy_pass http://tenk-api:4000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}</code></pre>
+      <span class="code-label">Nginx</span>
+
+      <p>3 capas de cache que pueden hacer que tu deploy "no funcione": <strong>Docker layer cache → Nombre de imagen → Browser cache</strong>. Cada una tiene su propia solución.</p>
+
+
+      <!-- ==================== SECCIÓN 14 ==================== -->
+      <h2><span class="section-number">14</span> Stack Completo</h2>
+
+      <h3>Backend</h3>
+
+      <pre><code>backend/
+├── src/
+│   ├── modules/
+│   │   ├── ai/
+│   │   │   ├── ai.controller.ts          # 7 endpoints
+│   │   │   ├── ai.service.ts             # Orquesta agent runner
+│   │   │   ├── agent/
+│   │   │   │   ├── agent-runner.ts        # Agentic loop (max 5 iter)
+│   │   │   │   ├── system-prompt.ts       # 100+ líneas de coaching rules
+│   │   │   │   ├── tool-definitions.ts    # 5 tools JSON Schema
+│   │   │   │   └── tool-executor.ts       # Dispatcher
+│   │   │   └── tools/
+│   │   │       ├── query-skills.tool.ts
+│   │   │       ├── query-sessions.tool.ts
+│   │   │       ├── get-stats.tool.ts
+│   │   │       ├── analyze-patterns.tool.ts
+│   │   │       └── create-plan.tool.ts
+│   │   └── claude-oauth/
+│   │       ├── claude-oauth.controller.ts # init, exchange, status, disconnect
+│   │       ├── claude-oauth.service.ts    # PKCE, token refresh
+│   │       └── claude-oauth.repository.ts
+│   └── lib/
+│       └── ai-client.ts                  # Stealth headers, retry logic
+│
+├── prisma/
+│   └── schema.prisma                     # ClaudeCredential, OAuthState,
+│                                          # WeeklyPlan, Conversation, Message
+└── Docker + docker-compose.prod.yml</code></pre>
+      <span class="code-label">Arquitectura Backend</span>
+
+      <h3>Flutter</h3>
+
+      <pre><code>tenk_app/lib/
+├── features/
+│   ├── ai_coach/
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── ai_coach_remote_datasource.dart
+│   │   │   │   └── claude_oauth_datasource.dart    # 4 métodos OAuth
+│   │   │   └── repositories/
+│   │   │       └── ai_coach_repository_impl.dart   # RateLimitFailure
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   ├── repositories/
+│   │   │   └── usecases/
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   └── ai_coach_bloc.dart              # rateLimited state
+│   │       └── widgets/
+│   │           ├── embedded_ai_chat_page.dart       # Connection Gate
+│   │           ├── weekly_plan_card.dart             # Expandable + parse
+│   │           ├── weekly_plan_table.dart            # Custom table
+│   │           ├── rate_limit_banner.dart
+│   │           └── claude_connect_sheet.dart
+│   └── home/
+│       └── presentation/
+│           └── widgets/
+│               ├── web_sidebar.dart                 # 280px sidebar
+│               └── home_web_layout.dart             # IndexedStack
+│
+├── shared/
+│   └── widgets/
+│       └── app_scaffold.dart                        # Breakpoint 900px
+│
+└── Dockerfile + nginx.conf + docker-compose.web.yml</code></pre>
+      <span class="code-label">Arquitectura Flutter</span>
+
+
+      <!-- ==================== TAKEAWAYS ==================== -->
+      <div class="takeaways">
+        <h3>💡 Lecciones Aprendidas</h3>
+        <ol>
+          <li><strong>Flutter Web ≠ Flutter Mobile</strong> — necesitas layouts completamente diferentes. <code>IndexedStack</code> + sidebar vs bottom nav. No es "compilar y ya".</li>
+          <li><strong>El Connection Gate pattern simplifica la UX</strong> — tres estados (loading/not-connected/ready) eliminan toda ambigüedad para el usuario. Cuando la IA no está conectada, el usuario sabe exactamente qué hacer.</li>
+          <li><strong>Nunca confíes en el output del LLM</strong> — siempre sanitiza. Un <code>replaceAll('**', '')</code> evita bugs visuales. Un <code>userId</code> del JWT previene prompt injection.</li>
+          <li><strong>El system prompt es tu mejor inversión</strong> — instrucciones de parallel tool calls reducen iteraciones de 5 a 2. Eso es 60% menos API calls y 3x más rápido.</li>
+          <li><strong>Docker tiene 3 capas de cache</strong> — layer cache, nombre de imagen, y browser cache. Cada una puede romper tu deploy silenciosamente.</li>
+          <li><strong>Los datos de producción son sagrados</strong> — backup antes de cada deploy, conteo antes y después, comandos prohibidos documentados. Un <code>docker compose down -v</code> borra todo. Para siempre.</li>
+          <li><strong>BYOK = $0 en API costs</strong> — cada usuario trae su propio token de Claude. Escalabilidad natural y rate limits individuales.</li>
+          <li><strong>Pre-fetch > Agent loop para flujos predecibles</strong> — el plan semanal siempre necesita los mismos datos. <code>Promise.all</code> + una sola API call = 4.7x más rápido.</li>
+        </ol>
+      </div>
+
+
+      <!-- ==================== SCREENSHOTS ==================== -->
+      <h2>📱 TenK en Acción</h2>
+
+      <div class="post-gallery">
+        <figure>
+          <img src="post/post9phone.png" alt="TenK App — Vista principal móvil con grid de skills">
+          <figcaption>App móvil: grid de skills</figcaption>
+        </figure>
+        <figure>
+          <img src="post/post9phone2.png" alt="TenK App — Técnica Pomodoro integrada">
+          <figcaption>Pomodoro integrado</figcaption>
+        </figure>
+      </div>
+
+      <div class="post-image">
+        <figure>
+          <img src="post/web.png" alt="TenK — Plataforma web con sidebar y dashboard" style="max-width: 700px;">
+          <figcaption>Versión web en <a href="https://tenk.oventlabs.com">tenk.oventlabs.com</a></figcaption>
+        </figure>
+      </div>
+
+
+      <!-- FOOTER -->
+      <div class="post-footer">
+        <p>Escrito por <strong>Oscar Martínez</strong> — 12 de febrero de 2026</p>
+        <p style="margin-top: 10px; color: var(--text-muted);">
+          <a href="ai-agent-tenk.html">Ver post anterior: AI Agent con Tool Calling</a> &nbsp;|&nbsp;
+          <a href="https://tenk.oventlabs.com">Prueba TenK</a> &nbsp;|&nbsp;
+          <a href="10k-hours-tracker.html">Ver el devlog completo</a> &nbsp;|&nbsp;
+          <a href="index.html">Volver al inicio</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-nginx.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cómo Construí un Agente de IA con Tool Calling para TenK | Oscar Code</title>
+  <meta name="description" content="Deep dive técnico sobre la arquitectura de un agente de IA con tool calling, OAuth PKCE con Claude, y cómo funciona el patrón agentic loop en producción.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #00897b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #0d2137 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(38,166,154,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(79,195,247,0.05) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.2em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+    }
+
+    .post-tag.ai { background: var(--accent-purple); }
+    .post-tag.backend { background: var(--accent-blue); color: #000; }
+    .post-tag.security { background: var(--accent-orange); color: #000; }
+
+    /* ========== CONTENT ========== */
+    .post-content {
+      padding: 60px 0 80px;
+    }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--primary);
+      border-bottom: 2px solid rgba(38,166,154,0.3);
+      padding-bottom: 10px;
+    }
+
+    .post-content h2:first-child {
+      margin-top: 0;
+    }
+
+    .post-content h3 {
+      font-size: 1.35em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content h4 {
+      font-size: 1.1em;
+      margin: 25px 0 10px;
+      color: var(--accent-green);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong {
+      color: var(--text-primary);
+    }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover {
+      border-bottom-color: var(--primary);
+    }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li {
+      margin-bottom: 8px;
+    }
+
+    .post-content code {
+      background: rgba(38,166,154,0.15);
+      color: var(--primary);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+    }
+
+    .post-content pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 20px 0 25px;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .post-content pre code {
+      background: none;
+      color: #e0e0e0;
+      padding: 0;
+      font-size: 0.88em;
+      line-height: 1.6;
+    }
+
+    .code-label {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 0.7em;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.warning {
+      border-left-color: var(--accent-orange);
+    }
+
+    .callout.danger {
+      border-left-color: var(--accent-red);
+    }
+
+    .callout.info {
+      border-left-color: var(--accent-blue);
+    }
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .callout p:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    /* Diagrams / ASCII art */
+    .diagram {
+      background: var(--bg-code);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 25px 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .diagram pre code {
+      color: var(--primary);
+      font-size: 0.82em;
+    }
+
+    .diagram-caption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Tables */
+    .post-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 25px;
+      font-size: 0.92em;
+    }
+
+    .post-content th {
+      background: rgba(38,166,154,0.15);
+      color: var(--primary);
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 2px solid rgba(38,166,154,0.3);
+    }
+
+    .post-content td {
+      padding: 10px 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+    }
+
+    .post-content tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* Comparison boxes */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .comparison-box {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .comparison-box.bad {
+      border-color: rgba(255,107,107,0.3);
+    }
+
+    .comparison-box.good {
+      border-color: rgba(38,166,154,0.3);
+    }
+
+    .comparison-box h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .comparison-box.bad h4 { color: var(--accent-red); }
+    .comparison-box.good h4 { color: var(--accent-green); }
+
+    /* Section numbers */
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-right: 12px;
+    }
+
+    /* Key takeaways */
+    .takeaways {
+      background: linear-gradient(135deg, rgba(38,166,154,0.1) 0%, rgba(79,195,247,0.05) 100%);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+
+    .takeaways h3 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+
+    .takeaways ol {
+      color: var(--text-secondary);
+    }
+
+    .takeaways li {
+      margin-bottom: 12px;
+    }
+
+    /* Images */
+    .post-image {
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .post-image img {
+      max-width: 100%;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .post-image figcaption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .post-gallery {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
+
+    .post-gallery img {
+      max-width: 260px;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .post-gallery img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 15px 50px rgba(38,166,154,0.2);
+      border-color: var(--primary);
+    }
+
+    /* Footer */
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+
+    .post-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.7em; }
+      .post-header { padding: 60px 15px 40px; }
+      .comparison { grid-template-columns: 1fr; }
+      .post-content pre { padding: 15px; }
+      .post-content h2 { font-size: 1.4em; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Volver al inicio
+      </a>
+      <h1 class="post-title">Cómo Construí un Agente de IA con Tool Calling</h1>
+      <p class="post-subtitle">Arquitectura completa de un AI Coach con Claude, OAuth PKCE y herramientas en producción</p>
+      <div class="post-meta">
+        <span class="post-tag ai">IA / Agentes</span>
+        <span class="post-tag backend">Backend</span>
+        <span class="post-tag security">OAuth</span>
+        <span class="post-tag">Tool Calling</span>
+        <br><br>
+        <i class="far fa-clock"></i> 11 de febrero de 2026 &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Martínez &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> ~15 min de lectura
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="post-content">
+    <div class="container">
+
+      <!-- INTRO -->
+      <div class="callout info">
+        <p><strong>TL;DR:</strong> Construí un agente de IA para <a href="https://tenk.oventlabs.com">TenK</a> (app de 10,000 horas) que analiza tus datos de práctica y te da coaching personalizado. Usa <strong>tool calling</strong> con 5 herramientas, <strong>OAuth PKCE</strong> para que cada usuario conecte su cuenta de Claude, y un <strong>agentic loop</strong> de hasta 5 iteraciones. Este post explica cómo funciona todo bajo el capó.</p>
+      </div>
+
+      <!-- ==================== SECCIÓN 1 ==================== -->
+      <h2><span class="section-number">1</span> ¿Qué es un Agente de IA?</h2>
+
+      <p>Un agente de IA <strong>no es un chatbot</strong>. La diferencia fundamental es que un chatbot solo responde preguntas con su conocimiento general, mientras que un agente puede <strong>tomar acciones</strong> y <strong>consultar datos en tiempo real</strong> para resolver un problema.</p>
+
+      <p>Pensemos en una analogía simple:</p>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4>🤖 Chatbot</h4>
+          <p>Le preguntas "¿cuántas horas practiqué esta semana?" y responde <em>"No tengo acceso a tus datos"</em> o inventa algo.</p>
+        </div>
+        <div class="comparison-box good">
+          <h4>🧠 Agente</h4>
+          <p>Recibe la pregunta, <strong>decide</strong> que necesita consultar tu historial, <strong>ejecuta</strong> la consulta a la base de datos, <strong>analiza</strong> los resultados y responde con datos reales.</p>
+        </div>
+      </div>
+
+      <p>El agente tiene <strong>autonomía para decidir qué herramientas usar y en qué orden</strong>, similar a como un desarrollador decide qué queries ejecutar para resolver un ticket. No hay un flujo hardcodeado — el modelo razona en cada paso.</p>
+
+
+      <!-- ==================== SECCIÓN 2 ==================== -->
+      <h2><span class="section-number">2</span> El Agentic Loop: El Corazón del Sistema</h2>
+
+      <p>El patrón central es un <strong>loop de razonamiento-acción</strong> (conocido como ReAct pattern). Veamos un ejemplo real de cómo funciona en TenK:</p>
+
+      <div class="diagram">
+        <pre><code>Usuario: "¿Cómo voy con mi práctica de guitarra?"
+
+→ Iteración 1:
+  Claude PIENSA: "Necesito ver los skills del usuario"
+  Claude LLAMA: get_user_skills(userId)
+  Sistema RETORNA: [{skill: 'Guitarra', hours: 127, level: 'Aprendiz'}]
+
+→ Iteración 2:
+  Claude PIENSA: "Necesito las sesiones recientes"
+  Claude LLAMA: get_practice_sessions(skillId, days: 30)
+  Sistema RETORNA: [{date: '2026-02-10', duration: 45min}, ...]
+
+→ Iteración 3:
+  Claude PIENSA: "Quiero analizar patrones"
+  Claude LLAMA: analyze_practice_patterns(skillId)
+  Sistema RETORNA: {bestDay: 'Sábado', trend: 'growing', plateau: false}
+
+→ Iteración 4:
+  Claude PIENSA: "Ya tengo toda la info, puedo responder"
+  Claude RESPONDE: "Llevas 127h de guitarra, nivel Aprendiz, racha de 5 días..."</code></pre>
+        <p class="diagram-caption">Flujo real del agente: 4 iteraciones de razonamiento-acción</p>
+      </div>
+
+      <p>Lo clave: <strong>Claude decide en cada iteración</strong> si necesita más datos o si ya puede responder. El modelo razona sobre qué herramientas usar según la pregunta del usuario.</p>
+
+
+      <!-- ==================== SECCIÓN 3 ==================== -->
+      <h2><span class="section-number">3</span> Tool Calling: Cómo el LLM Ejecuta Funciones</h2>
+
+      <p>El tool calling es el mecanismo que permite al LLM <strong>invocar funciones definidas por nosotros</strong>. Funciona en 3 pasos:</p>
+
+      <h3>Paso 1: Definición de Tools (JSON Schema)</h3>
+
+      <p>Le decimos al modelo qué herramientas tiene disponibles. El modelo <strong>nunca ejecuta código</strong> — solo emite un JSON estructurado indicando qué función quiere llamar:</p>
+
+      <pre><code>{
+  "name": "get_practice_sessions",
+  "description": "Obtiene las sesiones de práctica de un skill específico",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "skillId": { "type": "string", "description": "ID del skill" },
+      "days":    { "type": "number", "description": "Últimos N días", "default": 30 }
+    },
+    "required": ["skillId"]
+  }
+}</code></pre>
+
+      <h3>Paso 2: Ejecución en el Backend (Tool Executor)</h3>
+
+      <p>Nuestro backend recibe la petición del modelo, valida los parámetros y ejecuta la query real contra PostgreSQL:</p>
+
+      <pre><code>// tool-executor.ts
+async function executeTool(name: string, userId: string, args: any) {
+  switch (name) {
+    case 'get_user_skills':
+      return await prisma.skill.findMany({
+        where: { userId },
+        include: { sessions: { select: { duration: true } } }
+      });
+
+    case 'get_practice_sessions':
+      return await prisma.session.findMany({
+        where: {
+          skillId: args.skillId,
+          createdAt: { gte: daysAgo(args.days ?? 30) }
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+
+    case 'analyze_practice_patterns':
+      return await calculatePatterns(userId, args.skillId);
+  }
+}</code></pre>
+
+      <div class="callout warning">
+        <p><strong>⚠️ Nota de seguridad:</strong> Siempre filtramos por <code>userId</code> extraído del JWT — <strong>nunca del input del modelo</strong>. Esto previene ataques de prompt injection donde un usuario intente acceder a datos ajenos.</p>
+      </div>
+
+      <h3>Paso 3: Respuesta al Modelo</h3>
+
+      <p>El resultado de la función se inyecta como un mensaje <code>tool_result</code> en la conversación y el modelo continúa razonando con los datos reales.</p>
+
+
+      <!-- ==================== SECCIÓN 4 ==================== -->
+      <h2><span class="section-number">4</span> Arquitectura del Agent Runner</h2>
+
+      <p>El <code>agent-runner.ts</code> es el orquestador central. Su responsabilidad es manejar el loop de iteraciones:</p>
+
+      <div class="diagram">
+        <pre><code>┌──────────────────────────────────────────────────┐
+│                  AGENT RUNNER                     │
+│                                                   │
+│  ┌───────────┐    ┌──────────┐    ┌────────────┐ │
+│  │  Messages  │──▶│  Claude  │──▶│   Parse     │ │
+│  │   Array    │    │   API    │    │  Response   │ │
+│  └───────────┘    └──────────┘    └─────┬──────┘ │
+│       ▲                                  │        │
+│       │          ┌──────────┐            │        │
+│       │          │   Tool   │◀───────────┘        │
+│       └──────────│ Executor │   tool_calls?       │
+│     tool_result  └──────────┘                     │
+│                                                   │
+│  Si no hay tool_calls → return response           │
+│  Si iteraciones > 5  → force return               │
+└──────────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption">Arquitectura del Agent Runner con loop de máximo 5 iteraciones</p>
+      </div>
+
+      <p>La implementación en TypeScript:</p>
+
+      <pre><code>// agent-runner.ts — Loop principal
+const MAX_TOOL_ITERATIONS = 5;
+
+export async function runAgent(
+  userMessage: string,
+  userId: string,
+  credential: ClaudeCredential
+) {
+  const messages = [{ role: 'user', content: userMessage }];
+  const toolsUsed: string[] = [];
+
+  for (let i = 0; i < MAX_TOOL_ITERATIONS; i++) {
+    // 1. Llamar a Claude con las herramientas disponibles
+    const result = await chatCompletion(messages, AGENT_TOOLS, credential);
+
+    // 2. Si no hay tool_calls, el texto es la respuesta final
+    if (result.toolCalls.length === 0) {
+      return {
+        response: result.content,
+        toolsUsed,
+        iterations: i + 1
+      };
+    }
+
+    // 3. Agregar la respuesta del asistente al historial
+    messages.push({
+      role: 'assistant',
+      content: result.content,
+      tool_calls: result.toolCalls
+    });
+
+    // 4. Ejecutar cada tool y agregar los resultados
+    for (const toolCall of result.toolCalls) {
+      const toolResult = await executeTool(
+        toolCall.function.name,
+        userId,  // ← siempre del JWT, nunca del prompt
+        JSON.parse(toolCall.function.arguments)
+      );
+
+      messages.push({
+        role: 'tool',
+        content: JSON.stringify(toolResult),
+        tool_call_id: toolCall.id
+      });
+
+      toolsUsed.push(toolCall.function.name);
+    }
+  }
+
+  // Guardrail: si se excede el límite, forzar respuesta
+  return { response: messages.at(-1)?.content, toolsUsed, iterations: MAX_TOOL_ITERATIONS };
+}</code></pre>
+
+      <p>El array de <code>messages</code> crece con cada iteración: pregunta del usuario → respuesta con tool_calls → resultados de las tools → nueva respuesta → etc. Claude tiene <strong>contexto completo</strong> de toda la conversación para generar la respuesta final.</p>
+
+
+      <!-- ==================== SECCIÓN 5 ==================== -->
+      <h2><span class="section-number">5</span> Las 5 Herramientas del TenK Coach</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tool</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Uso típico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>get_user_skills</code></td>
+            <td>—</td>
+            <td>Skills con horas, nivel, estado</td>
+            <td>Inicio de conversación</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>get_practice_sessions</code></td>
+            <td>skillId, days</td>
+            <td>Historial de sesiones</td>
+            <td>Análisis de skill específico</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>get_journey_stats</code></td>
+            <td>—</td>
+            <td>Promedio, proyecciones, rachas</td>
+            <td>Resumen general</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>analyze_practice_patterns</code></td>
+            <td>skillId</td>
+            <td>Distribución, tendencias, plateaus</td>
+            <td>Diagnóstico profundo</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>save_weekly_plan</code></td>
+            <td>plan_data</td>
+            <td>Confirmación</td>
+            <td>Guardar plan generado</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Las herramientas 1-4 son de <strong>lectura</strong> (consultan datos). La herramienta 5 es de <strong>escritura</strong> (modifica la base de datos). El modelo decide cuáles usar y en qué orden según la pregunta del usuario.</p>
+
+      <div class="callout">
+        <p><strong>💡 Decisión de diseño:</strong> Las herramientas son <em>granulares a propósito</em>. Podríamos haber creado una sola herramienta <code>get_all_data</code> que devuelva todo, pero eso enviaría datos innecesarios en cada consulta. Con herramientas granulares, Claude solo pide lo que necesita — consumiendo menos tokens y reduciendo la latencia.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 6 ==================== -->
+      <h2><span class="section-number">6</span> El System Prompt: La Personalidad del Agente</h2>
+
+      <p>El system prompt define <strong>quién es</strong> el agente y <strong>cómo debe comportarse</strong>. Es probablemente el componente más importante — la diferencia entre un agente útil y uno genérico.</p>
+
+      <p>Nuestro prompt incluye:</p>
+
+      <ul>
+        <li><strong>Identidad:</strong> "Eres el TenK Coach, un entrenador experto en práctica deliberada."</li>
+        <li><strong>Contexto:</strong> La teoría de las 10,000 horas, técnicas de práctica efectiva, la ciencia del aprendizaje.</li>
+        <li><strong>Instrucciones de herramientas:</strong> "SIEMPRE consulta los datos del usuario antes de dar recomendaciones. No asumas nada."</li>
+        <li><strong>Formato de respuesta:</strong> "Usa markdown con emojis para respuestas visualmente atractivas."</li>
+        <li><strong>Restricciones:</strong> "No inventes datos. Si no tienes info, dilo explícitamente."</li>
+      </ul>
+
+      <p>Sin instrucciones claras, el modelo tiende a <strong>alucinar</strong> — decir "llevas X horas" sin verificar. El prompt fuerza al agente a siempre consultar herramientas primero.</p>
+
+      <pre><code>// system-prompt.ts
+export const TENK_COACH_PROMPT = `
+Eres el TenK Coach — un entrenador experto en práctica deliberada y 
+la teoría de las 10,000 horas de Malcolm Gladwell.
+
+REGLAS CRÍTICAS:
+1. SIEMPRE usa get_user_skills primero antes de hablar sobre skills.
+2. NUNCA inventes estadísticas. Si no tienes datos, usa las herramientas.
+3. Sé motivador pero honesto. Si el usuario no ha practicado, dilo.
+4. Usa markdown con emojis para respuestas visuales.
+5. Reconoce los logros: rachas, sesiones largas, nuevos niveles.
+
+CONTEXTO:
+- Los niveles van de Principiante (0h) a Master (10,000h)
+- Una racha es X días consecutivos de práctica
+- La técnica Pomodoro ayuda: 25min enfocado + 5min descanso
+`;</code></pre>
+
+
+      <!-- ==================== SECCIÓN 7 ==================== -->
+      <h2><span class="section-number">7</span> OAuth PKCE: Cada Usuario, Su Propia Cuenta</h2>
+
+      <p>En lugar de usar una API key centralizada (que comparte rate limits entre todos los usuarios), implementamos <strong>OAuth PKCE</strong> donde cada usuario conecta su propia cuenta de Claude Pro o Max.</p>
+
+      <h3>¿Por qué Per-User?</h3>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4>❌ API Key Centralizada</h4>
+          <ul>
+            <li>Rate limits compartidos entre todos</li>
+            <li>Costo de API para nosotros</li>
+            <li>Un usuario heavy bloquea a todos</li>
+            <li>Escalabilidad limitada</li>
+          </ul>
+        </div>
+        <div class="comparison-box good">
+          <h4>✅ OAuth Per-User</h4>
+          <ul>
+            <li>Rate limits individuales</li>
+            <li>Zero API cost para nosotros</li>
+            <li>Cada usuario tiene su cuota</li>
+            <li>Escalabilidad natural</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>El Flujo Completo</h3>
+
+      <div class="diagram">
+        <pre><code>┌─────────┐     ┌──────────┐     ┌──────────┐     ┌───────────┐
+│  Flutter │     │  Backend │     │ Anthropic│     │  Browser  │
+│   App    │     │   API    │     │  OAuth   │     │  (Login)  │
+└────┬─────┘     └────┬─────┘     └────┬─────┘     └─────┬─────┘
+     │                │                │                  │
+     │ 1. Init OAuth  │                │                  │
+     │───────────────▶│                │                  │
+     │                │                │                  │
+     │                │ 2. Generate    │                  │
+     │                │ code_verifier  │                  │
+     │                │ + code_challenge                  │
+     │                │ (SHA-256)      │                  │
+     │                │                │                  │
+     │  3. Auth URL   │                │                  │
+     │◀───────────────│                │                  │
+     │                │                │                  │
+     │ 4. Open browser│                │                  │
+     │────────────────────────────────────────────────────▶
+     │                │                │    5. User logs  │
+     │                │                │◀─────────────────│
+     │                │                │                  │
+     │                │                │  6. code#state   │
+     │  7. Paste code │                │─────────────────▶│
+     │◀───────────────────────────────────────────────────│
+     │                │                │                  │
+     │ 8. Exchange    │                │                  │
+     │───────────────▶│                │                  │
+     │                │ 9. POST /token │                  │
+     │                │ (JSON!)        │                  │
+     │                │───────────────▶│                  │
+     │                │                │                  │
+     │                │ 10. Tokens     │                  │
+     │                │◀───────────────│                  │
+     │                │                │                  │
+     │  11. Connected │                │                  │
+     │◀───────────────│                │                  │
+     │                │                │                  │</code></pre>
+        <p class="diagram-caption">Flujo OAuth PKCE completo: de la app al token</p>
+      </div>
+
+      <h3>PKCE: Proof Key for Code Exchange</h3>
+
+      <p>PKCE resuelve el problema de seguridad de OAuth en apps móviles (donde no puedes guardar un <code>client_secret</code> de forma segura). En vez de un secreto estático, cada flujo genera un par criptográfico único:</p>
+
+      <pre><code>// claude-oauth.service.ts
+
+// 1. Generar un string aleatorio de 64 caracteres
+function generateRandomString(length: number): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (b) => chars[b % chars.length]).join('');
+}
+
+// 2. Derivar el challenge con SHA-256
+async function generateCodeChallenge(verifier: string): Promise&lt;string&gt; {
+  const data = new TextEncoder().encode(verifier);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+// El verifier se guarda en DB, el challenge va en la URL de auth
+const codeVerifier = generateRandomString(64);
+const codeChallenge = await generateCodeChallenge(codeVerifier);</code></pre>
+
+      <p>El <code>code_challenge</code> viaja en la URL de autorización (público). El <code>code_verifier</code> se guarda en nuestra base de datos y se envía en el token exchange. El servidor de Anthropic verifica que <code>SHA-256(verifier) === challenge</code> — si no coincide, rechaza el request.</p>
+
+      <h3>Las Trampas de Anthropic que Nadie Documenta</h3>
+
+      <div class="callout danger">
+        <p><strong>🔥 Detalle #1:</strong> Anthropic devuelve el código de autorización en formato <code>code#state</code> como un solo string. Hay que parsear el <code>#</code> manualmente:</p>
+      </div>
+
+      <pre><code>// El usuario pega: "abc123xyz#state-789def"
+const hashIndex = rawCode.indexOf('#');
+const code = rawCode.substring(0, hashIndex);   // "abc123xyz"
+const state = rawCode.substring(hashIndex + 1);  // "state-789def"</code></pre>
+
+      <div class="callout danger">
+        <p><strong>🔥 Detalle #2:</strong> Anthropic es el <strong>único proveedor OAuth</strong> que requiere <code>Content-Type: application/json</code> en el token exchange. Google, GitHub, todos usan <code>application/x-www-form-urlencoded</code>.</p>
+      </div>
+
+      <pre><code>// Token exchange — JSON, NO form-urlencoded
+const res = await fetch('https://console.anthropic.com/v1/oauth/token', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },  // ← único en la industria
+  body: JSON.stringify({
+    grant_type: 'authorization_code',
+    client_id: CLAUDE_CLIENT_ID,
+    code,
+    state,               // ← también va en el body (no documentado)
+    redirect_uri: REDIRECT_URI,
+    code_verifier: codeVerifier,
+  }),
+});</code></pre>
+
+
+      <!-- ==================== SECCIÓN 8 ==================== -->
+      <h2><span class="section-number">8</span> Stealth Headers: Haciéndose Pasar por Claude Code CLI</h2>
+
+      <p>Los tokens OAuth de Claude <strong>solo funcionan</strong> si el request parece venir del CLI oficial. Sin los headers correctos, Anthropic rechaza con <code>403 Forbidden</code>.</p>
+
+      <p>Descubrimos esto investigando el código fuente de OpenClaw (cliente open source de Claude Code) y capturando las llamadas reales del CLI:</p>
+
+      <pre><code>// ai-client.ts — Stealth headers para tokens OAuth
+const isOAuth = credential.accessToken.startsWith('sk-ant-oat');
+
+if (isOAuth) {
+  headers['Authorization'] = `Bearer ${credential.accessToken}`;
+  headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  headers['anthropic-beta'] = 'claude-code-20250219,oauth-2025-04-20,' +
+    'fine-grained-tool-streaming-2025-05-14';
+  headers['user-agent'] = 'claude-cli/2.1.2 (external, cli)';
+  headers['x-app'] = 'cli';
+
+  // El system prompt DEBE abrir con la identidad de Claude Code
+  body.system = [
+    { type: 'text', text: "You are Claude Code, Anthropic's official CLI." },
+    { type: 'text', text: actualSystemPrompt },
+  ];
+} else {
+  // API key normal — headers estándar
+  headers['x-api-key'] = credential.accessToken;
+  body.system = actualSystemPrompt;
+}</code></pre>
+
+      <p>Son <strong>5 headers específicos</strong> + un system prompt de identidad. Sin cualquiera de ellos, el token es rechazado.</p>
+
+
+      <!-- ==================== SECCIÓN 9 ==================== -->
+      <h2><span class="section-number">9</span> Rate Limits: De Error Críptico a Banner Elegante</h2>
+
+      <p>Cuando el usuario agota su sesión de Claude, la API devuelve un <code>429</code> con un header <code>retry-after</code>. Sin manejo adecuado, el usuario veía un error técnico incomprensible.</p>
+
+      <h3>La Cadena Completa de Manejo</h3>
+
+      <div class="diagram">
+        <pre><code>429 API Response (retry-after: 2520s)
+         │
+         ▼
+TooManyRequestsError(minutes: 42)     ← Backend
+         │
+         ▼
+JSON: { retryAfterMinutes: 42 }       ← HTTP Response
+         │
+         ▼
+DioException (statusCode: 429)        ← Flutter HTTP
+         │
+         ▼
+RateLimitFailure(minutes: 42)         ← Repository
+         │
+         ▼
+AiCoachStatus.rateLimited             ← BLoC State
+         │
+         ▼
+🟡 RateLimitBanner                    ← UI Widget
+   "Intenta en ~42 min"</code></pre>
+        <p class="diagram-caption">El error 429 transformándose de API response a UI amigable</p>
+      </div>
+
+      <h3>Backend: Retry con Backoff</h3>
+
+      <pre><code>// ai-client.ts — 3 reintentos con backoff
+if (res.status === 429) {
+  const retryAfter = res.headers.get('retry-after');
+  const rawWaitMs = retryAfter ? Number(retryAfter) * 1000 : (attempt + 1) * 5000;
+  const minutes = Math.max(1, Math.ceil(rawWaitMs / 60000));
+
+  // Si hay que esperar más de 1 minuto, no tiene sentido reintentar
+  if (rawWaitMs > 60000) {
+    throw new TooManyRequestsError(
+      `Has alcanzado el límite de uso de Claude. Intenta en ~${minutes} min.`,
+      minutes,
+    );
+  }
+  // Si es poco tiempo, esperar y reintentar
+  await sleep(Math.min(rawWaitMs, 15000));
+}</code></pre>
+
+      <h3>Flutter: Error Tipado → UI</h3>
+
+      <pre><code>// ai_coach_repository_impl.dart
+if (statusCode == 429) {
+  final retryMinutes = errorData?['retryAfterMinutes'] as int?;
+  return RateLimitFailure(
+    message: message,
+    retryAfterMinutes: retryMinutes,
+  );
+}
+
+// ai_coach_bloc.dart
+if (failure is RateLimitFailure) {
+  emit(state.copyWith(
+    status: AiCoachStatus.rateLimited,
+    retryAfterMinutes: failure.retryAfterMinutes,
+  ));
+}</code></pre>
+
+      <p>El resultado: en vez de un crash, el usuario ve un banner con gradiente amber, ícono de timer y los minutos exactos de espera.</p>
+
+
+      <!-- ==================== SECCIÓN 10 ==================== -->
+      <h2><span class="section-number">10</span> Optimización: 39 Segundos → 8 Segundos</h2>
+
+      <p>El plan semanal inicialmente tomaba <strong>39 segundos</strong> porque el agente ejecutaba 6 llamadas secuenciales a la API (una por iteración del tool loop). Cada iteración: Claude decide qué tool → ejecuta → recibe resultado → decide otra → repite.</p>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4>❌ Agent Loop (39s)</h4>
+          <pre><code>for (let i = 0; i < MAX; i++) {
+  // Claude pide un tool
+  // → ejecuta
+  // → otra iteración...
+}
+// 6 API calls secuenciales</code></pre>
+        </div>
+        <div class="comparison-box good">
+          <h4>✅ Pre-fetch (8s)</h4>
+          <pre><code>const [skills, stats, patterns] = 
+  await Promise.all([
+    querySkills(userId),
+    getJourneyStats(userId),
+    analyzePracticePatterns(userId),
+  ]);
+// 1 API call con todo</code></pre>
+        </div>
+      </div>
+
+      <p>Para el <strong>chat libre</strong> mantenemos el agent loop porque cada pregunta es impredecible. Para el <strong>plan semanal</strong> pre-cargamos todos los datos con <code>Promise.all</code> (~50ms) y hacemos una sola llamada con todo embebido en el prompt.</p>
+
+      <p>Resultado: <strong>4.7x más rápido</strong> — de 39 segundos a ~8 segundos.</p>
+
+
+      <!-- ==================== SECCIÓN 11 ==================== -->
+      <h2><span class="section-number">11</span> Arquitectura Completa</h2>
+
+      <h3>Backend (Bun + Hono + Prisma)</h3>
+
+      <pre><code>modules/
+├── ai/
+│   ├── ai.controller.ts        # POST /chat, POST /weekly-plan
+│   ├── ai.service.ts            # Orquesta el agent runner
+│   ├── agent/
+│   │   ├── agent-runner.ts      # Loop de tool calling (max 5 iteraciones)
+│   │   ├── system-prompt.ts     # Prompt del TenK Coach
+│   │   ├── tool-definitions.ts  # 5 tools con JSON Schema
+│   │   └── tool-executor.ts     # Dispatcher de tools
+│   └── tools/
+│       ├── query-skills.tool.ts
+│       ├── query-sessions.tool.ts
+│       ├── get-stats.tool.ts
+│       ├── analyze-patterns.tool.ts
+│       └── create-plan.tool.ts
+├── claude-oauth/
+│   ├── claude-oauth.controller.ts  # POST /init, POST /exchange, GET /status
+│   ├── claude-oauth.service.ts     # PKCE, token exchange, refresh
+│   └── claude-oauth.repository.ts  # Prisma ops
+lib/
+└── ai-client.ts                 # Per-user tokens → stealth headers → retry</code></pre>
+
+      <h3>Flutter (Clean Architecture)</h3>
+
+      <pre><code>features/ai_coach/
+├── data/
+│   ├── datasources/
+│   │   ├── ai_coach_remote_datasource.dart
+│   │   └── claude_oauth_datasource.dart
+│   ├── models/
+│   └── repositories/
+│       └── ai_coach_repository_impl.dart  # _handleDioError → RateLimitFailure
+├── domain/
+│   ├── entities/
+│   ├── repositories/
+│   └── usecases/
+└── presentation/
+    ├── bloc/
+    │   ├── ai_coach_bloc.dart     # initial | sending | success | error | rateLimited
+    │   ├── ai_coach_event.dart
+    │   └── ai_coach_state.dart    # retryAfterMinutes field
+    ├── pages/
+    │   └── ai_coach_screen.dart
+    └── widgets/
+        ├── rate_limit_banner.dart
+        ├── claude_connect_sheet.dart
+        ├── chat_message_bubble.dart
+        └── coach_empty_state.dart</code></pre>
+
+
+      <!-- ==================== SECCIÓN 12 ==================== -->
+      <h2><span class="section-number">12</span> Modelos de Base de Datos</h2>
+
+      <pre><code>// schema.prisma — Modelos para OAuth y AI
+
+model ClaudeCredential {
+  id           String   @id @default(cuid())
+  userId       String   @unique @map("user_id")
+  accessToken  String   @map("access_token") @db.Text
+  refreshToken String   @map("refresh_token") @db.Text
+  expiresAt    DateTime @map("expires_at")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("claude_credentials")
+}
+
+model OAuthState {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  state         String   @unique
+  codeVerifier  String   @map("code_verifier")
+  expiresAt     DateTime @map("expires_at")
+  @@map("oauth_states")
+  @@index([state])
+}
+
+model WeeklyPlan {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  content   String   @db.Text
+  insights  String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("weekly_plans")
+}</code></pre>
+
+
+      <!-- ==================== TAKEAWAYS ==================== -->
+      <div class="takeaways">
+        <h3>💡 Lecciones Aprendidas</h3>
+        <ol>
+          <li><strong>El agent loop es poderoso pero costoso</strong> — cada iteración es una API call. Usa pre-fetch cuando el flujo es predecible.</li>
+          <li><strong>El system prompt es el 80% del comportamiento</strong> — un buen prompt convierte un LLM genérico en un experto especializado.</li>
+          <li><strong>Tool calling > RAG para datos estructurados</strong> — en vez de embeber todo en el contexto, deja que el modelo pida solo lo que necesita.</li>
+          <li><strong>Siempre aislar por userId en el backend</strong>, nunca confiar en el input del modelo para autenticación.</li>
+          <li><strong>Los guardrails importan</strong> — límite de iteraciones, timeouts y manejo de rate limits son esenciales en producción.</li>
+          <li><strong>Anthropic tiene sus particularidades</strong> — JSON en token exchange, <code>code#state</code>, stealth headers. Documenta todo porque no lo encontrarás en su docs oficiales.</li>
+          <li><strong>Cada usuario con su token = escalabilidad natural</strong> — zero API cost para el developer y rate limits individuales.</li>
+        </ol>
+      </div>
+
+
+      <!-- ==================== SCREENSHOTS ==================== -->
+      <h2>📱 La App en Acción</h2>
+
+      <div class="post-gallery">
+        <figure>
+          <img src="post/post9phone.png" alt="TenK App — Vista principal con grid de progreso">
+          <figcaption>Vista principal de la app</figcaption>
+        </figure>
+        <figure>
+          <img src="post/post9phone2.png" alt="TenK App — Técnica Pomodoro">
+          <figcaption>Técnica Pomodoro integrada</figcaption>
+        </figure>
+      </div>
+
+      <div class="post-image">
+        <figure>
+          <img src="post/web.png" alt="TenK — Landing page web" style="max-width: 700px;">
+          <figcaption>Landing page en <a href="https://tenk.oventlabs.com">tenk.oventlabs.com</a></figcaption>
+        </figure>
+      </div>
+
+
+      <!-- FOOTER -->
+      <div class="post-footer">
+        <p>Escrito por <strong>Oscar Martínez</strong> — 11 de febrero de 2026</p>
+        <p style="margin-top: 10px; color: var(--text-muted);">
+          <a href="https://tenk.oventlabs.com">Prueba TenK</a> &nbsp;|&nbsp;
+          <a href="10k-hours-tracker.html">Ver el devlog completo</a> &nbsp;|&nbsp;
+          <a href="index.html">Volver al inicio</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

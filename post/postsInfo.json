@@ -1,6 +1,15 @@
 {
   "posts" : [
     {
+      "title":"Cómo Construí un Agente de IA con Tool Calling",
+       "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/github-contributions.jpg",
+       "description":"Deep dive técnico sobre la arquitectura de un AI Coach para TenK: agentic loop con 5 herramientas, OAuth PKCE con Claude, stealth headers, manejo de rate limits end-to-end y optimización de latencia de 39s a 8s.",
+       "date":"11-02-2026",
+       "tags": [ "ia","agentes", "tool-calling", "oauth", "claude", "arquitectura"],
+       "author":"Oscar Martínez",
+       "url":"/ai-agent-tenk"
+    },
+    {
       "title":"10K Hours Tracker: El viaje hacia la maestría",
        "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/github-contributions.jpg",
        "description":"Una bitácora cronológica sobre el desarrollo de una aplicación para trackear las 10,000 horas de práctica deliberada. Inspirado en la teoría de Malcolm Gladwell y el contribution graph de GitHub, este post se actualiza en tiempo real mientras construyo la aplicación...",
