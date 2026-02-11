@@ -193,6 +193,7 @@
       .hero-post .react-logo { font-size: 3rem; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 
 <body>
@@ -203,9 +204,10 @@
         <a href="index.html" class="brand-logo">{ OscarCode }</a>
         <ul class="right hide-on-med-and-down">
           <li><a href="index.html#skills">Skills</a></li>
-          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
           <li><a href="index.html#blog">Blog</a></li>
-          <li><a href="index.html#contact">Contacto</a></li>
+          <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a class="lang-toggle" onclick="toggleLanguage()"></a></li>
         </ul>
       </div>
     </div>
@@ -214,31 +216,43 @@
   <section class="hero-post">
     <div class="container">
       <div class="react-logo"><i class="fab fa-react"></i></div>
-      <h1>React, el State, los Props y Todo lo Demás</h1>
-      <p class="meta"><i class="far fa-calendar-alt"></i> 28 de Abril, 2018</p>
+      <h1><span class="lang-es">React, el State, los Props y Todo lo Demás</span><span class="lang-en">React, State, Props and Everything Else</span></h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> <span class="lang-es">28 de Abril, 2018</span><span class="lang-en">April 28, 2018</span></p>
     </div>
   </section>
 
   <section class="content-section">
     <div class="container">
-      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         <strong>React</strong> ha revolucionado la forma en que construimos interfaces de usuario. Con más de 200,000 estrellas en GitHub y usado por empresas como Meta, Netflix, Airbnb y Uber, es una de las tecnologías más demandadas en el mercado laboral.
       </p>
+      <p class="flow-text lang-en">
+        <strong>React</strong> has revolutionized the way we build user interfaces. With over 200,000 stars on GitHub and used by companies like Meta, Netflix, Airbnb, and Uber, it is one of the most in-demand technologies in the job market.
+      </p>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         En este artículo vamos a desmitificar los conceptos fundamentales de React: <strong>componentes</strong>, <strong>props</strong> y <strong>state</strong>. Si vienes de HTML/CSS/JavaScript vanilla, verás que la curva de aprendizaje no es tan empinada como parece.
       </p>
-
-      <h3>🧩 ¿Qué es un Componente?</h3>
-
-      <p class="flow-text">
-        En React, todo es un <strong>componente</strong>. Piensa en ellos como piezas de LEGO: pequeños bloques reutilizables que juntos forman interfaces complejas. Un botón, un menú, una tarjeta de producto... cada uno puede ser un componente independiente.
+      <p class="flow-text lang-en">
+        In this article we will demystify the fundamental concepts of React: <strong>components</strong>, <strong>props</strong>, and <strong>state</strong>. If you come from HTML/CSS/vanilla JavaScript, you'll see that the learning curve is not as steep as it seems.
       </p>
 
-      <p class="flow-text">
+      <h3><span class="lang-es">🧩 ¿Qué es un Componente?</span><span class="lang-en">🧩 What is a Component?</span></h3>
+
+      <p class="flow-text lang-es">
+        En React, todo es un <strong>componente</strong>. Piensa en ellos como piezas de LEGO: pequeños bloques reutilizables que juntos forman interfaces complejas. Un botón, un menú, una tarjeta de producto... cada uno puede ser un componente independiente.
+      </p>
+      <p class="flow-text lang-en">
+        In React, everything is a <strong>component</strong>. Think of them as LEGO pieces: small reusable blocks that together form complex interfaces. A button, a menu, a product card... each one can be an independent component.
+      </p>
+
+      <p class="flow-text lang-es">
         La magia está en que escribes el componente una vez y lo reutilizas en toda tu aplicación (o incluso en otros proyectos):
+      </p>
+      <p class="flow-text lang-en">
+        The magic is that you write the component once and reuse it throughout your application (or even in other projects):
       </p>
 
       <pre><code class="language-jsx">// Componente de clase (forma tradicional)
@@ -258,14 +272,18 @@ class Saludo extends Component {
 export default Saludo;</code></pre>
 
       <div class="concept-box">
-        <h4>💡 El método render()</h4>
-        <p>El <code>render()</code> es obligatorio en componentes de clase. Se ejecuta cada vez que el estado cambia, actualizando la UI automáticamente. React se encarga de optimizar qué partes del DOM realmente necesitan actualizarse.</p>
+        <h4><span class="lang-es">💡 El método render()</span><span class="lang-en">💡 The render() Method</span></h4>
+        <p class="lang-es">El <code>render()</code> es obligatorio en componentes de clase. Se ejecuta cada vez que el estado cambia, actualizando la UI automáticamente. React se encarga de optimizar qué partes del DOM realmente necesitan actualizarse.</p>
+        <p class="lang-en">The <code>render()</code> method is mandatory in class components. It runs every time the state changes, updating the UI automatically. React takes care of optimizing which parts of the DOM actually need to be updated.</p>
       </div>
 
-      <h3>⚡ Componentes Funcionales (El estándar moderno)</h3>
+      <h3><span class="lang-es">⚡ Componentes Funcionales (El estándar moderno)</span><span class="lang-en">⚡ Functional Components (The Modern Standard)</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Desde React 16.8, los <strong>componentes funcionales con Hooks</strong> se han convertido en la forma recomendada de escribir React. Son más concisos, fáciles de testear y permiten reutilizar lógica entre componentes:
+      </p>
+      <p class="flow-text lang-en">
+        Since React 16.8, <strong>functional components with Hooks</strong> have become the recommended way to write React. They are more concise, easier to test, and allow reusing logic between components:
       </p>
 
       <pre><code class="language-jsx">// Componente funcional moderno
@@ -285,15 +303,19 @@ const Calculadora = ({ num1, num2 }) => {
 // Para usar el componente:
 <Suma num1={5} num2={3} /></code></pre>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Los componentes siempre deben iniciar con mayúsculas. Es buena práctica y es lo que nos dice la documentación oficial de React.
       </p>
+      <p class="flow-text lang-en">
+        Components must always start with uppercase letters. It's a best practice and it's what the official React documentation tells us.
+      </p>
 
-      <h3>📨 Props: Comunicación entre componentes</h3>
+      <h3><span class="lang-es">📨 Props: Comunicación entre componentes</span><span class="lang-en">📨 Props: Communication Between Components</span></h3>
 
       <div class="concept-box">
-        <h4>¿Qué son los Props?</h4>
-        <p>Los <strong>props</strong> (propiedades) son el mecanismo de React para pasar datos de padres a hijos. Son <strong>inmutables</strong>: el componente hijo los recibe pero no puede modificarlos.</p>
+        <h4><span class="lang-es">¿Qué son los Props?</span><span class="lang-en">What are Props?</span></h4>
+        <p class="lang-es">Los <strong>props</strong> (propiedades) son el mecanismo de React para pasar datos de padres a hijos. Son <strong>inmutables</strong>: el componente hijo los recibe pero no puede modificarlos.</p>
+        <p class="lang-en"><strong>Props</strong> (properties) are React's mechanism for passing data from parent to child components. They are <strong>immutable</strong>: the child component receives them but cannot modify them.</p>
       </div>
 
       <pre><code class="language-jsx">// Componente que recibe y muestra props
@@ -314,11 +336,12 @@ const TarjetaUsuario = ({ nombre, rol, avatar }) => {
   avatar="/images/oscar.jpg"
 /></code></pre>
 
-      <h3>🔄 State: Datos que cambian</h3>
+      <h3><span class="lang-es">🔄 State: Datos que cambian</span><span class="lang-en">🔄 State: Data That Changes</span></h3>
 
       <div class="concept-box">
-        <h4>¿Qué es el State?</h4>
-        <p>El <strong>state</strong> es el estado interno de un componente. A diferencia de los props, el state <strong>sí puede cambiar</strong>. Cuando cambia, React re-renderiza automáticamente el componente.</p>
+        <h4><span class="lang-es">¿Qué es el State?</span><span class="lang-en">What is State?</span></h4>
+        <p class="lang-es">El <strong>state</strong> es el estado interno de un componente. A diferencia de los props, el state <strong>sí puede cambiar</strong>. Cuando cambia, React re-renderiza automáticamente el componente.</p>
+        <p class="lang-en">The <strong>state</strong> is the internal state of a component. Unlike props, the state <strong>can change</strong>. When it changes, React automatically re-renders the component.</p>
       </div>
 
       <pre><code class="language-jsx">import React, { useState } from 'react';
@@ -343,7 +366,7 @@ const Contador = () => {
   );
 };</code></pre>
 
-      <h3>🆚 Props vs State: La diferencia clave</h3>
+      <h3><span class="lang-es">🆚 Props vs State: La diferencia clave</span><span class="lang-en">🆚 Props vs State: The Key Difference</span></h3>
 
       <pre><code class="language-jsx">// Props: datos que VIENEN del padre (read-only)
 // State: datos que PERTENECEN al componente (read-write)
@@ -369,10 +392,13 @@ const ArticuloCard = ({ titulo, autor }) => {  // Props ↓
   );
 };</code></pre>
 
-      <h3>🔗 useEffect: El ciclo de vida moderno</h3>
+      <h3><span class="lang-es">🔗 useEffect: El ciclo de vida moderno</span><span class="lang-en">🔗 useEffect: The Modern Lifecycle</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         El hook <code>useEffect</code> nos permite ejecutar efectos secundarios: llamadas a APIs, suscripciones, manipulación del DOM, etc.
+      </p>
+      <p class="flow-text lang-en">
+        The <code>useEffect</code> hook allows us to run side effects: API calls, subscriptions, DOM manipulation, etc.
       </p>
 
       <pre><code class="language-jsx">import React, { useState, useEffect } from 'react';
@@ -411,14 +437,20 @@ const UserProfile = ({ userId }) => {
   );
 };</code></pre>
 
-      <h3>🎯 Conclusión</h3>
+      <h3><span class="lang-es">🎯 Conclusión</span><span class="lang-en">🎯 Conclusion</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Estos tres conceptos —<strong>componentes</strong>, <strong>props</strong> y <strong>state</strong>— son los pilares de React. Una vez que los domines, estarás listo para explorar patrones más avanzados como Context, useReducer, custom hooks y más.
       </p>
+      <p class="flow-text lang-en">
+        These three concepts —<strong>components</strong>, <strong>props</strong>, and <strong>state</strong>— are the pillars of React. Once you master them, you'll be ready to explore more advanced patterns like Context, useReducer, custom hooks, and more.
+      </p>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         React potencia aplicaciones como Instagram, WhatsApp Web, Netflix y Airbnb. Aprenderlo es una inversión que vale la pena. ¡Ahora es tu turno de experimentar!
+      </p>
+      <p class="flow-text lang-en">
+        React powers applications like Instagram, WhatsApp Web, Netflix, and Airbnb. Learning it is an investment worth making. Now it's your turn to experiment!
       </p>
 
     </div>
@@ -426,7 +458,7 @@ const UserProfile = ({ userId }) => {
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+      <p>&copy; 2024 OscarCode. <span class="lang-es">Todos los derechos reservados.</span><span class="lang-en">All rights reserved.</span></p>
     </div>
   </footer>
 

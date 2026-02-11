@@ -194,6 +194,7 @@
       .flow-text { font-size: 1rem; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 
 <body>
@@ -204,9 +205,10 @@
         <a href="index.html" class="brand-logo">{ OscarCode }</a>
         <ul class="right hide-on-med-and-down">
           <li><a href="index.html#skills">Skills</a></li>
-          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
           <li><a href="index.html#blog">Blog</a></li>
-          <li><a href="index.html#contact">Contacto</a></li>
+          <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a class="lang-toggle" onclick="toggleLanguage()"></a></li>
         </ul>
       </div>
     </div>
@@ -215,47 +217,59 @@
   <section class="hero-post">
     <div class="container">
       <h1>Node.js con ElasticSearch</h1>
-      <p class="meta"><i class="far fa-calendar-alt"></i> 14 de Febrero, 2019</p>
+      <p class="meta"><i class="far fa-calendar-alt"></i> <span class="lang-es">14 de Febrero, 2019</span><span class="lang-en">February 14, 2019</span></p>
     </div>
   </section>
 
   <section class="content-section">
     <div class="container">
-      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Si alguna vez te has preguntado cómo servicios como Netflix, Uber o GitHub logran búsquedas tan rápidas entre millones de registros, la respuesta probablemente sea <strong>ElasticSearch</strong>. En este tutorial aprenderás a integrar este poderoso motor de búsquedas con Node.js utilizando el framework <strong>Koa</strong>.
       </p>
+      <p class="flow-text lang-en">
+        If you've ever wondered how services like Netflix, Uber, or GitHub achieve such fast searches across millions of records, the answer is probably <strong>ElasticSearch</strong>. In this tutorial you'll learn how to integrate this powerful search engine with Node.js using the <strong>Koa</strong> framework.
+      </p>
 
-      <h3>🔍 ¿Qué es ElasticSearch?</h3>
+      <h3><span class="lang-es">🔍 ¿Qué es ElasticSearch?</span><span class="lang-en">🔍 What is ElasticSearch?</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         <strong>ElasticSearch</strong> es un motor de búsqueda y análisis distribuido, de código abierto, construido sobre Apache Lucene. Es capaz de manejar grandes volúmenes de datos con tiempos de respuesta en milisegundos, lo que lo convierte en la opción preferida para aplicaciones que requieren búsquedas en tiempo real.
       </p>
-
-      <p class="flow-text">
-        Aunque está escrito en Java, ElasticSearch expone una API REST que nos permite interactuar con él desde cualquier lenguaje de programación: JavaScript, Python, C#, Go, y más.
+      <p class="flow-text lang-en">
+        <strong>ElasticSearch</strong> is a distributed, open-source search and analytics engine built on top of Apache Lucene. It can handle large volumes of data with millisecond response times, making it the preferred choice for applications that require real-time searches.
       </p>
 
-      <h3>✨ Características principales</h3>
+      <p class="flow-text lang-es">
+        Aunque está escrito en Java, ElasticSearch expone una API REST que nos permite interactuar con él desde cualquier lenguaje de programación: JavaScript, Python, C#, Go, y más.
+      </p>
+      <p class="flow-text lang-en">
+        Although it's written in Java, ElasticSearch exposes a REST API that allows us to interact with it from any programming language: JavaScript, Python, C#, Go, and more.
+      </p>
+
+      <h3><span class="lang-es">✨ Características principales</span><span class="lang-en">✨ Key Features</span></h3>
 
       <ul class="feature-list">
-        <li><strong>Orientado a documentos:</strong> Almacena datos en formato JSON, ideal para JavaScript</li>
-        <li><strong>Schema-less:</strong> No requiere esquema predefinido (aunque puedes definir mappings)</li>
-        <li><strong>Distribuido:</strong> Escala horizontalmente de forma automática con alta disponibilidad</li>
-        <li><strong>API REST:</strong> Todas las operaciones se realizan mediante HTTP (GET, POST, PUT, DELETE)</li>
-        <li><strong>Full-text search:</strong> Búsquedas de texto completo con análisis de lenguaje natural</li>
-        <li><strong>Agregaciones:</strong> Análisis de datos en tiempo real similar a SQL GROUP BY</li>
+        <li><strong>Orientado a documentos:</strong> <span class="lang-es">Almacena datos en formato JSON, ideal para JavaScript</span><span class="lang-en">Stores data in JSON format, ideal for JavaScript</span></li>
+        <li><strong>Schema-less:</strong> <span class="lang-es">No requiere esquema predefinido (aunque puedes definir mappings)</span><span class="lang-en">No predefined schema required (although you can define mappings)</span></li>
+        <li><strong>Distribuido:</strong> <span class="lang-es">Escala horizontalmente de forma automática con alta disponibilidad</span><span class="lang-en">Scales horizontally automatically with high availability</span></li>
+        <li><strong>API REST:</strong> <span class="lang-es">Todas las operaciones se realizan mediante HTTP (GET, POST, PUT, DELETE)</span><span class="lang-en">All operations are performed via HTTP (GET, POST, PUT, DELETE)</span></li>
+        <li><strong>Full-text search:</strong> <span class="lang-es">Búsquedas de texto completo con análisis de lenguaje natural</span><span class="lang-en">Full-text searches with natural language analysis</span></li>
+        <li><strong>Agregaciones:</strong> <span class="lang-es">Análisis de datos en tiempo real similar a SQL GROUP BY</span><span class="lang-en">Real-time data analysis similar to SQL GROUP BY</span></li>
       </ul>
 
       <div class="note">
-        <p><strong>📋 Requisitos previos:</strong> Asegúrate de tener instalado Node.js (v14+), npm o Yarn, y ElasticSearch (v7+) corriendo en tu máquina local.</p>
+        <p><strong><span class="lang-es">📋 Requisitos previos:</span><span class="lang-en">📋 Prerequisites:</span></strong> <span class="lang-es">Asegúrate de tener instalado Node.js (v14+), npm o Yarn, y ElasticSearch (v7+) corriendo en tu máquina local.</span><span class="lang-en">Make sure you have Node.js (v14+), npm or Yarn, and ElasticSearch (v7+) installed and running on your local machine.</span></p>
       </div>
 
-      <h3>🚀 Configurando el proyecto con Koa</h3>
+      <h3><span class="lang-es">🚀 Configurando el proyecto con Koa</span><span class="lang-en">🚀 Setting Up the Project with Koa</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Usaremos <strong>Koa</strong>, un framework minimalista creado por el equipo detrás de Express. Koa aprovecha async/await de forma nativa, eliminando callbacks y haciendo el código más limpio y mantenible.
+      </p>
+      <p class="flow-text lang-en">
+        We'll use <strong>Koa</strong>, a minimalist framework created by the team behind Express. Koa leverages async/await natively, eliminating callbacks and making the code cleaner and more maintainable.
       </p>
 
       <pre><code class="language-bash"># Instalar el generador de Koa globalmente
@@ -267,15 +281,18 @@ $ koa serverElastic --hbs
 # Entrar al directorio e instalar dependencias
 $ cd serverElastic && npm install</code></pre>
 
-      <h3>📦 Instalando el cliente oficial</h3>
+      <h3><span class="lang-es">📦 Instalando el cliente oficial</span><span class="lang-en">📦 Installing the Official Client</span></h3>
 
       <pre><code class="language-bash"># Cliente oficial de Elasticsearch para Node.js
 $ npm install @elastic/elasticsearch</code></pre>
 
-      <h3>🔌 Configurando la conexión</h3>
+      <h3><span class="lang-es">🔌 Configurando la conexión</span><span class="lang-en">🔌 Configuring the Connection</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Primero, creamos un módulo para gestionar la conexión con ElasticSearch. Es buena práctica verificar la conexión al iniciar la aplicación:
+      </p>
+      <p class="flow-text lang-en">
+        First, we create a module to manage the connection to ElasticSearch. It's good practice to verify the connection when starting the application:
       </p>
 
       <pre><code class="language-javascript">const { Client } = require('@elastic/elasticsearch');
@@ -300,7 +317,7 @@ async function checkConnection() {
 
 checkConnection();</code></pre>
 
-      <h3>Creando un índice</h3>
+      <h3><span class="lang-es">Creando un índice</span><span class="lang-en">Creating an Index</span></h3>
 
       <pre><code class="language-javascript">async function createIndex(indexName) {
   try {
@@ -325,7 +342,7 @@ checkConnection();</code></pre>
 
 createIndex('articles');</code></pre>
 
-      <h3>Insertando documentos</h3>
+      <h3><span class="lang-es">Insertando documentos</span><span class="lang-en">Inserting Documents</span></h3>
 
       <pre><code class="language-javascript">async function indexDocument(index, document) {
   try {
@@ -348,10 +365,13 @@ indexDocument('articles', {
   created_at: new Date()
 });</code></pre>
 
-      <h3>🔎 Implementando búsquedas</h3>
+      <h3><span class="lang-es">🔎 Implementando búsquedas</span><span class="lang-en">🔎 Implementing Searches</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         El poder real de ElasticSearch está en sus capacidades de búsqueda. Utilizamos <code>multi_match</code> para buscar en múltiples campos simultáneamente:
+      </p>
+      <p class="flow-text lang-en">
+        The real power of ElasticSearch lies in its search capabilities. We use <code>multi_match</code> to search across multiple fields simultaneously:
       </p>
 
       <pre><code class="language-javascript">async function search(index, query) {
@@ -381,10 +401,13 @@ indexDocument('articles', {
 const results = await search('articles', 'elasticsearch');
 console.log(results);</code></pre>
 
-      <h3>🌐 API REST con Koa</h3>
+      <h3><span class="lang-es">🌐 API REST con Koa</span><span class="lang-en">🌐 REST API with Koa</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Finalmente, exponemos nuestra funcionalidad de búsqueda a través de una API REST limpia y eficiente:
+      </p>
+      <p class="flow-text lang-en">
+        Finally, we expose our search functionality through a clean and efficient REST API:
       </p>
 
       <pre><code class="language-javascript">const Koa = require('koa');
@@ -445,21 +468,27 @@ app.listen(3000, () => {
   console.log('🚀 Server running on http://localhost:3000');
 });</code></pre>
 
-      <h3>🎯 Conclusión</h3>
+      <h3><span class="lang-es">🎯 Conclusión</span><span class="lang-en">🎯 Conclusion</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Has aprendido a configurar ElasticSearch con Node.js y Koa, crear índices, indexar documentos y realizar búsquedas avanzadas. Esta combinación es ideal para:
+      </p>
+      <p class="flow-text lang-en">
+        You've learned how to set up ElasticSearch with Node.js and Koa, create indices, index documents, and perform advanced searches. This combination is ideal for:
       </p>
 
       <ul class="feature-list">
-        <li><strong>Buscadores internos:</strong> Para tu aplicación o sitio web</li>
-        <li><strong>Análisis de logs:</strong> Junto con Logstash y Kibana (ELK Stack)</li>
-        <li><strong>E-commerce:</strong> Búsqueda de productos con filtros y facetas</li>
-        <li><strong>Autocompletado:</strong> Sugerencias en tiempo real mientras escribes</li>
+        <li><strong><span class="lang-es">Buscadores internos:</span><span class="lang-en">Internal search engines:</span></strong> <span class="lang-es">Para tu aplicación o sitio web</span><span class="lang-en">For your application or website</span></li>
+        <li><strong><span class="lang-es">Análisis de logs:</span><span class="lang-en">Log analysis:</span></strong> <span class="lang-es">Junto con Logstash y Kibana (ELK Stack)</span><span class="lang-en">Together with Logstash and Kibana (ELK Stack)</span></li>
+        <li><strong>E-commerce:</strong> <span class="lang-es">Búsqueda de productos con filtros y facetas</span><span class="lang-en">Product search with filters and facets</span></li>
+        <li><strong><span class="lang-es">Autocompletado:</span><span class="lang-en">Autocomplete:</span></strong> <span class="lang-es">Sugerencias en tiempo real mientras escribes</span><span class="lang-en">Real-time suggestions as you type</span></li>
       </ul>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         El rendimiento de ElasticSearch es impresionante: puede manejar millones de documentos con tiempos de respuesta de milisegundos. ¡Experimenta y lleva tus aplicaciones al siguiente nivel!
+      </p>
+      <p class="flow-text lang-en">
+        ElasticSearch's performance is impressive: it can handle millions of documents with millisecond response times. Experiment and take your applications to the next level!
       </p>
 
     </div>
@@ -467,7 +496,7 @@ app.listen(3000, () => {
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+      <p>&copy; 2024 OscarCode. <span class="lang-es">Todos los derechos reservados.</span><span class="lang-en">All rights reserved.</span></p>
     </div>
   </footer>
 

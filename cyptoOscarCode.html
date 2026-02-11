@@ -281,6 +281,7 @@
       .flow-text { font-size: 1rem; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 
 <body>
@@ -291,9 +292,10 @@
         <a href="index.html" class="brand-logo">{ OscarCode }</a>
         <ul class="right hide-on-med-and-down">
           <li><a href="index.html#skills">Skills</a></li>
-          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
           <li><a href="index.html#blog">Blog</a></li>
-          <li><a href="index.html#contact">Contacto</a></li>
+          <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a class="lang-toggle" onclick="toggleLanguage()"></a></li>
         </ul>
       </div>
     </div>
@@ -301,45 +303,62 @@
 
   <section class="hero-post">
     <div class="container">
-      <h1>Mi Primer Algoritmo de Encriptado</h1>
-      <p class="meta"><i class="far fa-calendar-alt"></i> 10 de Febrero, 2018</p>
+      <h1><span class="lang-es">Mi Primer Algoritmo de Encriptado</span><span class="lang-en">My First Encryption Algorithm</span></h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> <span class="lang-es">10 de Febrero, 2018</span><span class="lang-en">February 10, 2018</span></p>
     </div>
   </section>
 
   <section class="content-section">
     <div class="container">
-      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         La criptografía siempre me ha fascinado. ¿Cómo es posible que un mensaje pueda viajar por internet sin que nadie (excepto el destinatario) pueda leerlo? Cuando en mi clase de <strong>Seguridad Informática</strong> nos pidieron crear nuestro propio algoritmo de encriptación, vi la oportunidad perfecta para explorar estos conceptos.
       </p>
+      <p class="flow-text lang-en">
+        Cryptography has always fascinated me. How is it possible for a message to travel across the internet without anyone (except the recipient) being able to read it? When in my <strong>Computer Security</strong> class we were asked to create our own encryption algorithm, I saw the perfect opportunity to explore these concepts.
+      </p>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         ⚠️ <strong>Disclaimer:</strong> Este algoritmo es un ejercicio educativo. No es criptográficamente seguro para uso real. Para aplicaciones reales, usa librerías probadas como bcrypt, crypto o AES.
       </p>
+      <p class="flow-text lang-en">
+        ⚠️ <strong>Disclaimer:</strong> This algorithm is an educational exercise. It is not cryptographically secure for real-world use. For real applications, use proven libraries like bcrypt, crypto, or AES.
+      </p>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         🔗 <strong>Código fuente:</strong> <a href="https://github.com/OscarCode9/MI-algoritmo-de-encriptado" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> Ver repositorio en GitHub</a>
       </p>
-
-      <h3>💡 La idea detrás del algoritmo</h3>
-
-      <p class="flow-text">
-        El algoritmo se basa en dos conceptos matemáticos simples pero poderosos: <strong>código ASCII</strong> y <strong>números primos</strong>. La belleza está en cómo los combinamos:
+      <p class="flow-text lang-en">
+        🔗 <strong>Source code:</strong> <a href="https://github.com/OscarCode9/MI-algoritmo-de-encriptado" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> View repository on GitHub</a>
       </p>
 
-      <p class="flow-text">
+      <h3><span class="lang-es">💡 La idea detrás del algoritmo</span><span class="lang-en">💡 The Idea Behind the Algorithm</span></h3>
+
+      <p class="flow-text lang-es">
+        El algoritmo se basa en dos conceptos matemáticos simples pero poderosos: <strong>código ASCII</strong> y <strong>números primos</strong>. La belleza está en cómo los combinamos:
+      </p>
+      <p class="flow-text lang-en">
+        The algorithm is based on two simple yet powerful mathematical concepts: <strong>ASCII code</strong> and <strong>prime numbers</strong>. The beauty lies in how we combine them:
+      </p>
+
+      <p class="flow-text lang-es">
         Veamos paso a paso cómo encriptamos la palabra <strong>"Osc"</strong>:
+      </p>
+      <p class="flow-text lang-en">
+        Let's see step by step how we encrypt the word <strong>"Osc"</strong>:
       </p>
 
       <div class="step-box">
-        <h4><span class="step-number">1</span> Descomponer en caracteres</h4>
-        <p style="color: var(--text-secondary);">Separamos cada letra: <code>['O', 's', 'c']</code></p>
+        <h4><span class="step-number">1</span> <span class="lang-es">Descomponer en caracteres</span><span class="lang-en">Decompose into Characters</span></h4>
+        <p class="lang-es" style="color: var(--text-secondary);">Separamos cada letra: <code>['O', 's', 'c']</code></p>
+        <p class="lang-en" style="color: var(--text-secondary);">We separate each letter: <code>['O', 's', 'c']</code></p>
       </div>
 
       <div class="step-box">
-        <h4><span class="step-number">2</span> Convertir a código ASCII</h4>
-        <p style="color: var(--text-secondary);">Cada carácter tiene un valor numérico único:</p>
+        <h4><span class="step-number">2</span> <span class="lang-es">Convertir a código ASCII</span><span class="lang-en">Convert to ASCII Code</span></h4>
+        <p class="lang-es" style="color: var(--text-secondary);">Cada carácter tiene un valor numérico único:</p>
+        <p class="lang-en" style="color: var(--text-secondary);">Each character has a unique numeric value:</p>
         <ul>
           <li><code>'O'</code> → <strong>79</strong></li>
           <li><code>'s'</code> → <strong>115</strong></li>
@@ -348,8 +367,9 @@
       </div>
 
       <div class="step-box">
-        <h4><span class="step-number">3</span> Multiplicar por números primos</h4>
-        <p style="color: var(--text-secondary);">Usamos dos primos como "llaves": <strong>7</strong> y <strong>3</strong></p>
+        <h4><span class="step-number">3</span> <span class="lang-es">Multiplicar por números primos</span><span class="lang-en">Multiply by Prime Numbers</span></h4>
+        <p class="lang-es" style="color: var(--text-secondary);">Usamos dos primos como "llaves": <strong>7</strong> y <strong>3</strong></p>
+        <p class="lang-en" style="color: var(--text-secondary);">We use two primes as "keys": <strong>7</strong> and <strong>3</strong></p>
         <ul>
           <li>79 × 7 × 3 = <strong>1659</strong></li>
           <li>115 × 7 × 3 = <strong>2415</strong></li>
@@ -358,19 +378,21 @@
       </div>
 
       <div class="step-box">
-        <h4><span class="step-number">4</span> Normalizar a 6 dígitos</h4>
-        <p style="color: var(--text-secondary);">Esto permite identificar dónde empieza y termina cada carácter:</p>
+        <h4><span class="step-number">4</span> <span class="lang-es">Normalizar a 6 dígitos</span><span class="lang-en">Normalize to 6 Digits</span></h4>
+        <p class="lang-es" style="color: var(--text-secondary);">Esto permite identificar dónde empieza y termina cada carácter:</p>
+        <p class="lang-en" style="color: var(--text-secondary);">This allows identifying where each character starts and ends:</p>
         <p style="font-family: 'Fira Code', monospace; color: var(--primary);">001659 | 002415 | 002079</p>
       </div>
 
       <div class="step-box">
-        <h4><span class="step-number">5</span> Concatenar</h4>
+        <h4><span class="step-number">5</span> <span class="lang-es">Concatenar</span><span class="lang-en">Concatenate</span></h4>
         <p style="font-family: 'Fira Code', monospace; color: var(--text-secondary);">001659002415002079</p>
       </div>
 
       <div class="step-box">
-        <h4><span class="step-number">6</span> Ofuscar con sustitución</h4>
-        <p style="color: var(--text-secondary);">Reemplazamos dígitos por símbolos para añadir confusión:</p>
+        <h4><span class="step-number">6</span> <span class="lang-es">Ofuscar con sustitución</span><span class="lang-en">Obfuscate with Substitution</span></h4>
+        <p class="lang-es" style="color: var(--text-secondary);">Reemplazamos dígitos por símbolos para añadir confusión:</p>
+        <p class="lang-en" style="color: var(--text-secondary);">We replace digits with symbols to add confusion:</p>
         <ul>
           <li><code>0</code> → <code>!</code></li>
           <li><code>1</code> → <code>#</code></li>
@@ -381,7 +403,7 @@
         </p>
       </div>
 
-      <h3>🧑‍💻 Implementación en JavaScript</h3>
+      <h3><span class="lang-es">🧑‍💻 Implementación en JavaScript</span><span class="lang-en">🧑‍💻 JavaScript Implementation</span></h3>
 
       <pre><code class="language-javascript">// Algoritmo de Encriptación
 function encrypt(text) {
@@ -437,15 +459,18 @@ function decrypt(encryptedText) {
 console.log(encrypt('Osc'));    // !!#659!!24#5!!2!79
 console.log(decrypt('!!#659!!24#5!!2!79')); // Osc</code></pre>
 
-      <h3>🌐 API REST para el algoritmo</h3>
+      <h3><span class="lang-es">🌐 API REST para el algoritmo</span><span class="lang-en">🌐 REST API for the Algorithm</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Para hacer el algoritmo accesible desde cualquier aplicación, creé una pequeña API REST:
+      </p>
+      <p class="flow-text lang-en">
+        To make the algorithm accessible from any application, I created a small REST API:
       </p>
 
       <ul class="api-endpoints">
-        <li><span style="color: #3b82f6;">POST</span> /encrypto → Encriptar texto</li>
-        <li><span style="color: #22c55e;">POST</span> /decrypto → Desencriptar texto</li>
+        <li><span style="color: #3b82f6;">POST</span> /encrypto → <span class="lang-es">Encriptar texto</span><span class="lang-en">Encrypt text</span></li>
+        <li><span style="color: #22c55e;">POST</span> /decrypto → <span class="lang-es">Desencriptar texto</span><span class="lang-en">Decrypt text</span></li>
       </ul>
 
       <pre><code class="language-javascript">// Ejemplo de request
@@ -466,25 +491,40 @@ fetch('/encrypto', {
         <img src="public/images/encrypto.png" alt="Diagrama visual del algoritmo de encriptación">
       </div>
 
-      <h3>🎓 Lecciones aprendidas</h3>
+      <h3><span class="lang-es">🎓 Lecciones aprendidas</span><span class="lang-en">🎓 Lessons Learned</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Este ejercicio me enseñó varios conceptos fundamentales de criptografía:
       </p>
+      <p class="flow-text lang-en">
+        This exercise taught me several fundamental cryptography concepts:
+      </p>
 
-      <ul class="flow-text" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+      <ul class="flow-text lang-es" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
         <li><strong>Reversibilidad:</strong> Un buen algoritmo de encriptación simétrica debe poder revertirse</li>
         <li><strong>Determinismo:</strong> El mismo input siempre produce el mismo output</li>
         <li><strong>Ofuscación:</strong> La sustitución de caracteres añade una capa de complejidad visual</li>
         <li><strong>Estructura:</strong> El padding (6 dígitos) permite parsear la cadena encriptada</li>
       </ul>
+      <ul class="flow-text lang-en" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+        <li><strong>Reversibility:</strong> A good symmetric encryption algorithm must be reversible</li>
+        <li><strong>Determinism:</strong> The same input always produces the same output</li>
+        <li><strong>Obfuscation:</strong> Character substitution adds a layer of visual complexity</li>
+        <li><strong>Structure:</strong> Padding (6 digits) allows parsing the encrypted string</li>
+      </ul>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Por supuesto, los algoritmos reales como AES, RSA o bcrypt son infinitamente más complejos y seguros. Pero entender estos principios básicos es el primer paso para comprender la criptografía moderna.
       </p>
+      <p class="flow-text lang-en">
+        Of course, real algorithms like AES, RSA, or bcrypt are infinitely more complex and secure. But understanding these basic principles is the first step toward comprehending modern cryptography.
+      </p>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         ¡La seguridad informática es fascinante! Si te interesa el tema, te recomiendo explorar conceptos como hashing, salt, criptografía asimétrica y firmas digitales.
+      </p>
+      <p class="flow-text lang-en">
+        Computer security is fascinating! If you're interested in the topic, I recommend exploring concepts like hashing, salt, asymmetric cryptography, and digital signatures.
       </p>
 
     </div>
@@ -492,7 +532,7 @@ fetch('/encrypto', {
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+      <p>&copy; 2024 OscarCode. <span class="lang-es">Todos los derechos reservados.</span><span class="lang-en">All rights reserved.</span></p>
     </div>
   </footer>
 

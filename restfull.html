@@ -202,6 +202,7 @@
       .flow-text { font-size: 1rem; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 
 <body>
@@ -212,9 +213,10 @@
         <a href="index.html" class="brand-logo">{ OscarCode }</a>
         <ul class="right hide-on-med-and-down">
           <li><a href="index.html#skills">Skills</a></li>
-          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
           <li><a href="index.html#blog">Blog</a></li>
-          <li><a href="index.html#contact">Contacto</a></li>
+          <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a class="lang-toggle" onclick="toggleLanguage()"></a></li>
         </ul>
       </div>
     </div>
@@ -222,72 +224,96 @@
 
   <section class="hero-post">
     <div class="container">
-      <h1>El Arte de Construir Software (RESTFUL)</h1>
-      <p class="meta"><i class="far fa-calendar-alt"></i> 15 de Julio, 2018</p>
+      <h1><span class="lang-es">El Arte de Construir Software (RESTFUL)</span><span class="lang-en">The Art of Building Software (RESTFUL)</span></h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> <span class="lang-es">15 de Julio, 2018</span><span class="lang-en">July 15, 2018</span></p>
     </div>
   </section>
 
   <section class="content-section">
     <div class="container">
-      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Construir software es como cultivar un jardín: algunos florecen y se vuelven obras maestras, mientras que otros marchitan con el tiempo. La diferencia radica en los <strong>fundamentos arquitectónicos</strong> que elegimos desde el principio.
       </p>
+      <p class="flow-text lang-en">
+        Building software is like cultivating a garden: some bloom and become masterpieces, while others wither over time. The difference lies in the <strong>architectural foundations</strong> we choose from the beginning.
+      </p>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Hoy quiero hablarte sobre <strong>REST</strong>, el estilo arquitectónico que revolucionó la forma en que construimos aplicaciones web modernas. Si alguna vez te has preguntado cómo funcionan las APIs que usas todos los días, este artículo es para ti.
       </p>
+      <p class="flow-text lang-en">
+        Today I want to talk to you about <strong>REST</strong>, the architectural style that revolutionized the way we build modern web applications. If you've ever wondered how the APIs you use every day work, this article is for you.
+      </p>
 
-      <h3>🌐 ¿Qué es REST?</h3>
+      <h3><span class="lang-es">🌐 ¿Qué es REST?</span><span class="lang-en">🌐 What is REST?</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         <strong>REST</strong> (Representational State Transfer) es un estilo de arquitectura para sistemas distribuidos, definido por <strong>Roy Fielding</strong> en su tesis doctoral del año 2000. Fielding, uno de los creadores del protocolo HTTP, estableció los principios que hoy sustentan la mayor parte de la web moderna.
       </p>
-
-      <p class="flow-text">
-        Empresas como Twitter, Spotify, Netflix y prácticamente cualquier servicio digital moderno exponen sus funcionalidades a través de APIs REST. Es el estándar de facto para la comunicación entre sistemas.
+      <p class="flow-text lang-en">
+        <strong>REST</strong> (Representational State Transfer) is an architectural style for distributed systems, defined by <strong>Roy Fielding</strong> in his doctoral dissertation in 2000. Fielding, one of the creators of the HTTP protocol, established the principles that today underpin most of the modern web.
       </p>
 
-      <h3>🔧 Los 4 Métodos HTTP Fundamentales</h3>
+      <p class="flow-text lang-es">
+        Empresas como Twitter, Spotify, Netflix y prácticamente cualquier servicio digital moderno exponen sus funcionalidades a través de APIs REST. Es el estándar de facto para la comunicación entre sistemas.
+      </p>
+      <p class="flow-text lang-en">
+        Companies like Twitter, Spotify, Netflix, and virtually any modern digital service expose their functionalities through REST APIs. It is the de facto standard for communication between systems.
+      </p>
 
-      <p class="flow-text">
+      <h3><span class="lang-es">🔧 Los 4 Métodos HTTP Fundamentales</span><span class="lang-en">🔧 The 4 Fundamental HTTP Methods</span></h3>
+
+      <p class="flow-text lang-es">
         REST aprovecha los verbos HTTP para definir las operaciones sobre los recursos. Este mapeo intuitivo es parte de su elegancia:
+      </p>
+      <p class="flow-text lang-en">
+        REST leverages HTTP verbs to define operations on resources. This intuitive mapping is part of its elegance:
       </p>
 
       <div class="http-methods">
         <div class="method-card">
           <div class="method get">GET</div>
-          <p>Leer / Consultar</p>
+          <p><span class="lang-es">Leer / Consultar</span><span class="lang-en">Read / Query</span></p>
         </div>
         <div class="method-card">
           <div class="method post">POST</div>
-          <p>Crear nuevo</p>
+          <p><span class="lang-es">Crear nuevo</span><span class="lang-en">Create New</span></p>
         </div>
         <div class="method-card">
           <div class="method put">PUT</div>
-          <p>Actualizar completo</p>
+          <p><span class="lang-es">Actualizar completo</span><span class="lang-en">Full Update</span></p>
         </div>
         <div class="method-card">
           <div class="method delete">DELETE</div>
-          <p>Eliminar</p>
+          <p><span class="lang-es">Eliminar</span><span class="lang-en">Delete</span></p>
         </div>
       </div>
 
-      <h3>📦 Stateless: El Principio Clave</h3>
+      <h3><span class="lang-es">📦 Stateless: El Principio Clave</span><span class="lang-en">📦 Stateless: The Key Principle</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Una de las restricciones fundamentales de REST es que cada petición debe contener <strong>toda la información necesaria</strong> para ser procesada. El servidor no guarda estado del cliente entre peticiones.
       </p>
-
-      <p class="flow-text">
-        ¿Cómo se identifica entonces al usuario? Mediante <strong>tokens de autenticación</strong> (como JWT) que viajan en cada request. Esto permite que nuestros servidores sean fácilmente escalables, ya que cualquier instancia puede atender cualquier petición.
+      <p class="flow-text lang-en">
+        One of the fundamental constraints of REST is that each request must contain <strong>all the information necessary</strong> to be processed. The server does not store client state between requests.
       </p>
 
-      <h3>📝 JSON: El Lenguaje Universal</h3>
+      <p class="flow-text lang-es">
+        ¿Cómo se identifica entonces al usuario? Mediante <strong>tokens de autenticación</strong> (como JWT) que viajan en cada request. Esto permite que nuestros servidores sean fácilmente escalables, ya que cualquier instancia puede atender cualquier petición.
+      </p>
+      <p class="flow-text lang-en">
+        How is the user identified then? Through <strong>authentication tokens</strong> (like JWT) that travel with each request. This allows our servers to be easily scalable, since any instance can handle any request.
+      </p>
 
-      <p class="flow-text">
+      <h3><span class="lang-es">📝 JSON: El Lenguaje Universal</span><span class="lang-en">📝 JSON: The Universal Language</span></h3>
+
+      <p class="flow-text lang-es">
         Aunque REST puede trabajar con XML, texto plano o incluso HTML, <strong>JSON</strong> (JavaScript Object Notation) se ha convertido en el formato preferido por su simplicidad y legibilidad:
+      </p>
+      <p class="flow-text lang-en">
+        Although REST can work with XML, plain text, or even HTML, <strong>JSON</strong> (JavaScript Object Notation) has become the preferred format due to its simplicity and readability:
       </p>
 
       <pre><code class="language-json">{
@@ -301,10 +327,13 @@
   }
 }</code></pre>
 
-      <h3>💻 API REST Completa con Express</h3>
+      <h3><span class="lang-es">💻 API REST Completa con Express</span><span class="lang-en">💻 Complete REST API with Express</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Veamos cómo implementar una API REST completa siguiendo las mejores prácticas. Este ejemplo incluye todas las operaciones CRUD sobre un recurso de usuarios:
+      </p>
+      <p class="flow-text lang-en">
+        Let's see how to implement a complete REST API following best practices. This example includes all CRUD operations on a users resource:
       </p>
 
       <pre><code class="language-javascript">const express = require('express');
@@ -392,22 +421,35 @@ app.listen(3000, () => {
   console.log('🚀 API REST corriendo en http://localhost:3000');
 });</code></pre>
 
-      <h3>🎯 ¿Por qué REST sigue siendo relevante?</h3>
+      <h3><span class="lang-es">🎯 ¿Por qué REST sigue siendo relevante?</span><span class="lang-en">🎯 Why is REST Still Relevant?</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Aunque han surgido alternativas como GraphQL y gRPC, REST sigue siendo la opción más popular por varias razones:
       </p>
+      <p class="flow-text lang-en">
+        Although alternatives like GraphQL and gRPC have emerged, REST remains the most popular choice for several reasons:
+      </p>
 
-      <ul class="flow-text" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+      <ul class="flow-text lang-es" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
         <li><strong>Universalidad:</strong> Funciona sobre HTTP, disponible en cualquier lenguaje y plataforma</li>
         <li><strong>Simplicidad:</strong> Fácil de entender, documentar y consumir</li>
         <li><strong>Cacheabilidad:</strong> Las respuestas GET pueden cachearse fácilmente</li>
         <li><strong>Desacoplamiento:</strong> Cliente y servidor evolucionan independientemente</li>
         <li><strong>Escalabilidad:</strong> Al ser stateless, escala horizontalmente sin problemas</li>
       </ul>
+      <ul class="flow-text lang-en" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+        <li><strong>Universality:</strong> Works over HTTP, available in any language and platform</li>
+        <li><strong>Simplicity:</strong> Easy to understand, document, and consume</li>
+        <li><strong>Cacheability:</strong> GET responses can be easily cached</li>
+        <li><strong>Decoupling:</strong> Client and server evolve independently</li>
+        <li><strong>Scalability:</strong> Being stateless, it scales horizontally without issues</li>
+      </ul>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Dominar REST es fundamental para cualquier desarrollador. Es la base sobre la cual se construye la web moderna y seguirá siendo relevante por muchos años más.
+      </p>
+      <p class="flow-text lang-en">
+        Mastering REST is fundamental for any developer. It is the foundation upon which the modern web is built and will remain relevant for many years to come.
       </p>
 
     </div>
@@ -415,7 +457,7 @@ app.listen(3000, () => {
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+      <p>&copy; 2024 OscarCode. <span class="lang-es">Todos los derechos reservados.</span><span class="lang-en">All rights reserved.</span></p>
     </div>
   </footer>
 

@@ -200,6 +200,7 @@
       .flow-text { font-size: 1rem; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 
 <body>
@@ -210,9 +211,10 @@
         <a href="index.html" class="brand-logo">{ OscarCode }</a>
         <ul class="right hide-on-med-and-down">
           <li><a href="index.html#skills">Skills</a></li>
-          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
           <li><a href="index.html#blog">Blog</a></li>
-          <li><a href="index.html#contact">Contacto</a></li>
+          <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a class="lang-toggle" onclick="toggleLanguage()"></a></li>
         </ul>
       </div>
     </div>
@@ -220,42 +222,59 @@
 
   <section class="hero-post">
     <div class="container">
-      <h1>Creando microservicios con Node.js y Spring Boot para consulta de cryptomonedas</h1>
-      <p class="meta"><i class="far fa-calendar-alt"></i> 29 de Julio, 2020</p>
+      <h1><span class="lang-es">Creando microservicios con Node.js y Spring Boot para consulta de cryptomonedas</span><span class="lang-en">Building Microservices with Node.js and Spring Boot for Cryptocurrency Queries</span></h1>
+      <p class="meta"><i class="far fa-calendar-alt"></i> <span class="lang-es">29 de Julio, 2020</span><span class="lang-en">July 29, 2020</span></p>
     </div>
   </section>
 
   <section class="content-section">
     <div class="container">
-      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> Volver al blog</a>
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         En el mundo del desarrollo moderno, los <strong>microservicios</strong> se han convertido en la arquitectura preferida para construir aplicaciones escalables y mantenibles. En este artículo, te mostraré cómo conectar tres microservicios utilizando dos tecnologías diferentes: <strong>Node.js</strong> y <strong>Spring Boot</strong>.
       </p>
-
-      <p class="flow-text">
-        El objetivo es crear un sistema que consulte precios de criptomonedas en tiempo real utilizando la API de Bitso. La arquitectura consiste en:
+      <p class="flow-text lang-en">
+        In the modern development world, <strong>microservices</strong> have become the preferred architecture for building scalable and maintainable applications. In this article, I'll show you how to connect three microservices using two different technologies: <strong>Node.js</strong> and <strong>Spring Boot</strong>.
       </p>
 
-      <ul class="flow-text" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+      <p class="flow-text lang-es">
+        El objetivo es crear un sistema que consulte precios de criptomonedas en tiempo real utilizando la API de Bitso. La arquitectura consiste en:
+      </p>
+      <p class="flow-text lang-en">
+        The goal is to create a system that queries cryptocurrency prices in real time using the Bitso API. The architecture consists of:
+      </p>
+
+      <ul class="flow-text lang-es" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
         <li><strong>Servicio A (Node.js):</strong> Consulta el precio de Bitcoin (BTC)</li>
         <li><strong>Servicio B (Spring Boot):</strong> Consulta el precio de Ethereum (ETH)</li>
         <li><strong>Gateway (Node.js):</strong> Orquesta ambos servicios y unifica las respuestas</li>
       </ul>
+      <ul class="flow-text lang-en" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+        <li><strong>Service A (Node.js):</strong> Queries the Bitcoin (BTC) price</li>
+        <li><strong>Service B (Spring Boot):</strong> Queries the Ethereum (ETH) price</li>
+        <li><strong>Gateway (Node.js):</strong> Orchestrates both services and unifies the responses</li>
+      </ul>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Además, containerizaremos todo con <strong>Docker</strong> para facilitar el despliegue y escalamiento en cualquier entorno de producción.
+      </p>
+      <p class="flow-text lang-en">
+        Additionally, we'll containerize everything with <strong>Docker</strong> to facilitate deployment and scaling in any production environment.
       </p>
 
       <div class="blog-image">
         <img src="public/images/blog/crypto.png" alt="Diagrama de arquitectura de microservicios">
       </div>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         🔗 <strong>Código fuente:</strong> <a href="https://github.com/OscarCode9/microservices" target="_blank" rel="noopener noreferrer">Ver repositorio completo en GitHub</a>
       </p>
+      <p class="flow-text lang-en">
+        🔗 <strong>Source code:</strong> <a href="https://github.com/OscarCode9/microservices" target="_blank" rel="noopener noreferrer">View full repository on GitHub</a>
+      </p>
 
-      <div class="index-list">
+      <div class="index-list lang-es">
         <h4>📋 Contenido</h4>
         <ol>
           <li><a href="#node">Servicio A: API de Bitcoin con Node.js</a></li>
@@ -266,11 +285,25 @@
           <li><a href="#scale">Escalamiento con Docker Compose</a></li>
         </ol>
       </div>
+      <div class="index-list lang-en">
+        <h4>📋 Contents</h4>
+        <ol>
+          <li><a href="#node">Service A: Bitcoin API with Node.js</a></li>
+          <li><a href="#dockerNode">Containerizing the Node.js Service</a></li>
+          <li><a href="#spring">Service B: Ethereum API with Spring Boot</a></li>
+          <li><a href="#dockerSpring">Containerizing the Spring Boot Service</a></li>
+          <li><a href="#gateway">Gateway: Service Orchestrator</a></li>
+          <li><a href="#scale">Scaling with Docker Compose</a></li>
+        </ol>
+      </div>
 
-      <h3 id="node">Servicio A: API de Bitcoin con Node.js</h3>
+      <h3 id="node"><span class="lang-es">Servicio A: API de Bitcoin con Node.js</span><span class="lang-en">Service A: Bitcoin API with Node.js</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Comenzaremos construyendo el primer microservicio con <strong>Express.js</strong>, el framework más popular de Node.js para crear APIs REST. Este servicio se encargará exclusivamente de consultar el precio actual de Bitcoin.
+      </p>
+      <p class="flow-text lang-en">
+        We'll start by building the first microservice with <strong>Express.js</strong>, the most popular Node.js framework for creating REST APIs. This service will be exclusively responsible for querying the current Bitcoin price.
       </p>
 
       <pre><code class="language-javascript">const express = require('express');
@@ -290,10 +323,13 @@ app.listen(3001, () => {
   console.log('Service A running on port 3001');
 });</code></pre>
 
-      <h3 id="dockerNode">Dockerizando una Node.js app</h3>
+      <h3 id="dockerNode"><span class="lang-es">Dockerizando una Node.js app</span><span class="lang-en">Dockerizing a Node.js App</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Para dockerizar nuestra aplicación de Node.js, necesitamos crear un Dockerfile que defina cómo construir nuestra imagen.
+      </p>
+      <p class="flow-text lang-en">
+        To dockerize our Node.js application, we need to create a Dockerfile that defines how to build our image.
       </p>
 
       <pre><code class="language-dockerfile">FROM node:14-alpine
@@ -304,10 +340,13 @@ COPY . .
 EXPOSE 3001
 CMD ["node", "index.js"]</code></pre>
 
-      <h3 id="spring">Servicio B: API de Ethereum con Spring Boot</h3>
+      <h3 id="spring"><span class="lang-es">Servicio B: API de Ethereum con Spring Boot</span><span class="lang-en">Service B: Ethereum API with Spring Boot</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Para demostrar la interoperabilidad entre tecnologías, construiremos el segundo servicio con <strong>Spring Boot</strong> y Java. Este microservicio consultará el precio de Ethereum de forma independiente.
+      </p>
+      <p class="flow-text lang-en">
+        To demonstrate interoperability between technologies, we'll build the second service with <strong>Spring Boot</strong> and Java. This microservice will query the Ethereum price independently.
       </p>
 
       <pre><code class="language-java">@RestController
@@ -321,10 +360,13 @@ public class EthController {
     }
 }</code></pre>
 
-      <h3 id="dockerSpring">Containerización del servicio Spring Boot</h3>
+      <h3 id="dockerSpring"><span class="lang-es">Containerización del servicio Spring Boot</span><span class="lang-en">Containerizing the Spring Boot Service</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         El proceso para containerizar una aplicación Spring Boot requiere primero compilar el proyecto y generar el archivo <code>.jar</code>, y luego crear el Dockerfile correspondiente:
+      </p>
+      <p class="flow-text lang-en">
+        The process to containerize a Spring Boot application requires first compiling the project and generating the <code>.jar</code> file, and then creating the corresponding Dockerfile:
       </p>
 
       <pre><code class="language-dockerfile">FROM openjdk:11-jre-slim
@@ -332,10 +374,13 @@ COPY target/service-b-0.0.1.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]</code></pre>
 
-      <h3 id="gateway">Gateway: El orquestador de servicios</h3>
+      <h3 id="gateway"><span class="lang-es">Gateway: El orquestador de servicios</span><span class="lang-en">Gateway: The Service Orchestrator</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         El <strong>API Gateway</strong> es el punto de entrada único para los clientes. Su función es consumir ambos microservicios de forma paralela usando <code>Promise.all()</code> y devolver una respuesta unificada con los precios de ambas criptomonedas.
+      </p>
+      <p class="flow-text lang-en">
+        The <strong>API Gateway</strong> is the single entry point for clients. Its function is to consume both microservices in parallel using <code>Promise.all()</code> and return a unified response with the prices of both cryptocurrencies.
       </p>
 
       <pre><code class="language-javascript">const express = require('express');
@@ -364,10 +409,13 @@ app.listen(3000, () => {
   console.log('🚀 Gateway running on port 3000');
 });</code></pre>
 
-      <h3 id="scale">Orquestación y escalamiento con Docker Compose</h3>
+      <h3 id="scale"><span class="lang-es">Orquestación y escalamiento con Docker Compose</span><span class="lang-en">Orchestration and Scaling with Docker Compose</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         <strong>Docker Compose</strong> nos permite definir y ejecutar aplicaciones multi-contenedor. Con un solo archivo YAML podemos levantar toda nuestra arquitectura de microservicios:
+      </p>
+      <p class="flow-text lang-en">
+        <strong>Docker Compose</strong> allows us to define and run multi-container applications. With a single YAML file we can spin up our entire microservices architecture:
       </p>
 
       <pre><code class="language-yaml">version: '3.8'
@@ -393,21 +441,33 @@ services:
       - service-b
     restart: unless-stopped</code></pre>
 
-      <h3>🎯 Conclusión</h3>
+      <h3><span class="lang-es">🎯 Conclusión</span><span class="lang-en">🎯 Conclusion</span></h3>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Con esta arquitectura logramos varios objetivos clave del desarrollo moderno:
       </p>
+      <p class="flow-text lang-en">
+        With this architecture we achieve several key goals of modern development:
+      </p>
 
-      <ul class="flow-text" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+      <ul class="flow-text lang-es" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
         <li><strong>Desacoplamiento:</strong> Cada servicio es independiente y puede evolucionar por separado</li>
         <li><strong>Escalabilidad:</strong> Podemos escalar horizontalmente cualquier servicio según la demanda</li>
         <li><strong>Flexibilidad tecnológica:</strong> Usamos la mejor herramienta para cada tarea (Node.js y Java)</li>
         <li><strong>Portabilidad:</strong> Docker garantiza que funcione igual en desarrollo y producción</li>
       </ul>
+      <ul class="flow-text lang-en" style="margin-left: 20px; margin-bottom: 25px; color: var(--text-secondary);">
+        <li><strong>Decoupling:</strong> Each service is independent and can evolve separately</li>
+        <li><strong>Scalability:</strong> We can horizontally scale any service based on demand</li>
+        <li><strong>Technology flexibility:</strong> We use the best tool for each task (Node.js and Java)</li>
+        <li><strong>Portability:</strong> Docker ensures it works the same in development and production</li>
+      </ul>
 
-      <p class="flow-text">
+      <p class="flow-text lang-es">
         Esta es la base sobre la cual puedes construir sistemas más complejos, agregando balanceadores de carga, service discovery, circuit breakers y más. ¡El límite es tu imaginación!
+      </p>
+      <p class="flow-text lang-en">
+        This is the foundation upon which you can build more complex systems, adding load balancers, service discovery, circuit breakers, and more. The sky's the limit!
       </p>
 
     </div>
@@ -415,7 +475,7 @@ services:
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 OscarCode. Todos los derechos reservados.</p>
+      <p>&copy; 2024 OscarCode. <span class="lang-es">Todos los derechos reservados.</span><span class="lang-en">All rights reserved.</span></p>
     </div>
   </footer>
 
