@@ -457,7 +457,7 @@
         <br><br>
         <i class="far fa-clock"></i> 11 de febrero de 2026 &nbsp;|&nbsp;
         <i class="far fa-user"></i> Oscar Martínez &nbsp;|&nbsp;
-        <i class="far fa-clock"></i> ~15 min de lectura
+        <i class="far fa-clock"></i> ~20 min de lectura
       </div>
     </div>
   </header>
@@ -548,30 +548,38 @@
 
       <h3>Paso 2: Ejecución en el Backend (Tool Executor)</h3>
 
-      <p>Nuestro backend recibe la petición del modelo, valida los parámetros y ejecuta la query real contra PostgreSQL:</p>
+      <p>Nuestro backend recibe la petición del modelo, valida los parámetros y ejecuta la query real contra PostgreSQL. Usamos un patrón <code>TOOL_MAP</code> que mapea nombres de herramientas a funciones importadas, envolviendo todo en try/catch con resultados tipados:</p>
 
-      <pre><code>// tool-executor.ts
-async function executeTool(name: string, userId: string, args: any) {
-  switch (name) {
-    case 'get_user_skills':
-      return await prisma.skill.findMany({
-        where: { userId },
-        include: { sessions: { select: { duration: true } } }
-      });
+      <pre><code>// tool-executor.ts — Implementación real
+import { getUserSkills } from '../tools/query-skills.tool';
+import { getPracticeSessions } from '../tools/query-sessions.tool';
+import { getJourneyStats } from '../tools/get-stats.tool';
+import { analyzePracticePatterns } from '../tools/analyze-patterns.tool';
+import { saveWeeklyPlan } from '../tools/create-plan.tool';
 
-    case 'get_practice_sessions':
-      return await prisma.session.findMany({
-        where: {
-          skillId: args.skillId,
-          createdAt: { gte: daysAgo(args.days ?? 30) }
-        },
-        orderBy: { createdAt: 'desc' }
-      });
+type TToolFn = (userId: string, args: Record&lt;string, unknown&gt;) =&gt; Promise&lt;TAgentToolResult&gt;;
 
-    case 'analyze_practice_patterns':
-      return await calculatePatterns(userId, args.skillId);
+const TOOL_MAP: Record&lt;string, TToolFn&gt; = {
+  get_user_skills: getUserSkills,
+  get_practice_sessions: getPracticeSessions,
+  get_journey_stats: getJourneyStats,
+  analyze_practice_patterns: analyzePracticePatterns,
+  save_weekly_plan: saveWeeklyPlan,
+};
+
+export async function executeTool(
+  name: string, userId: string, args: Record&lt;string, unknown&gt;,
+): Promise&lt;TAgentToolResult&gt; {
+  const toolFn = TOOL_MAP[name];
+  if (!toolFn) return { success: false, data: null, error: `Unknown tool: ${name}` };
+  try {
+    return await toolFn(userId, args);
+  } catch (error) {
+    return { success: false, data: null, error: String(error) };
   }
 }</code></pre>
+
+      <p>El tipo <code>TAgentToolResult</code> estandariza la respuesta: <code>{ success: boolean, data: unknown, error?: string }</code>. Esto evita que un error en una herramienta crashee todo el loop — el agente recibe el error como dato y puede decidir qué hacer (reintentar, usar otra herramienta, o avisar al usuario).</p>
 
       <div class="callout warning">
         <p><strong>⚠️ Nota de seguridad:</strong> Siempre filtramos por <code>userId</code> extraído del JWT — <strong>nunca del input del modelo</strong>. Esto previene ataques de prompt injection donde un usuario intente acceder a datos ajenos.</p>
@@ -607,60 +615,80 @@ async function executeTool(name: string, userId: string, args: any) {
         <p class="diagram-caption">Arquitectura del Agent Runner con loop de máximo 5 iteraciones</p>
       </div>
 
-      <p>La implementación en TypeScript:</p>
+      <p>La implementación real en TypeScript. Nota los detalles que no aparecen en tutoriales: <code>Promise.race</code> para timeout global, tracking de tokens consumidos, y una llamada final SIN herramientas cuando se alcanza el límite de iteraciones para forzar una respuesta de texto:</p>
 
-      <pre><code>// agent-runner.ts — Loop principal
+      <pre><code>// agent-runner.ts — Implementación real con timeout y tracking
 const MAX_TOOL_ITERATIONS = 5;
+const AGENT_TIMEOUT_MS = 150_000; // 2.5 minutos máximo total
 
-export async function runAgent(
-  userMessage: string,
-  userId: string,
-  credential: ClaudeCredential
-) {
-  const messages = [{ role: 'user', content: userMessage }];
+export async function runAgent(userId: string, messages: IChatMessage[]) {
+  // Timeout global — Promise.race mata el proceso si tarda mucho
+  return Promise.race([
+    runAgentLoop(userId, messages),
+    agentTimeout(),
+  ]);
+}
+
+async function agentTimeout(): Promise&lt;never&gt; {
+  await new Promise((r) =&gt; setTimeout(r, AGENT_TIMEOUT_MS));
+  throw new Error('El agente tardó demasiado. Intenta de nuevo.');
+}
+
+async function runAgentLoop(userId: string, messages: IChatMessage[]) {
   const toolsUsed: string[] = [];
+  let lastProvider = 'unknown';
+  const totalUsage = { inputTokens: 0, outputTokens: 0 };
 
-  for (let i = 0; i < MAX_TOOL_ITERATIONS; i++) {
-    // 1. Llamar a Claude con las herramientas disponibles
-    const result = await chatCompletion(messages, AGENT_TOOLS, credential);
+  for (let i = 0; i &lt; MAX_TOOL_ITERATIONS; i++) {
+    const result = await chatCompletion(messages, AGENT_TOOLS, userId);
+    lastProvider = result.provider;
 
-    // 2. Si no hay tool_calls, el texto es la respuesta final
-    if (result.toolCalls.length === 0) {
-      return {
-        response: result.content,
-        toolsUsed,
-        iterations: i + 1
-      };
+    // Acumular tokens consumidos en cada iteración
+    if (result.usage) {
+      totalUsage.inputTokens += result.usage.inputTokens;
+      totalUsage.outputTokens += result.usage.outputTokens;
     }
 
-    // 3. Agregar la respuesta del asistente al historial
+    // Sin tool_calls = respuesta final
+    if (!result.toolCalls.length) {
+      return { response: result.content, toolsUsed, provider: lastProvider, usage: totalUsage };
+    }
+
+    // Agregar respuesta del asistente con tool_calls al historial
     messages.push({
-      role: 'assistant',
-      content: result.content,
-      tool_calls: result.toolCalls
+      role: 'assistant', content: result.content ?? '',
+      tool_calls: result.toolCalls,
     });
 
-    // 4. Ejecutar cada tool y agregar los resultados
-    for (const toolCall of result.toolCalls) {
-      const toolResult = await executeTool(
-        toolCall.function.name,
-        userId,  // ← siempre del JWT, nunca del prompt
-        JSON.parse(toolCall.function.arguments)
-      );
-
+    // Ejecutar las herramientas y agregar resultados
+    for (const tc of result.toolCalls) {
+      const args = JSON.parse(tc.function.arguments);
+      const toolResult = await executeTool(tc.function.name, userId, args);
       messages.push({
         role: 'tool',
         content: JSON.stringify(toolResult),
-        tool_call_id: toolCall.id
+        tool_call_id: tc.id,
       });
-
-      toolsUsed.push(toolCall.function.name);
+      toolsUsed.push(tc.function.name);
     }
   }
 
-  // Guardrail: si se excede el límite, forzar respuesta
-  return { response: messages.at(-1)?.content, toolsUsed, iterations: MAX_TOOL_ITERATIONS };
+  // Guardrail: max iteraciones alcanzado → una llamada final SIN tools
+  // Esto fuerza al modelo a generar texto en vez de pedir más tools
+  const finalResult = await chatCompletion(messages, undefined, userId);
+  if (finalResult.usage) {
+    totalUsage.inputTokens += finalResult.usage.inputTokens;
+    totalUsage.outputTokens += finalResult.usage.outputTokens;
+  }
+  return {
+    response: finalResult.content ?? 'No pude completar el análisis.',
+    toolsUsed, provider: lastProvider, usage: totalUsage,
+  };
 }</code></pre>
+
+      <div class="callout info">
+        <p><strong>💡 Detalle clave:</strong> Cuando el agente alcanza el máximo de 5 iteraciones, la mayoría de implementaciones simplemente devuelven el último contenido. Nosotros hacemos una <strong>llamada extra sin herramientas</strong> — esto obliga a Claude a sintetizar toda la información recopilada en una respuesta coherente, en vez de cortarse a mitad de un razonamiento.</p>
+      </div>
 
       <p>El array de <code>messages</code> crece con cada iteración: pregunta del usuario → respuesta con tool_calls → resultados de las tools → nueva respuesta → etc. Claude tiene <strong>contexto completo</strong> de toda la conversación para generar la respuesta final.</p>
 
@@ -682,42 +710,66 @@ export async function runAgent(
           <tr>
             <td>1</td>
             <td><code>get_user_skills</code></td>
-            <td>—</td>
-            <td>Skills con horas, nivel, estado</td>
+            <td><code>includeArchived?: boolean</code></td>
+            <td>Skills con horas, emoji, color, nivel de maestría, sesiones</td>
             <td>Inicio de conversación</td>
           </tr>
           <tr>
             <td>2</td>
             <td><code>get_practice_sessions</code></td>
-            <td>skillId, days</td>
-            <td>Historial de sesiones</td>
+            <td><code>skillId</code> (required), <code>days</code> (default: 30)</td>
+            <td>Historial de sesiones con fecha, horas, notas</td>
             <td>Análisis de skill específico</td>
           </tr>
           <tr>
             <td>3</td>
             <td><code>get_journey_stats</code></td>
             <td>—</td>
-            <td>Promedio, proyecciones, rachas</td>
-            <td>Resumen general</td>
+            <td>Promedio semanal, mejor día/semana, proyecciones, rachas</td>
+            <td>Resumen general del journey</td>
           </tr>
           <tr>
             <td>4</td>
             <td><code>analyze_practice_patterns</code></td>
-            <td>skillId</td>
-            <td>Distribución, tendencias, plateaus</td>
-            <td>Diagnóstico profundo</td>
+            <td><code>skillId?: string</code></td>
+            <td>Distribución por día, tendencia semanal, gaps, consistencia</td>
+            <td>Diagnóstico profundo de hábitos</td>
           </tr>
           <tr>
             <td>5</td>
             <td><code>save_weekly_plan</code></td>
-            <td>plan_data</td>
-            <td>Confirmación</td>
-            <td>Guardar plan generado</td>
+            <td><code>content</code> + <code>insights[]</code> (typed)</td>
+            <td>Confirmación + fecha de la semana</td>
+            <td>Persistir plan generado</td>
           </tr>
         </tbody>
       </table>
 
       <p>Las herramientas 1-4 son de <strong>lectura</strong> (consultan datos). La herramienta 5 es de <strong>escritura</strong> (modifica la base de datos). El modelo decide cuáles usar y en qué orden según la pregunta del usuario.</p>
+
+      <h3>El Schema de los Insights (Tool #5)</h3>
+
+      <p>La herramienta <code>save_weekly_plan</code> recibe un array de insights tipados — no es un string libre, sino datos estructurados que el modelo debe generar siguiendo un schema estricto:</p>
+
+      <pre><code>// La definición real del tool le dice a Claude exactamente qué estructura generar
+"insights": {
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": ["progress", "plateau", "streak", "suggestion", "milestone"]
+      },
+      "title": { "type": "string" },
+      "description": { "type": "string" },
+      "skillId": { "type": "string", "description": "Optional skill reference" }
+    },
+    "required": ["type", "title", "description"]
+  }
+}</code></pre>
+
+      <p>Esto le da al modelo un vocabulario tipado para clasificar sus observaciones. Cada insight tiene un <code>type</code> semántico que permite renderizar diferentes estilos en el UI (badges de color, iconos, etc.).</p>
 
       <div class="callout">
         <p><strong>💡 Decisión de diseño:</strong> Las herramientas son <em>granulares a propósito</em>. Podríamos haber creado una sola herramienta <code>get_all_data</code> que devuelva todo, pero eso enviaría datos innecesarios en cada consulta. Con herramientas granulares, Claude solo pide lo que necesita — consumiendo menos tokens y reduciendo la latencia.</p>
@@ -729,35 +781,57 @@ export async function runAgent(
 
       <p>El system prompt define <strong>quién es</strong> el agente y <strong>cómo debe comportarse</strong>. Es probablemente el componente más importante — la diferencia entre un agente útil y uno genérico.</p>
 
-      <p>Nuestro prompt incluye:</p>
+      <p>Nuestro prompt incluye reglas muy específicas que hacen la diferencia entre un chatbot genérico y un coach especializado:</p>
 
       <ul>
         <li><strong>Identidad:</strong> "Eres el TenK Coach, un entrenador experto en práctica deliberada."</li>
-        <li><strong>Contexto:</strong> La teoría de las 10,000 horas, técnicas de práctica efectiva, la ciencia del aprendizaje.</li>
-        <li><strong>Instrucciones de herramientas:</strong> "SIEMPRE consulta los datos del usuario antes de dar recomendaciones. No asumas nada."</li>
-        <li><strong>Formato de respuesta:</strong> "Usa markdown con emojis para respuestas visualmente atractivas."</li>
-        <li><strong>Restricciones:</strong> "No inventes datos. Si no tienes info, dilo explícitamente."</li>
+        <li><strong>Personalidad:</strong> Motivador pero realista, directo, basado en datos, siempre en español.</li>
+        <li><strong>Parallel tool calling:</strong> "Llama TODAS las herramientas que necesites en una sola respuesta" — reduce iteraciones.</li>
+        <li><strong>Niveles de maestría:</strong> 5 niveles con emojis y rangos de horas exactos.</li>
+        <li><strong>Formato de plan semanal:</strong> 4 secciones obligatorias con estructura definida.</li>
+        <li><strong>Restricciones:</strong> Máximo 300 palabras, nunca inventar datos, no usar fuentes externas.</li>
       </ul>
 
       <p>Sin instrucciones claras, el modelo tiende a <strong>alucinar</strong> — decir "llevas X horas" sin verificar. El prompt fuerza al agente a siempre consultar herramientas primero.</p>
 
-      <pre><code>// system-prompt.ts
-export const TENK_COACH_PROMPT = `
-Eres el TenK Coach — un entrenador experto en práctica deliberada y 
-la teoría de las 10,000 horas de Malcolm Gladwell.
+      <pre><code>// system-prompt.ts — Implementación real
+export function buildSystemPrompt(): string {
+  return `Eres el **TenK Coach** — entrenador de práctica deliberada basado en la 
+regla de las 10,000 horas.
 
-REGLAS CRÍTICAS:
-1. SIEMPRE usa get_user_skills primero antes de hablar sobre skills.
-2. NUNCA inventes estadísticas. Si no tienes datos, usa las herramientas.
-3. Sé motivador pero honesto. Si el usuario no ha practicado, dilo.
-4. Usa markdown con emojis para respuestas visuales.
-5. Reconoce los logros: rachas, sesiones largas, nuevos niveles.
+PERSONALIDAD:
+- Motivador pero realista. Si el usuario no practica, dilo con tacto.
+- Directo y conciso. Sin rodeos.
+- Basado en datos. SIEMPRE usa las herramientas antes de opinar.
+- Responde SIEMPRE en español.
 
-CONTEXTO:
-- Los niveles van de Principiante (0h) a Master (10,000h)
-- Una racha es X días consecutivos de práctica
-- La técnica Pomodoro ayuda: 25min enfocado + 5min descanso
-`;</code></pre>
+HERRAMIENTAS:
+- Llama TODAS las herramientas que necesites en UNA sola respuesta.
+- NUNCA inventes estadísticas. Si no tienes datos, pídelos con las tools.
+
+NIVELES DE MAESTRÍA:
+🌱 Semilla (0-100h) — Apenas comenzando
+📘 Aprendiz (100-500h) — Fundamentos sólidos
+⚡ Intermedio (500-2,000h) — Competencia real
+🔥 Avanzado (2,000-5,000h) — Dominio profundo
+👑 Master (5,000-10,000h) — Élite
+
+PLAN SEMANAL (cuando lo pidan):
+1. 📊 Resumen — datos clave de la semana anterior
+2. 📅 Plan — qué skill, qué día, cuántas horas
+3. 🎯 Foco — 1 recomendación basada en patrones
+4. 🏆 Meta — horas objetivo realistas
+
+REGLAS:
+- Máximo 300 palabras por respuesta
+- Reconoce logros: rachas, sesiones largas, nuevos niveles
+- No uses fuentes externas, solo los datos del usuario
+`;
+}</code></pre>
+
+      <h3>El Truco del Parallel Tool Calling</h3>
+
+      <p>La instrucción <em>"Llama TODAS las herramientas que necesites en una sola respuesta"</em> es clave para la performance. Sin ella, Claude pide una herramienta por iteración (3-4 API calls). Con ella, Claude puede pedir <code>get_user_skills</code>, <code>get_journey_stats</code> y <code>analyze_practice_patterns</code> en un solo turno — reduciendo las iteraciones de 4 a 2.</p>
 
 
       <!-- ==================== SECCIÓN 7 ==================== -->
@@ -1002,24 +1076,88 @@ if (failure is RateLimitFailure) {
       <div class="comparison">
         <div class="comparison-box bad">
           <h4>❌ Agent Loop (39s)</h4>
-          <pre><code>for (let i = 0; i < MAX; i++) {
-  // Claude pide un tool
-  // → ejecuta
-  // → otra iteración...
-}
-// 6 API calls secuenciales</code></pre>
+          <pre><code>// 6 API calls secuenciales:
+// Claude pide tool 1 → ejecuta
+// Claude pide tool 2 → ejecuta
+// Claude pide tool 3 → ejecuta
+// Claude escribe plan → save tool
+// 4 rondas ida y vuelta</code></pre>
         </div>
         <div class="comparison-box good">
           <h4>✅ Pre-fetch (8s)</h4>
-          <pre><code>const [skills, stats, patterns] = 
-  await Promise.all([
-    querySkills(userId),
-    getJourneyStats(userId),
-    analyzePracticePatterns(userId),
-  ]);
-// 1 API call con todo</code></pre>
+          <pre><code>// 3 queries en paralelo (~50ms)
+// + 1 API call con todo
+// = 4.7x más rápido</code></pre>
         </div>
       </div>
+
+      <p>La implementación real. Nota cómo reutilizamos las <strong>mismas funciones de las tools</strong> del agente, pero las llamamos directamente sin el loop — las tools son funciones puras que reciben <code>userId</code> y <code>args</code>:</p>
+
+      <pre><code>// weekly-plan.service.ts — Implementación real
+import { getUserSkills } from '../tools/query-skills.tool';
+import { getJourneyStats } from '../tools/get-stats.tool';
+import { analyzePracticePatterns } from '../tools/analyze-patterns.tool';
+import { saveWeeklyPlan } from '../tools/create-plan.tool';
+
+const PLAN_TIMEOUT_MS = 60_000; // 1 minuto máximo
+
+export async function generateWeeklyPlanDirect(userId: string) {
+  return Promise.race([
+    generatePlan(userId),
+    planTimeout(), // misma técnica que el agent runner
+  ]);
+}
+
+async function generatePlan(userId: string) {
+  // 1. Pre-fetch: 3 queries en paralelo (~50ms total)
+  const [skills, stats, patterns] = await Promise.all([
+    getUserSkills(userId, {}),
+    getJourneyStats(userId, {}),
+    analyzePracticePatterns(userId, {}),
+  ]);
+
+  // 2. Construir prompt con TODOS los datos embebidos como JSON
+  const userPrompt = buildWeeklyPlanPrompt(skills.data, stats.data, patterns.data);
+
+  // 3. UNA sola llamada a la API — sin tools, sin loop
+  const result = await chatCompletion(
+    [{ role: 'system', content: PLAN_SYSTEM_PROMPT },
+     { role: 'user', content: userPrompt }],
+    undefined, // ← sin tools
+    userId,
+  );
+
+  // 4. Parsear y guardar
+  const { planMarkdown, insights } = parsePlanResponse(result.content);
+  await saveWeeklyPlan(userId, { content: planMarkdown, insights });
+
+  return { response: result.content, toolsUsed: ['get_user_skills',
+    'get_journey_stats', 'analyze_practice_patterns', 'save_weekly_plan'] };
+}</code></pre>
+
+      <pre><code>// weekly-plan.prompt.ts — Los datos van como JSON en el prompt
+export function buildWeeklyPlanPrompt(
+  skillsData: unknown, statsData: unknown, patternsData: unknown,
+): string {
+  return `Genera mi plan semanal basándote en mis datos reales:
+
+## Mis Skills
+\`\`\`json
+${JSON.stringify(skillsData, null, 2)}
+\`\`\`
+
+## Estadísticas del Journey
+\`\`\`json
+${JSON.stringify(statsData, null, 2)}
+\`\`\`
+
+## Patrones de Práctica
+\`\`\`json
+${JSON.stringify(patternsData, null, 2)}
+\`\`\`
+
+Con estos datos, genera mi plan semanal personalizado.`;
+}</code></pre>
 
       <p>Para el <strong>chat libre</strong> mantenemos el agent loop porque cada pregunta es impredecible. Para el <strong>plan semanal</strong> pre-cargamos todos los datos con <code>Promise.all</code> (~50ms) y hacemos una sola llamada con todo embebido en el prompt.</p>
 
@@ -1084,7 +1222,34 @@ lib/
       <!-- ==================== SECCIÓN 12 ==================== -->
       <h2><span class="section-number">12</span> Modelos de Base de Datos</h2>
 
-      <pre><code>// schema.prisma — Modelos para OAuth y AI
+      <pre><code>// schema.prisma — Modelos reales para OAuth, Conversaciones y Planes
+
+model AiConversation {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  title     String   @default("Nueva conversación")
+  messages  Json     @default("[]")     // IChatMessage[] serializado
+  context   Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("ai_conversations")
+  @@index([userId])
+}
+
+model AiWeeklyReport {
+  id             String   @id @default(cuid())
+  userId         String   @map("user_id")
+  weekStart      DateTime @map("week_start") @db.Date
+  content        String   @db.Text          // Markdown del plan
+  insights       Json     @default("[]")    // IWeeklyInsight[] tipado
+  skillsAnalyzed Json     @default("[]") @map("skills_analyzed")
+  createdAt      DateTime @default(now()) @map("created_at")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, weekStart])  // Un plan por semana por usuario
+  @@map("ai_weekly_reports")
+  @@index([userId])
+}
 
 model ClaudeCredential {
   id           String   @id @default(cuid())
@@ -1092,6 +1257,8 @@ model ClaudeCredential {
   accessToken  String   @map("access_token") @db.Text
   refreshToken String   @map("refresh_token") @db.Text
   expiresAt    DateTime @map("expires_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@map("claude_credentials")
 }
@@ -1102,19 +1269,345 @@ model OAuthState {
   state         String   @unique
   codeVerifier  String   @map("code_verifier")
   expiresAt     DateTime @map("expires_at")
+  createdAt     DateTime @default(now()) @map("created_at")
   @@map("oauth_states")
   @@index([state])
+  @@index([expiresAt])
+}</code></pre>
+
+      <p>Detalles clave del schema:</p>
+      <ul>
+        <li><code>AiConversation.messages</code> es un <code>Json</code> que almacena el array completo de <code>IChatMessage[]</code> — incluyendo los tool_calls — para poder reanudar conversaciones.</li>
+        <li><code>AiWeeklyReport</code> tiene un <code>@@unique([userId, weekStart])</code> que permite hacer upsert: si generas un nuevo plan la misma semana, reemplaza el anterior.</li>
+        <li><code>ClaudeCredential.userId</code> es <code>@unique</code> — un usuario, una credencial. Conectar de nuevo reemplaza la anterior.</li>
+        <li><code>OAuthState.expiresAt</code> con index permite limpiar estados expirados eficientemente.</li>
+      </ul>
+
+
+      <!-- ==================== SECCIÓN 13 ==================== -->
+      <h2><span class="section-number">13</span> Provider Fallback: La Cadena de 3 Niveles</h2>
+
+      <p>El sistema de credenciales tiene <strong>3 niveles de fallback</strong> para maximizar la disponibilidad. Si un nivel falla o no tiene credenciales, intenta el siguiente automáticamente:</p>
+
+      <div class="diagram">
+        <pre><code>chatCompletion(messages, tools, userId)
+         │
+         ▼
+┌─ Nivel 1: Per-User OAuth (DB) ─────────────────────┐
+│  claudeOAuthService.getUserCredential(userId)       │
+│  → ClaudeCredential table → accessToken             │
+│  → Auto-refresh si expirado                         │
+│  → Headers: stealth (OAuth tokens)                  │
+└──────────┬──────────────────────────────────────────┘
+           │ null? (no conectado)
+           ▼
+┌─ Nivel 2: System Anthropic (Keychain/File) ─────────┐
+│  readClaudeCredentials()                             │
+│  → macOS Keychain: "Claude Code-credentials"        │
+│  → Fallback: ~/.claude/.credentials.json             │
+│  → Auto-refresh si expirado via OAuth refresh_token  │
+│  → Headers: stealth (same OAuth format)              │
+└──────────┬──────────────────────────────────────────┘
+           │ null? (no disponible)
+           ▼
+┌─ Nivel 3: OpenAI Codex (File) ──────────────────────┐
+│  readCodexCredentials()                              │
+│  → ~/.codex/auth.json → access_token                │
+│  → Model: gpt-4o (en vez de claude-sonnet-4)        │
+│  → Headers: estándar OpenAI                          │
+└─────────────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption">3-tier provider fallback: per-user DB → system Keychain → OpenAI</p>
+      </div>
+
+      <pre><code>// ai-client.ts — Implementación real del fallback chain
+export async function chatCompletion(
+  messages: IChatMessage[], tools?: IToolDefinition[], userId?: string,
+): Promise&lt;IChatResponse&gt; {
+
+  // Nivel 1: Credencial del usuario (Claude OAuth via DB)
+  if (userId) {
+    const userCred = await claudeOAuthService.getUserCredential(userId);
+    if (userCred) {
+      return callAnthropic(
+        { provider: 'anthropic', accessToken: userCred.accessToken,
+          refreshToken: userCred.refreshToken, expiresAt: userCred.expiresAt },
+        messages, tools,
+      );
+    }
+  }
+
+  // Nivel 2: Credencial del sistema (Keychain/archivo)
+  const systemCred = await readClaudeCredentials();
+  if (systemCred) return callAnthropic(systemCred, messages, tools);
+
+  // Nivel 3: OpenAI como último recurso
+  const openaiCred = readCodexCredentials();
+  if (openaiCred) return callOpenAI(openaiCred, messages, tools);
+
+  throw new Error('No AI credentials available');
+}</code></pre>
+
+      <h3>Lectura del macOS Keychain</h3>
+
+      <p>En servidores macOS, las credenciales de Claude Code se almacenan en el Keychain del sistema. El backend las lee ejecutando <code>security</code> — el mismo CLI que usa Claude Code internamente:</p>
+
+      <pre><code>// ai-credentials.ts — Leer del Keychain de macOS
+function readClaudeFromKeychain(): IOAuthCredential | null {
+  if (platform() !== 'darwin') return null;
+
+  // Claude Code guarda en diferentes "accounts"
+  const accounts = [process.env.USER ?? 'root', 'Claude Code'];
+
+  for (const account of accounts) {
+    try {
+      const raw = execSync(
+        `security find-generic-password -s "Claude Code-credentials" -a "${account}" -w`,
+        { encoding: 'utf8', timeout: 5000 },
+      ).trim();
+
+      const data = JSON.parse(raw);
+      const oauth = data.claudeAiOauth;
+      if (!oauth?.accessToken) continue;
+
+      // Normalizar expiresAt (puede venir en segundos o milisegundos)
+      const expiresAt = oauth.expiresAt &lt; 10_000_000_000
+        ? oauth.expiresAt * 1000  // era segundos
+        : oauth.expiresAt;        // ya era ms
+
+      return { provider: 'anthropic', accessToken: oauth.accessToken,
+        refreshToken: oauth.refreshToken ?? null, expiresAt };
+    } catch { continue; }
+  }
+  return null;
+}</code></pre>
+
+      <h3>Auto-Refresh de Tokens</h3>
+
+      <p>Si un token está expirado pero tiene <code>refresh_token</code>, el sistema lo refresca automáticamente y persiste el nuevo token en la misma ubicación (Keychain o DB según el nivel):</p>
+
+      <pre><code>// ai-token-refresh.ts
+const CLAUDE_OAUTH_CLIENT_ID = '9d1c250a-e61b-44d9-88ed-5944d1962f5e';
+const TOKEN_ENDPOINT = 'https://console.anthropic.com/v1/oauth/token';
+
+export async function refreshClaudeToken(refreshToken: string): Promise&lt;IOAuthCredential | null&gt; {
+  const res = await fetch(TOKEN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      grant_type: 'refresh_token',
+      client_id: CLAUDE_OAUTH_CLIENT_ID,
+      refresh_token: refreshToken,
+    }),
+  });
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  const SAFETY_BUFFER = 5 * 60 * 1000; // 5 min antes de expiración
+
+  return {
+    provider: 'anthropic',
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token,
+    expiresAt: Date.now() + data.expires_in * 1000 - SAFETY_BUFFER,
+  };
+}</code></pre>
+
+      <p>El <code>SAFETY_BUFFER</code> de 5 minutos asegura que el token se refresca antes de expirar realmente, evitando ventanas donde el token podría estar "casi expirado" y fallar a mitad de una llamada.</p>
+
+
+      <!-- ==================== SECCIÓN 14 ==================== -->
+      <h2><span class="section-number">14</span> Implementación Real de las Herramientas</h2>
+
+      <p>Cada herramienta es una función pura que recibe <code>(userId, args)</code> y retorna <code>TAgentToolResult</code>. Veamos qué hace cada una realmente bajo el capó:</p>
+
+      <h3>get_user_skills — Nivel de Maestría Calculado</h3>
+
+      <pre><code>// query-skills.tool.ts
+export async function getUserSkills(userId: string, args: Record&lt;string, unknown&gt;) {
+  const includeArchived = (args.includeArchived as boolean) ?? false;
+  const skills = await skillRepository.findAllByUserId(userId, includeArchived);
+
+  const data = skills.map((skill) =&gt; {
+    const totalHours = skill.sessions.reduce((sum, s) =&gt; sum + Number(s.hours), 0);
+    const mastery = getMasteryLevel(totalHours); // 🌱📘⚡🔥👑
+
+    return {
+      id: skill.id,
+      name: skill.name,
+      emoji: skill.emoji || '📚',
+      totalHours: Math.round(totalHours * 10) / 10,
+      goalHours: skill.goalHours,
+      masteryLevel: `${mastery.emoji} ${mastery.name}`,
+      sessionsCount: skill.sessions.length,
+    };
+  });
+  return { success: true, data };
+}</code></pre>
+
+      <p>El nivel de maestría se calcula en tiempo real sumando todas las sesiones — no es un campo guardado. Esto asegura que siempre refleje el estado actual.</p>
+
+      <h3>analyze_practice_patterns — El Diagnóstico Profundo</h3>
+
+      <p>Esta es la herramienta más compleja. Analiza hasta 500 sesiones y calcula 4 métricas:</p>
+
+      <pre><code>// analyze-patterns.tool.ts — 4 análisis sobre hasta 500 sesiones
+export async function analyzePracticePatterns(userId: string, args: Record&lt;string, unknown&gt;) {
+  const sessions = await prisma.session.findMany({
+    where: { skill: { userId, isArchived: false } },
+    orderBy: { practiceDate: 'desc' },
+    take: 500, // últimas 500 sesiones
+  });
+
+  return {
+    success: true,
+    data: {
+      dayDistribution: analyzeDayDistribution(sessions),
+      //→ [{day: 'Lun', sessions: 12, totalHours: 8.5}, ...]
+
+      weeklyTrend: analyzeWeeklyTrend(sessions),
+      //→ {weeks: [...], trend: 'improving'|'declining'|'stable',
+      //   recentAvg: 4.2, olderAvg: 3.1}
+
+      gaps: analyzeGaps(sessions),
+      //→ {longestGap: 5, averageGap: 1.8, gapsOver3Days: 3}
+
+      consistency: analyzeConsistency(sessions),
+      //→ {activeDaysLast30: 22, consistencyScore: 'buena'}
+    },
+  };
 }
 
-model WeeklyPlan {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  content   String   @db.Text
-  insights  String?  @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@map("weekly_plans")
+// La tendencia compara las últimas 4 semanas vs las 4 anteriores
+function analyzeWeeklyTrend(sessions) {
+  // ... agrupa por semana ...
+  const recent = weeks.slice(0, 4).average();
+  const older = weeks.slice(4).average();
+  const trend = recent &gt; older * 1.1 ? 'improving'
+              : recent &lt; older * 0.9 ? 'declining' : 'stable';
+  return { weeks, trend, recentAvg: recent, olderAvg: older };
+}
+
+// Consistencia: días activos en los últimos 30 días
+function analyzeConsistency(sessions) {
+  const activeDays = uniqueDaysInLast30(sessions);
+  const score = activeDays &gt;= 25 ? 'excelente'
+              : activeDays &gt;= 18 ? 'buena'
+              : activeDays &gt;= 10 ? 'regular' : 'baja';
+  return { activeDaysLast30: activeDays, consistencyScore: score };
 }</code></pre>
+
+      <p>El modelo recibe estos datos estructurados y puede hacer observaciones como <em>"Tu tendencia es creciente — promediabas 3.1h/semana y ahora estás en 4.2h. ¡Sigue así!"</em> — toda basada en datos reales, no en intuición.</p>
+
+      <h3>save_weekly_plan — Upsert Inteligente</h3>
+
+      <pre><code>// create-plan.tool.ts — Calcula el lunes de la semana actual
+export async function saveWeeklyPlan(userId: string, args: Record&lt;string, unknown&gt;) {
+  const content = args.content as string;
+  const insights = args.insights as IWeeklyInsight[];
+
+  // Calcular inicio de semana (lunes)
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() + mondayOffset);
+  weekStart.setHours(0, 0, 0, 0);
+
+  // Upsert: si ya hay plan esta semana, actualizarlo
+  const existing = await aiRepository.findWeeklyReportByWeek(userId, weekStart);
+  if (existing) {
+    await prisma.aiWeeklyReport.update({ where: { id: existing.id }, data: { content, insights } });
+  } else {
+    await aiRepository.createWeeklyReport({ userId, weekStart, content, insights, skillsAnalyzed: [] });
+  }
+
+  return { success: true, data: { message: 'Plan guardado', weekStart } };
+}</code></pre>
+
+
+      <!-- ==================== SECCIÓN 15 ==================== -->
+      <h2><span class="section-number">15</span> Parsers: Formato Unificado entre Providers</h2>
+
+      <p>Anthropic y OpenAI retornan tool calls en formatos <strong>completamente diferentes</strong>. Nuestros parsers normalizan ambos a una interfaz común <code>IChatResponse</code>:</p>
+
+      <pre><code>// Interfaz unificada que usa todo el sistema
+interface IChatResponse {
+  content: string | null;
+  toolCalls: IToolCall[];
+  provider: 'anthropic' | 'openai';
+  usage?: { inputTokens: number; outputTokens: number };
+}</code></pre>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4>Anthropic Format</h4>
+          <pre><code>// Tool calls vienen como "content blocks"
+{
+  content: [
+    { type: "text", text: "..." },
+    { type: "tool_use",
+      id: "toolu_xxx",
+      name: "get_user_skills",
+      input: { includeArchived: false }
+    }
+  ]
+}</code></pre>
+        </div>
+        <div class="comparison-box good">
+          <h4>OpenAI Format</h4>
+          <pre><code>// Tool calls son un campo separado
+{
+  choices: [{
+    message: {
+      content: "...",
+      tool_calls: [{
+        id: "call_xxx",
+        type: "function",
+        function: {
+          name: "get_user_skills",
+          arguments: "{\"includeArchived\":false}"
+        }
+      }]
+    }
+  }]
+}</code></pre>
+        </div>
+      </div>
+
+      <pre><code>// ai-parsers.ts — Normalizar a formato unificado
+export function parseAnthropicResponse(data: AnthropicResponse): IChatResponse {
+  const content = data.content
+    ?.filter((b) =&gt; b.type === 'text')
+    .map((b) =&gt; b.text)
+    .join('') || null;
+
+  const toolCalls = data.content
+    .filter((b) =&gt; b.type === 'tool_use')
+    .map((b) =&gt; ({
+      id: b.id,
+      type: 'function' as const,
+      function: { name: b.name, arguments: JSON.stringify(b.input) },
+    }));
+
+  return { content, toolCalls, provider: 'anthropic',
+    usage: data.usage ? { inputTokens: data.usage.input_tokens,
+      outputTokens: data.usage.output_tokens } : undefined };
+}
+
+// Los tool_results también se convierten en sentido inverso:
+// Nuestro formato → Anthropic "user message con tool_result content block"
+export function convertToAnthropicMsg(msg) {
+  if (msg.role === 'tool') {
+    return {
+      role: 'user',
+      content: [{ type: 'tool_result', tool_use_id: msg.tool_call_id,
+        content: msg.content }],
+    };
+  }
+  // ... assistant messages con tool_calls → content blocks
+}</code></pre>
+
+      <p>Sin los parsers, tendríamos que escribir código diferente para cada provider en cada parte del sistema. Con ellos, el agent-runner es <strong>completamente agnóstico del provider</strong> — funciona igual con Claude o GPT-4o.</p>
 
 
       <!-- ==================== TAKEAWAYS ==================== -->
@@ -1122,12 +1615,15 @@ model WeeklyPlan {
         <h3>💡 Lecciones Aprendidas</h3>
         <ol>
           <li><strong>El agent loop es poderoso pero costoso</strong> — cada iteración es una API call. Usa pre-fetch cuando el flujo es predecible.</li>
-          <li><strong>El system prompt es el 80% del comportamiento</strong> — un buen prompt convierte un LLM genérico en un experto especializado.</li>
+          <li><strong>El system prompt es el 80% del comportamiento</strong> — un buen prompt convierte un LLM genérico en un experto especializado. Incluye parallel tool calling para reducir iteraciones.</li>
           <li><strong>Tool calling > RAG para datos estructurados</strong> — en vez de embeber todo en el contexto, deja que el modelo pida solo lo que necesita.</li>
           <li><strong>Siempre aislar por userId en el backend</strong>, nunca confiar en el input del modelo para autenticación.</li>
-          <li><strong>Los guardrails importan</strong> — límite de iteraciones, timeouts y manejo de rate limits son esenciales en producción.</li>
+          <li><strong>Los guardrails importan</strong> — límite de iteraciones, timeouts con <code>Promise.race</code>, y manejo de rate limits son esenciales en producción.</li>
           <li><strong>Anthropic tiene sus particularidades</strong> — JSON en token exchange, <code>code#state</code>, stealth headers. Documenta todo porque no lo encontrarás en su docs oficiales.</li>
           <li><strong>Cada usuario con su token = escalabilidad natural</strong> — zero API cost para el developer y rate limits individuales.</li>
+          <li><strong>Normaliza los formatos entre providers</strong> — Anthropic y OpenAI retornan tool calls de forma diferente. Un parser intermedio hace que el agent runner sea agnóstico del provider.</li>
+          <li><strong>Las tools como funciones puras</strong> — el mismo <code>getUserSkills()</code> se usa en el agent loop Y en el pre-fetch del plan semanal. Reutilización real.</li>
+          <li><strong>El fallback chain con auto-refresh</strong> — 3 niveles de credenciales con refresh automático. El usuario nunca ve un error de autenticación si hay cualquier credencial disponible.</li>
         </ol>
       </div>
 
