@@ -856,6 +856,7 @@
       .hero-image-wrapper { width: 140px; height: 140px; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 
 <body>
@@ -868,10 +869,11 @@
         <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
           <li><a href="#skills">Skills</a></li>
-          <li><a href="#experience">Experiencia</a></li>
-          <li><a href="#about">Sobre Mí</a></li>
+          <li><a href="#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
+          <li><a href="#about"><span class="lang-es">Sobre Mí</span><span class="lang-en">About Me</span></a></li>
           <li><a href="#blog">Blog</a></li>
-          <li><a href="#contact">Contacto</a></li>
+          <li><a href="#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
         </ul>
       </div>
     </div>
@@ -879,10 +881,11 @@
 
   <ul class="sidenav" id="mobile-nav">
     <li><a href="#skills">Skills</a></li>
-    <li><a href="#experience">Experiencia</a></li>
-    <li><a href="#about">Sobre Mí</a></li>
+    <li><a href="#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
+    <li><a href="#about"><span class="lang-es">Sobre Mí</span><span class="lang-en">About Me</span></a></li>
     <li><a href="#blog">Blog</a></li>
-    <li><a href="#contact">Contacto</a></li>
+    <li><a href="#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+    <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
   </ul>
 
   <!-- HERO -->
@@ -890,33 +893,35 @@
     <div class="container">
       <div class="hero-content">
         <p class="hero-role"><span id="typing-role" class="typing-text"></span></p>
-        <h1 class="hero-title">Hey, soy Oscar 🤙</h1>
+        <h1 class="hero-title"><span class="lang-es">Hey, soy Oscar 🤙</span><span class="lang-en">Hey, I'm Oscar 🤙</span></h1>
         <p class="hero-description">
-          Llevo +10 años rompiendo y arreglando código. Me gusta crear apps que funcionen bien 
-          y no exploten en producción (la mayoría de las veces 😅). Backend, frontend, lo que sea.
+          <span class="lang-es">Llevo +10 años rompiendo y arreglando código. Me gusta crear apps que funcionen bien 
+          y no exploten en producción (la mayoría de las veces 😅). Backend, frontend, lo que sea.</span>
+          <span class="lang-en">10+ years breaking and fixing code. I like building apps that work well 
+          and don't blow up in production (most of the time 😅). Backend, frontend, whatever it takes.</span>
         </p>
         
         <div class="hero-stats">
           <div class="stat-item">
             <span class="stat-number">10</span>
-            <span class="stat-label">Años picando código</span>
+            <span class="stat-label"><span class="lang-es">Años picando código</span><span class="lang-en">Years coding</span></span>
           </div>
           <div class="stat-item">
             <span class="stat-number">15+</span>
-            <span class="stat-label">Proyectos shipped</span>
+            <span class="stat-label"><span class="lang-es">Proyectos shipped</span><span class="lang-en">Projects shipped</span></span>
           </div>
           <div class="stat-item">
             <span class="stat-number">∞</span>
-            <span class="stat-label">Tazas de café</span>
+            <span class="stat-label"><span class="lang-es">Tazas de café</span><span class="lang-en">Cups of coffee</span></span>
           </div>
         </div>
 
         <div class="hero-buttons">
           <a href="#experience" class="btn-primary">
-            <i class="fas fa-rocket"></i> Ver qué he hecho
+            <i class="fas fa-rocket"></i> <span class="lang-es">Ver qué he hecho</span><span class="lang-en">See my work</span>
           </a>
           <a href="#contact" class="btn-secondary">
-            <i class="fas fa-comment"></i> Hablemos
+            <i class="fas fa-comment"></i> <span class="lang-es">Hablemos</span><span class="lang-en">Let's talk</span>
           </a>
         </div>
       </div>
@@ -934,8 +939,8 @@
   <section id="about" class="section about-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Sobre Mí</h2>
-        <p class="section-subtitle">Un poco de mi historia y lo que me apasiona</p>
+        <h2 class="section-title"><span class="lang-es">Sobre Mí</span><span class="lang-en">About Me</span></h2>
+        <p class="section-subtitle"><span class="lang-es">Un poco de mi historia y lo que me apasiona</span><span class="lang-en">A bit about my story and what I'm passionate about</span></p>
       </div>
 
       <div class="about-container">
@@ -943,18 +948,24 @@
           <div class="about-intro">
             <h3>Hey, soy <span class="highlight">Oscar Martínez</span> 👋</h3>
             <p class="about-tagline">
-              <span class="code-tag">&lt;developer&gt;</span> construyendo software que importa <span class="code-tag">&lt;/developer&gt;</span>
+              <span class="code-tag">&lt;developer&gt;</span> <span class="lang-es">construyendo software que importa</span><span class="lang-en">building software that matters</span> <span class="code-tag">&lt;/developer&gt;</span>
             </p>
           </div>
 
           <div class="about-text">
-            <p>
+            <p class="lang-es">
               Siempre me ha gustado resolver problemas complejos. De chico consideré estudiar 
               astrofísica o matemáticas, pero cuando descubrí la programación en la prepa, 
               supe que era lo mío. Combina lógica, creatividad y la satisfacción de ver 
               algo funcionando.
             </p>
-            <p>
+            <p class="lang-en">
+              I've always loved solving complex problems. As a kid I considered studying 
+              astrophysics or mathematics, but when I discovered programming in high school, 
+              I knew it was my thing. It combines logic, creativity, and the satisfaction of 
+              seeing something work.
+            </p>
+            <p class="lang-es">
               Soy <strong>Ingeniero en Sistemas</strong> por la Universidad Politécnica de 
               Aguascalientes. Mi camino profesional me ha llevado por empresas como 
               <span class="company-highlight">ICMA</span>, <span class="company-highlight">FrontRunner</span>, 
@@ -963,31 +974,51 @@
               <span class="company-highlight">Truck Drivers</span> y <span class="company-highlight">PROAN</span>, 
               donde me especializo en arquitecturas de microservicios y desarrollo full-stack.
             </p>
+            <p class="lang-en">
+              I'm a <strong>Systems Engineer</strong> from Universidad Politécnica de 
+              Aguascalientes. My career has taken me through companies like 
+              <span class="company-highlight">ICMA</span>, <span class="company-highlight">FrontRunner</span>, 
+              <span class="company-highlight">Softtek</span>, <span class="company-highlight">DensityLabs</span>, 
+              <span class="company-highlight">MUBAI</span>, and currently at 
+              <span class="company-highlight">Truck Drivers</span> and <span class="company-highlight">PROAN</span>, 
+              where I specialize in microservices architecture and full-stack development.
+            </p>
           </div>
 
           <div class="about-love-section">
             <h4><i class="devicon-typescript-plain"></i> JavaScript & TypeScript <span class="heart">♥</span></h4>
-            <p>
+            <p class="lang-es">
               <strong>JavaScript y TypeScript son mi stack principal.</strong> Desde APIs robustas con 
               Node.js hasta interfaces reactivas con React — domino el ecosistema completo. 
               TypeScript me permite escribir código más seguro y mantenible a escala enterprise.
+            </p>
+            <p class="lang-en">
+              <strong>JavaScript and TypeScript are my main stack.</strong> From robust APIs with 
+              Node.js to reactive interfaces with React — I master the full ecosystem. 
+              TypeScript lets me write safer and more maintainable code at enterprise scale.
             </p>
           </div>
 
           <div class="about-love-section ai-section">
             <h4><i class="fas fa-robot"></i> AI-Augmented Developer <span class="ai-badge">🚀</span></h4>
-            <p>
+            <p class="lang-es">
               Integro <strong>Inteligencia Artificial en mi flujo de trabajo diario</strong> para 
               maximizar productividad y calidad. Desde pair programming con AI, generación de 
               tests automatizados, hasta optimización de código — aprovecho las herramientas 
               modernas para entregar soluciones más rápido sin sacrificar calidad.
+            </p>
+            <p class="lang-en">
+              I integrate <strong>Artificial Intelligence into my daily workflow</strong> to 
+              maximize productivity and quality. From AI pair programming, automated test 
+              generation, to code optimization — I leverage modern tools to deliver 
+              solutions faster without sacrificing quality.
             </p>
           </div>
 
           <div class="about-fun-facts">
             <div class="fun-fact">
               <span class="fun-fact-icon">📸</span>
-              <span>Fotografía y video como hobby creativo</span>
+              <span><span class="lang-es">Fotografía y video como hobby creativo</span><span class="lang-en">Photography and video as a creative hobby</span></span>
             </div>
             <div class="fun-fact">
               <span class="fun-fact-icon">🚀</span>
@@ -995,11 +1026,11 @@
             </div>
             <div class="fun-fact">
               <span class="fun-fact-icon">☕</span>
-              <span>Café + lo-fi = productividad</span>
+              <span><span class="lang-es">Café + lo-fi = productividad</span><span class="lang-en">Coffee + lo-fi = productivity</span></span>
             </div>
             <div class="fun-fact">
               <span class="fun-fact-icon">📚</span>
-              <span>Siempre leyendo algo técnico</span>
+              <span><span class="lang-es">Siempre leyendo algo técnico</span><span class="lang-en">Always reading something technical</span></span>
             </div>
           </div>
 
@@ -1018,7 +1049,7 @@
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">Blog</h2>
-        <p class="section-subtitle">Cosas que escribo cuando no estoy debuggeando</p>
+        <p class="section-subtitle"><span class="lang-es">Cosas que escribo cuando no estoy debuggeando</span><span class="lang-en">Stuff I write when I'm not debugging</span></p>
       </div>
 
       <div class="blog-list">
@@ -1030,8 +1061,8 @@
               <span class="blog-item-tag" style="background: #b388ff;">🧠 Deep Dive</span>
               11 Feb 2026
             </div>
-            <h3 class="blog-item-title">Cómo Construí un Agente de IA con Tool Calling</h3>
-            <p class="blog-item-excerpt">Arquitectura completa de un AI Coach: agentic loop, tool calling con 5 herramientas, OAuth PKCE con Claude, stealth headers y optimización de 39s a 8s</p>
+            <h3 class="blog-item-title"><span class="lang-es">Cómo Construí un Agente de IA con Tool Calling</span><span class="lang-en">How I Built an AI Agent with Tool Calling</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Arquitectura completa de un AI Coach: agentic loop, tool calling con 5 herramientas, OAuth PKCE con Claude, stealth headers y optimización de 39s a 8s</span><span class="lang-en">Complete AI Coach architecture: agentic loop, tool calling with 5 tools, OAuth PKCE with Claude, stealth headers, and 39s to 8s optimization</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>
@@ -1044,8 +1075,8 @@
               <span class="blog-item-tag" style="background: #ff6b6b;">🔴 En vivo</span>
               04 Feb 2026
             </div>
-            <h3 class="blog-item-title">10K Hours Tracker: El viaje hacia la maestría</h3>
-            <p class="blog-item-excerpt">Bitácora cronológica sobre el desarrollo de una app inspirada en la teoría de las 10,000 horas de Malcolm Gladwell</p>
+            <h3 class="blog-item-title"><span class="lang-es">10K Hours Tracker: El viaje hacia la maestría</span><span class="lang-en">10K Hours Tracker: The Journey to Mastery</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Bitácora cronológica sobre el desarrollo de una app inspirada en la teoría de las 10,000 horas de Malcolm Gladwell</span><span class="lang-en">Chronological devlog about building an app inspired by Malcolm Gladwell's 10,000 hours theory</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>
@@ -1057,8 +1088,8 @@
               <span class="blog-item-tag">Microservices</span>
               29 Jul 2020
             </div>
-            <h3 class="blog-item-title">Microservicios con Node.js y Spring Boot para Cryptomonedas</h3>
-            <p class="blog-item-excerpt">Arquitectura de tres microservicios conectando Java y JavaScript para consumir APIs de Bitso</p>
+            <h3 class="blog-item-title"><span class="lang-es">Microservicios con Node.js y Spring Boot para Cryptomonedas</span><span class="lang-en">Microservices with Node.js and Spring Boot for Cryptocurrencies</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Arquitectura de tres microservicios conectando Java y JavaScript para consumir APIs de Bitso</span><span class="lang-en">Three-microservice architecture connecting Java and JavaScript to consume Bitso APIs</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>
@@ -1070,8 +1101,8 @@
               <span class="blog-item-tag">Backend</span>
               14 Feb 2019
             </div>
-            <h3 class="blog-item-title">Node.js con ElasticSearch</h3>
-            <p class="blog-item-excerpt">Integrando el motor de búsqueda más potente con Node.js para búsquedas en tiempo real</p>
+            <h3 class="blog-item-title"><span class="lang-es">Node.js con ElasticSearch</span><span class="lang-en">Node.js with ElasticSearch</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Integrando el motor de búsqueda más potente con Node.js para búsquedas en tiempo real</span><span class="lang-en">Integrating the most powerful search engine with Node.js for real-time searches</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>
@@ -1083,8 +1114,8 @@
               <span class="blog-item-tag">Arquitectura</span>
               15 Jul 2018
             </div>
-            <h3 class="blog-item-title">El Arte de Construir Software (RESTFUL)</h3>
-            <p class="blog-item-excerpt">Patrones, buenas prácticas y la filosofía detrás de las APIs REST bien diseñadas</p>
+            <h3 class="blog-item-title"><span class="lang-es">El Arte de Construir Software (RESTFUL)</span><span class="lang-en">The Art of Building Software (RESTFUL)</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Patrones, buenas prácticas y la filosofía detrás de las APIs REST bien diseñadas</span><span class="lang-en">Patterns, best practices, and the philosophy behind well-designed REST APIs</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>
@@ -1096,8 +1127,8 @@
               <span class="blog-item-tag">Frontend</span>
               28 Apr 2018
             </div>
-            <h3 class="blog-item-title">React, el State, los Props y Todo lo Demás</h3>
-            <p class="blog-item-excerpt">Fundamentos de React: componentes, estado y el flujo de datos unidireccional</p>
+            <h3 class="blog-item-title"><span class="lang-es">React, el State, los Props y Todo lo Demás</span><span class="lang-en">React, State, Props, and Everything Else</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Fundamentos de React: componentes, estado y el flujo de datos unidireccional</span><span class="lang-en">React fundamentals: components, state, and the unidirectional data flow</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>
@@ -1109,8 +1140,8 @@
               <span class="blog-item-tag">Seguridad</span>
               10 Feb 2018
             </div>
-            <h3 class="blog-item-title">Mi Primer Algoritmo de Encriptado</h3>
-            <p class="blog-item-excerpt">Creando un algoritmo de encriptación desde cero — aprendiendo los fundamentos de la criptografía</p>
+            <h3 class="blog-item-title"><span class="lang-es">Mi Primer Algoritmo de Encriptado</span><span class="lang-en">My First Encryption Algorithm</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Creando un algoritmo de encriptación desde cero — aprendiendo los fundamentos de la criptografía</span><span class="lang-en">Building an encryption algorithm from scratch — learning the fundamentals of cryptography</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>
@@ -1123,7 +1154,7 @@
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">Tech Stack</h2>
-        <p class="section-subtitle">Tecnologías con las que trabajo día a día</p>
+        <p class="section-subtitle"><span class="lang-es">Tecnologías con las que trabajo día a día</span><span class="lang-en">Technologies I work with daily</span></p>
       </div>
 
       <div class="skills-container">
@@ -1220,8 +1251,8 @@
   <section id="experience" class="section experience-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Experiencia Laboral</h2>
-        <p class="section-subtitle">Mi trayectoria profesional</p>
+        <h2 class="section-title"><span class="lang-es">Experiencia Laboral</span><span class="lang-en">Work Experience</span></h2>
+        <p class="section-subtitle"><span class="lang-es">Mi trayectoria profesional</span><span class="lang-en">My professional journey</span></p>
       </div>
 
       <div class="timeline">
@@ -1234,19 +1265,20 @@
                 <span class="timeline-company">PROAN · Freelance</span>
                 <h3 class="timeline-role">Full Stack Developer</h3>
               </div>
-              <span class="timeline-date">May 2025 - Presente</span>
+              <span class="timeline-date"><span class="lang-es">May 2025 - Presente</span><span class="lang-en">May 2025 - Present</span></span>
             </div>
             <p class="timeline-project">🚛 SIGMOP - Yard Truck Management System</p>
             <p class="timeline-description">
-              <strong>Full-Stack Enterprise Solution</strong> — Sistema integral de gestión de flota que revoluciona las operaciones de camiones mediante automatización inteligente y tracking en tiempo real.
+              <span class="lang-es"><strong>Full-Stack Enterprise Solution</strong> — Sistema integral de gestión de flota que revoluciona las operaciones de camiones mediante automatización inteligente y tracking en tiempo real.</span>
+              <span class="lang-en"><strong>Full-Stack Enterprise Solution</strong> — Comprehensive fleet management system that revolutionizes truck operations through intelligent automation and real-time tracking.</span>
             </p>
             <ul class="timeline-highlights">
-              <li><strong>📊 80% de reducción</strong> en asignación manual de flota</li>
-              <li><strong>15+ APIs RESTful</strong> con lógica de negocio compleja</li>
-              <li><strong>🔄 Socket.io</strong> para comunicación bidireccional en tiempo real</li>
-              <li><strong>📱 App móvil Flutter</strong> cross-platform con BLoC state management</li>
-              <li><strong>🌐 IoT Samsara</strong> integración para tracking vehicular en vivo</li>
-              <li><strong>⚙️ Algoritmos inteligentes</strong> para optimización de asignaciones</li>
+              <li><span class="lang-es"><strong>📊 80% de reducción</strong> en asignación manual de flota</span><span class="lang-en"><strong>📊 80% reduction</strong> in manual fleet assignment</span></li>
+              <li><strong>15+ APIs RESTful</strong> <span class="lang-es">con lógica de negocio compleja</span><span class="lang-en">with complex business logic</span></li>
+              <li><strong>🔄 Socket.io</strong> <span class="lang-es">para comunicación bidireccional en tiempo real</span><span class="lang-en">for real-time bidirectional communication</span></li>
+              <li><span class="lang-es"><strong>📱 App móvil Flutter</strong> cross-platform con BLoC state management</span><span class="lang-en"><strong>📱 Flutter mobile app</strong> cross-platform with BLoC state management</span></li>
+              <li><strong>🌐 IoT Samsara</strong> <span class="lang-es">integración para tracking vehicular en vivo</span><span class="lang-en">integration for live vehicle tracking</span></li>
+              <li><span class="lang-es"><strong>⚙️ Algoritmos inteligentes</strong> para optimización de asignaciones</span><span class="lang-en"><strong>⚙️ Smart algorithms</strong> for assignment optimization</span></li>
             </ul>
             <div class="timeline-tech">
               <span class="tech-badge">Node.js</span>
@@ -1271,19 +1303,20 @@
                 <span class="timeline-company">Truck Drivers · Part-time</span>
                 <h3 class="timeline-role">Full Stack Developer</h3>
               </div>
-              <span class="timeline-date">Dic 2024 - Presente</span>
+              <span class="timeline-date"><span class="lang-es">Dic 2024 - Presente</span><span class="lang-en">Dec 2024 - Present</span></span>
             </div>
             <p class="timeline-project">📚 Enterprise Online Training Platform</p>
             <p class="timeline-description">
-              Plataforma de capacitación empresarial diseñada para optimizar el aprendizaje corporativo y gestionar el ciclo completo de formación profesional.
+              <span class="lang-es">Plataforma de capacitación empresarial diseñada para optimizar el aprendizaje corporativo y gestionar el ciclo completo de formación profesional.</span>
+              <span class="lang-en">Enterprise training platform designed to optimize corporate learning and manage the full professional development lifecycle.</span>
             </p>
             <ul class="timeline-highlights">
-              <li><strong>🔐 Autenticación JWT</strong> con sistema de roles y permisos multinivel</li>
-              <li><strong>📊 Dashboard personalizado</strong> con progreso en tiempo real por empleado</li>
-              <li><strong>📝 Motor de exámenes</strong> con múltiples tipos de preguntas y calificación automática</li>
-              <li><strong>📈 Panel administrativo</strong> con reportes analíticos y control de usuarios</li>
-              <li><strong>🔄 Feedback instantáneo</strong> para optimizar la experiencia de aprendizaje</li>
-              <li><strong>💾 PostgreSQL</strong> con sistema de backups automáticos</li>
+              <li><strong>🔐 <span class="lang-es">Autenticación</span><span class="lang-en">Authentication</span> JWT</strong> <span class="lang-es">con sistema de roles y permisos multinivel</span><span class="lang-en">with multi-level roles and permissions system</span></li>
+              <li><strong>📊 Dashboard <span class="lang-es">personalizado</span><span class="lang-en">personalized</span></strong> <span class="lang-es">con progreso en tiempo real por empleado</span><span class="lang-en">with real-time progress per employee</span></li>
+              <li><strong>📝 <span class="lang-es">Motor de exámenes</span><span class="lang-en">Exam engine</span></strong> <span class="lang-es">con múltiples tipos de preguntas y calificación automática</span><span class="lang-en">with multiple question types and automatic grading</span></li>
+              <li><strong>📈 <span class="lang-es">Panel administrativo</span><span class="lang-en">Admin panel</span></strong> <span class="lang-es">con reportes analíticos y control de usuarios</span><span class="lang-en">with analytics reports and user management</span></li>
+              <li><strong>🔄 Feedback <span class="lang-es">instantáneo</span><span class="lang-en">instant</span></strong> <span class="lang-es">para optimizar la experiencia de aprendizaje</span><span class="lang-en">to optimize the learning experience</span></li>
+              <li><strong>💾 PostgreSQL</strong> <span class="lang-es">con sistema de backups automáticos</span><span class="lang-en">with automatic backup system</span></li>
             </ul>
             <div class="timeline-tech">
               <span class="tech-badge">Node.js</span>
@@ -1313,14 +1346,15 @@
             </div>
             <p class="timeline-project">🧠 SOUL GATE System</p>
             <p class="timeline-description">
-              Implementación del sistema SOUL GATE en versiones <strong>web y móvil (Android/iOS)</strong>, trabajando en equipo con desarrolladores Full Stack e ingenieros de IA para integrar modelos analíticos de forma modular.
+              <span class="lang-es">Implementación del sistema SOUL GATE en versiones <strong>web y móvil (Android/iOS)</strong>, trabajando en equipo con desarrolladores Full Stack e ingenieros de IA para integrar modelos analíticos de forma modular.</span>
+              <span class="lang-en">Implementation of the SOUL GATE system in <strong>web and mobile (Android/iOS)</strong> versions, collaborating with Full Stack developers and AI engineers to integrate analytical models in a modular architecture.</span>
             </p>
             <ul class="timeline-highlights">
-              <li><strong>🤖 Integración de IA</strong> — Modelos analíticos y algoritmos de machine learning</li>
-              <li><strong>📱 Despliegue multiplataforma</strong> — Web + Android + iOS con testing exhaustivo</li>
-              <li><strong>📖 Documentación Swagger</strong> y manual técnico completo del sistema</li>
-              <li><strong>⚡ Optimización</strong> — Rendimiento, seguridad y escalabilidad</li>
-              <li><strong>🤝 Capacitación</strong> — Training al equipo para continuidad operacional</li>
+              <li><strong>🤖 <span class="lang-es">Integración de IA</span><span class="lang-en">AI Integration</span></strong> — <span class="lang-es">Modelos analíticos y algoritmos de machine learning</span><span class="lang-en">Analytical models and machine learning algorithms</span></li>
+              <li><strong>📱 <span class="lang-es">Despliegue multiplataforma</span><span class="lang-en">Cross-platform deployment</span></strong> — Web + Android + iOS <span class="lang-es">con testing exhaustivo</span><span class="lang-en">with comprehensive testing</span></li>
+              <li><strong>📖 <span class="lang-es">Documentación</span><span class="lang-en">Documentation</span> Swagger</strong> <span class="lang-es">y manual técnico completo del sistema</span><span class="lang-en">and complete system technical manual</span></li>
+              <li><strong>⚡ <span class="lang-es">Optimización</span><span class="lang-en">Optimization</span></strong> — <span class="lang-es">Rendimiento, seguridad y escalabilidad</span><span class="lang-en">Performance, security and scalability</span></li>
+              <li><strong>🤝 <span class="lang-es">Capacitación</span><span class="lang-en">Training</span></strong> — <span class="lang-es">Training al equipo para continuidad operacional</span><span class="lang-en">Team training for operational continuity</span></li>
             </ul>
             <div class="timeline-tech">
               <span class="tech-badge">Node.js</span>
@@ -1343,19 +1377,20 @@
                 <span class="timeline-company">DensityLabs · Full-time</span>
                 <h3 class="timeline-role">Full Stack Engineer</h3>
               </div>
-              <span class="timeline-date">Sep 2020 - Ago 2024 · 4 años</span>
+              <span class="timeline-date"><span class="lang-es">Sep 2020 - Ago 2024 · 4 años</span><span class="lang-en">Sep 2020 - Aug 2024 · 4 years</span></span>
             </div>
             <p class="timeline-project">🏠 Remine - Real Estate Platform</p>
             <p class="timeline-description">
-              Plataforma inmobiliaria con listados interactivos, visualización de mapas, y herramientas avanzadas para agentes inmobiliarios.
+              <span class="lang-es">Plataforma inmobiliaria con listados interactivos, visualización de mapas, y herramientas avanzadas para agentes inmobiliarios.</span>
+              <span class="lang-en">Real estate platform with interactive listings, map visualization, and advanced tools for real estate agents.</span>
             </p>
             <ul class="timeline-highlights">
-              <li><strong>🔍 Elasticsearch</strong> — Búsqueda en tiempo real de propiedades optimizada</li>
-              <li><strong>💳 Stripe API</strong> — Procesamiento de pagos y suscripciones de agentes</li>
-              <li><strong>🔧 Node.js + Koa</strong> — Resolución de issues en endpoints API</li>
-              <li><strong>🏗️ Microservicios</strong> — Coordinación e integración de múltiples servicios</li>
-              <li><strong>⚛️ React + Redux</strong> — Desarrollo de componentes y gestión de estado</li>
-              <li><strong>🧪 Testing completo</strong> — Cypress, Jest, Mocha + stress testing</li>
+              <li><strong>🔍 Elasticsearch</strong> — <span class="lang-es">Búsqueda en tiempo real de propiedades optimizada</span><span class="lang-en">Optimized real-time property search</span></li>
+              <li><strong>💳 Stripe API</strong> — <span class="lang-es">Procesamiento de pagos y suscripciones de agentes</span><span class="lang-en">Payment processing and agent subscriptions</span></li>
+              <li><strong>🔧 Node.js + Koa</strong> — <span class="lang-es">Resolución de issues en endpoints API</span><span class="lang-en">API endpoint issue resolution</span></li>
+              <li><strong>🏗️ <span class="lang-es">Microservicios</span><span class="lang-en">Microservices</span></strong> — <span class="lang-es">Coordinación e integración de múltiples servicios</span><span class="lang-en">Coordination and integration of multiple services</span></li>
+              <li><strong>⚛️ React + Redux</strong> — <span class="lang-es">Desarrollo de componentes y gestión de estado</span><span class="lang-en">Component development and state management</span></li>
+              <li><strong>🧪 Testing <span class="lang-es">completo</span><span class="lang-en">complete</span></strong> — Cypress, Jest, Mocha + stress testing</li>
             </ul>
             <div class="timeline-tech">
               <span class="tech-badge">Node.js</span>
@@ -1381,18 +1416,19 @@
                 <span class="timeline-company">Softtek</span>
                 <h3 class="timeline-role">Software Developer</h3>
               </div>
-              <span class="timeline-date">Oct 2019 - Sep 2020 · 1 año</span>
+              <span class="timeline-date"><span class="lang-es">Oct 2019 - Sep 2020 · 1 año</span><span class="lang-en">Oct 2019 - Sep 2020 · 1 year</span></span>
             </div>
             <p class="timeline-project">☁️ Enterprise APIs & Microservices</p>
             <p class="timeline-description">
-              Especializado en construcción de APIs y microservicios con tecnologías enterprise de nivel corporativo.
+              <span class="lang-es">Especializado en construcción de APIs y microservicios con tecnologías enterprise de nivel corporativo.</span>
+              <span class="lang-en">Specialized in building APIs and microservices with enterprise-level corporate technologies.</span>
             </p>
             <ul class="timeline-highlights">
-              <li><strong>🔗 MuleSoft</strong> — Integración de aplicaciones y datos empresariales</li>
-              <li><strong>☁️ Spring Cloud</strong> — Desarrollo de aplicaciones cloud-native</li>
-              <li><strong>🐳 Docker + K8s</strong> — Containerización y orquestación a escala</li>
-              <li><strong>📨 Apache Kafka</strong> — Streaming de datos en tiempo real</li>
-              <li><strong>🌐 Netflix OSS</strong> — Eureka + Zuul para service discovery y routing</li>
+              <li><strong>🔗 MuleSoft</strong> — <span class="lang-es">Integración de aplicaciones y datos empresariales</span><span class="lang-en">Enterprise application and data integration</span></li>
+              <li><strong>☁️ Spring Cloud</strong> — <span class="lang-es">Desarrollo de aplicaciones cloud-native</span><span class="lang-en">Cloud-native application development</span></li>
+              <li><strong>🐳 Docker + K8s</strong> — <span class="lang-es">Containerización y orquestación a escala</span><span class="lang-en">Containerization and orchestration at scale</span></li>
+              <li><strong>📨 Apache Kafka</strong> — <span class="lang-es">Streaming de datos en tiempo real</span><span class="lang-en">Real-time data streaming</span></li>
+              <li><strong>🌐 Netflix OSS</strong> — Eureka + Zuul <span class="lang-es">para service discovery y routing</span><span class="lang-en">for service discovery and routing</span></li>
             </ul>
             <div class="timeline-tech">
               <span class="tech-badge">Spring Boot</span>
@@ -1417,19 +1453,20 @@
                 <span class="timeline-company">FrontRunner Technologies</span>
                 <h3 class="timeline-role">Full Stack Developer</h3>
               </div>
-              <span class="timeline-date">Abr 2018 - Oct 2019 · 1.5 años</span>
+              <span class="timeline-date"><span class="lang-es">Abr 2018 - Oct 2019 · 1.5 años</span><span class="lang-en">Apr 2018 - Oct 2019 · 1.5 years</span></span>
             </div>
             <p class="timeline-project">✈️ PartsBase - Aviation Parts Marketplace</p>
             <p class="timeline-description">
-              Marketplace líder de partes de aviación con búsqueda en tiempo real e interfaz intuitiva para compradores y vendedores del sector aeronáutico.
+              <span class="lang-es">Marketplace líder de partes de aviación con búsqueda en tiempo real e interfaz intuitiva para compradores y vendedores del sector aeronáutico.</span>
+              <span class="lang-en">Leading aviation parts marketplace with real-time search and intuitive interface for buyers and sellers in the aeronautics sector.</span>
             </p>
             <ul class="timeline-highlights">
-              <li><strong>⚛️ React + Redux</strong> — Desarrollo de interfaces dinámicas con Material-UI</li>
-              <li><strong>🔍 Elasticsearch</strong> — Búsqueda en tiempo real de inventario de partes</li>
-              <li><strong>🔌 WebSocket</strong> — Quick RFQ con actualizaciones en vivo</li>
-              <li><strong>🖥️ .NET REST APIs</strong> — Integración backend robusta</li>
-              <li><strong>🧪 Enzyme + Jest</strong> — Testing unitario y de componentes</li>
-              <li><strong>📱 Responsive Design</strong> — Experiencia optimizada para todos los dispositivos</li>
+              <li><strong>⚛️ React + Redux</strong> — <span class="lang-es">Desarrollo de interfaces dinámicas con Material-UI</span><span class="lang-en">Dynamic interface development with Material-UI</span></li>
+              <li><strong>🔍 Elasticsearch</strong> — <span class="lang-es">Búsqueda en tiempo real de inventario de partes</span><span class="lang-en">Real-time parts inventory search</span></li>
+              <li><strong>🔌 WebSocket</strong> — Quick RFQ <span class="lang-es">con actualizaciones en vivo</span><span class="lang-en">with live updates</span></li>
+              <li><strong>🖥️ .NET REST APIs</strong> — <span class="lang-es">Integración backend robusta</span><span class="lang-en">Robust backend integration</span></li>
+              <li><strong>🧪 Enzyme + Jest</strong> — <span class="lang-es">Testing unitario y de componentes</span><span class="lang-en">Unit and component testing</span></li>
+              <li><strong>📱 Responsive Design</strong> — <span class="lang-es">Experiencia optimizada para todos los dispositivos</span><span class="lang-en">Optimized experience for all devices</span></li>
             </ul>
             <div class="timeline-tech">
               <span class="tech-badge">React</span>
@@ -1452,23 +1489,23 @@
   <section id="contact" class="section contact-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Contáctame</h2>
-        <p class="section-subtitle">¿Tienes un proyecto en mente? ¡Hablemos!</p>
+        <h2 class="section-title"><span class="lang-es">Contáctame</span><span class="lang-en">Contact Me</span></h2>
+        <p class="section-subtitle"><span class="lang-es">¿Tienes un proyecto en mente? ¡Hablemos!</span><span class="lang-en">Have a project in mind? Let's talk!</span></p>
       </div>
 
       <div class="contact-container">
         <form class="contact-form" id="contactForm">
           <div class="input-field">
-            <input type="text" placeholder="Tu nombre" name="nombre" required>
+            <input type="text" placeholder="Tu nombre" data-placeholder-en="Your name" name="nombre" required>
           </div>
           <div class="input-field">
-            <input type="email" placeholder="Tu email" name="email" required>
+            <input type="email" placeholder="Tu email" data-placeholder-en="Your email" name="email" required>
           </div>
           <div class="input-field">
-            <textarea placeholder="Tu mensaje" name="mensaje" rows="5" required style="resize: vertical; min-height: 120px;"></textarea>
+            <textarea placeholder="Tu mensaje" data-placeholder-en="Your message" name="mensaje" rows="5" required style="resize: vertical; min-height: 120px;"></textarea>
           </div>
           <button type="submit" class="btn-submit">
-            <i class="fas fa-paper-plane"></i> Enviar mensaje
+            <i class="fas fa-paper-plane"></i> <span class="lang-es">Enviar mensaje</span><span class="lang-en">Send message</span>
           </button>
         </form>
       </div>
@@ -1482,7 +1519,7 @@
       <a href="https://www.linkedin.com/in/oscarmtzmtz/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
       <a href="mailto:oscar.martinez.mtz.97@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
     </div>
-    <p>© 2026 Oscar Code — Hecho con ☕ y código</p>
+    <p><span class="lang-es">© 2026 Oscar Code — Hecho con ☕ y código</span><span class="lang-en">© 2026 Oscar Code — Made with ☕ and code</span></p>
   </footer>
 
   <!-- SCRIPTS -->
@@ -1510,7 +1547,7 @@
       // Contact form submission
       document.getElementById('contactForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        M.toast({html: '¡Gracias por tu mensaje! Te responderé pronto 🚀', classes: 'rounded'});
+        M.toast({html: document.documentElement.lang === 'en' ? 'Thanks for your message! I\'ll get back to you soon 🚀' : '¡Gracias por tu mensaje! Te responderé pronto 🚀', classes: 'rounded'});
         this.reset();
       });
 

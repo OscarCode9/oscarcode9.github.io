@@ -1,0 +1,87 @@
+// public/i18n.js — Bilingual support (ES/EN)
+(function() {
+  // Set language IMMEDIATELY before rendering to avoid flicker
+  var savedLang = localStorage.getItem('site-lang') || 'es';
+  document.documentElement.lang = savedLang;
+
+  // Inject CSS for language switching
+  var style = document.createElement('style');
+  style.id = 'i18n-styles';
+  style.textContent = [
+    '/* Hide English by default */',
+    '.lang-en { display: none !important; }',
+    '',
+    '/* When lang="en", swap visibility */',
+    'html[lang="en"] .lang-es { display: none !important; }',
+    'html[lang="en"] .lang-en { display: revert !important; }',
+    '',
+    '/* Language toggle button */',
+    '.lang-toggle {',
+    '  cursor: pointer;',
+    '  background: rgba(38, 166, 154, 0.15);',
+    '  border: 1px solid rgba(38, 166, 154, 0.4);',
+    '  color: #26a69a;',
+    '  padding: 4px 14px;',
+    '  border-radius: 20px;',
+    '  font-size: 0.85em;',
+    '  font-weight: 600;',
+    '  letter-spacing: 0.5px;',
+    '  transition: all 0.3s;',
+    '  display: inline-flex;',
+    '  align-items: center;',
+    '  gap: 6px;',
+    '  user-select: none;',
+    '  text-decoration: none !important;',
+    '}',
+    '.lang-toggle:hover {',
+    '  background: rgba(38, 166, 154, 0.3);',
+    '  border-color: #26a69a;',
+    '  color: #80cbc4;',
+    '}',
+  ].join('\n');
+  document.head.appendChild(style);
+
+  // Toggle language
+  window.toggleLanguage = function() {
+    var newLang = document.documentElement.lang === 'es' ? 'en' : 'es';
+    document.documentElement.lang = newLang;
+    localStorage.setItem('site-lang', newLang);
+    updateToggles();
+    updatePlaceholders();
+  };
+
+  function updateToggles() {
+    var lang = document.documentElement.lang;
+    var toggles = document.querySelectorAll('.lang-toggle');
+    for (var i = 0; i < toggles.length; i++) {
+      toggles[i].textContent = lang === 'es' ? '🌐 EN' : '🌐 ES';
+      toggles[i].title = lang === 'es' ? 'Switch to English' : 'Cambiar a Español';
+    }
+  }
+
+  // Swap form placeholders based on language
+  function updatePlaceholders() {
+    var lang = document.documentElement.lang;
+    var els = document.querySelectorAll('[data-placeholder-en]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (!el.getAttribute('data-placeholder-es')) {
+        el.setAttribute('data-placeholder-es', el.getAttribute('placeholder'));
+      }
+      el.setAttribute('placeholder', lang === 'en' 
+        ? el.getAttribute('data-placeholder-en') 
+        : el.getAttribute('data-placeholder-es'));
+    }
+  }
+
+  // Update toggles and placeholders when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      updateToggles();
+      if (savedLang !== 'es') updatePlaceholders();
+    });
+  } else {
+    updateToggles();
+    if (savedLang !== 'es') updatePlaceholders();
+  }
+})();

@@ -438,6 +438,7 @@
       .post-content h2 { font-size: 1.4em; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 <body>
 
@@ -445,19 +446,20 @@
   <header class="post-header">
     <div class="container">
       <a href="index.html" class="back-link">
-        <i class="fas fa-arrow-left"></i> Volver al inicio
+        <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <h1 class="post-title">Cómo Construí un Agente de IA con Tool Calling</h1>
-      <p class="post-subtitle">Arquitectura completa de un AI Coach con Claude, OAuth PKCE y herramientas en producción</p>
+      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+      <h1 class="post-title"><span class="lang-es">Cómo Construí un Agente de IA con Tool Calling</span><span class="lang-en">How I Built an AI Agent with Tool Calling</span></h1>
+      <p class="post-subtitle"><span class="lang-es">Arquitectura completa de un AI Coach con Claude, OAuth PKCE y herramientas en producción</span><span class="lang-en">Complete AI Coach architecture with Claude, OAuth PKCE and production tools</span></p>
       <div class="post-meta">
-        <span class="post-tag ai">IA / Agentes</span>
+        <span class="post-tag ai"><span class="lang-es">IA / Agentes</span><span class="lang-en">AI / Agents</span></span>
         <span class="post-tag backend">Backend</span>
         <span class="post-tag security">OAuth</span>
         <span class="post-tag">Tool Calling</span>
         <br><br>
-        <i class="far fa-clock"></i> 11 de febrero de 2026 &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> <span class="lang-es">11 de febrero de 2026</span><span class="lang-en">February 11, 2026</span> &nbsp;|&nbsp;
         <i class="far fa-user"></i> Oscar Martínez &nbsp;|&nbsp;
-        <i class="far fa-clock"></i> ~20 min de lectura
+        <i class="far fa-clock"></i> <span class="lang-es">~20 min de lectura</span><span class="lang-en">~20 min read</span>
       </div>
     </div>
   </header>
@@ -468,34 +470,41 @@
 
       <!-- INTRO -->
       <div class="callout info">
-        <p><strong>TL;DR:</strong> Construí un agente de IA para <a href="https://tenk.oventlabs.com">TenK</a> (app de 10,000 horas) que analiza tus datos de práctica y te da coaching personalizado. Usa <strong>tool calling</strong> con 5 herramientas, <strong>OAuth PKCE</strong> para que cada usuario conecte su cuenta de Claude, y un <strong>agentic loop</strong> de hasta 5 iteraciones. Este post explica cómo funciona todo bajo el capó.</p>
+        <p class="lang-es"><strong>TL;DR:</strong> Construí un agente de IA para <a href="https://tenk.oventlabs.com">TenK</a> (app de 10,000 horas) que analiza tus datos de práctica y te da coaching personalizado. Usa <strong>tool calling</strong> con 5 herramientas, <strong>OAuth PKCE</strong> para que cada usuario conecte su cuenta de Claude, y un <strong>agentic loop</strong> de hasta 5 iteraciones. Este post explica cómo funciona todo bajo el capó.</p>
+        <p class="lang-en"><strong>TL;DR:</strong> I built an AI agent for <a href="https://tenk.oventlabs.com">TenK</a> (10,000 hours app) that analyzes your practice data and gives you personalized coaching. It uses <strong>tool calling</strong> with 5 tools, <strong>OAuth PKCE</strong> so each user connects their Claude account, and an <strong>agentic loop</strong> of up to 5 iterations. This post explains how it all works under the hood.</p>
       </div>
 
       <!-- ==================== SECCIÓN 1 ==================== -->
-      <h2><span class="section-number">1</span> ¿Qué es un Agente de IA?</h2>
+      <h2><span class="section-number">1</span> <span class="lang-es">¿Qué es un Agente de IA?</span><span class="lang-en">What is an AI Agent?</span></h2>
 
-      <p>Un agente de IA <strong>no es un chatbot</strong>. La diferencia fundamental es que un chatbot solo responde preguntas con su conocimiento general, mientras que un agente puede <strong>tomar acciones</strong> y <strong>consultar datos en tiempo real</strong> para resolver un problema.</p>
+      <p class="lang-es">Un agente de IA <strong>no es un chatbot</strong>. La diferencia fundamental es que un chatbot solo responde preguntas con su conocimiento general, mientras que un agente puede <strong>tomar acciones</strong> y <strong>consultar datos en tiempo real</strong> para resolver un problema.</p>
+      <p class="lang-en">An AI agent <strong>is not a chatbot</strong>. The fundamental difference is that a chatbot only answers questions with its general knowledge, while an agent can <strong>take actions</strong> and <strong>query real-time data</strong> to solve a problem.</p>
 
-      <p>Pensemos en una analogía simple:</p>
+      <p class="lang-es">Pensemos en una analogía simple:</p>
+      <p class="lang-en">Let's think of a simple analogy:</p>
 
       <div class="comparison">
         <div class="comparison-box bad">
           <h4>🤖 Chatbot</h4>
-          <p>Le preguntas "¿cuántas horas practiqué esta semana?" y responde <em>"No tengo acceso a tus datos"</em> o inventa algo.</p>
+          <p class="lang-es">Le preguntas "¿cuántas horas practiqué esta semana?" y responde <em>"No tengo acceso a tus datos"</em> o inventa algo.</p>
+          <p class="lang-en">You ask "how many hours did I practice this week?" and it replies <em>"I don't have access to your data"</em> or makes something up.</p>
         </div>
         <div class="comparison-box good">
-          <h4>🧠 Agente</h4>
-          <p>Recibe la pregunta, <strong>decide</strong> que necesita consultar tu historial, <strong>ejecuta</strong> la consulta a la base de datos, <strong>analiza</strong> los resultados y responde con datos reales.</p>
+          <h4>🧠 <span class="lang-es">Agente</span><span class="lang-en">Agent</span></h4>
+          <p class="lang-es">Recibe la pregunta, <strong>decide</strong> que necesita consultar tu historial, <strong>ejecuta</strong> la consulta a la base de datos, <strong>analiza</strong> los resultados y responde con datos reales.</p>
+          <p class="lang-en">Receives the question, <strong>decides</strong> it needs to check your history, <strong>executes</strong> the database query, <strong>analyzes</strong> the results, and responds with real data.</p>
         </div>
       </div>
 
-      <p>El agente tiene <strong>autonomía para decidir qué herramientas usar y en qué orden</strong>, similar a como un desarrollador decide qué queries ejecutar para resolver un ticket. No hay un flujo hardcodeado — el modelo razona en cada paso.</p>
+      <p class="lang-es">El agente tiene <strong>autonomía para decidir qué herramientas usar y en qué orden</strong>, similar a como un desarrollador decide qué queries ejecutar para resolver un ticket. No hay un flujo hardcodeado — el modelo razona en cada paso.</p>
+      <p class="lang-en">The agent has <strong>autonomy to decide which tools to use and in what order</strong>, similar to how a developer decides which queries to run to resolve a ticket. There's no hardcoded flow — the model reasons at each step.</p>
 
 
       <!-- ==================== SECCIÓN 2 ==================== -->
-      <h2><span class="section-number">2</span> El Agentic Loop: El Corazón del Sistema</h2>
+      <h2><span class="section-number">2</span> <span class="lang-es">El Agentic Loop: El Corazón del Sistema</span><span class="lang-en">The Agentic Loop: The Heart of the System</span></h2>
 
-      <p>El patrón central es un <strong>loop de razonamiento-acción</strong> (conocido como ReAct pattern). Veamos un ejemplo real de cómo funciona en TenK:</p>
+      <p class="lang-es">El patrón central es un <strong>loop de razonamiento-acción</strong> (conocido como ReAct pattern). Veamos un ejemplo real de cómo funciona en TenK:</p>
+      <p class="lang-en">The core pattern is a <strong>reasoning-action loop</strong> (known as the ReAct pattern). Let's see a real example of how it works in TenK:</p>
 
       <div class="diagram">
         <pre><code>Usuario: "¿Cómo voy con mi práctica de guitarra?"
@@ -518,20 +527,23 @@
 → Iteración 4:
   Claude PIENSA: "Ya tengo toda la info, puedo responder"
   Claude RESPONDE: "Llevas 127h de guitarra, nivel Aprendiz, racha de 5 días..."</code></pre>
-        <p class="diagram-caption">Flujo real del agente: 4 iteraciones de razonamiento-acción</p>
+        <p class="diagram-caption"><span class="lang-es">Flujo real del agente: 4 iteraciones de razonamiento-acción</span><span class="lang-en">Real agent flow: 4 reasoning-action iterations</span></p>
       </div>
 
-      <p>Lo clave: <strong>Claude decide en cada iteración</strong> si necesita más datos o si ya puede responder. El modelo razona sobre qué herramientas usar según la pregunta del usuario.</p>
+      <p class="lang-es">Lo clave: <strong>Claude decide en cada iteración</strong> si necesita más datos o si ya puede responder. El modelo razona sobre qué herramientas usar según la pregunta del usuario.</p>
+      <p class="lang-en">The key: <strong>Claude decides in each iteration</strong> whether it needs more data or can already respond. The model reasons about which tools to use based on the user's question.</p>
 
 
       <!-- ==================== SECCIÓN 3 ==================== -->
-      <h2><span class="section-number">3</span> Tool Calling: Cómo el LLM Ejecuta Funciones</h2>
+      <h2><span class="section-number">3</span> <span class="lang-es">Tool Calling: Cómo el LLM Ejecuta Funciones</span><span class="lang-en">Tool Calling: How the LLM Executes Functions</span></h2>
 
-      <p>El tool calling es el mecanismo que permite al LLM <strong>invocar funciones definidas por nosotros</strong>. Funciona en 3 pasos:</p>
+      <p class="lang-es">El tool calling es el mecanismo que permite al LLM <strong>invocar funciones definidas por nosotros</strong>. Funciona en 3 pasos:</p>
+      <p class="lang-en">Tool calling is the mechanism that allows the LLM to <strong>invoke functions we define</strong>. It works in 3 steps:</p>
 
-      <h3>Paso 1: Definición de Tools (JSON Schema)</h3>
+      <h3><span class="lang-es">Paso 1: Definición de Tools (JSON Schema)</span><span class="lang-en">Step 1: Tool Definition (JSON Schema)</span></h3>
 
-      <p>Le decimos al modelo qué herramientas tiene disponibles. El modelo <strong>nunca ejecuta código</strong> — solo emite un JSON estructurado indicando qué función quiere llamar:</p>
+      <p class="lang-es">Le decimos al modelo qué herramientas tiene disponibles. El modelo <strong>nunca ejecuta código</strong> — solo emite un JSON estructurado indicando qué función quiere llamar:</p>
+      <p class="lang-en">We tell the model which tools are available. The model <strong>never executes code</strong> — it only emits a structured JSON indicating which function it wants to call:</p>
 
       <pre><code>{
   "name": "get_practice_sessions",
@@ -546,9 +558,10 @@
   }
 }</code></pre>
 
-      <h3>Paso 2: Ejecución en el Backend (Tool Executor)</h3>
+      <h3><span class="lang-es">Paso 2: Ejecución en el Backend (Tool Executor)</span><span class="lang-en">Step 2: Backend Execution (Tool Executor)</span></h3>
 
-      <p>Nuestro backend recibe la petición del modelo, valida los parámetros y ejecuta la query real contra PostgreSQL. Usamos un patrón <code>TOOL_MAP</code> que mapea nombres de herramientas a funciones importadas, envolviendo todo en try/catch con resultados tipados:</p>
+      <p class="lang-es">Nuestro backend recibe la petición del modelo, valida los parámetros y ejecuta la query real contra PostgreSQL. Usamos un patrón <code>TOOL_MAP</code> que mapea nombres de herramientas a funciones importadas, envolviendo todo en try/catch con resultados tipados:</p>
+      <p class="lang-en">Our backend receives the model's request, validates the parameters, and executes the real query against PostgreSQL. We use a <code>TOOL_MAP</code> pattern that maps tool names to imported functions, wrapping everything in try/catch with typed results:</p>
 
       <pre><code>// tool-executor.ts — Implementación real
 import { getUserSkills } from '../tools/query-skills.tool';
@@ -579,21 +592,25 @@ export async function executeTool(
   }
 }</code></pre>
 
-      <p>El tipo <code>TAgentToolResult</code> estandariza la respuesta: <code>{ success: boolean, data: unknown, error?: string }</code>. Esto evita que un error en una herramienta crashee todo el loop — el agente recibe el error como dato y puede decidir qué hacer (reintentar, usar otra herramienta, o avisar al usuario).</p>
+      <p class="lang-es">El tipo <code>TAgentToolResult</code> estandariza la respuesta: <code>{ success: boolean, data: unknown, error?: string }</code>. Esto evita que un error en una herramienta crashee todo el loop — el agente recibe el error como dato y puede decidir qué hacer (reintentar, usar otra herramienta, o avisar al usuario).</p>
+      <p class="lang-en">The <code>TAgentToolResult</code> type standardizes the response: <code>{ success: boolean, data: unknown, error?: string }</code>. This prevents an error in a tool from crashing the entire loop — the agent receives the error as data and can decide what to do (retry, use another tool, or notify the user).</p>
 
       <div class="callout warning">
-        <p><strong>⚠️ Nota de seguridad:</strong> Siempre filtramos por <code>userId</code> extraído del JWT — <strong>nunca del input del modelo</strong>. Esto previene ataques de prompt injection donde un usuario intente acceder a datos ajenos.</p>
+        <p class="lang-es"><strong>⚠️ Nota de seguridad:</strong> Siempre filtramos por <code>userId</code> extraído del JWT — <strong>nunca del input del modelo</strong>. Esto previene ataques de prompt injection donde un usuario intente acceder a datos ajenos.</p>
+        <p class="lang-en"><strong>⚠️ Security note:</strong> We always filter by <code>userId</code> extracted from the JWT — <strong>never from the model's input</strong>. This prevents prompt injection attacks where a user might try to access other users' data.</p>
       </div>
 
-      <h3>Paso 3: Respuesta al Modelo</h3>
+      <h3><span class="lang-es">Paso 3: Respuesta al Modelo</span><span class="lang-en">Step 3: Response to the Model</span></h3>
 
-      <p>El resultado de la función se inyecta como un mensaje <code>tool_result</code> en la conversación y el modelo continúa razonando con los datos reales.</p>
+      <p class="lang-es">El resultado de la función se inyecta como un mensaje <code>tool_result</code> en la conversación y el modelo continúa razonando con los datos reales.</p>
+      <p class="lang-en">The function result is injected as a <code>tool_result</code> message in the conversation and the model continues reasoning with the real data.</p>
 
 
       <!-- ==================== SECCIÓN 4 ==================== -->
-      <h2><span class="section-number">4</span> Arquitectura del Agent Runner</h2>
+      <h2><span class="section-number">4</span> <span class="lang-es">Arquitectura del Agent Runner</span><span class="lang-en">Agent Runner Architecture</span></h2>
 
-      <p>El <code>agent-runner.ts</code> es el orquestador central. Su responsabilidad es manejar el loop de iteraciones:</p>
+      <p class="lang-es">El <code>agent-runner.ts</code> es el orquestador central. Su responsabilidad es manejar el loop de iteraciones:</p>
+      <p class="lang-en"><code>agent-runner.ts</code> is the central orchestrator. Its responsibility is to manage the iteration loop:</p>
 
       <div class="diagram">
         <pre><code>┌──────────────────────────────────────────────────┐
@@ -612,10 +629,11 @@ export async function executeTool(
 │  Si no hay tool_calls → return response           │
 │  Si iteraciones > 5  → force return               │
 └──────────────────────────────────────────────────┘</code></pre>
-        <p class="diagram-caption">Arquitectura del Agent Runner con loop de máximo 5 iteraciones</p>
+        <p class="diagram-caption"><span class="lang-es">Arquitectura del Agent Runner con loop de máximo 5 iteraciones</span><span class="lang-en">Agent Runner architecture with max 5 iteration loop</span></p>
       </div>
 
-      <p>La implementación real en TypeScript. Nota los detalles que no aparecen en tutoriales: <code>Promise.race</code> para timeout global, tracking de tokens consumidos, y una llamada final SIN herramientas cuando se alcanza el límite de iteraciones para forzar una respuesta de texto:</p>
+      <p class="lang-es">La implementación real en TypeScript. Nota los detalles que no aparecen en tutoriales: <code>Promise.race</code> para timeout global, tracking de tokens consumidos, y una llamada final SIN herramientas cuando se alcanza el límite de iteraciones para forzar una respuesta de texto:</p>
+      <p class="lang-en">The real TypeScript implementation. Note the details you won't find in tutorials: <code>Promise.race</code> for global timeout, token usage tracking, and a final call WITHOUT tools when the iteration limit is reached to force a text response:</p>
 
       <pre><code>// agent-runner.ts — Implementación real con timeout y tracking
 const MAX_TOOL_ITERATIONS = 5;
@@ -687,14 +705,16 @@ async function runAgentLoop(userId: string, messages: IChatMessage[]) {
 }</code></pre>
 
       <div class="callout info">
-        <p><strong>💡 Detalle clave:</strong> Cuando el agente alcanza el máximo de 5 iteraciones, la mayoría de implementaciones simplemente devuelven el último contenido. Nosotros hacemos una <strong>llamada extra sin herramientas</strong> — esto obliga a Claude a sintetizar toda la información recopilada en una respuesta coherente, en vez de cortarse a mitad de un razonamiento.</p>
+        <p class="lang-es"><strong>💡 Detalle clave:</strong> Cuando el agente alcanza el máximo de 5 iteraciones, la mayoría de implementaciones simplemente devuelven el último contenido. Nosotros hacemos una <strong>llamada extra sin herramientas</strong> — esto obliga a Claude a sintetizar toda la información recopilada en una respuesta coherente, en vez de cortarse a mitad de un razonamiento.</p>
+        <p class="lang-en"><strong>💡 Key detail:</strong> When the agent reaches the maximum 5 iterations, most implementations simply return the last content. We make an <strong>extra call without tools</strong> — this forces Claude to synthesize all collected information into a coherent response, instead of cutting off mid-reasoning.</p>
       </div>
 
-      <p>El array de <code>messages</code> crece con cada iteración: pregunta del usuario → respuesta con tool_calls → resultados de las tools → nueva respuesta → etc. Claude tiene <strong>contexto completo</strong> de toda la conversación para generar la respuesta final.</p>
+      <p class="lang-es">El array de <code>messages</code> crece con cada iteración: pregunta del usuario → respuesta con tool_calls → resultados de las tools → nueva respuesta → etc. Claude tiene <strong>contexto completo</strong> de toda la conversación para generar la respuesta final.</p>
+      <p class="lang-en">The <code>messages</code> array grows with each iteration: user question → response with tool_calls → tool results → new response → etc. Claude has <strong>full context</strong> of the entire conversation to generate the final response.</p>
 
 
       <!-- ==================== SECCIÓN 5 ==================== -->
-      <h2><span class="section-number">5</span> Las 5 Herramientas del TenK Coach</h2>
+      <h2><span class="section-number">5</span> <span class="lang-es">Las 5 Herramientas del TenK Coach</span><span class="lang-en">The 5 TenK Coach Tools</span></h2>
 
       <table>
         <thead>
@@ -703,7 +723,7 @@ async function runAgentLoop(userId: string, messages: IChatMessage[]) {
             <th>Tool</th>
             <th>Input</th>
             <th>Output</th>
-            <th>Uso típico</th>
+            <th><span class="lang-es">Uso típico</span><span class="lang-en">Typical use</span></th>
           </tr>
         </thead>
         <tbody>
@@ -711,45 +731,47 @@ async function runAgentLoop(userId: string, messages: IChatMessage[]) {
             <td>1</td>
             <td><code>get_user_skills</code></td>
             <td><code>includeArchived?: boolean</code></td>
-            <td>Skills con horas, emoji, color, nivel de maestría, sesiones</td>
-            <td>Inicio de conversación</td>
+            <td><span class="lang-es">Skills con horas, emoji, color, nivel de maestría, sesiones</span><span class="lang-en">Skills with hours, emoji, color, mastery level, sessions</span></td>
+            <td><span class="lang-es">Inicio de conversación</span><span class="lang-en">Conversation start</span></td>
           </tr>
           <tr>
             <td>2</td>
             <td><code>get_practice_sessions</code></td>
             <td><code>skillId</code> (required), <code>days</code> (default: 30)</td>
-            <td>Historial de sesiones con fecha, horas, notas</td>
-            <td>Análisis de skill específico</td>
+            <td><span class="lang-es">Historial de sesiones con fecha, horas, notas</span><span class="lang-en">Session history with date, hours, notes</span></td>
+            <td><span class="lang-es">Análisis de skill específico</span><span class="lang-en">Specific skill analysis</span></td>
           </tr>
           <tr>
             <td>3</td>
             <td><code>get_journey_stats</code></td>
             <td>—</td>
-            <td>Promedio semanal, mejor día/semana, proyecciones, rachas</td>
-            <td>Resumen general del journey</td>
+            <td><span class="lang-es">Promedio semanal, mejor día/semana, proyecciones, rachas</span><span class="lang-en">Weekly average, best day/week, projections, streaks</span></td>
+            <td><span class="lang-es">Resumen general del journey</span><span class="lang-en">Overall journey summary</span></td>
           </tr>
           <tr>
             <td>4</td>
             <td><code>analyze_practice_patterns</code></td>
             <td><code>skillId?: string</code></td>
-            <td>Distribución por día, tendencia semanal, gaps, consistencia</td>
-            <td>Diagnóstico profundo de hábitos</td>
+            <td><span class="lang-es">Distribución por día, tendencia semanal, gaps, consistencia</span><span class="lang-en">Day distribution, weekly trend, gaps, consistency</span></td>
+            <td><span class="lang-es">Diagnóstico profundo de hábitos</span><span class="lang-en">Deep habit diagnosis</span></td>
           </tr>
           <tr>
             <td>5</td>
             <td><code>save_weekly_plan</code></td>
             <td><code>content</code> + <code>insights[]</code> (typed)</td>
-            <td>Confirmación + fecha de la semana</td>
-            <td>Persistir plan generado</td>
+            <td><span class="lang-es">Confirmación + fecha de la semana</span><span class="lang-en">Confirmation + week date</span></td>
+            <td><span class="lang-es">Persistir plan generado</span><span class="lang-en">Persist generated plan</span></td>
           </tr>
         </tbody>
       </table>
 
-      <p>Las herramientas 1-4 son de <strong>lectura</strong> (consultan datos). La herramienta 5 es de <strong>escritura</strong> (modifica la base de datos). El modelo decide cuáles usar y en qué orden según la pregunta del usuario.</p>
+      <p class="lang-es">Las herramientas 1-4 son de <strong>lectura</strong> (consultan datos). La herramienta 5 es de <strong>escritura</strong> (modifica la base de datos). El modelo decide cuáles usar y en qué orden según la pregunta del usuario.</p>
+      <p class="lang-en">Tools 1-4 are <strong>read</strong> tools (query data). Tool 5 is a <strong>write</strong> tool (modifies the database). The model decides which ones to use and in what order based on the user's question.</p>
 
-      <h3>El Schema de los Insights (Tool #5)</h3>
+      <h3><span class="lang-es">El Schema de los Insights (Tool #5)</span><span class="lang-en">The Insights Schema (Tool #5)</span></h3>
 
-      <p>La herramienta <code>save_weekly_plan</code> recibe un array de insights tipados — no es un string libre, sino datos estructurados que el modelo debe generar siguiendo un schema estricto:</p>
+      <p class="lang-es">La herramienta <code>save_weekly_plan</code> recibe un array de insights tipados — no es un string libre, sino datos estructurados que el modelo debe generar siguiendo un schema estricto:</p>
+      <p class="lang-en">The <code>save_weekly_plan</code> tool receives a typed array of insights — not a free string, but structured data that the model must generate following a strict schema:</p>
 
       <pre><code>// La definición real del tool le dice a Claude exactamente qué estructura generar
 "insights": {
@@ -769,30 +791,40 @@ async function runAgentLoop(userId: string, messages: IChatMessage[]) {
   }
 }</code></pre>
 
-      <p>Esto le da al modelo un vocabulario tipado para clasificar sus observaciones. Cada insight tiene un <code>type</code> semántico que permite renderizar diferentes estilos en el UI (badges de color, iconos, etc.).</p>
+      <p class="lang-es">Esto le da al modelo un vocabulario tipado para clasificar sus observaciones. Cada insight tiene un <code>type</code> semántico que permite renderizar diferentes estilos en el UI (badges de color, iconos, etc.).</p>
+      <p class="lang-en">This gives the model a typed vocabulary to classify its observations. Each insight has a semantic <code>type</code> that allows rendering different styles in the UI (color badges, icons, etc.).</p>
 
       <div class="callout">
-        <p><strong>💡 Decisión de diseño:</strong> Las herramientas son <em>granulares a propósito</em>. Podríamos haber creado una sola herramienta <code>get_all_data</code> que devuelva todo, pero eso enviaría datos innecesarios en cada consulta. Con herramientas granulares, Claude solo pide lo que necesita — consumiendo menos tokens y reduciendo la latencia.</p>
+        <p class="lang-es"><strong>💡 Decisión de diseño:</strong> Las herramientas son <em>granulares a propósito</em>. Podríamos haber creado una sola herramienta <code>get_all_data</code> que devuelva todo, pero eso enviaría datos innecesarios en cada consulta. Con herramientas granulares, Claude solo pide lo que necesita — consumiendo menos tokens y reduciendo la latencia.</p>
+        <p class="lang-en"><strong>💡 Design decision:</strong> The tools are <em>intentionally granular</em>. We could have created a single <code>get_all_data</code> tool that returns everything, but that would send unnecessary data on every query. With granular tools, Claude only requests what it needs — consuming fewer tokens and reducing latency.</p>
       </div>
 
 
       <!-- ==================== SECCIÓN 6 ==================== -->
-      <h2><span class="section-number">6</span> El System Prompt: La Personalidad del Agente</h2>
+      <h2><span class="section-number">6</span> <span class="lang-es">El System Prompt: La Personalidad del Agente</span><span class="lang-en">The System Prompt: The Agent's Personality</span></h2>
 
-      <p>El system prompt define <strong>quién es</strong> el agente y <strong>cómo debe comportarse</strong>. Es probablemente el componente más importante — la diferencia entre un agente útil y uno genérico.</p>
+      <p class="lang-es">El system prompt define <strong>quién es</strong> el agente y <strong>cómo debe comportarse</strong>. Es probablemente el componente más importante — la diferencia entre un agente útil y uno genérico.</p>
+      <p class="lang-en">The system prompt defines <strong>who the agent is</strong> and <strong>how it should behave</strong>. It's probably the most important component — the difference between a useful agent and a generic one.</p>
 
-      <p>Nuestro prompt incluye reglas muy específicas que hacen la diferencia entre un chatbot genérico y un coach especializado:</p>
+      <p class="lang-es">Nuestro prompt incluye reglas muy específicas que hacen la diferencia entre un chatbot genérico y un coach especializado:</p>
+      <p class="lang-en">Our prompt includes very specific rules that make the difference between a generic chatbot and a specialized coach:</p>
 
       <ul>
-        <li><strong>Identidad:</strong> "Eres el TenK Coach, un entrenador experto en práctica deliberada."</li>
-        <li><strong>Personalidad:</strong> Motivador pero realista, directo, basado en datos, siempre en español.</li>
-        <li><strong>Parallel tool calling:</strong> "Llama TODAS las herramientas que necesites en una sola respuesta" — reduce iteraciones.</li>
-        <li><strong>Niveles de maestría:</strong> 5 niveles con emojis y rangos de horas exactos.</li>
-        <li><strong>Formato de plan semanal:</strong> 4 secciones obligatorias con estructura definida.</li>
-        <li><strong>Restricciones:</strong> Máximo 300 palabras, nunca inventar datos, no usar fuentes externas.</li>
+        <li class="lang-es"><strong>Identidad:</strong> "Eres el TenK Coach, un entrenador experto en práctica deliberada."</li>
+        <li class="lang-en"><strong>Identity:</strong> "You are TenK Coach, an expert coach in deliberate practice."</li>
+        <li class="lang-es"><strong>Personalidad:</strong> Motivador pero realista, directo, basado en datos, siempre en español.</li>
+        <li class="lang-en"><strong>Personality:</strong> Motivating but realistic, direct, data-driven, always in Spanish.</li>
+        <li><strong>Parallel tool calling:</strong> <span class="lang-es">"Llama TODAS las herramientas que necesites en una sola respuesta" — reduce iteraciones.</span><span class="lang-en">"Call ALL the tools you need in a single response" — reduces iterations.</span></li>
+        <li class="lang-es"><strong>Niveles de maestría:</strong> 5 niveles con emojis y rangos de horas exactos.</li>
+        <li class="lang-en"><strong>Mastery levels:</strong> 5 levels with emojis and exact hour ranges.</li>
+        <li class="lang-es"><strong>Formato de plan semanal:</strong> 4 secciones obligatorias con estructura definida.</li>
+        <li class="lang-en"><strong>Weekly plan format:</strong> 4 mandatory sections with defined structure.</li>
+        <li class="lang-es"><strong>Restricciones:</strong> Máximo 300 palabras, nunca inventar datos, no usar fuentes externas.</li>
+        <li class="lang-en"><strong>Constraints:</strong> Max 300 words, never fabricate data, don't use external sources.</li>
       </ul>
 
-      <p>Sin instrucciones claras, el modelo tiende a <strong>alucinar</strong> — decir "llevas X horas" sin verificar. El prompt fuerza al agente a siempre consultar herramientas primero.</p>
+      <p class="lang-es">Sin instrucciones claras, el modelo tiende a <strong>alucinar</strong> — decir "llevas X horas" sin verificar. El prompt fuerza al agente a siempre consultar herramientas primero.</p>
+      <p class="lang-en">Without clear instructions, the model tends to <strong>hallucinate</strong> — saying "you have X hours" without verifying. The prompt forces the agent to always query tools first.</p>
 
       <pre><code>// system-prompt.ts — Implementación real
 export function buildSystemPrompt(): string {
@@ -829,40 +861,42 @@ REGLAS:
 `;
 }</code></pre>
 
-      <h3>El Truco del Parallel Tool Calling</h3>
+      <h3><span class="lang-es">El Truco del Parallel Tool Calling</span><span class="lang-en">The Parallel Tool Calling Trick</span></h3>
 
-      <p>La instrucción <em>"Llama TODAS las herramientas que necesites en una sola respuesta"</em> es clave para la performance. Sin ella, Claude pide una herramienta por iteración (3-4 API calls). Con ella, Claude puede pedir <code>get_user_skills</code>, <code>get_journey_stats</code> y <code>analyze_practice_patterns</code> en un solo turno — reduciendo las iteraciones de 4 a 2.</p>
+      <p class="lang-es">La instrucción <em>"Llama TODAS las herramientas que necesites en una sola respuesta"</em> es clave para la performance. Sin ella, Claude pide una herramienta por iteración (3-4 API calls). Con ella, Claude puede pedir <code>get_user_skills</code>, <code>get_journey_stats</code> y <code>analyze_practice_patterns</code> en un solo turno — reduciendo las iteraciones de 4 a 2.</p>
+      <p class="lang-en">The instruction <em>"Call ALL the tools you need in a single response"</em> is key for performance. Without it, Claude requests one tool per iteration (3-4 API calls). With it, Claude can request <code>get_user_skills</code>, <code>get_journey_stats</code> and <code>analyze_practice_patterns</code> in a single turn — reducing iterations from 4 to 2.</p>
 
 
       <!-- ==================== SECCIÓN 7 ==================== -->
-      <h2><span class="section-number">7</span> OAuth PKCE: Cada Usuario, Su Propia Cuenta</h2>
+      <h2><span class="section-number">7</span> <span class="lang-es">OAuth PKCE: Cada Usuario, Su Propia Cuenta</span><span class="lang-en">OAuth PKCE: Each User, Their Own Account</span></h2>
 
-      <p>En lugar de usar una API key centralizada (que comparte rate limits entre todos los usuarios), implementamos <strong>OAuth PKCE</strong> donde cada usuario conecta su propia cuenta de Claude Pro o Max.</p>
+      <p class="lang-es">En lugar de usar una API key centralizada (que comparte rate limits entre todos los usuarios), implementamos <strong>OAuth PKCE</strong> donde cada usuario conecta su propia cuenta de Claude Pro o Max.</p>
+      <p class="lang-en">Instead of using a centralized API key (which shares rate limits across all users), we implemented <strong>OAuth PKCE</strong> where each user connects their own Claude Pro or Max account.</p>
 
-      <h3>¿Por qué Per-User?</h3>
+      <h3><span class="lang-es">¿Por qué Per-User?</span><span class="lang-en">Why Per-User?</span></h3>
 
       <div class="comparison">
         <div class="comparison-box bad">
-          <h4>❌ API Key Centralizada</h4>
+          <h4><span class="lang-es">❌ API Key Centralizada</span><span class="lang-en">❌ Centralized API Key</span></h4>
           <ul>
-            <li>Rate limits compartidos entre todos</li>
-            <li>Costo de API para nosotros</li>
-            <li>Un usuario heavy bloquea a todos</li>
-            <li>Escalabilidad limitada</li>
+            <li><span class="lang-es">Rate limits compartidos entre todos</span><span class="lang-en">Shared rate limits across all users</span></li>
+            <li><span class="lang-es">Costo de API para nosotros</span><span class="lang-en">API cost for us</span></li>
+            <li><span class="lang-es">Un usuario heavy bloquea a todos</span><span class="lang-en">One heavy user blocks everyone</span></li>
+            <li><span class="lang-es">Escalabilidad limitada</span><span class="lang-en">Limited scalability</span></li>
           </ul>
         </div>
         <div class="comparison-box good">
-          <h4>✅ OAuth Per-User</h4>
+          <h4><span class="lang-es">✅ OAuth Per-User</span><span class="lang-en">✅ OAuth Per-User</span></h4>
           <ul>
-            <li>Rate limits individuales</li>
-            <li>Zero API cost para nosotros</li>
-            <li>Cada usuario tiene su cuota</li>
-            <li>Escalabilidad natural</li>
+            <li><span class="lang-es">Rate limits individuales</span><span class="lang-en">Individual rate limits</span></li>
+            <li><span class="lang-es">Zero API cost para nosotros</span><span class="lang-en">Zero API cost for us</span></li>
+            <li><span class="lang-es">Cada usuario tiene su cuota</span><span class="lang-en">Each user has their own quota</span></li>
+            <li><span class="lang-es">Escalabilidad natural</span><span class="lang-en">Natural scalability</span></li>
           </ul>
         </div>
       </div>
 
-      <h3>El Flujo Completo</h3>
+      <h3><span class="lang-es">El Flujo Completo</span><span class="lang-en">The Complete Flow</span></h3>
 
       <div class="diagram">
         <pre><code>┌─────────┐     ┌──────────┐     ┌──────────┐     ┌───────────┐
@@ -902,12 +936,13 @@ REGLAS:
      │  11. Connected │                │                  │
      │◀───────────────│                │                  │
      │                │                │                  │</code></pre>
-        <p class="diagram-caption">Flujo OAuth PKCE completo: de la app al token</p>
+        <p class="diagram-caption"><span class="lang-es">Flujo OAuth PKCE completo: de la app al token</span><span class="lang-en">Complete OAuth PKCE flow: from app to token</span></p>
       </div>
 
       <h3>PKCE: Proof Key for Code Exchange</h3>
 
-      <p>PKCE resuelve el problema de seguridad de OAuth en apps móviles (donde no puedes guardar un <code>client_secret</code> de forma segura). En vez de un secreto estático, cada flujo genera un par criptográfico único:</p>
+      <p class="lang-es">PKCE resuelve el problema de seguridad de OAuth en apps móviles (donde no puedes guardar un <code>client_secret</code> de forma segura). En vez de un secreto estático, cada flujo genera un par criptográfico único:</p>
+      <p class="lang-en">PKCE solves the OAuth security problem in mobile apps (where you can't store a <code>client_secret</code> securely). Instead of a static secret, each flow generates a unique cryptographic pair:</p>
 
       <pre><code>// claude-oauth.service.ts
 
@@ -932,12 +967,14 @@ async function generateCodeChallenge(verifier: string): Promise&lt;string&gt; {
 const codeVerifier = generateRandomString(64);
 const codeChallenge = await generateCodeChallenge(codeVerifier);</code></pre>
 
-      <p>El <code>code_challenge</code> viaja en la URL de autorización (público). El <code>code_verifier</code> se guarda en nuestra base de datos y se envía en el token exchange. El servidor de Anthropic verifica que <code>SHA-256(verifier) === challenge</code> — si no coincide, rechaza el request.</p>
+      <p class="lang-es">El <code>code_challenge</code> viaja en la URL de autorización (público). El <code>code_verifier</code> se guarda en nuestra base de datos y se envía en el token exchange. El servidor de Anthropic verifica que <code>SHA-256(verifier) === challenge</code> — si no coincide, rechaza el request.</p>
+      <p class="lang-en">The <code>code_challenge</code> travels in the authorization URL (public). The <code>code_verifier</code> is stored in our database and sent during the token exchange. Anthropic's server verifies that <code>SHA-256(verifier) === challenge</code> — if it doesn't match, it rejects the request.</p>
 
-      <h3>Las Trampas de Anthropic que Nadie Documenta</h3>
+      <h3><span class="lang-es">Las Trampas de Anthropic que Nadie Documenta</span><span class="lang-en">Anthropic's Undocumented Gotchas</span></h3>
 
       <div class="callout danger">
-        <p><strong>🔥 Detalle #1:</strong> Anthropic devuelve el código de autorización en formato <code>code#state</code> como un solo string. Hay que parsear el <code>#</code> manualmente:</p>
+        <p class="lang-es"><strong>🔥 Detalle #1:</strong> Anthropic devuelve el código de autorización en formato <code>code#state</code> como un solo string. Hay que parsear el <code>#</code> manualmente:</p>
+        <p class="lang-en"><strong>🔥 Gotcha #1:</strong> Anthropic returns the authorization code in <code>code#state</code> format as a single string. You have to parse the <code>#</code> manually:</p>
       </div>
 
       <pre><code>// El usuario pega: "abc123xyz#state-789def"
@@ -946,7 +983,8 @@ const code = rawCode.substring(0, hashIndex);   // "abc123xyz"
 const state = rawCode.substring(hashIndex + 1);  // "state-789def"</code></pre>
 
       <div class="callout danger">
-        <p><strong>🔥 Detalle #2:</strong> Anthropic es el <strong>único proveedor OAuth</strong> que requiere <code>Content-Type: application/json</code> en el token exchange. Google, GitHub, todos usan <code>application/x-www-form-urlencoded</code>.</p>
+        <p class="lang-es"><strong>🔥 Detalle #2:</strong> Anthropic es el <strong>único proveedor OAuth</strong> que requiere <code>Content-Type: application/json</code> en el token exchange. Google, GitHub, todos usan <code>application/x-www-form-urlencoded</code>.</p>
+        <p class="lang-en"><strong>🔥 Gotcha #2:</strong> Anthropic is the <strong>only OAuth provider</strong> that requires <code>Content-Type: application/json</code> in the token exchange. Google, GitHub, everyone else uses <code>application/x-www-form-urlencoded</code>.</p>
       </div>
 
       <pre><code>// Token exchange — JSON, NO form-urlencoded
@@ -965,11 +1003,13 @@ const res = await fetch('https://console.anthropic.com/v1/oauth/token', {
 
 
       <!-- ==================== SECCIÓN 8 ==================== -->
-      <h2><span class="section-number">8</span> Stealth Headers: Haciéndose Pasar por Claude Code CLI</h2>
+      <h2><span class="section-number">8</span> <span class="lang-es">Stealth Headers: Haciéndose Pasar por Claude Code CLI</span><span class="lang-en">Stealth Headers: Impersonating the Claude Code CLI</span></h2>
 
-      <p>Los tokens OAuth de Claude <strong>solo funcionan</strong> si el request parece venir del CLI oficial. Sin los headers correctos, Anthropic rechaza con <code>403 Forbidden</code>.</p>
+      <p class="lang-es">Los tokens OAuth de Claude <strong>solo funcionan</strong> si el request parece venir del CLI oficial. Sin los headers correctos, Anthropic rechaza con <code>403 Forbidden</code>.</p>
+      <p class="lang-en">Claude's OAuth tokens <strong>only work</strong> if the request looks like it's coming from the official CLI. Without the correct headers, Anthropic rejects with <code>403 Forbidden</code>.</p>
 
-      <p>Descubrimos esto investigando el código fuente de OpenClaw (cliente open source de Claude Code) y capturando las llamadas reales del CLI:</p>
+      <p class="lang-es">Descubrimos esto investigando el código fuente de OpenClaw (cliente open source de Claude Code) y capturando las llamadas reales del CLI:</p>
+      <p class="lang-en">We discovered this by investigating OpenClaw's source code (open source Claude Code client) and capturing the real CLI calls:</p>
 
       <pre><code>// ai-client.ts — Stealth headers para tokens OAuth
 const isOAuth = credential.accessToken.startsWith('sk-ant-oat');
@@ -993,15 +1033,17 @@ if (isOAuth) {
   body.system = actualSystemPrompt;
 }</code></pre>
 
-      <p>Son <strong>5 headers específicos</strong> + un system prompt de identidad. Sin cualquiera de ellos, el token es rechazado.</p>
+      <p class="lang-es">Son <strong>5 headers específicos</strong> + un system prompt de identidad. Sin cualquiera de ellos, el token es rechazado.</p>
+      <p class="lang-en">That's <strong>5 specific headers</strong> + an identity system prompt. Without any one of them, the token is rejected.</p>
 
 
       <!-- ==================== SECCIÓN 9 ==================== -->
-      <h2><span class="section-number">9</span> Rate Limits: De Error Críptico a Banner Elegante</h2>
+      <h2><span class="section-number">9</span> <span class="lang-es">Rate Limits: De Error Críptico a Banner Elegante</span><span class="lang-en">Rate Limits: From Cryptic Error to Elegant Banner</span></h2>
 
-      <p>Cuando el usuario agota su sesión de Claude, la API devuelve un <code>429</code> con un header <code>retry-after</code>. Sin manejo adecuado, el usuario veía un error técnico incomprensible.</p>
+      <p class="lang-es">Cuando el usuario agota su sesión de Claude, la API devuelve un <code>429</code> con un header <code>retry-after</code>. Sin manejo adecuado, el usuario veía un error técnico incomprensible.</p>
+      <p class="lang-en">When the user exhausts their Claude session, the API returns a <code>429</code> with a <code>retry-after</code> header. Without proper handling, the user would see an incomprehensible technical error.</p>
 
-      <h3>La Cadena Completa de Manejo</h3>
+      <h3><span class="lang-es">La Cadena Completa de Manejo</span><span class="lang-en">The Complete Handling Chain</span></h3>
 
       <div class="diagram">
         <pre><code>429 API Response (retry-after: 2520s)
@@ -1024,10 +1066,10 @@ AiCoachStatus.rateLimited             ← BLoC State
          ▼
 🟡 RateLimitBanner                    ← UI Widget
    "Intenta en ~42 min"</code></pre>
-        <p class="diagram-caption">El error 429 transformándose de API response a UI amigable</p>
+        <p class="diagram-caption"><span class="lang-es">El error 429 transformándose de API response a UI amigable</span><span class="lang-en">The 429 error transforming from API response to user-friendly UI</span></p>
       </div>
 
-      <h3>Backend: Retry con Backoff</h3>
+      <h3><span class="lang-es">Backend: Retry con Backoff</span><span class="lang-en">Backend: Retry with Backoff</span></h3>
 
       <pre><code>// ai-client.ts — 3 reintentos con backoff
 if (res.status === 429) {
@@ -1046,7 +1088,7 @@ if (res.status === 429) {
   await sleep(Math.min(rawWaitMs, 15000));
 }</code></pre>
 
-      <h3>Flutter: Error Tipado → UI</h3>
+      <h3><span class="lang-es">Flutter: Error Tipado → UI</span><span class="lang-en">Flutter: Typed Error → UI</span></h3>
 
       <pre><code>// ai_coach_repository_impl.dart
 if (statusCode == 429) {
@@ -1065,13 +1107,15 @@ if (failure is RateLimitFailure) {
   ));
 }</code></pre>
 
-      <p>El resultado: en vez de un crash, el usuario ve un banner con gradiente amber, ícono de timer y los minutos exactos de espera.</p>
+      <p class="lang-es">El resultado: en vez de un crash, el usuario ve un banner con gradiente amber, ícono de timer y los minutos exactos de espera.</p>
+      <p class="lang-en">The result: instead of a crash, the user sees a banner with an amber gradient, timer icon, and the exact minutes to wait.</p>
 
 
       <!-- ==================== SECCIÓN 10 ==================== -->
-      <h2><span class="section-number">10</span> Optimización: 39 Segundos → 8 Segundos</h2>
+      <h2><span class="section-number">10</span> <span class="lang-es">Optimización: 39 Segundos → 8 Segundos</span><span class="lang-en">Optimization: 39 Seconds → 8 Seconds</span></h2>
 
-      <p>El plan semanal inicialmente tomaba <strong>39 segundos</strong> porque el agente ejecutaba 6 llamadas secuenciales a la API (una por iteración del tool loop). Cada iteración: Claude decide qué tool → ejecuta → recibe resultado → decide otra → repite.</p>
+      <p class="lang-es">El plan semanal inicialmente tomaba <strong>39 segundos</strong> porque el agente ejecutaba 6 llamadas secuenciales a la API (una por iteración del tool loop). Cada iteración: Claude decide qué tool → ejecuta → recibe resultado → decide otra → repite.</p>
+      <p class="lang-en">The weekly plan initially took <strong>39 seconds</strong> because the agent executed 6 sequential API calls (one per tool loop iteration). Each iteration: Claude decides which tool → executes → receives result → decides another → repeats.</p>
 
       <div class="comparison">
         <div class="comparison-box bad">
@@ -1091,7 +1135,8 @@ if (failure is RateLimitFailure) {
         </div>
       </div>
 
-      <p>La implementación real. Nota cómo reutilizamos las <strong>mismas funciones de las tools</strong> del agente, pero las llamamos directamente sin el loop — las tools son funciones puras que reciben <code>userId</code> y <code>args</code>:</p>
+      <p class="lang-es">La implementación real. Nota cómo reutilizamos las <strong>mismas funciones de las tools</strong> del agente, pero las llamamos directamente sin el loop — las tools son funciones puras que reciben <code>userId</code> y <code>args</code>:</p>
+      <p class="lang-en">The real implementation. Note how we reuse the <strong>same tool functions</strong> from the agent, but call them directly without the loop — the tools are pure functions that receive <code>userId</code> and <code>args</code>:</p>
 
       <pre><code>// weekly-plan.service.ts — Implementación real
 import { getUserSkills } from '../tools/query-skills.tool';
@@ -1159,13 +1204,15 @@ ${JSON.stringify(patternsData, null, 2)}
 Con estos datos, genera mi plan semanal personalizado.`;
 }</code></pre>
 
-      <p>Para el <strong>chat libre</strong> mantenemos el agent loop porque cada pregunta es impredecible. Para el <strong>plan semanal</strong> pre-cargamos todos los datos con <code>Promise.all</code> (~50ms) y hacemos una sola llamada con todo embebido en el prompt.</p>
+      <p class="lang-es">Para el <strong>chat libre</strong> mantenemos el agent loop porque cada pregunta es impredecible. Para el <strong>plan semanal</strong> pre-cargamos todos los datos con <code>Promise.all</code> (~50ms) y hacemos una sola llamada con todo embebido en el prompt.</p>
+      <p class="lang-en">For <strong>free chat</strong> we keep the agent loop because each question is unpredictable. For the <strong>weekly plan</strong> we pre-load all data with <code>Promise.all</code> (~50ms) and make a single call with everything embedded in the prompt.</p>
 
-      <p>Resultado: <strong>4.7x más rápido</strong> — de 39 segundos a ~8 segundos.</p>
+      <p class="lang-es">Resultado: <strong>4.7x más rápido</strong> — de 39 segundos a ~8 segundos.</p>
+      <p class="lang-en">Result: <strong>4.7x faster</strong> — from 39 seconds to ~8 seconds.</p>
 
 
       <!-- ==================== SECCIÓN 11 ==================== -->
-      <h2><span class="section-number">11</span> Arquitectura Completa</h2>
+      <h2><span class="section-number">11</span> <span class="lang-es">Arquitectura Completa</span><span class="lang-en">Complete Architecture</span></h2>
 
       <h3>Backend (Bun + Hono + Prisma)</h3>
 
@@ -1220,7 +1267,7 @@ lib/
 
 
       <!-- ==================== SECCIÓN 12 ==================== -->
-      <h2><span class="section-number">12</span> Modelos de Base de Datos</h2>
+      <h2><span class="section-number">12</span> <span class="lang-es">Modelos de Base de Datos</span><span class="lang-en">Database Models</span></h2>
 
       <pre><code>// schema.prisma — Modelos reales para OAuth, Conversaciones y Planes
 
@@ -1275,19 +1322,24 @@ model OAuthState {
   @@index([expiresAt])
 }</code></pre>
 
-      <p>Detalles clave del schema:</p>
+      <p><span class="lang-es">Detalles clave del schema:</span><span class="lang-en">Key schema details:</span></p>
       <ul>
-        <li><code>AiConversation.messages</code> es un <code>Json</code> que almacena el array completo de <code>IChatMessage[]</code> — incluyendo los tool_calls — para poder reanudar conversaciones.</li>
-        <li><code>AiWeeklyReport</code> tiene un <code>@@unique([userId, weekStart])</code> que permite hacer upsert: si generas un nuevo plan la misma semana, reemplaza el anterior.</li>
-        <li><code>ClaudeCredential.userId</code> es <code>@unique</code> — un usuario, una credencial. Conectar de nuevo reemplaza la anterior.</li>
-        <li><code>OAuthState.expiresAt</code> con index permite limpiar estados expirados eficientemente.</li>
+        <li class="lang-es"><code>AiConversation.messages</code> es un <code>Json</code> que almacena el array completo de <code>IChatMessage[]</code> — incluyendo los tool_calls — para poder reanudar conversaciones.</li>
+        <li class="lang-en"><code>AiConversation.messages</code> is a <code>Json</code> that stores the complete <code>IChatMessage[]</code> array — including tool_calls — to be able to resume conversations.</li>
+        <li class="lang-es"><code>AiWeeklyReport</code> tiene un <code>@@unique([userId, weekStart])</code> que permite hacer upsert: si generas un nuevo plan la misma semana, reemplaza el anterior.</li>
+        <li class="lang-en"><code>AiWeeklyReport</code> has a <code>@@unique([userId, weekStart])</code> that enables upsert: if you generate a new plan the same week, it replaces the previous one.</li>
+        <li class="lang-es"><code>ClaudeCredential.userId</code> es <code>@unique</code> — un usuario, una credencial. Conectar de nuevo reemplaza la anterior.</li>
+        <li class="lang-en"><code>ClaudeCredential.userId</code> is <code>@unique</code> — one user, one credential. Reconnecting replaces the previous one.</li>
+        <li class="lang-es"><code>OAuthState.expiresAt</code> con index permite limpiar estados expirados eficientemente.</li>
+        <li class="lang-en"><code>OAuthState.expiresAt</code> with index allows cleaning up expired states efficiently.</li>
       </ul>
 
 
       <!-- ==================== SECCIÓN 13 ==================== -->
-      <h2><span class="section-number">13</span> Provider Fallback: La Cadena de 3 Niveles</h2>
+      <h2><span class="section-number">13</span> <span class="lang-es">Provider Fallback: La Cadena de 3 Niveles</span><span class="lang-en">Provider Fallback: The 3-Tier Chain</span></h2>
 
-      <p>El sistema de credenciales tiene <strong>3 niveles de fallback</strong> para maximizar la disponibilidad. Si un nivel falla o no tiene credenciales, intenta el siguiente automáticamente:</p>
+      <p class="lang-es">El sistema de credenciales tiene <strong>3 niveles de fallback</strong> para maximizar la disponibilidad. Si un nivel falla o no tiene credenciales, intenta el siguiente automáticamente:</p>
+      <p class="lang-en">The credential system has <strong>3 fallback levels</strong> to maximize availability. If a level fails or has no credentials, it automatically tries the next one:</p>
 
       <div class="diagram">
         <pre><code>chatCompletion(messages, tools, userId)
@@ -1347,9 +1399,10 @@ export async function chatCompletion(
   throw new Error('No AI credentials available');
 }</code></pre>
 
-      <h3>Lectura del macOS Keychain</h3>
+      <h3><span class="lang-es">Lectura del macOS Keychain</span><span class="lang-en">Reading from macOS Keychain</span></h3>
 
-      <p>En servidores macOS, las credenciales de Claude Code se almacenan en el Keychain del sistema. El backend las lee ejecutando <code>security</code> — el mismo CLI que usa Claude Code internamente:</p>
+      <p class="lang-es">En servidores macOS, las credenciales de Claude Code se almacenan en el Keychain del sistema. El backend las lee ejecutando <code>security</code> — el mismo CLI que usa Claude Code internamente:</p>
+      <p class="lang-en">On macOS servers, Claude Code credentials are stored in the system Keychain. The backend reads them by executing <code>security</code> — the same CLI that Claude Code uses internally:</p>
 
       <pre><code>// ai-credentials.ts — Leer del Keychain de macOS
 function readClaudeFromKeychain(): IOAuthCredential | null {
@@ -1381,9 +1434,10 @@ function readClaudeFromKeychain(): IOAuthCredential | null {
   return null;
 }</code></pre>
 
-      <h3>Auto-Refresh de Tokens</h3>
+      <h3><span class="lang-es">Auto-Refresh de Tokens</span><span class="lang-en">Auto-Refresh Tokens</span></h3>
 
-      <p>Si un token está expirado pero tiene <code>refresh_token</code>, el sistema lo refresca automáticamente y persiste el nuevo token en la misma ubicación (Keychain o DB según el nivel):</p>
+      <p class="lang-es">Si un token está expirado pero tiene <code>refresh_token</code>, el sistema lo refresca automáticamente y persiste el nuevo token en la misma ubicación (Keychain o DB según el nivel):</p>
+      <p class="lang-en">If a token is expired but has a <code>refresh_token</code>, the system automatically refreshes it and persists the new token in the same location (Keychain or DB depending on the level):</p>
 
       <pre><code>// ai-token-refresh.ts
 const CLAUDE_OAUTH_CLIENT_ID = '9d1c250a-e61b-44d9-88ed-5944d1962f5e';
@@ -1412,15 +1466,17 @@ export async function refreshClaudeToken(refreshToken: string): Promise&lt;IOAut
   };
 }</code></pre>
 
-      <p>El <code>SAFETY_BUFFER</code> de 5 minutos asegura que el token se refresca antes de expirar realmente, evitando ventanas donde el token podría estar "casi expirado" y fallar a mitad de una llamada.</p>
+      <p class="lang-es">El <code>SAFETY_BUFFER</code> de 5 minutos asegura que el token se refresca antes de expirar realmente, evitando ventanas donde el token podría estar "casi expirado" y fallar a mitad de una llamada.</p>
+      <p class="lang-en">The 5-minute <code>SAFETY_BUFFER</code> ensures the token is refreshed before it actually expires, avoiding windows where the token could be "almost expired" and fail mid-call.</p>
 
 
       <!-- ==================== SECCIÓN 14 ==================== -->
-      <h2><span class="section-number">14</span> Implementación Real de las Herramientas</h2>
+      <h2><span class="section-number">14</span> <span class="lang-es">Implementación Real de las Herramientas</span><span class="lang-en">Real Tool Implementation</span></h2>
 
-      <p>Cada herramienta es una función pura que recibe <code>(userId, args)</code> y retorna <code>TAgentToolResult</code>. Veamos qué hace cada una realmente bajo el capó:</p>
+      <p class="lang-es">Cada herramienta es una función pura que recibe <code>(userId, args)</code> y retorna <code>TAgentToolResult</code>. Veamos qué hace cada una realmente bajo el capó:</p>
+      <p class="lang-en">Each tool is a pure function that receives <code>(userId, args)</code> and returns <code>TAgentToolResult</code>. Let's see what each one really does under the hood:</p>
 
-      <h3>get_user_skills — Nivel de Maestría Calculado</h3>
+      <h3><span class="lang-es">get_user_skills — Nivel de Maestría Calculado</span><span class="lang-en">get_user_skills — Computed Mastery Level</span></h3>
 
       <pre><code>// query-skills.tool.ts
 export async function getUserSkills(userId: string, args: Record&lt;string, unknown&gt;) {
@@ -1444,11 +1500,13 @@ export async function getUserSkills(userId: string, args: Record&lt;string, unkn
   return { success: true, data };
 }</code></pre>
 
-      <p>El nivel de maestría se calcula en tiempo real sumando todas las sesiones — no es un campo guardado. Esto asegura que siempre refleje el estado actual.</p>
+      <p class="lang-es">El nivel de maestría se calcula en tiempo real sumando todas las sesiones — no es un campo guardado. Esto asegura que siempre refleje el estado actual.</p>
+      <p class="lang-en">The mastery level is calculated in real time by summing all sessions — it's not a stored field. This ensures it always reflects the current state.</p>
 
-      <h3>analyze_practice_patterns — El Diagnóstico Profundo</h3>
+      <h3><span class="lang-es">analyze_practice_patterns — El Diagnóstico Profundo</span><span class="lang-en">analyze_practice_patterns — The Deep Diagnosis</span></h3>
 
-      <p>Esta es la herramienta más compleja. Analiza hasta 500 sesiones y calcula 4 métricas:</p>
+      <p class="lang-es">Esta es la herramienta más compleja. Analiza hasta 500 sesiones y calcula 4 métricas:</p>
+      <p class="lang-en">This is the most complex tool. It analyzes up to 500 sessions and calculates 4 metrics:</p>
 
       <pre><code>// analyze-patterns.tool.ts — 4 análisis sobre hasta 500 sesiones
 export async function analyzePracticePatterns(userId: string, args: Record&lt;string, unknown&gt;) {
@@ -1496,9 +1554,10 @@ function analyzeConsistency(sessions) {
   return { activeDaysLast30: activeDays, consistencyScore: score };
 }</code></pre>
 
-      <p>El modelo recibe estos datos estructurados y puede hacer observaciones como <em>"Tu tendencia es creciente — promediabas 3.1h/semana y ahora estás en 4.2h. ¡Sigue así!"</em> — toda basada en datos reales, no en intuición.</p>
+      <p class="lang-es">El modelo recibe estos datos estructurados y puede hacer observaciones como <em>"Tu tendencia es creciente — promediabas 3.1h/semana y ahora estás en 4.2h. ¡Sigue así!"</em> — toda basada en datos reales, no en intuición.</p>
+      <p class="lang-en">The model receives this structured data and can make observations like <em>"Your trend is growing — you averaged 3.1h/week and now you're at 4.2h. Keep it up!"</em> — all based on real data, not intuition.</p>
 
-      <h3>save_weekly_plan — Upsert Inteligente</h3>
+      <h3><span class="lang-es">save_weekly_plan — Upsert Inteligente</span><span class="lang-en">save_weekly_plan — Smart Upsert</span></h3>
 
       <pre><code>// create-plan.tool.ts — Calcula el lunes de la semana actual
 export async function saveWeeklyPlan(userId: string, args: Record&lt;string, unknown&gt;) {
@@ -1526,9 +1585,10 @@ export async function saveWeeklyPlan(userId: string, args: Record&lt;string, unk
 
 
       <!-- ==================== SECCIÓN 15 ==================== -->
-      <h2><span class="section-number">15</span> Parsers: Formato Unificado entre Providers</h2>
+      <h2><span class="section-number">15</span> <span class="lang-es">Parsers: Formato Unificado entre Providers</span><span class="lang-en">Parsers: Unified Format Across Providers</span></h2>
 
-      <p>Anthropic y OpenAI retornan tool calls en formatos <strong>completamente diferentes</strong>. Nuestros parsers normalizan ambos a una interfaz común <code>IChatResponse</code>:</p>
+      <p class="lang-es">Anthropic y OpenAI retornan tool calls en formatos <strong>completamente diferentes</strong>. Nuestros parsers normalizan ambos a una interfaz común <code>IChatResponse</code>:</p>
+      <p class="lang-en">Anthropic and OpenAI return tool calls in <strong>completely different</strong> formats. Our parsers normalize both to a common <code>IChatResponse</code> interface:</p>
 
       <pre><code>// Interfaz unificada que usa todo el sistema
 interface IChatResponse {
@@ -1607,56 +1667,67 @@ export function convertToAnthropicMsg(msg) {
   // ... assistant messages con tool_calls → content blocks
 }</code></pre>
 
-      <p>Sin los parsers, tendríamos que escribir código diferente para cada provider en cada parte del sistema. Con ellos, el agent-runner es <strong>completamente agnóstico del provider</strong> — funciona igual con Claude o GPT-4o.</p>
+      <p class="lang-es">Sin los parsers, tendríamos que escribir código diferente para cada provider en cada parte del sistema. Con ellos, el agent-runner es <strong>completamente agnóstico del provider</strong> — funciona igual con Claude o GPT-4o.</p>
+      <p class="lang-en">Without the parsers, we'd have to write different code for each provider in every part of the system. With them, the agent-runner is <strong>completely provider-agnostic</strong> — it works the same with Claude or GPT-4o.</p>
 
 
       <!-- ==================== TAKEAWAYS ==================== -->
       <div class="takeaways">
-        <h3>💡 Lecciones Aprendidas</h3>
+        <h3><span class="lang-es">💡 Lecciones Aprendidas</span><span class="lang-en">💡 Lessons Learned</span></h3>
         <ol>
-          <li><strong>El agent loop es poderoso pero costoso</strong> — cada iteración es una API call. Usa pre-fetch cuando el flujo es predecible.</li>
-          <li><strong>El system prompt es el 80% del comportamiento</strong> — un buen prompt convierte un LLM genérico en un experto especializado. Incluye parallel tool calling para reducir iteraciones.</li>
-          <li><strong>Tool calling > RAG para datos estructurados</strong> — en vez de embeber todo en el contexto, deja que el modelo pida solo lo que necesita.</li>
-          <li><strong>Siempre aislar por userId en el backend</strong>, nunca confiar en el input del modelo para autenticación.</li>
-          <li><strong>Los guardrails importan</strong> — límite de iteraciones, timeouts con <code>Promise.race</code>, y manejo de rate limits son esenciales en producción.</li>
-          <li><strong>Anthropic tiene sus particularidades</strong> — JSON en token exchange, <code>code#state</code>, stealth headers. Documenta todo porque no lo encontrarás en su docs oficiales.</li>
-          <li><strong>Cada usuario con su token = escalabilidad natural</strong> — zero API cost para el developer y rate limits individuales.</li>
-          <li><strong>Normaliza los formatos entre providers</strong> — Anthropic y OpenAI retornan tool calls de forma diferente. Un parser intermedio hace que el agent runner sea agnóstico del provider.</li>
-          <li><strong>Las tools como funciones puras</strong> — el mismo <code>getUserSkills()</code> se usa en el agent loop Y en el pre-fetch del plan semanal. Reutilización real.</li>
-          <li><strong>El fallback chain con auto-refresh</strong> — 3 niveles de credenciales con refresh automático. El usuario nunca ve un error de autenticación si hay cualquier credencial disponible.</li>
+          <li class="lang-es"><strong>El agent loop es poderoso pero costoso</strong> — cada iteración es una API call. Usa pre-fetch cuando el flujo es predecible.</li>
+          <li class="lang-en"><strong>The agent loop is powerful but expensive</strong> — each iteration is an API call. Use pre-fetch when the flow is predictable.</li>
+          <li class="lang-es"><strong>El system prompt es el 80% del comportamiento</strong> — un buen prompt convierte un LLM genérico en un experto especializado. Incluye parallel tool calling para reducir iteraciones.</li>
+          <li class="lang-en"><strong>The system prompt is 80% of the behavior</strong> — a good prompt turns a generic LLM into a specialized expert. Include parallel tool calling to reduce iterations.</li>
+          <li class="lang-es"><strong>Tool calling > RAG para datos estructurados</strong> — en vez de embeber todo en el contexto, deja que el modelo pida solo lo que necesita.</li>
+          <li class="lang-en"><strong>Tool calling > RAG for structured data</strong> — instead of embedding everything in context, let the model request only what it needs.</li>
+          <li class="lang-es"><strong>Siempre aislar por userId en el backend</strong>, nunca confiar en el input del modelo para autenticación.</li>
+          <li class="lang-en"><strong>Always isolate by userId in the backend</strong>, never trust model input for authentication.</li>
+          <li class="lang-es"><strong>Los guardrails importan</strong> — límite de iteraciones, timeouts con <code>Promise.race</code>, y manejo de rate limits son esenciales en producción.</li>
+          <li class="lang-en"><strong>Guardrails matter</strong> — iteration limits, timeouts with <code>Promise.race</code>, and rate limit handling are essential in production.</li>
+          <li class="lang-es"><strong>Anthropic tiene sus particularidades</strong> — JSON en token exchange, <code>code#state</code>, stealth headers. Documenta todo porque no lo encontrarás en su docs oficiales.</li>
+          <li class="lang-en"><strong>Anthropic has its quirks</strong> — JSON in token exchange, <code>code#state</code>, stealth headers. Document everything because you won't find it in their official docs.</li>
+          <li class="lang-es"><strong>Cada usuario con su token = escalabilidad natural</strong> — zero API cost para el developer y rate limits individuales.</li>
+          <li class="lang-en"><strong>Each user with their own token = natural scalability</strong> — zero API cost for the developer and individual rate limits.</li>
+          <li class="lang-es"><strong>Normaliza los formatos entre providers</strong> — Anthropic y OpenAI retornan tool calls de forma diferente. Un parser intermedio hace que el agent runner sea agnóstico del provider.</li>
+          <li class="lang-en"><strong>Normalize formats across providers</strong> — Anthropic and OpenAI return tool calls differently. An intermediate parser makes the agent runner provider-agnostic.</li>
+          <li class="lang-es"><strong>Las tools como funciones puras</strong> — el mismo <code>getUserSkills()</code> se usa en el agent loop Y en el pre-fetch del plan semanal. Reutilización real.</li>
+          <li class="lang-en"><strong>Tools as pure functions</strong> — the same <code>getUserSkills()</code> is used in the agent loop AND in the weekly plan pre-fetch. Real reuse.</li>
+          <li class="lang-es"><strong>El fallback chain con auto-refresh</strong> — 3 niveles de credenciales con refresh automático. El usuario nunca ve un error de autenticación si hay cualquier credencial disponible.</li>
+          <li class="lang-en"><strong>The fallback chain with auto-refresh</strong> — 3 credential levels with automatic refresh. The user never sees an authentication error if any credential is available.</li>
         </ol>
       </div>
 
 
       <!-- ==================== SCREENSHOTS ==================== -->
-      <h2>📱 La App en Acción</h2>
+      <h2>📱 <span class="lang-es">La App en Acción</span><span class="lang-en">The App in Action</span></h2>
 
       <div class="post-gallery">
         <figure>
           <img src="post/post9phone.png" alt="TenK App — Vista principal con grid de progreso">
-          <figcaption>Vista principal de la app</figcaption>
+          <figcaption><span class="lang-es">Vista principal de la app</span><span class="lang-en">App main view</span></figcaption>
         </figure>
         <figure>
           <img src="post/post9phone2.png" alt="TenK App — Técnica Pomodoro">
-          <figcaption>Técnica Pomodoro integrada</figcaption>
+          <figcaption><span class="lang-es">Técnica Pomodoro integrada</span><span class="lang-en">Integrated Pomodoro technique</span></figcaption>
         </figure>
       </div>
 
       <div class="post-image">
         <figure>
           <img src="post/web.png" alt="TenK — Landing page web" style="max-width: 700px;">
-          <figcaption>Landing page en <a href="https://tenk.oventlabs.com">tenk.oventlabs.com</a></figcaption>
+          <figcaption>Landing page <span class="lang-es">en</span><span class="lang-en">at</span> <a href="https://tenk.oventlabs.com">tenk.oventlabs.com</a></figcaption>
         </figure>
       </div>
 
 
       <!-- FOOTER -->
       <div class="post-footer">
-        <p>Escrito por <strong>Oscar Martínez</strong> — 11 de febrero de 2026</p>
+        <p><span class="lang-es">Escrito por <strong>Oscar Martínez</strong> — 11 de febrero de 2026</span><span class="lang-en">Written by <strong>Oscar Martínez</strong> — February 11, 2026</span></p>
         <p style="margin-top: 10px; color: var(--text-muted);">
-          <a href="https://tenk.oventlabs.com">Prueba TenK</a> &nbsp;|&nbsp;
-          <a href="10k-hours-tracker.html">Ver el devlog completo</a> &nbsp;|&nbsp;
-          <a href="index.html">Volver al inicio</a>
+          <a href="https://tenk.oventlabs.com"><span class="lang-es">Prueba TenK</span><span class="lang-en">Try TenK</span></a> &nbsp;|&nbsp;
+          <a href="10k-hours-tracker.html"><span class="lang-es">Ver el devlog completo</span><span class="lang-en">See the full devlog</span></a> &nbsp;|&nbsp;
+          <a href="index.html"><span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span></a>
         </p>
       </div>
 

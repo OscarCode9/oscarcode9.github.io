@@ -321,19 +321,21 @@
       .timeline-header { flex-direction: column; }
     }
   </style>
+  <script src="public/i18n.js"></script>
 </head>
 <body>
 
-  <header class="post-header">
+  <header class="post-header" style="position:relative;">
+    <a class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px;"></a>
     <div class="container">
       <a href="index.html" class="back-link">
-        <i class="fas fa-arrow-left"></i> Volver al inicio
+        <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <h1 class="post-title">10K Hours Tracker: El viaje hacia la maestría</h1>
+      <h1 class="post-title"><span class="lang-es">10K Hours Tracker: El viaje hacia la maestría</span><span class="lang-en">10K Hours Tracker: The Journey to Mastery</span></h1>
       <div class="post-meta">
-        <span class="post-tag">Proyecto</span>
-        <span class="post-tag">IA</span>
-        <span>📅 Iniciado: 4 Feb 2026</span>
+        <span class="post-tag lang-es">Proyecto</span><span class="post-tag lang-en">Project</span>
+        <span class="post-tag lang-es">IA</span><span class="post-tag lang-en">AI</span>
+        <span class="lang-es">📅 Iniciado: 4 Feb 2026</span><span class="lang-en">📅 Started: Feb 4, 2026</span>
       </div>
     </div>
   </header>
@@ -341,9 +343,13 @@
   <main class="container">
     
     <div class="post-intro">
-      <p>
+      <p class="lang-es">
         📝 <strong>Sobre este post:</strong> Esta es una bitácora cronológica en vivo. Cada entrada representa un momento específico en el desarrollo de esta aplicación. 
         El post se actualiza continuamente mientras construyo el proyecto, documentando ideas, decisiones técnicas, y el progreso hacia las 10,000 horas de práctica deliberada.
+      </p>
+      <p class="lang-en">
+        📝 <strong>About this post:</strong> This is a live chronological devlog. Each entry represents a specific moment in the development of this application.
+        The post is continuously updated as I build the project, documenting ideas, technical decisions, and progress towards 10,000 hours of deliberate practice.
       </p>
     </div>
 
@@ -354,7 +360,7 @@
   </main>
 
   <footer class="post-footer">
-    <p>🚀 Post en desarrollo continuo | Oscar Code</p>
+    <p><span class="lang-es">🚀 Post en desarrollo continuo</span><span class="lang-en">🚀 Post in continuous development</span> | Oscar Code</p>
   </footer>
 
   <script>
@@ -374,7 +380,9 @@
           entryDiv.className = 'timeline-entry';
           
           const date = new Date(entry.timestamp);
-          const formattedDate = date.toLocaleDateString('es-ES', {
+          const lang = document.documentElement.getAttribute('lang') || 'es';
+          const locale = lang === 'en' ? 'en-US' : 'es-ES';
+          const formattedDate = date.toLocaleDateString(locale, {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -422,8 +430,9 @@
         });
       })
       .catch(error => {
-        console.error('Error cargando entradas:', error);
-        document.getElementById('timeline').innerHTML = '<p>Error cargando las entradas...</p>';
+        console.error('Error loading entries:', error);
+        const lang = document.documentElement.getAttribute('lang') || 'es';
+        document.getElementById('timeline').innerHTML = lang === 'en' ? '<p>Error loading entries...</p>' : '<p>Error cargando las entradas...</p>';
       });
   </script>
 
