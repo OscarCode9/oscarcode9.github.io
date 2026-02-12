@@ -411,18 +411,26 @@
             `;
           }
 
+          // Bilingual support: use title_en/text_en when available
+          const titleHtml = entry.title_en
+            ? `<span class="lang-es">${entry.title}</span><span class="lang-en">${entry.title_en}</span>`
+            : entry.title;
+          const textHtml = entry.text_en
+            ? `<span class="lang-es">${marked.parse(entry.text)}</span><span class="lang-en">${marked.parse(entry.text_en)}</span>`
+            : marked.parse(entry.text);
+
           entryDiv.innerHTML = `
             <div class="timeline-header">
               <h3 class="timeline-title">
                 <span class="timeline-number">${entries.length - index}</span>
-                ${entry.title}
+                ${titleHtml}
               </h3>
               <span class="timeline-date">
                 <i class="far fa-clock"></i>
                 ${formattedDate}
               </span>
             </div>
-            <div class="timeline-text">${marked.parse(entry.text)}</div>
+            <div class="timeline-text">${textHtml}</div>
             ${imageHtml}
           `;
 
