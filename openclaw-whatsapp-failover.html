@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw: WhatsApp + Multi-Provider Failover — Nunca Más Offline | Oscar Code</title>
+  <meta name="description" content="Cómo configuré un agente de IA con 4 proveedores de respaldo, watchdog automático y reconexión de WhatsApp para que nunca deje de responder.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00a8cc;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1a1f 50%, #0d2a2d 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(0,212,255,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(0,168,204,0.04) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite;
+    }
+
+    @keyframes headerGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-green) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.15em;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.9em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: rgba(0,212,255,0.15);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin: 0 4px;
+      border: 1px solid rgba(0,212,255,0.3);
+    }
+
+    .post-tag.devops {
+      background: rgba(255,171,64,0.15);
+      color: var(--accent-orange);
+      border-color: rgba(255,171,64,0.3);
+    }
+
+    /* ========== CONTENT ========== */
+    .post-content {
+      padding: 60px 0;
+    }
+
+    .post-content h2 {
+      font-size: 1.6em;
+      margin: 50px 0 20px;
+      color: var(--text-primary);
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(0,212,255,0.3);
+    }
+
+    .post-content h3 {
+      font-size: 1.25em;
+      margin: 35px 0 15px;
+      color: var(--primary);
+    }
+
+    .post-content p {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      font-size: 1.05em;
+    }
+
+    .post-content ul, .post-content ol {
+      color: var(--text-secondary);
+      margin: 0 0 20px 25px;
+    }
+
+    .post-content li {
+      margin-bottom: 8px;
+    }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,212,255,0.3);
+      transition: all 0.3s;
+    }
+
+    .post-content a:hover {
+      color: var(--accent-green);
+      border-bottom-color: var(--accent-green);
+    }
+
+    /* ========== CODE BLOCKS ========== */
+    .post-content code {
+      background: rgba(0,212,255,0.12);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+      font-size: 0.9em;
+    }
+
+    .post-content pre {
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0 30px;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .post-content pre code {
+      background: none;
+      color: #e6edf3;
+      padding: 0;
+      font-size: 0.88em;
+      line-height: 1.7;
+    }
+
+    .post-content pre .comment { color: #8b949e; }
+    .post-content pre .command { color: var(--accent-green); }
+    .post-content pre .flag { color: var(--accent-orange); }
+    .post-content pre .string { color: #a5d6ff; }
+    .post-content pre .output { color: var(--text-muted); font-style: italic; }
+
+    /* ========== WARNING BOX ========== */
+    .warning-box {
+      background: rgba(255,107,107,0.08);
+      border: 1px solid rgba(255,107,107,0.3);
+      border-left: 4px solid var(--accent-red);
+      border-radius: 0 12px 12px 0;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+
+    .warning-box h4 {
+      color: var(--accent-red);
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .warning-box p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .warning-box code {
+      background: rgba(255,107,107,0.15);
+      color: var(--accent-red);
+    }
+
+    /* ========== INFO BOX ========== */
+    .info-box {
+      background: rgba(79,195,247,0.08);
+      border: 1px solid rgba(79,195,247,0.3);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 0 12px 12px 0;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+
+    .info-box h4 {
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .info-box p, .info-box li {
+      color: var(--text-secondary);
+    }
+
+    /* ========== TIP BOX ========== */
+    .tip-box {
+      background: rgba(105,240,174,0.08);
+      border: 1px solid rgba(105,240,174,0.3);
+      border-left: 4px solid var(--accent-green);
+      border-radius: 0 12px 12px 0;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+
+    .tip-box h4 {
+      color: var(--accent-green);
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .tip-box p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* ========== ORANGE BOX (OpenClaw branding) ========== */
+    .openclaw-box {
+      background: rgba(255,171,64,0.08);
+      border: 1px solid rgba(255,171,64,0.3);
+      border-left: 4px solid var(--accent-orange);
+      border-radius: 0 12px 12px 0;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+
+    .openclaw-box h4 {
+      color: var(--accent-orange);
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .openclaw-box p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* ========== TABLE ========== */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .comparison-table th {
+      background: rgba(0,212,255,0.15);
+      color: var(--primary);
+      padding: 14px 20px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.95em;
+    }
+
+    .comparison-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      font-size: 0.95em;
+    }
+
+    .comparison-table tr:nth-child(even) td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .comparison-table tr:hover td {
+      background: rgba(0,212,255,0.05);
+    }
+
+    /* ========== SUMMARY BOX ========== */
+    .summary-box {
+      background: linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(105,240,174,0.08) 100%);
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 16px;
+      padding: 35px;
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .summary-box h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-size: 1.5em;
+    }
+
+    .summary-box p {
+      color: var(--text-secondary);
+    }
+
+    /* ========== ASCII ART ========== */
+    .ascii-diagram {
+      background: #0d1117;
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 12px;
+      padding: 25px 30px;
+      margin: 30px 0;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'SF Mono', monospace;
+      font-size: 0.82em;
+      line-height: 1.5;
+      color: var(--accent-green);
+      white-space: pre;
+    }
+
+    /* ========== FOOTER ========== */
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+
+    .post-footer p {
+      color: var(--text-muted);
+    }
+
+    .post-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .post-footer a:hover {
+      color: var(--accent-orange);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.8em; }
+      .post-subtitle { font-size: 1em; }
+      .ascii-diagram { font-size: 0.7em; padding: 15px; }
+      .post-content pre { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Volver al inicio
+      </a>
+      <h1 class="post-title">&#x1F99E; OpenClaw: WhatsApp + Multi-Provider Failover &#8212; Nunca M&#225;s Offline</h1>
+      <p class="post-subtitle">C&#243;mo configur&#233; un agente de IA con 4 proveedores de respaldo, watchdog autom&#225;tico y reconexi&#243;n de WhatsApp para que nunca deje de responder.</p>
+      <div class="post-meta">
+        <span class="post-tag">OpenClaw</span>
+        <span class="post-tag">AI Agents</span>
+        <span class="post-tag devops">DevOps</span>
+        <br><br>
+        <span>&#x1F4C5; 14 de Febrero, 2026 &#183; &#x23F1;&#xFE0F; 10 min de lectura</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+
+      <!-- INTRO -->
+      <p>Si usas <strong>OpenClaw</strong> para tener un agente de IA accesible por WhatsApp, sabes que la experiencia es incre&#237;ble... hasta que deja de funcionar. Un reinicio del gateway, un token expirado, un DNS que falla &#8212; y de repente tu agente est&#225; muerto y nadie te avisa.</p>
+
+      <p>En este post te explico c&#243;mo configur&#233; mi setup para que sea <strong>pr&#225;cticamente indestructible</strong>: reconexi&#243;n autom&#225;tica de WhatsApp, un watchdog que revisa cada 15 minutos, y 4 proveedores de modelo en cadena de failover para que si uno se cae, el siguiente entre inmediatamente.</p>
+
+      <div class="openclaw-box">
+        <h4>&#x1F99E; &#191;Qu&#233; es OpenClaw?</h4>
+        <p>OpenClaw es una plataforma open-source para crear agentes de IA con acceso a canales de mensajer&#237;a (WhatsApp, Telegram, etc.), herramientas del sistema, y m&#250;ltiples proveedores de modelos. B&#225;sicamente, un agente que vive en tu terminal y responde por WhatsApp.</p>
+      </div>
+
+      <!-- ===== SECTION 1: EL PROBLEMA ===== -->
+      <h2>1. El Problema</h2>
+
+      <p>Todo empez&#243; cuando not&#233; que mi agente de OpenClaw hab&#237;a dejado de responder por WhatsApp. Le mandaba mensajes y nada. Silencio absoluto.</p>
+
+      <p>Al revisar los logs, encontr&#233; <strong>dos errores</strong> que se estaban encadenando:</p>
+
+      <div class="warning-box">
+        <h4>&#x26A0;&#xFE0F; Error 1: DNS temporal &#8212; ENOTFOUND</h4>
+        <p>El gateway de WhatsApp no pod&#237;a resolver <code>web.whatsapp.com</code>. Esto pasa cuando hay una interrupci&#243;n de red moment&#225;nea o el gateway se reinicia y la resoluci&#243;n DNS a&#250;n no est&#225; lista.</p>
+      </div>
+
+      <pre><code><span class="output">[ERROR] WhatsApp channel disconnected</span>
+<span class="output">  reason: getaddrinfo ENOTFOUND web.whatsapp.com</span>
+<span class="output">  at: 2026-02-13T08:42:17.003Z</span>
+<span class="output">  retry_count: 3</span>
+<span class="output">  status: STOPPED</span></code></pre>
+
+      <div class="warning-box">
+        <h4>&#x26A0;&#xFE0F; Error 2: Token de Copilot expirado &#8212; HTTP 403</h4>
+        <p>El proveedor principal (GitHub Copilot) estaba devolviendo 403 Forbidden. El token de autenticaci&#243;n hab&#237;a expirado y no se renov&#243; autom&#225;ticamente. Resultado: a&#250;n cuando el canal se reconectara, el agente no pod&#237;a generar respuestas.</p>
+      </div>
+
+      <pre><code><span class="output">[ERROR] Model provider failed: github-copilot/claude-opus-4.6</span>
+<span class="output">  status: 403 Forbidden</span>
+<span class="output">  message: "Token expired or revoked"</span>
+<span class="output">  fallback: none configured</span></code></pre>
+
+      <p>O sea: <strong>doble falla</strong>. El canal de comunicaci&#243;n muerto Y el proveedor de modelo muerto. Sin fallback. Sin watchdog. Sin recuperaci&#243;n autom&#225;tica. Un desastre.</p>
+
+      <!-- ===== SECTION 2: DIAGN&#211;STICO ===== -->
+      <h2>2. Diagn&#243;stico</h2>
+
+      <p>Antes de arreglar nada, hay que entender qu&#233; pas&#243;. OpenClaw tiene comandos muy &#250;tiles para diagnosticar el estado de todo el sistema.</p>
+
+      <h3>Revisar el estado de los canales</h3>
+
+      <pre><code><span class="command">openclaw channels status</span></code></pre>
+
+      <p>Esto muestra el estado de cada canal conectado. En mi caso, WhatsApp aparec&#237;a como <code>STOPPED</code>:</p>
+
+      <pre><code><span class="output">Channel      Status      Last Activity         Uptime</span>
+<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">whatsapp     STOPPED     2026-02-13 08:42      0s</span>
+<span class="output">terminal     CONNECTED   2026-02-14 10:15      1d 2h</span></code></pre>
+
+      <h3>Revisar los logs del canal</h3>
+
+      <pre><code><span class="command">openclaw channels logs</span> <span class="flag">--channel whatsapp</span> <span class="flag">--tail 50</span></code></pre>
+
+      <p>Aqu&#237; es donde encontr&#233; los errores de DNS que mencion&#233; arriba. Los logs te dan el detalle completo de qu&#233; pas&#243; y cu&#225;ndo.</p>
+
+      <h3>Health check general</h3>
+
+      <pre><code><span class="command">openclaw health</span></code></pre>
+
+      <pre><code><span class="output">Component          Status    Details</span>
+<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;         &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">Gateway            &#10004; OK     pid: 48291, uptime: 1d 2h</span>
+<span class="output">WhatsApp Channel   &#10008; FAIL   STOPPED - ENOTFOUND web.whatsapp.com</span>
+<span class="output">Model: openai      &#10004; OK     gpt-5.3-codex responding</span>
+<span class="output">Model: copilot     &#10008; FAIL   403 Forbidden - token expired</span>
+<span class="output">Node.js            &#10004; OK     v22.14.0</span>
+<span class="output">Cron               &#10004; OK     0 active jobs</span></code></pre>
+
+      <div class="info-box">
+        <h4>&#x1F4A1; Pro tip</h4>
+        <p>Siempre corre <code>openclaw health</code> primero. Te da una vista panor&#225;mica de todo lo que est&#225; bien y mal en un solo comando. Desde ah&#237; sabes d&#243;nde enfocarte.</p>
+      </div>
+
+      <!-- ===== SECTION 3: RECONECTAR WHATSAPP ===== -->
+      <h2>3. Soluci&#243;n 1: Reconectar WhatsApp</h2>
+
+      <p>Lo primero es lo primero: restaurar la conexi&#243;n del canal de WhatsApp.</p>
+
+      <h3>Paso 1: Re-autenticar el canal</h3>
+
+      <pre><code><span class="command">openclaw channels login</span> <span class="flag">--channel whatsapp</span></code></pre>
+
+      <p>Esto regenera la sesi&#243;n de WhatsApp. Te va a pedir escanear un c&#243;digo QR desde tu tel&#233;fono (igual que WhatsApp Web). Una vez escaneado, la sesi&#243;n queda activa.</p>
+
+      <h3>Paso 2: Reiniciar el gateway</h3>
+
+      <pre><code><span class="command">openclaw gateway restart</span></code></pre>
+
+      <p>El gateway es el proceso que mantiene las conexiones activas. Al reiniciarlo, se reconectan todos los canales con las sesiones actualizadas.</p>
+
+      <pre><code><span class="output">Gateway restarting...</span>
+<span class="output">  WhatsApp: reconnecting... &#10004; CONNECTED</span>
+<span class="output">  Terminal: reconnecting... &#10004; CONNECTED</span>
+<span class="output">Gateway ready (pid: 51023)</span></code></pre>
+
+      <h3>Paso 3: Verificar</h3>
+
+      <pre><code><span class="command">openclaw channels status</span>
+
+<span class="output">Channel      Status       Last Activity         Uptime</span>
+<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">whatsapp     CONNECTED    2026-02-14 10:30      2m</span>
+<span class="output">terminal     CONNECTED    2026-02-14 10:30      1d 2h</span></code></pre>
+
+      <div class="tip-box">
+        <h4>&#10004; Canal restaurado</h4>
+        <p>WhatsApp vuelve a estar <code>CONNECTED</code>. Pero esto fue un fix manual. Si se vuelve a caer a las 3am, &#191;qui&#233;n lo reconecta? Nadie. Por eso necesitamos el watchdog.</p>
+      </div>
+
+      <!-- ===== SECTION 4: WATCHDOG ===== -->
+      <h2>4. Soluci&#243;n 2: Watchdog Autom&#225;tico (Cron)</h2>
+
+      <p>La idea es simple: un cron job que corre cada 15 minutos, revisa si WhatsApp est&#225; conectado, y si no lo est&#225;, lo reconecta autom&#225;ticamente. Lo mejor es que OpenClaw tiene esto integrado &#8212; no necesitas crontab del sistema ni scripts externos.</p>
+
+      <h3>Crear el watchdog</h3>
+
+      <pre><code><span class="command">openclaw cron add</span> \
+  <span class="flag">--name</span> <span class="string">"whatsapp-watchdog"</span> \
+  <span class="flag">--every</span> <span class="string">15m</span> \
+  <span class="flag">--message</span> <span class="string">"Revisa el estado del canal de WhatsApp. Si est&#225; desconectado o stopped, ejecuta 'openclaw gateway restart' para reconectarlo."</span> \
+  <span class="flag">--channel</span> <span class="string">whatsapp</span> \
+  <span class="flag">--to</span> <span class="string">"+52XXXXXXXXXX"</span> \
+  <span class="flag">--best-effort-deliver</span></code></pre>
+
+      <p>&#191;Qu&#233; hace esto exactamente?</p>
+
+      <ul>
+        <li><code>--every 15m</code> &#8212; Se ejecuta cada 15 minutos.</li>
+        <li><code>--message</code> &#8212; Le dice al agente qu&#233; hacer. El agente usa sus tools para verificar el estado y tomar acci&#243;n.</li>
+        <li><code>--channel whatsapp</code> &#8212; El contexto del canal a monitorear.</li>
+        <li><code>--to "+52XXXXXXXXXX"</code> &#8212; N&#250;mero de destino para las notificaciones.</li>
+        <li><code>--best-effort-deliver</code> &#8212; Si no puede entregar el mensaje (porque WhatsApp est&#225; ca&#237;do), no falla el cron &#8212; simplemente lo intenta y sigue adelante.</li>
+      </ul>
+
+      <div class="info-box">
+        <h4>&#x1F504; &#191;C&#243;mo funciona internamente?</h4>
+        <p>El cron de OpenClaw no es un crontab de Unix. Es un scheduler interno que vive en el gateway. Cada 15 minutos, invoca al agente con el mensaje que le diste, el agente analiza el estado usando sus herramientas (<code>channels_status</code>, <code>gateway_restart</code>, etc.) y toma las acciones necesarias. Es como tener un DevOps bot viviendo en tu m&#225;quina.</p>
+      </div>
+
+      <h3>Verificar que el cron est&#225; activo</h3>
+
+      <pre><code><span class="command">openclaw cron list</span>
+
+<span class="output">Name                  Interval    Next Run              Channel     Status</span>
+<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;      &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;   &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">whatsapp-watchdog     15m         2026-02-14 10:45      whatsapp    ACTIVE</span></code></pre>
+
+      <div class="tip-box">
+        <h4>&#10004; Watchdog activo</h4>
+        <p>Ahora si WhatsApp se desconecta a las 3am, el watchdog lo detecta en m&#225;ximo 15 minutos y lo reconecta solo. Puedes dormir tranquilo.</p>
+      </div>
+
+      <!-- ===== SECTION 5: MULTI-PROVIDER FAILOVER ===== -->
+      <h2>5. Soluci&#243;n 3: Multi-Provider Failover</h2>
+
+      <p>El canal ya se reconecta solo. Pero &#191;qu&#233; pasa si el <em>modelo</em> falla? Si tu &#250;nico proveedor es GitHub Copilot y el token expira, el agente recibe mensajes pero no puede responder. Necesitamos un plan B. Y un plan C. Y un plan D.</p>
+
+      <h3>La cadena de failover</h3>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Prioridad</th>
+            <th>Proveedor</th>
+            <th>Modelo</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Primary</strong></td>
+            <td>OpenAI Codex</td>
+            <td><code>openai-codex/gpt-5.3-codex</code></td>
+            <td>El m&#225;s r&#225;pido, ideal para respuestas del d&#237;a a d&#237;a</td>
+          </tr>
+          <tr>
+            <td><strong>Fallback #1</strong></td>
+            <td>GitHub Copilot</td>
+            <td><code>github-copilot/claude-opus-4.6</code></td>
+            <td>Claude Opus v&#237;a Copilot proxy, muy capaz</td>
+          </tr>
+          <tr>
+            <td><strong>Fallback #2</strong></td>
+            <td>Copilot Proxy</td>
+            <td><code>copilot-proxy/claude-sonnet-4.5</code></td>
+            <td>Sonnet v&#237;a Copilot, m&#225;s ligero pero confiable</td>
+          </tr>
+          <tr>
+            <td><strong>Fallback #3</strong></td>
+            <td>Anthropic (Claude Code)</td>
+            <td><code>anthropic/claude-sonnet-4-5-20250929</code></td>
+            <td>Directo desde Claude Code subscription</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>La l&#243;gica es: si el proveedor primario falla (timeout, 403, 500, rate limit), OpenClaw autom&#225;ticamente intenta el siguiente en la lista. Si ese tambi&#233;n falla, pasa al siguiente. As&#237; sucesivamente hasta que uno responda.</p>
+
+      <h3>Configurar los fallbacks</h3>
+
+      <pre><code><span class="command">openclaw config set</span> <span class="flag">agents.defaults.model.fallbacks</span> \
+  <span class="string">'["github-copilot/claude-opus-4.6","copilot-proxy/claude-sonnet-4.5","anthropic/claude-sonnet-4-5-20250929"]'</span> \
+  <span class="flag">--json</span></code></pre>
+
+      <pre><code><span class="output">&#10004; Config updated: agents.defaults.model.fallbacks</span>
+<span class="output">   [0] github-copilot/claude-opus-4.6</span>
+<span class="output">   [1] copilot-proxy/claude-sonnet-4.5</span>
+<span class="output">   [2] anthropic/claude-sonnet-4-5-20250929</span></code></pre>
+
+      <div class="info-box">
+        <h4>&#x1F4A1; &#191;Por qu&#233; este orden?</h4>
+        <p>El modelo primario (<code>openai-codex/gpt-5.3-codex</code>) ya est&#225; configurado como default. Los fallbacks se prueban en orden. Puse Claude Opus primero porque es el m&#225;s capaz. Sonnet como segundo porque es r&#225;pido y barato. Y el de Anthropic directo como &#250;ltimo recurso porque usa los cr&#233;ditos de mi suscripci&#243;n de Claude Code.</p>
+      </div>
+
+      <!-- ===== SECTION 6: GITHUB COPILOT AUTH ===== -->
+      <h2>6. Configurar GitHub Copilot como Provider</h2>
+
+      <p>Para que OpenClaw pueda usar modelos v&#237;a GitHub Copilot, necesitas autenticarte con el device flow de GitHub:</p>
+
+      <pre><code><span class="command">openclaw models auth login-github-copilot</span></code></pre>
+
+      <pre><code><span class="output">&#x1F510; GitHub Copilot Authentication</span>
+<span class="output">   Open this URL in your browser:</span>
+<span class="output">   &#8594; https://github.com/login/device</span>
+<span class="output"></span>
+<span class="output">   Enter this code: ABCD-1234</span>
+<span class="output"></span>
+<span class="output">   Waiting for authorization...</span></code></pre>
+
+      <p>El proceso es:</p>
+      <ol>
+        <li>Abre <a href="https://github.com/login/device" target="_blank">https://github.com/login/device</a> en tu navegador.</li>
+        <li>Ingresa el c&#243;digo que te muestra la terminal.</li>
+        <li>Autoriza el acceso.</li>
+        <li>La terminal detecta la autorizaci&#243;n autom&#225;ticamente.</li>
+      </ol>
+
+      <pre><code><span class="output">   &#10004; Authenticated as @oscarcode9</span>
+<span class="output">   Token stored securely.</span>
+<span class="output">   Available models: claude-opus-4.6, claude-sonnet-4.5, gpt-4o, o1...</span></code></pre>
+
+      <div class="warning-box">
+        <h4>&#x26A0;&#xFE0F; Token expiration</h4>
+        <p>Los tokens de Copilot expiran peri&#243;dicamente. Si ves errores 403, re-ejecuta <code>openclaw models auth login-github-copilot</code> para renovar. Con el failover configurado, incluso si el token expira, los otros proveedores toman el relevo mientras lo renuevas.</p>
+      </div>
+
+      <!-- ===== SECTION 7: CLAUDE CODE PROVIDER ===== -->
+      <h2>7. Configurar Claude Code como Provider</h2>
+
+      <p>Esta es la parte m&#225;s elegante del setup. OpenClaw puede leer las credenciales de Claude Code directamente desde el <strong>macOS Keychain</strong>. Si ya tienes Claude Code instalado y autenticado, no necesitas configurar tokens ni API keys manualmente.</p>
+
+      <div class="tip-box">
+        <h4>&#x1F511; Credenciales autom&#225;ticas</h4>
+        <p>OpenClaw busca las credenciales en el Keychain de macOS bajo el nombre <code>Claude Code-credentials</code>. Si Claude Code est&#225; autenticado en tu m&#225;quina, OpenClaw las encuentra y las usa directamente. Zero config.</p>
+      </div>
+
+      <p>Lo &#250;nico que necesitas hacer es decirle a OpenClaw que ese modelo existe como opci&#243;n:</p>
+
+      <pre><code><span class="command">openclaw config set</span> <span class="flag">agents.defaults.models.anthropic/claude-sonnet-4-5-20250929</span> <span class="string">'{}'</span> <span class="flag">--json</span></code></pre>
+
+      <pre><code><span class="output">&#10004; Config updated: agents.defaults.models.anthropic/claude-sonnet-4-5-20250929</span>
+<span class="output">   Auth: macOS Keychain (Claude Code-credentials) &#10004;</span>
+<span class="output">   Model: claude-sonnet-4-5-20250929</span>
+<span class="output">   Status: ready</span></code></pre>
+
+      <p>Eso es todo. El <code>{}</code> vac&#237;o significa &#8220;usa las credenciales que ya tienes&#8221;. OpenClaw detecta el Keychain, extrae el token, y lo usa cuando necesita hacer requests a la API de Anthropic.</p>
+
+      <div class="info-box">
+        <h4>&#x1F4A1; &#191;Por qu&#233; es el &#250;ltimo fallback?</h4>
+        <p>Porque los requests a la API directa de Anthropic se descuentan de tu suscripci&#243;n de Claude Code. Los otros proveedores (Copilot) usan sus propios cr&#233;ditos. Entonces reservo Anthropic directo como &#250;ltimo recurso para no gastar cr&#233;ditos innecesariamente.</p>
+      </div>
+
+      <!-- ===== SECTION 8: NODE.JS ===== -->
+      <h2>8. Instalar Node.js del Sistema</h2>
+
+      <p>El gateway de OpenClaw corre sobre Node.js. Si est&#225;s usando la versi&#243;n que viene con alg&#250;n version manager (nvm, fnm, etc.), puede haber problemas de estabilidad cuando el gateway se ejecuta como proceso de fondo &#8212; especialmente despu&#233;s de reinicios del sistema.</p>
+
+      <p>La soluci&#243;n es instalar Node.js directamente con Homebrew para que est&#233; disponible a nivel de sistema:</p>
+
+      <pre><code><span class="command">brew install node</span></code></pre>
+
+      <p>Despu&#233;s, ejecuta el doctor de OpenClaw para que detecte y use la instalaci&#243;n del sistema:</p>
+
+      <pre><code><span class="command">openclaw doctor --fix</span></code></pre>
+
+      <pre><code><span class="output">&#x1F50D; Running diagnostics...</span>
+<span class="output"></span>
+<span class="output">  Node.js        &#10004;  v22.14.0 (/opt/homebrew/bin/node)</span>
+<span class="output">  npm            &#10004;  v10.9.2</span>
+<span class="output">  Gateway        &#10004;  running (pid: 51023)</span>
+<span class="output">  WhatsApp       &#10004;  CONNECTED</span>
+<span class="output">  Models         &#10004;  4 configured (1 primary + 3 fallbacks)</span>
+<span class="output">  Cron           &#10004;  1 active job</span>
+<span class="output">  Keychain       &#10004;  Claude Code-credentials found</span>
+<span class="output"></span>
+<span class="output">&#10004; All checks passed. No fixes needed.</span></code></pre>
+
+      <div class="tip-box">
+        <h4>&#10004; Sistema estable</h4>
+        <p>Con Node.js instalado v&#237;a Homebrew, el gateway tiene una instalaci&#243;n de Node confiable que no depende de la sesi&#243;n de shell ni de variables de entorno de nvm. Esto es especialmente importante para que el watchdog funcione correctamente en background.</p>
+      </div>
+
+      <!-- ===== SECTION 9: VERIFICAR TODO ===== -->
+      <h2>9. Verificar Todo</h2>
+
+      <p>Ya tenemos todo configurado. Ahora hay que probar que cada proveedor funciona y que el canal de WhatsApp entrega los mensajes correctamente.</p>
+
+      <h3>Probar el env&#237;o por WhatsApp</h3>
+
+      <pre><code><span class="command">openclaw agent</span> \
+  <span class="flag">-m</span> <span class="string">"Responde con: Soy [provider] y estoy funcionando"</span> \
+  <span class="flag">--to</span> <span class="string">"+52XXXXXXXXXX"</span> \
+  <span class="flag">--channel</span> <span class="string">whatsapp</span> \
+  <span class="flag">--deliver</span></code></pre>
+
+      <p>Si todo est&#225; bien, deber&#237;as recibir un mensaje en WhatsApp con el nombre del proveedor que respondi&#243;.</p>
+
+      <h3>Verificar la configuraci&#243;n de modelos</h3>
+
+      <pre><code><span class="command">openclaw models list</span></code></pre>
+
+      <pre><code><span class="output">Role          Provider                Model                              Status</span>
+<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;      &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;      &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">default       openai-codex            gpt-5.3-codex                      &#10004; OK</span>
+<span class="output">fallback#1    github-copilot          claude-opus-4.6                    &#10004; OK</span>
+<span class="output">fallback#2    copilot-proxy           claude-sonnet-4.5                  &#10004; OK</span>
+<span class="output">fallback#3    anthropic               claude-sonnet-4-5-20250929         &#10004; OK</span></code></pre>
+
+      <p>Los 4 proveedores deben mostrar <code>OK</code>. Si alguno muestra error, revisa la autenticaci&#243;n de ese proveedor espec&#237;fico.</p>
+
+      <h3>Probar el failover manualmente</h3>
+
+      <p>Para verificar que el failover funciona, puedes forzar una falla temporal en el proveedor primario:</p>
+
+      <pre><code><span class="comment"># Deshabilitar temporalmente el proveedor primario</span>
+<span class="command">openclaw config set</span> <span class="flag">agents.defaults.model.enabled</span> <span class="string">false</span>
+
+<span class="comment"># Enviar un mensaje &#8212; deber&#237;a usar fallback#1</span>
+<span class="command">openclaw agent</span> <span class="flag">-m</span> <span class="string">"&#191;Qu&#233; modelo me est&#225; respondiendo?"</span> <span class="flag">--to</span> <span class="string">"+52XXXXXXXXXX"</span> <span class="flag">--channel</span> <span class="string">whatsapp</span> <span class="flag">--deliver</span>
+
+<span class="comment"># Re-habilitar el proveedor primario</span>
+<span class="command">openclaw config set</span> <span class="flag">agents.defaults.model.enabled</span> <span class="string">true</span></code></pre>
+
+      <div class="tip-box">
+        <h4>&#10004; Failover verificado</h4>
+        <p>Si recibes respuesta cuando el primario est&#225; deshabilitado, el failover est&#225; funcionando correctamente. El agente cambi&#243; autom&#225;ticamente al siguiente proveedor disponible.</p>
+      </div>
+
+      <!-- ===== SECTION 10: RESULTADO FINAL ===== -->
+      <h2>10. Resultado Final</h2>
+
+      <p>Aqu&#237; est&#225; el diagrama completo del flujo de failover:</p>
+
+      <div class="ascii-diagram">
+  &#x1F4F1; WhatsApp Message
+       &#9474;
+       &#9660;
+  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+  &#9474;   OpenClaw Gateway      &#9474;&#9668;&#9472;&#9472;&#9472;&#9472; Watchdog (cada 15min)
+  &#9474;   (Node.js process)     &#9474;      reconecta si STOPPED
+  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+           &#9474;
+           &#9660;
+  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+  &#9474;   Model Router          &#9474;
+  &#9474;   (failover chain)      &#9474;
+  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+           &#9474;
+     &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+     &#9474;                                                &#9474;
+     &#9660;                                                &#9474;
+  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
+  &#9474; PRIMARY          &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
+  &#9474; openai-codex/    &#9474;                                &#9474;
+  &#9474; gpt-5.3-codex    &#9474;                                &#9474;
+  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
+         &#9474; FAIL                                    &#9474;
+         &#9660;                                            &#9474;
+  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
+  &#9474; FALLBACK #1      &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
+  &#9474; github-copilot/  &#9474;                                &#9474;
+  &#9474; claude-opus-4.6  &#9474;                                &#9474;
+  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
+         &#9474; FAIL                                    &#9474;
+         &#9660;                                            &#9474;
+  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
+  &#9474; FALLBACK #2      &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
+  &#9474; copilot-proxy/   &#9474;                                &#9474;
+  &#9474; claude-sonnet-4.5&#9474;                                &#9474;
+  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
+         &#9474; FAIL                                    &#9474;
+         &#9660;                                            &#9474;
+  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
+  &#9474; FALLBACK #3      &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
+  &#9474; anthropic/       &#9474;                                &#9474;
+  &#9474; claude-sonnet-4-5&#9474;                                &#9474;
+  &#9474; (Claude Code)    &#9474;                                &#9474;
+  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
+                                                      &#9474;
+  &#9668;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</div>
+
+      <h3>Resumen de lo que configuramos</h3>
+
+      <div class="summary-box">
+        <h3>&#x1F99E; Setup Final</h3>
+        <p>Un agente de OpenClaw que es pr&#225;cticamente indestructible:</p>
+      </div>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Qu&#233; hace</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>WhatsApp Channel</strong></td>
+            <td>Canal de comunicaci&#243;n principal</td>
+            <td>&#10004; CONNECTED</td>
+          </tr>
+          <tr>
+            <td><strong>Watchdog Cron</strong></td>
+            <td>Revisa WhatsApp cada 15 min, reconecta si se cae</td>
+            <td>&#10004; ACTIVE</td>
+          </tr>
+          <tr>
+            <td><strong>4 Proveedores</strong></td>
+            <td>Cadena de failover autom&#225;tica de modelos</td>
+            <td>&#10004; 4/4 OK</td>
+          </tr>
+          <tr>
+            <td><strong>Node.js (Homebrew)</strong></td>
+            <td>Runtime estable a nivel de sistema</td>
+            <td>&#10004; v22.14.0</td>
+          </tr>
+          <tr>
+            <td><strong>Claude Code Keychain</strong></td>
+            <td>Credenciales Anthropic sin configuraci&#243;n manual</td>
+            <td>&#10004; Auto-detected</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Con esta configuraci&#243;n, el agente puede sobrevivir:</p>
+      <ul>
+        <li><strong>Ca&#237;da de WhatsApp</strong> &#8212; el watchdog lo reconecta en 15 minutos m&#225;ximo.</li>
+        <li><strong>Token de Copilot expirado</strong> &#8212; usa el siguiente proveedor en la cadena.</li>
+        <li><strong>Rate limit de OpenAI</strong> &#8212; pasa a Copilot autom&#225;ticamente.</li>
+        <li><strong>Ca&#237;da total de Copilot</strong> &#8212; usa Anthropic directo v&#237;a Claude Code credentials.</li>
+        <li><strong>Reinicio del sistema</strong> &#8212; Node.js del sistema + gateway que se restaura.</li>
+      </ul>
+
+      <p>El &#250;nico escenario que <em>no</em> est&#225; cubierto es si los 4 proveedores fallan al mismo tiempo. Pero seamos honestos, si OpenAI, GitHub Copilot, Y Anthropic est&#225;n todos ca&#237;dos al mismo tiempo... probablemente tenemos problemas m&#225;s grandes que un agente de WhatsApp.</p>
+
+      <div class="openclaw-box">
+        <h4>&#x1F99E; Para los que quieren ir m&#225;s all&#225;</h4>
+        <p>Puedes agregar m&#225;s canales (Telegram, Slack) como fallback de comunicaci&#243;n, configurar alertas por email cuando el watchdog detecta una falla, o incluso agregar proveedores locales (Ollama, LM Studio) como &#250;ltimo-&#250;ltimo recurso para funcionar completamente offline. Las posibilidades con OpenClaw son infinitas.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="post-footer">
+    <div class="container">
+      <p>Escrito por <strong>Oscar Mart&#237;nez</strong> &#8212; 14 de febrero de 2026</p>
+      <p style="margin-top: 10px;">
+        <a href="index.html">Volver al inicio</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
