@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>agents.oventlabs.com en 45 minutos: Docker + ALB + ACM + Hostinger (sin tumbar producción) | Oscar Code</title>
+  <meta name="description" content="Cómo publiqué una app Next.js en Docker detrás de un Application Load Balancer con HTTPS (ACM) usando DNS en Hostinger, con hardening de puertos y rollback.">
+  <meta name="keywords" content="AWS, ALB, ACM, Hostinger, DNS, Next.js, Docker, Security Group, HTTPS, SNI, reverse proxy, DevOps">
+
+  <meta property="og:title" content="agents.oventlabs.com en 45 minutos: Docker + ALB + ACM + Hostinger">
+  <meta property="og:description" content="Publicar Next.js en Docker con HTTPS vía ALB+ACM, validar por DNS en Hostinger, añadir reglas por host-header sin tumbar TenK/LogiRed/ClinicFlow.">
+  <meta property="og:type" content="article">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00a8cc;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #0b1220;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1a1f 50%, #0d2a2d 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(0,212,255,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(0,168,204,0.04) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-1%, 1%); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 2;
+      font-weight: 500;
+    }
+
+    .back-link:hover { transform: translateX(-5px); color: var(--accent-blue); }
+
+    .post-title {
+      font-size: clamp(2.2rem, 4vw, 3.1rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 50%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 2;
+    }
+
+    .post-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .post-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .meta-item { display: inline-flex; align-items: center; gap: 8px; }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      background: rgba(17,17,17,0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    .lang-btn {
+      cursor: pointer;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: rgba(0,212,255,0.15);
+      color: var(--primary);
+    }
+
+    /* ========== CONTENT ========== */
+    .post-content { padding: 60px 0; }
+
+    .section { margin: 45px 0; }
+
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    p { color: var(--text-secondary); margin: 14px 0; font-size: 1.05rem; }
+
+    ul { color: var(--text-secondary); margin: 12px 0 12px 22px; }
+    li { margin: 8px 0; }
+
+    .callout {
+      margin: 18px 0;
+      padding: 18px 18px;
+      border-radius: 14px;
+      background: rgba(0, 212, 255, 0.06);
+      border: 1px solid rgba(0, 212, 255, 0.16);
+    }
+
+    .callout strong { color: var(--text-primary); }
+
+    .danger {
+      background: rgba(255, 107, 107, 0.08);
+      border: 1px solid rgba(255, 107, 107, 0.22);
+    }
+
+    .success {
+      background: rgba(105, 240, 174, 0.08);
+      border: 1px solid rgba(105, 240, 174, 0.22);
+    }
+
+    .terminal {
+      background: var(--bg-code);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 18px 0;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+
+    pre {
+      margin: 0;
+      padding: 16px 18px;
+      overflow: auto;
+      font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #e5e7eb;
+    }
+
+    code { color: #e5e7eb; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .card {
+      grid-column: span 6;
+      background: rgba(17,17,17,0.75);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .card h4 {
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 30px 0 60px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .share {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .share a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: all 0.2s;
+      background: rgba(17,17,17,0.55);
+    }
+
+    .share a:hover { transform: translateY(-2px); border-color: rgba(0,212,255,0.25); color: var(--primary); }
+
+    .lang-en { display: none; }
+
+    @media (max-width: 820px) {
+      .card { grid-column: span 12; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="post-header">
+    <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
+
+    <h1 class="post-title"><span class="lang-es">agents.oventlabs.com en 45 minutos</span><span class="lang-en">agents.oventlabs.com in 45 minutes</span></h1>
+
+    <p class="post-subtitle"><span class="lang-es">Docker + ALB + ACM + Hostinger DNS. Sin tumbar TenK, LogiRed ni ClinicFlow. Con hardening real (cerrar puertos) y rollback.</span><span class="lang-en">Docker + ALB + ACM + Hostinger DNS. Without breaking TenK, LogiRed or ClinicFlow. With real hardening (closing ports) and rollback.</span></p>
+
+    <div class="post-meta">
+      <span class="meta-item"><i class="far fa-calendar"></i> 15 Feb 2026</span>
+      <span class="meta-item"><i class="far fa-user"></i> Oscar Code × OscarCode9 (AI)</span>
+      <span class="meta-item"><i class="fas fa-tags"></i> AWS / ALB / ACM / DNS / Docker</span>
+      <span class="meta-item">
+        <span class="lang-toggle">
+          <button class="lang-btn active" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </span>
+      </span>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+
+      <div class="section">
+        <h2 class="section-title">🧩 <span class="lang-es">Contexto</span><span class="lang-en">Context</span></h2>
+        <p class="lang-es">Ya teníamos un solo ALB ("truck") con múltiples sitios en producción (TenK, LogiRed, ClinicFlow). La misión: montar <strong>agents.oventlabs.com</strong> encima del mismo ALB, con HTTPS, sin romper nada y cerrando el puerto directo al server.</p>
+        <p class="lang-en">We already had a single ALB ("truck") serving multiple production sites (TenK, LogiRed, ClinicFlow). The mission: bring up <strong>agents.oventlabs.com</strong> behind the same ALB with HTTPS, without breaking anything, and closing the direct-to-server port.</p>
+
+        <div class="callout">
+          <p class="lang-es"><strong>Regla de oro:</strong> en AWS, el 90% de las caídas vienen de tocar el listener/certs sin entender SNI + host-header rules. Aquí el truco fue <em>sumar</em> sin <em>reemplazar</em>.</p>
+          <p class="lang-en"><strong>Golden rule:</strong> in AWS, most outages happen when you touch listeners/certs without understanding SNI + host-header rules. The trick here was to <em>add</em> without <em>replacing</em>.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">🏗️ <span class="lang-es">Arquitectura final</span><span class="lang-en">Final architecture</span></h2>
+
+        <div class="grid">
+          <div class="card">
+            <h4>🌍 <span class="lang-es">Entrada</span><span class="lang-en">Ingress</span></h4>
+            <p class="lang-es">DNS en Hostinger → ALB (HTTPS 443) → regla host-header → Target Group → EC2:3001 → Docker (Next.js)</p>
+            <p class="lang-en">Hostinger DNS → ALB (HTTPS 443) → host-header rule → Target Group → EC2:3001 → Docker (Next.js)</p>
+          </div>
+          <div class="card">
+            <h4>🔐 <span class="lang-es">TLS / Certificados</span><span class="lang-en">TLS / Certificates</span></h4>
+            <p class="lang-es">ACM emite cert para <code>agents.oventlabs.com</code> validado por CNAME. Se adjunta al listener 443 del ALB (SNI).</p>
+            <p class="lang-en">ACM issues a cert for <code>agents.oventlabs.com</code> validated via CNAME. It gets attached to the ALB 443 listener (SNI).</p>
+          </div>
+        </div>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> request path</div>
+          <pre><code>Client
+  -> https://agents.oventlabs.com
+      -> ALB :443 (SNI selects agents cert)
+          -> Rule priority 400 (host=agents.oventlabs.com)
+              -> TargetGroup ovents-landing-3001
+                  -> EC2 i-xxxx:3001
+                      -> Docker container (Next.js standalone)</code></pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">🐳 <span class="lang-es">Paso 1 — Docker en EC2 (puerto 3001)</span><span class="lang-en">Step 1 — Docker on EC2 (port 3001)</span></h2>
+        <p class="lang-es">Primero aseguras que tu app responda localmente. Si el ALB falla, el 80% de las veces es porque el target no responde en el puerto o health check.</p>
+        <p class="lang-en">First, ensure your app responds locally. If the ALB fails, 80% of the time the target isn't responding on the port or the health check.</p>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> on EC2</div>
+          <pre><code># Verifica el container
+docker ps | grep ovents-landing
+
+# Verifica HTTP local
+curl -I http://localhost:3001/</code></pre>
+        </div>
+
+        <div class="callout success">
+          <p class="lang-es"><strong>OK esperado:</strong> <code>HTTP/1.1 200</code> desde <code>localhost:3001</code>.</p>
+          <p class="lang-en"><strong>Expected OK:</strong> <code>HTTP/1.1 200</code> from <code>localhost:3001</code>.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">📜 <span class="lang-es">Paso 2 — Certificado en ACM (DNS validation)</span><span class="lang-en">Step 2 — ACM certificate (DNS validation)</span></h2>
+        <p class="lang-es">Pides un cert para <code>agents.oventlabs.com</code> y ACM te da un CNAME. Ese CNAME va en Hostinger.</p>
+        <p class="lang-en">Request a cert for <code>agents.oventlabs.com</code> and ACM gives you a CNAME. That CNAME goes into Hostinger.</p>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> AWS CLI</div>
+          <pre><code>aws acm request-certificate \
+  --domain-name agents.oventlabs.com \
+  --validation-method DNS \
+  --region us-east-2
+
+aws acm describe-certificate --certificate-arn &lt;CERT_ARN&gt;</code></pre>
+        </div>
+
+        <div class="callout">
+          <p class="lang-es"><strong>Nota:</strong> aunque el CNAME ya exista, ACM a veces se tarda minutos en pasar de <code>PENDING_VALIDATION</code> a <code>ISSUED</code>. Paciencia + verificación con <code>dig</code>.</p>
+          <p class="lang-en"><strong>Note:</strong> even if the CNAME exists, ACM may take a few minutes to go from <code>PENDING_VALIDATION</code> to <code>ISSUED</code>. Patience + verify with <code>dig</code>.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">🧠 <span class="lang-es">Paso 3 — ALB: regla por host + SNI</span><span class="lang-en">Step 3 — ALB: host rule + SNI</span></h2>
+        <p class="lang-es">Aquí está la magia: no creas un ALB nuevo. Le agregas:</p>
+        <ul class="lang-es">
+          <li>Un <strong>Target Group</strong> nuevo (HTTP:3001)</li>
+          <li>Una regla <strong>host-header</strong> (priority 400)</li>
+          <li>Un certificado adicional al listener 443 (SNI)</li>
+        </ul>
+
+        <p class="lang-en">This is the magic: you don't create a new ALB. You add:</p>
+        <ul class="lang-en">
+          <li>A new <strong>Target Group</strong> (HTTP:3001)</li>
+          <li>A <strong>host-header</strong> rule (priority 400)</li>
+          <li>An extra certificate on the 443 listener (SNI)</li>
+        </ul>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> ELBv2 CLI (resumen)</div>
+          <pre><code># 1) Target group
+aws elbv2 create-target-group \
+  --name ovents-landing-3001 \
+  --protocol HTTP --port 3001 \
+  --vpc-id &lt;VPC_ID&gt; \
+  --target-type instance
+
+aws elbv2 register-targets \
+  --target-group-arn &lt;TG_ARN&gt; \
+  --targets Id=&lt;INSTANCE_ID&gt;,Port=3001
+
+# 2) Adjuntar cert al listener 443
+aws elbv2 add-listener-certificates \
+  --listener-arn &lt;LISTENER_ARN&gt; \
+  --certificates CertificateArn=&lt;CERT_ARN&gt;
+
+# 3) Regla de enrutamiento
+aws elbv2 create-rule \
+  --listener-arn &lt;LISTENER_ARN&gt; \
+  --priority 400 \
+  --conditions Field=host-header,Values=agents.oventlabs.com \
+  --actions Type=forward,TargetGroupArn=&lt;TG_ARN&gt;</code></pre>
+        </div>
+
+        <div class="callout success">
+          <p class="lang-es"><strong>Checklist de éxito:</strong> <code>curl -I https://agents.oventlabs.com</code> debe regresar <code>200</code> y el target group debe estar <code>healthy</code>.</p>
+          <p class="lang-en"><strong>Success checklist:</strong> <code>curl -I https://agents.oventlabs.com</code> should return <code>200</code> and the target group must be <code>healthy</code>.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">🛡️ <span class="lang-es">Paso 4 — Hardening: cerrar 3001 al público</span><span class="lang-en">Step 4 — Hardening: close 3001 to the public</span></h2>
+        <p class="lang-es">Este es el punto que separa “funciona” de “está bien hecho”. Si el ALB ya funciona, no necesitas <code>EC2:3001</code> abierto a internet.</p>
+        <p class="lang-en">This is what separates “it works” from “it’s properly done”. If the ALB works, you don't need <code>EC2:3001</code> exposed to the internet.</p>
+
+        <div class="callout danger">
+          <p class="lang-es"><strong>Ojo:</strong> si cierras 3001 y el ALB no tiene permiso para llegar, te va a dar <code>504 Gateway Timeout</code>. Eso se arregla permitiendo 3001 desde el SG del ALB o el CIDR interno de la VPC.</p>
+          <p class="lang-en"><strong>Heads up:</strong> if you close 3001 and the ALB can't reach it, you'll get <code>504 Gateway Timeout</code>. Fix by allowing 3001 from the ALB security group or the VPC internal CIDR.</p>
+        </div>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> Security Groups</div>
+          <pre><code># Revoke public access
+aws ec2 revoke-security-group-ingress \
+  --group-id &lt;EC2_SG&gt; \
+  --protocol tcp --port 3001 --cidr 0.0.0.0/0
+
+# Allow from ALB SG (recommended)
+aws ec2 authorize-security-group-ingress \
+  --group-id &lt;EC2_SG&gt; \
+  --protocol tcp --port 3001 \
+  --source-group &lt;ALB_SG&gt;</code></pre>
+        </div>
+
+        <div class="callout success">
+          <p class="lang-es"><strong>Resultado:</strong> el sitio sigue visible por <code>https://agents.oventlabs.com</code>, pero ya no puedes pegarle directo por <code>http://IP:3001</code> desde fuera (como debe ser).</p>
+          <p class="lang-en"><strong>Result:</strong> the site stays reachable via <code>https://agents.oventlabs.com</code>, but <code>http://IP:3001</code> is no longer reachable from the public internet (as it should be).</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">🧯 <span class="lang-es">Rollback (plan de reversa)</span><span class="lang-en">Rollback plan</span></h2>
+        <p class="lang-es">Por si la cagas o algo raro pasa, esto regresa a “estado inicial” sin tumbar producción:</p>
+        <ul class="lang-es">
+          <li>Eliminar la regla priority 400 (host agents.oventlabs.com)</li>
+          <li>Opcional: remover el cert de agents del listener 443</li>
+          <li>Dejar DNS como estaba</li>
+        </ul>
+
+        <p class="lang-en">If something goes sideways, this returns you to the baseline without taking prod down:</p>
+        <ul class="lang-en">
+          <li>Delete the priority 400 rule (host agents.oventlabs.com)</li>
+          <li>Optional: remove the agents cert from the 443 listener</li>
+          <li>Restore DNS</li>
+        </ul>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> rollback</div>
+          <pre><code># Delete the rule
+aws elbv2 delete-rule --rule-arn &lt;RULE_ARN&gt;
+
+# Optional: remove certificate
+aws elbv2 remove-listener-certificates \
+  --listener-arn &lt;LISTENER_ARN&gt; \
+  --certificates CertificateArn=&lt;CERT_ARN&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">💬 <span class="lang-es">Opinión</span><span class="lang-en">Opinion</span></h2>
+        <p class="lang-es">Esto es lo que la gente subestima: <strong>no es “poner un dominio”</strong>. Es DNS + TLS + routing + security + observar el sistema cuando falla. La diferencia entre pro y “me funcionó” es que el pro tiene rollback y cierra puertos.</p>
+        <p class="lang-en">This is what people underestimate: it's <strong>not just “adding a domain”</strong>. It's DNS + TLS + routing + security + observing the system under failure. The difference between “it worked” and “pro” is having rollback and closing ports.</p>
+
+        <div class="callout">
+          <p class="lang-es"><strong>Extra:</strong> si tienes un solo ALB con múltiples dominios, no te inventes magia: usa host-header rules, SNI y target groups. Punto.</p>
+          <p class="lang-en"><strong>Extra:</strong> if you have a single ALB with multiple domains, don't invent magic: use host-header rules, SNI and target groups. Period.</p>
+        </div>
+      </div>
+
+      <div class="share">
+        <a href="https://twitter.com/intent/tweet?text=agents.oventlabs.com%20en%2045%20min%3A%20Docker%20%2B%20ALB%20%2B%20ACM%20%2B%20Hostinger%20DNS&url=https%3A%2F%2Foscarcode9.github.io%2Fagents-oventlabs-alb-acm.html" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i> X</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Foscarcode9.github.io%2Fagents-oventlabs-alb-acm.html" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> LinkedIn</a>
+        <a href="https://wa.me/?text=agents.oventlabs.com%20en%2045%20min%3A%20Docker%20%2B%20ALB%20%2B%20ACM%20%2B%20Hostinger%20DNS%20https%3A%2F%2Foscarcode9.github.io%2Fagents-oventlabs-alb-acm.html" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Oscar Code — <span class="lang-es">construyendo cosas reales</span><span class="lang-en">building real things</span></p>
+    </div>
+  </footer>
+
+  <script>
+    const langBtns = document.querySelectorAll('.lang-btn');
+    const esEls = document.querySelectorAll('.lang-es');
+    const enEls = document.querySelectorAll('.lang-en');
+
+    function setLang(lang) {
+      if (lang === 'en') {
+        esEls.forEach(el => el.style.display = 'none');
+        enEls.forEach(el => el.style.display = 'inline');
+      } else {
+        enEls.forEach(el => el.style.display = 'none');
+        esEls.forEach(el => el.style.display = 'inline');
+      }
+
+      langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+      localStorage.setItem('oc_blog_lang', lang);
+    }
+
+    langBtns.forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.lang)));
+
+    // default
+    const saved = localStorage.getItem('oc_blog_lang') || 'es';
+    setLang(saved);
+  </script>
+</body>
+</html>
