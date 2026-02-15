@@ -405,7 +405,7 @@
         <span class="post-tag">AI Agents</span>
         <span class="post-tag devops">DevOps</span>
         <br><br>
-        <span>&#x1F4C5; 14 de Febrero, 2026 &#183; &#x23F1;&#xFE0F; 10 min de lectura</span>
+        <span>&#x1F4C5; 14-15 de Febrero, 2026 &#183; &#x23F1;&#xFE0F; 12 min de lectura &#183; Actualizado con post-mortem</span>
       </div>
     </div>
   </header>
@@ -875,6 +875,119 @@
       </ul>
 
       <p>El &#250;nico escenario que <em>no</em> est&#225; cubierto es si los 4 proveedores fallan al mismo tiempo. Pero seamos honestos, si OpenAI, GitHub Copilot, Y Anthropic est&#225;n todos ca&#237;dos al mismo tiempo... probablemente tenemos problemas m&#225;s grandes que un agente de WhatsApp.</p>
+
+      <!-- ===== SECTION 11: POST-MORTEM ===== -->
+      <h2>11. Post-Mortem: Cuando el Failover No Failoverea</h2>
+
+      <p>Plot twist: despu&#233;s de configurar todo lo anterior, el bot se volvi&#243; a caer. Le mandaba mensajes por WhatsApp y respond&#237;a <code>"Connection error."</code> como texto literal. La cadena de failover estaba configurada... pero no funcionaba.</p>
+
+      <div class="warning-box">
+        <h4>&#x26A0;&#xFE0F; El error real</h4>
+        <p>Al revisar los logs del agente, encontr&#233; esto: <code>FailoverError: No API key found for provider "anthropic". Auth store: ~/.openclaw/agents/main/agent/auth-profiles.json</code>. Anthropic fallaba porque sus credenciales <strong>no estaban en el auth-profiles del agente</strong>.</p>
+      </div>
+
+      <h3>&#191;Qu&#233; pas&#243;?</h3>
+
+      <p>El problema fue que configuramos el modelo de Anthropic en <code>openclaw.json</code> (la config global), pero <strong>nunca copiamos las credenciales al archivo de autenticaci&#243;n del agente</strong>. OpenClaw separa la configuraci&#243;n de modelos de la autenticaci&#243;n:</p>
+
+      <ul>
+        <li><code>openclaw.json</code> &#8212; Define qu&#233; modelos existen y cu&#225;l es el primary/fallback.</li>
+        <li><code>agents/main/agent/auth-profiles.json</code> &#8212; Contiene los tokens/credenciales reales que el agente usa para autenticarse con cada proveedor.</li>
+      </ul>
+
+      <p>OpenAI y GitHub Copilot s&#237; ten&#237;an sus credenciales ah&#237;. Anthropic no. Entonces cuando OpenAI fallaba y GitHub Copilot estaba en cooldown por rate limit, el failover intentaba Anthropic... y tambi&#233;n fallaba. El agente se quedaba sin opciones y respond&#237;a con el error como texto.</p>
+
+      <h3>El fix: Registrar las credenciales de Claude Code en el agente</h3>
+
+      <p>Las credenciales de Claude Code viven en el macOS Keychain. Hay que copiarlas al <code>auth-profiles.json</code> del agente para que el failover pueda usarlas:</p>
+
+      <pre><code><span class="comment"># 1. Extraer las credenciales del Keychain</span>
+<span class="command">security find-generic-password</span> <span class="flag">-s</span> <span class="string">"Claude Code-credentials"</span> <span class="flag">-w</span></code></pre>
+
+      <p>Esto devuelve un JSON con <code>accessToken</code>, <code>refreshToken</code>, y <code>expiresAt</code>. Luego hay que agregarlos al auth-profiles:</p>
+
+      <pre><code><span class="comment"># 2. Agregar perfil de Anthropic en auth-profiles.json</span>
+<span class="comment"># Archivo: ~/.openclaw/agents/main/agent/auth-profiles.json</span>
+<span class="comment"># Agregar dentro de "profiles":</span>
+
+<span class="string">"anthropic:claude-code"</span>: {
+  <span class="string">"type"</span>: <span class="string">"oauth"</span>,
+  <span class="string">"provider"</span>: <span class="string">"anthropic"</span>,
+  <span class="string">"access"</span>: <span class="string">"sk-ant-oat01-..."</span>,   <span class="comment">// accessToken del Keychain</span>
+  <span class="string">"refresh"</span>: <span class="string">"sk-ant-ort01-..."</span>,  <span class="comment">// refreshToken del Keychain</span>
+  <span class="string">"expires"</span>: 1757037189278         <span class="comment">// expiresAt del Keychain</span>
+}
+
+<span class="comment"># Y agregar en "lastGood":</span>
+<span class="string">"anthropic"</span>: <span class="string">"anthropic:claude-code"</span></code></pre>
+
+      <p>Despu&#233;s de agregar las credenciales, reiniciar el gateway:</p>
+
+      <pre><code><span class="command">openclaw gateway restart</span></code></pre>
+
+      <h3>El otro bug: el watchdog no encontraba <code>openclaw</code></h3>
+
+      <p>El cron watchdog ejecutaba <code>openclaw gateway restart</code> pero fallaba con <code>zsh:1: command not found: openclaw</code>. El gateway corre como un proceso de fondo (LaunchAgent) y su shell no tiene el mismo PATH que tu terminal.</p>
+
+      <p>La soluci&#243;n: usar la <strong>ruta absoluta</strong> del binario en el mensaje del cron:</p>
+
+      <pre><code><span class="comment"># Antes (fallaba en background):</span>
+<span class="output">"Ejecuta 'openclaw gateway restart' para reconectarlo."</span>
+
+<span class="comment"># Despu&#233;s (funciona siempre):</span>
+<span class="output">"Ejecuta '/ruta/completa/a/openclaw gateway restart' para reconectarlo."</span></code></pre>
+
+      <div class="tip-box">
+        <h4>&#10004; Lecci&#243;n aprendida</h4>
+        <p>Configurar el failover tiene <strong>dos partes</strong>: (1) registrar los modelos en la config global, y (2) asegurarte de que las <strong>credenciales</strong> de cada proveedor est&#233;n en el <code>auth-profiles.json</code> del agente. Si falta cualquiera de las dos, el failover no funciona. Y para cron jobs, siempre usa rutas absolutas.</p>
+      </div>
+
+      <!-- ===== SECTION 12: CHECKLIST ===== -->
+      <h2>12. Checklist Final</h2>
+
+      <p>Para asegurarte de que tu setup est&#225; completo y no te pase lo que a m&#237;, revisa cada punto:</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Comando</th>
+            <th>Qu&#233; verificar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>WhatsApp conectado</td>
+            <td><code>openclaw channels status</code></td>
+            <td>Status = CONNECTED</td>
+          </tr>
+          <tr>
+            <td>Modelo primario responde</td>
+            <td><code>openclaw agent -m "ping" --deliver</code></td>
+            <td>Recibes respuesta en WhatsApp</td>
+          </tr>
+          <tr>
+            <td>Fallbacks configurados</td>
+            <td><code>openclaw config get agents.defaults.model</code></td>
+            <td>Primary + fallbacks listados</td>
+          </tr>
+          <tr>
+            <td>Auth de CADA proveedor</td>
+            <td>Revisar <code>auth-profiles.json</code></td>
+            <td>Todos los fallbacks tienen credenciales</td>
+          </tr>
+          <tr>
+            <td>Watchdog activo</td>
+            <td><code>openclaw cron list</code></td>
+            <td>whatsapp-watchdog = ACTIVE</td>
+          </tr>
+          <tr>
+            <td>Watchdog usa ruta absoluta</td>
+            <td>Revisar <code>cron/jobs.json</code></td>
+            <td>Ruta completa al binario openclaw</td>
+          </tr>
+        </tbody>
+      </table>
 
       <div class="openclaw-box">
         <h4>&#x1F99E; Para los que quieren ir m&#225;s all&#225;</h4>
