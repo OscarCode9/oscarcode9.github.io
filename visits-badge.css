@@ -1,0 +1,28 @@
+/* OventLabs / OscarCode9 — lightweight visits badge */
+.ov-views-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  padding:.28rem .6rem;
+  border-radius:999px;
+  border:1px solid rgba(34,197,94,.25);
+  background: rgba(15,23,42,.55);
+  color:#E2E8F0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font: 12px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.ov-views-badge .ov-dot{
+  width:6px;
+  height:6px;
+  border-radius:999px;
+  background:#22C55E;
+  box-shadow:0 0 14px rgba(34,197,94,.55);
+}
+.ov-views-badge .ov-label{ opacity:.9; }
+.ov-views-badge .ov-count{ font-weight:800; letter-spacing:.2px; }
+.ov-views-badge.is-loading .ov-count{ opacity:.7; }
+.ov-views-badge.is-error{ border-color: rgba(239,68,68,.25); }
+
+/* helpful spacing when injected under titles */
+.ov-views-wrap{ margin-top: 10px; }

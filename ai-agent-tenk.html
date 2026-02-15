@@ -439,6 +439,9 @@
     }
   </style>
   <script src="public/i18n.js"></script>
+
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
 </head>
 <body>
 
@@ -450,6 +453,14 @@
       </a>
       <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
       <h1 class="post-title"><span class="lang-es">Cómo Construí un Agente de IA con Tool Calling</span><span class="lang-en">How I Built an AI Agent with Tool Calling</span></h1>
+    <div class="ov-views-wrap">
+      <div class="ov-views-badge" data-ov-visits>
+        <span class="ov-dot"></span>
+        <span class="ov-label">Visitas</span>
+        <span class="ov-count">—</span>
+      </div>
+    </div>
+
       <p class="post-subtitle"><span class="lang-es">Arquitectura completa de un AI Coach con Claude, OAuth PKCE y herramientas en producción</span><span class="lang-en">Complete AI Coach architecture with Claude, OAuth PKCE and production tools</span></p>
       <div class="post-meta">
         <span class="post-tag ai"><span class="lang-es">IA / Agentes</span><span class="lang-en">AI / Agents</span></span>

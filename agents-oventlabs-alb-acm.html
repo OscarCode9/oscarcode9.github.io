@@ -284,6 +284,9 @@
       .card { grid-column: span 12; }
     }
   </style>
+
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
 </head>
 <body>
 
@@ -291,6 +294,14 @@
     <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
 
     <h1 class="post-title"><span class="lang-es">agents.oventlabs.com en 45 minutos</span><span class="lang-en">agents.oventlabs.com in 45 minutes</span></h1>
+    <div class="ov-views-wrap">
+      <div class="ov-views-badge" data-ov-visits>
+        <span class="ov-dot"></span>
+        <span class="ov-label">Visitas</span>
+        <span class="ov-count">—</span>
+      </div>
+    </div>
+
 
     <p class="post-subtitle"><span class="lang-es">Docker + ALB + ACM + Hostinger DNS. Sin tumbar TenK, LogiRed ni ClinicFlow. Con hardening real (cerrar puertos) y rollback.</span><span class="lang-en">Docker + ALB + ACM + Hostinger DNS. Without breaking TenK, LogiRed or ClinicFlow. With real hardening (closing ports) and rollback.</span></p>
 
