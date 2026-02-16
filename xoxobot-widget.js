@@ -264,6 +264,6 @@
     bubble.style.display = "flex";
   });
 
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
-  sendBtn.addEventListener("click", send);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { send(); input.blur(); } });
+  sendBtn.addEventListener("click", () => { send(); input.blur(); });
 })();
