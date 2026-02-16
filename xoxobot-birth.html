@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cómo le di alma a un Axolotl Digital — XoxoBot 🪼 | Oscar Code</title>
-  <meta name="description" content="La historia de XoxoBot: el asistente virtual de OventLabs. De emoji SVG a peluche real, pasando por GPT-4o, tool calling y un GIF de 73 frames.">
+  <meta name="description" content="La historia de XoxoBot: el asistente virtual de OventLabs. De diseño en ChatGPT a peluche real, pasando por Grok, rembg, tool calling y un GIF de 73 frames.">
   <meta name="keywords" content="XoxoBot, axolotl, chatbot, IA, GPT-4o, OventLabs, widget, Next.js, SSE, tool calling">
   <meta property="og:title" content="Cómo le di alma a un Axolotl Digital — XoxoBot 🪼">
-  <meta property="og:description" content="De emoji SVG a asistente con IA: chat, emails, citas en Google Calendar. La historia completa.">
+  <meta property="og:description" content="De ChatGPT a Grok a asistente con IA: chat, emails, citas en Google Calendar. La historia completa.">
   <meta property="og:type" content="article">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -416,7 +416,7 @@
 
       <p>Todo empezó con una pregunta simple: <strong>¿cómo hago que los visitantes de mi sitio puedan hablar con alguien… sin que yo esté ahí?</strong> La respuesta obvia era un chatbot. La respuesta real fue crear un axolotl con personalidad, herramientas reales y un peluche de la vida real llamado XOXO.</p>
 
-      <p>Este post es la historia completa: desde el primer emoji SVG hasta el widget en producción. Vamos. 🚀</p>
+      <p>Este post es la historia completa: desde el diseño en ChatGPT hasta el widget en producción. Vamos. 🚀</p>
 
       <figure class="post-image avatar">
         <img src="xoxobot-avatar.gif" alt="XoxoBot avatar animado">
@@ -434,8 +434,9 @@
       <h3>La evolución visual</h3>
 
       <ol>
-        <li><strong>Emoji SVG</strong> — El primer prototipo fue un axolotl vectorial simple, un emoji custom que usaba en los headers del sitio.</li>
-        <li><strong>GIF animado con rembg</strong> — Encontré un GIF de axolotl que me gustó, pero tenía fondo. Usé <code>rembg</code> (remove background) para procesarlo frame por frame. <strong>73 frames</strong>, cada uno pasado por el modelo de segmentación. El resultado: un axolotl morado flotando en transparencia pura.</li>
+        <li><strong>Diseño con ChatGPT</strong> — Le pedí a ChatGPT que generara el diseño original del axolotl morado. Varias iteraciones hasta que quedó el look perfecto: cute, morado-azulado, con esos ojos grandes.</li>
+        <li><strong>Animación con Grok</strong> — Tomé el diseño y se lo pasé a Grok para que lo animara. El resultado: un GIF del axolotl con movimiento, vida propia.</li>
+        <li><strong>Background removal con rembg</strong> — El GIF tenía fondo, así que usé <code>rembg</code> para procesarlo frame por frame. <strong>73 frames</strong>, cada uno pasado por el modelo de segmentación de IA. El resultado: un axolotl morado flotando en transparencia pura.</li>
         <li><strong>Peluche real XOXO</strong> — El 14 de febrero (sí, San Valentín 🥰), mi novia me regaló un peluche de axolotl morado-azulado que sostiene un corazón con "XOXO". Ella lo eligió porque sabía que estaba construyendo al bot y le pareció perfecto. Tiene razón. Desde entonces, XOXO vive en mi escritorio junto al monitor, cuidando que el código compile. Es la mascota oficial de OventLabs.</li>
       </ol>
 
@@ -598,7 +599,7 @@ for i, frame_path in enumerate(sorted(glob.glob("frames/*.png"))):
           <li><strong>XoxoBot</strong> es el asistente virtual de OventLabs — un axolotl morado que chatea con GPT-4o</li>
           <li><strong>Capabilities:</strong> chat con IA, envío de emails (SendGrid), agendar citas en Google Calendar con Meet automático</li>
           <li><strong>Tech:</strong> Next.js API route + Copilot API (GPT-4o) + SSE streaming + marker-based tool calling</li>
-          <li><strong>El avatar</strong> pasó de emoji SVG → GIF de 73 frames con rembg → peluche real llamado XOXO</li>
+          <li><strong>El avatar</strong> pasó de diseño en ChatGPT → animación con Grok → background removal con rembg (73 frames) → peluche real llamado XOXO</li>
           <li><strong>El nombre:</strong> XOXO (hugs & kisses) + Bot. Emoji oficial: 🪼</li>
           <li><strong>Widget:</strong> embebible, fullscreen mobile, markdown, quick actions, rate limiting</li>
           <li><strong>Lo que viene:</strong> lead capture, cotizaciones, voice, analytics</li>
