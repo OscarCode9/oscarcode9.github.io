@@ -280,9 +280,12 @@
 
   function formatText(t) {
     return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/^### (.+)$/gm, '<strong style="display:block;margin-top:8px;font-size:14px;color:#c084fc">$1</strong>')
+      .replace(/^## (.+)$/gm, '<strong style="display:block;margin-top:10px;font-size:15px;color:#c084fc">$1</strong>')
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
       .replace(/`(.+?)`/g, '<code style="background:rgba(99,102,241,0.15);padding:2px 6px;border-radius:4px;font-size:12px;font-family:monospace">$1</code>')
+      .replace(/^- (.+)$/gm, '• $1')
       .replace(/\n/g, "<br>");
   }
 
