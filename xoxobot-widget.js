@@ -303,6 +303,7 @@
   function showQuickActions() {
     var actions = [
       { label: "🎓 Cursos de IA", msg: "¿Qué cursos de IA tienen?" },
+      { label: "📅 Agendar cita", msg: "Quiero agendar una cita con Oscar" },
       { label: "💼 Servicios", msg: "¿Qué servicios ofrecen?" },
       { label: "📧 Contactar Oscar", msg: "Quiero contactar a Oscar" },
       { label: "🪼 ¿Quién eres?", msg: "¿Quién eres y quién te creó?" }
