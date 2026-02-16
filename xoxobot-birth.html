@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cómo le di alma a un Axolotl Digital — XoxoBot 🪼 | Oscar Code</title>
+  <meta name="description" content="La historia de XoxoBot: el asistente virtual de OventLabs. De emoji SVG a peluche real, pasando por GPT-4o, tool calling y un GIF de 73 frames.">
+  <meta name="keywords" content="XoxoBot, axolotl, chatbot, IA, GPT-4o, OventLabs, widget, Next.js, SSE, tool calling">
+  <meta property="og:title" content="Cómo le di alma a un Axolotl Digital — XoxoBot 🪼">
+  <meta property="og:description" content="De emoji SVG a asistente con IA: chat, emails, citas en Google Calendar. La historia completa.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #00897b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #2a1a3e 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(179,136,255,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(79,195,247,0.05) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.2em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+    }
+
+    .post-tag.ai { background: var(--accent-purple); }
+    .post-tag.bot { background: var(--accent-blue); color: #000; }
+    .post-tag.fun { background: var(--accent-orange); color: #000; }
+
+    /* ========== CONTENT ========== */
+    .post-content {
+      padding: 60px 0 80px;
+    }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--accent-purple);
+      border-bottom: 2px solid rgba(179,136,255,0.3);
+      padding-bottom: 10px;
+    }
+
+    .post-content h2:first-child {
+      margin-top: 0;
+    }
+
+    .post-content h3 {
+      font-size: 1.35em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong {
+      color: var(--text-primary);
+    }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover {
+      border-bottom-color: var(--primary);
+    }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li {
+      margin-bottom: 8px;
+    }
+
+    .post-content code {
+      background: var(--bg-code);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9em;
+      color: var(--accent-green);
+    }
+
+    .post-content pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(179,136,255,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    .post-content pre code {
+      background: none;
+      padding: 0;
+      color: var(--text-secondary);
+    }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 4px solid var(--accent-purple);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.info {
+      border-left-color: var(--accent-blue);
+    }
+
+    .callout.fun {
+      border-left-color: var(--accent-orange);
+    }
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .callout p:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    /* Images */
+    .post-image {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .post-image img {
+      max-width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .post-image.avatar img {
+      max-width: 200px;
+      border-radius: 50%;
+      border: 3px solid var(--accent-purple);
+      box-shadow: 0 0 30px rgba(179,136,255,0.3);
+    }
+
+    .post-image figcaption {
+      margin-top: 10px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Diagram */
+    .diagram {
+      background: var(--bg-code);
+      border: 1px solid rgba(179,136,255,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 25px 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .diagram pre code {
+      color: var(--accent-purple);
+      font-size: 0.82em;
+    }
+
+    .diagram-caption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Section numbers */
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--accent-purple);
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-right: 12px;
+    }
+
+    /* Stat highlight */
+    .stat-highlight {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--bg-card);
+      border: 1px solid rgba(179,136,255,0.2);
+      border-radius: 12px;
+      padding: 20px 25px;
+      margin: 20px 0;
+    }
+
+    .stat-highlight .stat-number {
+      font-size: 2.5em;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .stat-highlight .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.95em;
+    }
+
+    /* Takeaways */
+    .takeaways {
+      background: linear-gradient(135deg, rgba(179,136,255,0.1) 0%, rgba(79,195,247,0.05) 100%);
+      border: 1px solid rgba(179,136,255,0.2);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+
+    .takeaways h3 {
+      color: var(--accent-purple);
+      margin-top: 0;
+    }
+
+    .takeaways ul {
+      color: var(--text-secondary);
+    }
+
+    .takeaways li {
+      margin-bottom: 12px;
+    }
+
+    /* Footer */
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+
+    .post-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.7em; }
+      .post-header { padding: 60px 15px 40px; }
+      .post-content h2 { font-size: 1.4em; }
+      .stat-highlight { flex-direction: column; text-align: center; gap: 10px; }
+      .stat-highlight .stat-number { font-size: 2em; }
+    }
+  </style>
+
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Volver al inicio
+      </a>
+      <h1 class="post-title">Cómo le di alma a un Axolotl Digital 🪼</h1>
+
+      <div class="ov-views-wrap">
+        <div class="ov-views-badge" data-ov-visits>
+          <span class="ov-dot"></span>
+          <span class="ov-label">Visitas</span>
+          <span class="ov-count">—</span>
+        </div>
+      </div>
+
+      <p class="post-subtitle">La historia de XoxoBot: el asistente de OventLabs que chatea, manda emails y agenda citas — todo con personalidad de axolotl</p>
+      <div class="post-meta">
+        <span class="post-tag ai">IA / GPT-4o</span>
+        <span class="post-tag bot">Chatbot</span>
+        <span class="post-tag fun">🪼 XoxoBot</span>
+        <br><br>
+        <i class="far fa-clock"></i> 16 de febrero de 2026 &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Martinez (OscarCode9) &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> ~8 min de lectura
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="post-content">
+    <div class="container">
+
+      <!-- INTRO -->
+      <div class="callout">
+        <p><strong>🪼 XoxoBot es el asistente virtual de <a href="https://oventlabs.com">OventLabs</a>.</strong> Un axolotl morado digital que vive en <a href="https://agents.oventlabs.com">agents.oventlabs.com</a>, chatea con GPT-4o, manda emails y agenda citas en Google Calendar con Meet automático. Y tiene peluche.</p>
+      </div>
+
+      <p>Todo empezó con una pregunta simple: <strong>¿cómo hago que los visitantes de mi sitio puedan hablar con alguien… sin que yo esté ahí?</strong> La respuesta obvia era un chatbot. La respuesta real fue crear un axolotl con personalidad, herramientas reales y un peluche de la vida real llamado XOXO.</p>
+
+      <p>Este post es la historia completa: desde el primer emoji SVG hasta el widget en producción. Vamos. 🚀</p>
+
+      <figure class="post-image avatar">
+        <img src="xoxobot-avatar.gif" alt="XoxoBot avatar animado">
+        <figcaption>XoxoBot en su forma final: un GIF de 73 frames con background removal</figcaption>
+      </figure>
+
+
+      <!-- SECCIÓN 1: EL ORIGEN -->
+      <h2><span class="section-number">1</span> El Origen: De Emoji a Avatar</h2>
+
+      <p>XoxoBot no nació como un chatbot. Nació como un <strong>emoji</strong>.</p>
+
+      <p>Cuando estaba diseñando la identidad de OventLabs, quería una mascota que fuera memorable, mexicana y tech-friendly. Los axolotes son endémicos de México, se regeneran (como el buen código después de un refactor), y son adorables. Perfect fit.</p>
+
+      <h3>La evolución visual</h3>
+
+      <ol>
+        <li><strong>Emoji SVG</strong> — El primer prototipo fue un axolotl vectorial simple, un emoji custom que usaba en los headers del sitio.</li>
+        <li><strong>GIF animado con rembg</strong> — Encontré un GIF de axolotl que me gustó, pero tenía fondo. Usé <code>rembg</code> (remove background) para procesarlo frame por frame. <strong>73 frames</strong>, cada uno pasado por el modelo de segmentación. El resultado: un axolotl morado flotando en transparencia pura.</li>
+        <li><strong>Peluche real XOXO</strong> — Porque si tu mascota digital no tiene versión física, ¿realmente existe? Mandé hacer un peluche de axolotl morado. Se llama XOXO y vive en mi escritorio.</li>
+      </ol>
+
+      <figure class="post-image">
+        <img src="xoxobot-plushie.jpg" alt="XOXO, el peluche de axolotl morado">
+        <figcaption>XOXO, el peluche oficial. Sí, tiene su propio lugar en el escritorio. 💜</figcaption>
+      </figure>
+
+      <div class="callout fun">
+        <p><strong>🧸 Fun fact:</strong> El nombre "XoxoBot" viene de <strong>XOXO</strong> (hugs and kisses) + <strong>Bot</strong>. Y su emoji oficial es 🪼 — técnicamente es una medusa, pero si entrecierras los ojos, parece un axolotl. Close enough.</p>
+      </div>
+
+
+      <!-- SECCIÓN 2: EL CEREBRO -->
+      <h2><span class="section-number">2</span> El Cerebro: GPT-4o + Tool Calling</h2>
+
+      <p>Un avatar bonito sin cerebro es solo un GIF. XoxoBot necesitaba poder <strong>conversar, entender contexto y ejecutar acciones reales</strong>.</p>
+
+      <h3>Tech Stack</h3>
+
+      <ul>
+        <li><strong>Runtime:</strong> Next.js API route (serverless)</li>
+        <li><strong>Modelo:</strong> GPT-4o vía Copilot API (GitHub Copilot)</li>
+        <li><strong>Streaming:</strong> SSE (Server-Sent Events) para respuestas en tiempo real</li>
+        <li><strong>Tool calling:</strong> Marker-based — el modelo emite markers especiales que el backend intercepta y ejecuta</li>
+      </ul>
+
+      <div class="diagram">
+        <pre><code>┌──────────┐     SSE      ┌──────────────┐    Copilot API   ┌─────────┐
+│  Widget  │◄────────────▶│  Next.js API │◄─────────────────▶│  GPT-4o │
+│ (iframe) │              │   Route      │                   │         │
+└──────────┘              └──────┬───────┘                   └─────────┘
+                                 │
+                    ┌────────────┼────────────┐
+                    │            │            │
+               ┌────▼───┐  ┌────▼───┐  ┌────▼────────┐
+               │ SendGrid│  │ Google │  │ Google      │
+               │ (email) │  │Calendar│  │ Meet (auto) │
+               └─────────┘  └────────┘  └─────────────┘</code></pre>
+        <p class="diagram-caption">Arquitectura de XoxoBot: widget → API → GPT-4o → tools</p>
+      </div>
+
+      <h3>Marker-based Tool Calling</h3>
+
+      <p>En vez de usar el function calling nativo de OpenAI (que requiere un segundo request), implementé un sistema de <strong>markers</strong>. Cuando GPT-4o quiere ejecutar una acción, emite un marker especial en el stream:</p>
+
+      <pre><code>Claro, voy a agendar tu cita 📅
+[[TOOL:schedule_meeting|{"date":"2026-02-20","time":"10:00","title":"Demo OventLabs"}]]
+¡Listo! Tu cita quedó agendada con Google Meet incluido.</code></pre>
+
+      <p>El backend detecta el marker <code>[[TOOL:...]]</code>, ejecuta la función correspondiente, inyecta el resultado y sigue streameando. <strong>Todo en un solo request.</strong> Sin round-trips extra. El usuario ve la respuesta fluir en tiempo real.</p>
+
+      <h3>Las herramientas</h3>
+
+      <ul>
+        <li>💬 <strong>Chat con IA</strong> — Conversación natural con GPT-4o, contexto de OventLabs, respuestas en español</li>
+        <li>📧 <strong>Envío de emails</strong> — Vía SendGrid. El usuario dice "mándame info a mi@email.com" y XoxoBot lo hace</li>
+        <li>📅 <strong>Agendar citas</strong> — Crea eventos en Google Calendar con <strong>Google Meet automático</strong>. El usuario solo dice cuándo quiere reunirse</li>
+      </ul>
+
+      <div class="stat-highlight">
+        <div class="stat-number">~800ms</div>
+        <div class="stat-label">Time to first token. El usuario ve la respuesta empezar a aparecer casi inmediatamente gracias a SSE streaming.</div>
+      </div>
+
+
+      <!-- SECCIÓN 3: LA PERSONALIDAD -->
+      <h2><span class="section-number">3</span> La Personalidad: No Es Solo un Bot</h2>
+
+      <p>Cualquiera puede conectar GPT-4o a un widget. Lo que hace diferente a XoxoBot es su <strong>personalidad</strong>.</p>
+
+      <p>El system prompt de XoxoBot define a un personaje muy específico:</p>
+
+      <ul>
+        <li>🪼 Es un <strong>axolotl morado digital</strong> — y lo sabe. Hace referencias a axolotes, regeneración y vida acuática</li>
+        <li>🤓 Es <strong>nerdy pero accesible</strong> — puede explicar arquitectura de microservicios o simplemente recomendar un café</li>
+        <li>😊 Usa <strong>emojis con moderación</strong> — suficientes para ser friendly, no tantos como para parecer spam</li>
+        <li>🇲🇽 Habla <strong>español como lengua principal</strong> — con toques de inglés técnico cuando aplica</li>
+        <li>💜 Representa a <strong>OventLabs</strong> — conoce los servicios, precios, tech stack y puede hablar de proyectos reales</li>
+      </ul>
+
+      <div class="callout info">
+        <p><strong>💡 La clave del system prompt:</strong> No le digo "sé amigable". Le doy <em>contexto, ejemplos y límites</em>. Sabe qué puede hacer (agendar citas), qué no puede hacer (dar precios exactos sin contexto) y cuándo escalar a un humano. Un buen system prompt es como onboarding de un empleado, no una lista de reglas.</p>
+      </div>
+
+
+      <!-- SECCIÓN 4: EL WIDGET -->
+      <h2><span class="section-number">4</span> El Widget: Embebible y Mobile-First</h2>
+
+      <p>XoxoBot vive como un <strong>widget embebible</strong> — un botón flotante que abre un chat. Cualquier sitio puede integrarlo con un <code>&lt;script&gt;</code> tag.</p>
+
+      <h3>Features del widget</h3>
+
+      <ul>
+        <li>📱 <strong>Fullscreen en mobile</strong> — En pantallas chicas, el chat ocupa toda la pantalla. Nada de modales diminutos</li>
+        <li>📝 <strong>Markdown rendering</strong> — Las respuestas de XoxoBot soportan bold, listas, código, links</li>
+        <li>⚡ <strong>Quick actions</strong> — Botones predefinidos: "¿Qué servicios ofrecen?", "Quiero agendar una demo", "Contactar a un humano"</li>
+        <li>🛡️ <strong>Rate limiting</strong> — Protección contra spam y abuso de la API</li>
+        <li>🎨 <strong>Dark theme nativo</strong> — Porque los devs no usan light mode</li>
+        <li>💬 <strong>Streaming visual</strong> — Las palabras aparecen una por una, como si XoxoBot estuviera escribiendo</li>
+      </ul>
+
+      <div class="stat-highlight">
+        <div class="stat-number">1 línea</div>
+        <div class="stat-label">de código para integrar XoxoBot en cualquier sitio. Un <code>&lt;script&gt;</code> tag y listo.</div>
+      </div>
+
+
+      <!-- SECCIÓN 5: LA PIPELINE DEL GIF -->
+      <h2><span class="section-number">5</span> La Pipeline del GIF: 73 Frames de Magia</h2>
+
+      <p>Esto merece su propia sección porque fue más trabajo del que esperaba.</p>
+
+      <p>El GIF original del axolotl tenía un fondo sólido. Para usarlo como avatar flotante necesitaba transparencia. El problema: <strong>GIFs con transparencia + background removal = pesadilla</strong>.</p>
+
+      <h3>El proceso</h3>
+
+      <ol>
+        <li><strong>Extraer frames</strong> — Separé el GIF en 73 imágenes PNG individuales</li>
+        <li><strong>rembg en cada frame</strong> — Usé <code>rembg</code> (modelo U2-Net) para remover el fondo de cada frame. Batch processing con un script de Python</li>
+        <li><strong>Cleanup manual</strong> — Algunos frames quedaban con artefactos en las branquias (las partes semi-transparentes del axolotl). Tuve que ajustar thresholds</li>
+        <li><strong>Reensamblar</strong> — Junté los 73 frames de vuelta en un GIF animado con transparencia</li>
+      </ol>
+
+      <pre><code># El script simplificado
+from rembg import remove
+from PIL import Image
+import glob
+
+for i, frame_path in enumerate(sorted(glob.glob("frames/*.png"))):
+    img = Image.open(frame_path)
+    output = remove(img)
+    output.save(f"clean/{i:03d}.png")</code></pre>
+
+      <p>¿El resultado? Un axolotl morado flotando en el vacío digital, listo para saludar a los visitantes. <strong>Worth it.</strong></p>
+
+
+      <!-- SECCIÓN 6: LO QUE VIENE -->
+      <h2><span class="section-number">6</span> Lo Que Viene: El Roadmap</h2>
+
+      <p>XoxoBot ya es funcional, pero apenas estamos empezando. Lo que viene:</p>
+
+      <ul>
+        <li>📊 <strong>Google Sheets lead capture</strong> — Cada conversación relevante se guarda automáticamente como lead en una hoja de cálculo</li>
+        <li>💰 <strong>Cotizaciones automáticas</strong> — Basado en el tipo de proyecto, XoxoBot podrá dar estimados de costo y timeline</li>
+        <li>🎙️ <strong>Voice</strong> — Input y output de voz. Hablar con XoxoBot en vez de escribir</li>
+        <li>📈 <strong>Analytics</strong> — Dashboard con métricas: conversaciones, conversiones, preguntas frecuentes, satisfaction score</li>
+        <li>🔗 <strong>Más integraciones</strong> — Slack, WhatsApp Business, Notion</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>🔮 La visión:</strong> XoxoBot no es solo un chatbot — es el <strong>primer punto de contacto</strong> de OventLabs. La idea es que cualquier persona pueda llegar al sitio, hablar con XoxoBot, entender qué hacemos, agendar una demo y recibir una cotización preliminar… todo sin que un humano intervenga. Cuando el humano entra, ya tiene todo el contexto.</p>
+      </div>
+
+
+      <!-- TAKEAWAYS -->
+      <div class="takeaways">
+        <h3>🪼 TL;DR</h3>
+        <ul>
+          <li><strong>XoxoBot</strong> es el asistente virtual de OventLabs — un axolotl morado que chatea con GPT-4o</li>
+          <li><strong>Capabilities:</strong> chat con IA, envío de emails (SendGrid), agendar citas en Google Calendar con Meet automático</li>
+          <li><strong>Tech:</strong> Next.js API route + Copilot API (GPT-4o) + SSE streaming + marker-based tool calling</li>
+          <li><strong>El avatar</strong> pasó de emoji SVG → GIF de 73 frames con rembg → peluche real llamado XOXO</li>
+          <li><strong>El nombre:</strong> XOXO (hugs & kisses) + Bot. Emoji oficial: 🪼</li>
+          <li><strong>Widget:</strong> embebible, fullscreen mobile, markdown, quick actions, rate limiting</li>
+          <li><strong>Lo que viene:</strong> lead capture, cotizaciones, voice, analytics</li>
+          <li>Vive en <a href="https://agents.oventlabs.com">agents.oventlabs.com</a> — ve a saludarlo 💜</li>
+        </ul>
+      </div>
+
+
+      <!-- FOOTER -->
+      <div class="post-footer">
+        <p>Escrito por <strong>Oscar Martinez (OscarCode9)</strong> — 16 de febrero de 2026</p>
+        <p style="margin-top: 10px; color: var(--text-muted);">
+          <a href="index.html">← Volver al inicio</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
