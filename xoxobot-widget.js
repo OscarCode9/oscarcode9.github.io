@@ -4,7 +4,7 @@
  */
 (function() {
   const API_URL = "https://agents.oventlabs.com/api/chat";
-  const AVATAR_URL = "https://agents.oventlabs.com/xoxobot.png";
+  const AVATAR_URL = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%236366f1"/><text x="50" y="62" text-anchor="middle" font-size="50">🪼</text></svg>');
   
   // Inject styles
   const style = document.createElement("style");
@@ -216,7 +216,7 @@
               if (data === "[DONE]") break;
               try {
                 const parsed = JSON.parse(data);
-                const delta = parsed.choices?.[0]?.delta?.content || "";
+                const delta = parsed.choices?.[0]?.delta?.content || parsed.content || "";
                 botText += delta;
                 bubbleEl.innerHTML = escapeHtml(botText);
                 messages.scrollTop = messages.scrollHeight;
