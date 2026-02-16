@@ -302,9 +302,9 @@
 
   function showQuickActions() {
     var actions = [
+      { label: "🎓 Cursos de IA", msg: "¿Qué cursos de IA tienen?" },
       { label: "💼 Servicios", msg: "¿Qué servicios ofrecen?" },
       { label: "📧 Contactar Oscar", msg: "Quiero contactar a Oscar" },
-      { label: "🤖 ¿Cómo funciona?", msg: "¿Cómo funciona el modelo de agentes de IA?" },
       { label: "🪼 ¿Quién eres?", msg: "¿Quién eres y quién te creó?" }
     ];
     quickEl.innerHTML = "";
