@@ -109,7 +109,11 @@
     }
     #xoxo-send:disabled { opacity: 0.4; cursor: not-allowed; }
     @media (max-width: 480px) {
-      #xoxo-window { width: calc(100vw - 32px); right: 16px; bottom: 88px; height: 70vh; }
+      #xoxo-window {
+        width: 100vw; height: 100vh; height: 100dvh;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 0; border: none;
+      }
       #xoxo-bubble { bottom: 16px; right: 16px; }
     }
   `;
@@ -147,6 +151,7 @@
   let history = [];
   let isOpen = false;
   let sending = false;
+  let welcomed = false;
 
   function addMessage(role, text) {
     const div = document.createElement("div");
@@ -245,7 +250,8 @@
     isOpen = !isOpen;
     win.classList.toggle("open", isOpen);
     bubble.style.display = isOpen ? "none" : "flex";
-    if (isOpen && history.length === 0) {
+    if (isOpen && !welcomed) {
+      welcomed = true;
       addMessage("assistant", "¡Hola! Soy XoxoBot 🪼 el asistente de OventLabs. ¿En qué te puedo ayudar? 💜");
     }
     if (isOpen) input.focus();
