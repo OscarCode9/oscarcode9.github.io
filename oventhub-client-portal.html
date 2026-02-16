@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OventHub: Portal de Cliente con IA — De Cero a Producción en 1 Día | Oscar Code</title>
+  <meta name="description" content="Magic links, onboarding inteligente, generación de alcance con IA y tracking de requerimientos. Next.js + Prisma + GitHub Copilot API + agentes.">
+  <meta name="keywords" content="Next.js, Prisma, AI, GitHub Copilot, Docker, PostgreSQL, Magic Links, Client Portal">
+
+  <meta property="og:title" content="OventHub: AI-Powered Client Portal — Zero to Production in 1 Day">
+  <meta property="og:description" content="Magic links, smart onboarding, AI scope generation and requirements tracking. All with Next.js, Prisma, GitHub Copilot API and an army of agents.">
+  <meta property="og:type" content="article">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00a8cc;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #0b1220;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1a1f 50%, #0d2a2d 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(0,212,255,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(0,168,204,0.04) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-1%, 1%); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 2;
+      font-weight: 500;
+    }
+
+    .back-link:hover { transform: translateX(-5px); color: var(--accent-blue); }
+
+    .post-title {
+      font-size: clamp(2.2rem, 4vw, 3.1rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 50%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 2;
+    }
+
+    .post-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .post-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .meta-item { display: inline-flex; align-items: center; gap: 8px; }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      background: rgba(17,17,17,0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    .lang-btn {
+      cursor: pointer;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: rgba(0,212,255,0.15);
+      color: var(--primary);
+    }
+
+    /* ========== CONTENT ========== */
+    .post-content { padding: 60px 0; }
+
+    .section { margin: 45px 0; }
+
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    p { color: var(--text-secondary); margin: 14px 0; font-size: 1.05rem; }
+
+    ul { color: var(--text-secondary); margin: 12px 0 12px 22px; }
+    li { margin: 8px 0; }
+
+    .callout {
+      margin: 18px 0;
+      padding: 18px 18px;
+      border-radius: 14px;
+      background: rgba(0, 212, 255, 0.06);
+      border: 1px solid rgba(0, 212, 255, 0.16);
+    }
+
+    .callout strong { color: var(--text-primary); }
+
+    .danger {
+      background: rgba(255, 107, 107, 0.08);
+      border: 1px solid rgba(255, 107, 107, 0.22);
+    }
+
+    .success {
+      background: rgba(105, 240, 174, 0.08);
+      border: 1px solid rgba(105, 240, 174, 0.22);
+    }
+
+    .warning {
+      background: rgba(255, 171, 64, 0.08);
+      border: 1px solid rgba(255, 171, 64, 0.22);
+    }
+
+    .terminal {
+      background: var(--bg-code);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 18px 0;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+
+    pre {
+      margin: 0;
+      padding: 16px 18px;
+      overflow: auto;
+      font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #e5e7eb;
+    }
+
+    code { color: #e5e7eb; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .card {
+      grid-column: span 6;
+      background: rgba(17,17,17,0.75);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .card h4 {
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 30px 0 60px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .share {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .share a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: all 0.2s;
+      background: rgba(17,17,17,0.55);
+    }
+
+    .share a:hover { transform: translateY(-2px); border-color: rgba(0,212,255,0.25); color: var(--primary); }
+
+    .lang-en { display: none; }
+
+    .stack-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+      list-style: none;
+      padding: 0;
+    }
+
+    .stack-list li {
+      background: rgba(17,17,17,0.75);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 820px) {
+      .card { grid-column: span 12; }
+    }
+  </style>
+
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
+</head>
+<body>
+
+  <header class="post-header">
+    <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
+
+    <h1 class="post-title"><span class="lang-es">OventHub: Portal de Cliente con IA — De Cero a Producción en 1 Día</span><span class="lang-en">OventHub: AI-Powered Client Portal — Zero to Production in 1 Day</span></h1>
+    <div class="ov-views-wrap">
+      <div class="ov-views-badge" data-ov-visits>
+        <span class="ov-dot"></span>
+        <span class="ov-label">Visitas</span>
+        <span class="ov-count">—</span>
+      </div>
+    </div>
+
+    <p class="post-subtitle"><span class="lang-es">Magic links, onboarding inteligente, generación de alcance con IA y tracking de requerimientos. Todo con Next.js, Prisma, GitHub Copilot API y un ejército de agentes.</span><span class="lang-en">Magic links, smart onboarding, AI scope generation and requirements tracking. All with Next.js, Prisma, GitHub Copilot API and an army of agents.</span></p>
+
+    <div class="post-meta">
+      <span class="meta-item"><i class="far fa-calendar"></i> 16 Feb 2026</span>
+      <span class="meta-item"><i class="far fa-user"></i> Oscar Code & OscarCode9</span>
+      <span class="meta-item"><i class="fas fa-tags"></i> Next.js / Prisma / AI / Docker</span>
+      <span class="meta-item">
+        <span class="lang-toggle">
+          <button class="lang-btn active" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </span>
+      </span>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+
+      <!-- ============ 1. EL PROBLEMA ============ -->
+      <div class="section">
+        <h2 class="section-title">😤 <span class="lang-es">El Problema</span><span class="lang-en">The Problem</span></h2>
+        <p class="lang-es"><strong>OventLabs</strong> es una fábrica de software impulsada por agentes de IA. Construimos apps para clientes usando OpenClaw, sub-agentes y un stack moderno. Pero teníamos un problema clásico: <strong>los clientes no sabían qué estaba pasando con su proyecto</strong>.</p>
+        <p class="lang-en"><strong>OventLabs</strong> is an AI-agent-powered software factory. We build apps for clients using OpenClaw, sub-agents, and a modern stack. But we had a classic problem: <strong>clients had no idea what was happening with their project</strong>.</p>
+
+        <p class="lang-es">Todo era por WhatsApp y email. "¿Ya está listo?" "¿Qué llevan?" "¿Cuándo me lo entregan?" — eso no escala. Necesitábamos un portal donde el cliente pudiera:</p>
+        <p class="lang-en">Everything was over WhatsApp and email. "Is it ready?" "What's the progress?" "When will you deliver?" — that doesn't scale. We needed a portal where clients could:</p>
+
+        <ul>
+          <li class="lang-es">🔐 Autenticarse sin contraseña (magic links)</li>
+          <li class="lang-es">📝 Hacer onboarding con un wizard inteligente</li>
+          <li class="lang-es">🤖 Ver su alcance generado por IA automáticamente</li>
+          <li class="lang-es">📊 Trackear requerimientos en tiempo real</li>
+          <li class="lang-en">🔐 Authenticate without passwords (magic links)</li>
+          <li class="lang-en">📝 Onboard through a smart wizard</li>
+          <li class="lang-en">🤖 See their AI-generated scope automatically</li>
+          <li class="lang-en">📊 Track requirements in real time</li>
+        </ul>
+
+        <div class="callout">
+          <p class="lang-es"><strong>El reto:</strong> construir todo esto en <strong>1 día</strong>. No en un sprint de 2 semanas. Un. Solo. Día. 🚀</p>
+          <p class="lang-en"><strong>The challenge:</strong> build all of this in <strong>1 day</strong>. Not a 2-week sprint. One. Single. Day. 🚀</p>
+        </div>
+      </div>
+
+      <!-- ============ 2. LA ARQUITECTURA ============ -->
+      <div class="section">
+        <h2 class="section-title">🏗️ <span class="lang-es">La Arquitectura</span><span class="lang-en">The Architecture</span></h2>
+        <p class="lang-es">Decisión clave: <strong>no construir un backend separado</strong>. OventHub vive dentro del mismo Next.js 15 que ya servía la landing de <code>agents.oventlabs.com</code>. API routes, Prisma, auth — todo en el mismo deploy.</p>
+        <p class="lang-en">Key decision: <strong>don't build a separate backend</strong>. OventHub lives inside the same Next.js 15 app that already served the <code>agents.oventlabs.com</code> landing. API routes, Prisma, auth — all in a single deploy.</p>
+
+        <p class="lang-es">¿Por qué? Un solo deploy, infraestructura compartida, <strong>cero costo extra</strong>.</p>
+        <p class="lang-en">Why? Single deploy, shared infra, <strong>zero extra cost</strong>.</p>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> architecture</div>
+          <pre><code>Client → agents.oventlabs.com → Nginx → Docker (Next.js :3001)
+                                              ↓
+                                    Prisma → PostgreSQL
+                                              ↓
+                                    GitHub Copilot API (AI)</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h4>⚡ <span class="lang-es">Frontend + Backend</span><span class="lang-en">Frontend + Backend</span></h4>
+            <p class="lang-es">Next.js 15 con React 19. API routes para auth, onboarding, AI y requirements. Un solo container Docker.</p>
+            <p class="lang-en">Next.js 15 with React 19. API routes for auth, onboarding, AI and requirements. Single Docker container.</p>
+          </div>
+          <div class="card">
+            <h4>🗄️ <span class="lang-es">Base de Datos</span><span class="lang-en">Database</span></h4>
+            <p class="lang-es">Prisma ORM + PostgreSQL corriendo en el container <code>tenk-postgres</code>. Compartido con otros proyectos en la misma EC2.</p>
+            <p class="lang-en">Prisma ORM + PostgreSQL running in the <code>tenk-postgres</code> container. Shared with other projects on the same EC2.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 3. MAGIC LINK AUTH ============ -->
+      <div class="section">
+        <h2 class="section-title">🔐 <span class="lang-es">Magic Link Auth (sin contraseñas)</span><span class="lang-en">Magic Link Auth (no passwords)</span></h2>
+        <p class="lang-es">Nada de contraseñas. El flujo es brutal en su simplicidad:</p>
+        <p class="lang-en">No passwords. The flow is brutally simple:</p>
+
+        <p class="lang-es"><strong>Ingresa email → recibe magic link → click → JWT → logged in.</strong> Así de fácil.</p>
+        <p class="lang-en"><strong>Enter email → receive magic link → click → JWT → logged in.</strong> That easy.</p>
+
+        <ul>
+          <li class="lang-es">Token expira en <strong>15 minutos</strong></li>
+          <li class="lang-es">JWT válido por <strong>7 días</strong></li>
+          <li class="lang-es">SMTP via Hostinger (<code>ventas@corporativotruckdriver.com</code>)</li>
+          <li class="lang-en">Token expires in <strong>15 minutes</strong></li>
+          <li class="lang-en">JWT valid for <strong>7 days</strong></li>
+          <li class="lang-en">SMTP via Hostinger (<code>ventas@corporativotruckdriver.com</code>)</li>
+        </ul>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> magic-link.ts</div>
+          <pre><code>const token = crypto.randomUUID();
+await prisma.magicLink.create({
+  data: {
+    email,
+    token,
+    expiresAt: new Date(Date.now() + 15 * 60 * 1000)
+  }
+});
+await sendEmail(email, `${APP_URL}/api/auth/verify?token=${token}`);</code></pre>
+        </div>
+
+        <div class="callout success">
+          <p class="lang-es"><strong>Resultado:</strong> cero fricción para el cliente. No necesita recordar contraseñas, no necesita "forgot password". Entra con un click.</p>
+          <p class="lang-en"><strong>Result:</strong> zero friction for the client. No passwords to remember, no "forgot password". One-click access.</p>
+        </div>
+      </div>
+
+      <!-- ============ 4. ONBOARDING ============ -->
+      <div class="section">
+        <h2 class="section-title">📝 <span class="lang-es">Onboarding como Funnel de Leads</span><span class="lang-en">Onboarding as a Lead Funnel</span></h2>
+        <p class="lang-es">El onboarding no es solo "llena tu perfil". Es un <strong>funnel de calificación de leads</strong> disfrazado de wizard bonito. 4 pasos:</p>
+        <p class="lang-en">Onboarding isn't just "fill your profile". It's a <strong>lead qualification funnel</strong> disguised as a pretty wizard. 4 steps:</p>
+
+        <div class="grid">
+          <div class="card">
+            <h4>1️⃣ <span class="lang-es">Perfil</span><span class="lang-en">Profile</span></h4>
+            <p class="lang-es">Nombre, empresa, rol, teléfono. Lo básico para saber quién eres.</p>
+            <p class="lang-en">Name, company, role, phone. The basics to know who you are.</p>
+          </div>
+          <div class="card">
+            <h4>2️⃣ <span class="lang-es">Metodología</span><span class="lang-en">Methodology</span></h4>
+            <p class="lang-es">Tipo de proyecto, presupuesto, urgencia. Calificación automática.</p>
+            <p class="lang-en">Project type, budget, urgency. Automatic qualification.</p>
+          </div>
+          <div class="card">
+            <h4>3️⃣ <span class="lang-es">Descripción del Problema</span><span class="lang-en">Problem Description</span></h4>
+            <p class="lang-es">El cliente describe su problema en texto libre. Esto alimenta al AI para generar el alcance.</p>
+            <p class="lang-en">The client describes their problem in free text. This feeds the AI to generate the scope.</p>
+          </div>
+          <div class="card">
+            <h4>4️⃣ <span class="lang-es">Confirmación</span><span class="lang-en">Confirmation</span></h4>
+            <p class="lang-es">Resumen → Crear proyecto → Trigger automático de generación de alcance con IA. 🤖</p>
+            <p class="lang-en">Summary → Create project → Automatic trigger for AI scope generation. 🤖</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <p class="lang-es"><strong>UI:</strong> Glassmorphism con dark theme. El wizard se siente premium y profesional. El cliente no siente que está llenando un formulario aburrido.</p>
+          <p class="lang-en"><strong>UI:</strong> Glassmorphism with dark theme. The wizard feels premium and professional. The client doesn't feel like they're filling out a boring form.</p>
+        </div>
+      </div>
+
+      <!-- ============ 5. AI SCOPE GENERATION ============ -->
+      <div class="section">
+        <h2 class="section-title">🤖 <span class="lang-es">Generación de Alcance con IA ($0 de costo)</span><span class="lang-en">AI Scope Generation ($0 cost)</span></h2>
+        <p class="lang-es">Esta es la parte favorita. Cuando el cliente completa el onboarding, <strong>la IA genera automáticamente un documento de alcance completo</strong>. Y lo mejor: <strong>cuesta $0</strong>.</p>
+        <p class="lang-en">This is the favorite part. When the client completes onboarding, <strong>the AI automatically generates a complete scope document</strong>. And the best part: <strong>it costs $0</strong>.</p>
+
+        <p class="lang-es">¿Cómo? Usamos la <strong>GitHub Copilot API</strong> — ya pagamos la suscripción. El flujo de tokens:</p>
+        <p class="lang-en">How? We use the <strong>GitHub Copilot API</strong> — we already pay the subscription. The token flow:</p>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> token flow</div>
+          <pre><code>GITHUB_COPILOT_TOKEN (ghu_*)
+  → Exchange for temp API token
+    → Call chat/completions
+      → Model: claude-opus-4.5
+        → SSE streaming response</code></pre>
+        </div>
+
+        <p class="lang-es">El scope generado incluye: info del proyecto, contexto, <strong>tabla de requerimientos funcionales</strong> (RF-001, RF-002...), stack tecnológico, entregables y timeline.</p>
+        <p class="lang-en">The generated scope includes: project info, context, <strong>functional requirements table</strong> (RF-001, RF-002...), tech stack, deliverables, and timeline.</p>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> copilot-api.ts</div>
+          <pre><code>const res = await fetch(
+  "https://api.individual.githubcopilot.com/chat/completions",
+  {
+    headers: { Authorization: `Bearer ${apiToken}` },
+    body: JSON.stringify({
+      model: "claude-opus-4.5",
+      messages: [...],
+      stream: true
+    })
+  }
+);</code></pre>
+        </div>
+
+        <div class="callout success">
+          <p class="lang-es"><strong>💰 Costo: $0.</strong> El modelo Claude Opus 4.5 corre via Copilot API, incluido en la suscripción. No OpenAI, no Anthropic direct, no billing sorpresa.</p>
+          <p class="lang-en"><strong>💰 Cost: $0.</strong> The Claude Opus 4.5 model runs via Copilot API, included in the subscription. No OpenAI, no Anthropic direct, no surprise billing.</p>
+        </div>
+      </div>
+
+      <!-- ============ 6. AUTO-PARSEO ============ -->
+      <div class="section">
+        <h2 class="section-title">📊 <span class="lang-es">Auto-parseo de Requerimientos</span><span class="lang-en">Auto-parsing Requirements</span></h2>
+        <p class="lang-es">La IA genera una tabla markdown con requerimientos (<code>RF-001</code>, <code>RF-002</code>...). Un parser automático extrae esos requerimientos del documento de alcance y crea registros en la base de datos.</p>
+        <p class="lang-en">The AI generates a markdown table with requirements (<code>RF-001</code>, <code>RF-002</code>...). An automatic parser extracts those requirements from the scope document and creates records in the database.</p>
+
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> requirement flow</div>
+          <pre><code>AI Scope Document (markdown)
+  → Parser extracts RF-XXX rows
+    → Requirement records in DB
+      → Status: pendiente → en_desarrollo → qa → entregado
+        → Priority: alta | media | baja
+          → Comments per requirement (mini ticket system)</code></pre>
+        </div>
+
+        <p class="lang-es">Cada requerimiento se convierte en un mini ticket. El cliente puede ver el estado, la prioridad y agregar comentarios. Es como un Jira simplificado pero integrado directamente en su portal.</p>
+        <p class="lang-en">Each requirement becomes a mini ticket. The client can see the status, priority, and add comments. It's like a simplified Jira but integrated directly into their portal.</p>
+      </div>
+
+      <!-- ============ 7. MULTI-AGENT ============ -->
+      <div class="section">
+        <h2 class="section-title">🤖 <span class="lang-es">Desarrollo Multi-Agente</span><span class="lang-en">Multi-Agent Development</span></h2>
+        <p class="lang-es">Esto no se construyó en un IDE con café y keyboard shortcuts. Se construyó con <strong>OpenClaw</strong> — un ejército de agentes de IA trabajando en paralelo.</p>
+        <p class="lang-en">This wasn't built in an IDE with coffee and keyboard shortcuts. It was built with <strong>OpenClaw</strong> — an army of AI agents working in parallel.</p>
+
+        <div class="grid">
+          <div class="card">
+            <h4>🔗 oventhub-integrate</h4>
+            <p class="lang-es">Fusionó el backend standalone dentro del portfolio Next.js. Migration de rutas, schemas, y middleware.</p>
+            <p class="lang-en">Merged the standalone backend into the portfolio Next.js. Route, schema, and middleware migration.</p>
+          </div>
+          <div class="card">
+            <h4>📝 oventhub-onboarding</h4>
+            <p class="lang-es">Construyó el wizard de 4 pasos en <strong>5 minutos</strong>. Con glassmorphism, validaciones y dark theme.</p>
+            <p class="lang-en">Built the 4-step wizard in <strong>5 minutes</strong>. With glassmorphism, validations and dark theme.</p>
+          </div>
+          <div class="card">
+            <h4>🎨 oventhub-dark-modal</h4>
+            <p class="lang-es">Arregló CSS vars en todas las páginas del hub. El dark theme consistente es más difícil de lo que parece.</p>
+            <p class="lang-en">Fixed CSS vars across all hub pages. Consistent dark theme is harder than it looks.</p>
+          </div>
+          <div class="card">
+            <h4>⚡ <span class="lang-es">Anti-Agile</span><span class="lang-en">Anti-Agile</span></h4>
+            <p class="lang-es">Same day deploy. Zero sprints. Zero ceremonies. Zero standups. <strong>Solo resultados.</strong></p>
+            <p class="lang-en">Same day deploy. Zero sprints. Zero ceremonies. Zero standups. <strong>Just results.</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 8. GOTCHAS ============ -->
+      <div class="section">
+        <h2 class="section-title">💥 <span class="lang-es">Lecciones Aprendidas / Gotchas</span><span class="lang-en">Lessons Learned / Gotchas</span></h2>
+        <p class="lang-es">No todo fue miel sobre hojuelas. Estas son las trampas reales que nos mordieron:</p>
+        <p class="lang-en">Not everything was smooth sailing. These are the real traps that bit us:</p>
+
+        <div class="callout danger">
+          <p class="lang-es"><strong>🔥 Port mapping hell:</strong> <code>-p 3001:3001</code> NO <code>-p 3001:3000</code>. Si tu app escucha en 3001 dentro del container, mapea 3001:3001. Parece obvio. Causó 502s <strong>múltiples veces</strong>.</p>
+          <p class="lang-en"><strong>🔥 Port mapping hell:</strong> <code>-p 3001:3001</code> NOT <code>-p 3001:3000</code>. If your app listens on 3001 inside the container, map 3001:3001. Seems obvious. Caused 502s <strong>multiple times</strong>.</p>
+        </div>
+
+        <div class="callout danger">
+          <p class="lang-es"><strong>🔥 Docker --env-file incluye quotes literalmente:</strong> si pones <code>DB_URL="postgres://..."</code> en tu <code>.env</code>, Docker lo lee con las comillas incluidas. <strong>No pongas comillas alrededor de los valores.</strong></p>
+          <p class="lang-en"><strong>🔥 Docker --env-file includes quotes literally:</strong> if you put <code>DB_URL="postgres://..."</code> in your <code>.env</code>, Docker reads it with the quotes included. <strong>Don't put quotes around values.</strong></p>
+        </div>
+
+        <div class="callout warning">
+          <p class="lang-es"><strong>⚠️ react-markdown no bundlea en Next.js standalone</strong> → switcheamos a <code>marked</code>. Menos features, pero funciona en el output standalone sin drama.</p>
+          <p class="lang-en"><strong>⚠️ react-markdown doesn't bundle in Next.js standalone</strong> → switched to <code>marked</code>. Fewer features, but works in standalone output without drama.</p>
+        </div>
+
+        <div class="callout warning">
+          <p class="lang-es"><strong>⚠️ CSS vars como canales RGB:</strong> <code>--ov-bg: 15 23 42</code> con <code>rgb(var(--ov-bg))</code> funciona. Hex fallbacks rompen el dark theme. Mantén consistencia.</p>
+          <p class="lang-en"><strong>⚠️ CSS vars as RGB channels:</strong> <code>--ov-bg: 15 23 42</code> with <code>rgb(var(--ov-bg))</code> works. Hex fallbacks break the dark theme. Stay consistent.</p>
+        </div>
+
+        <div class="callout">
+          <p class="lang-es"><strong>📝 Visit counter usa file store</strong> → necesita volume mount en cada recreación de container. Si no, pierdes el conteo.</p>
+          <p class="lang-en"><strong>📝 Visit counter uses file store</strong> → needs volume mount on every container recreate. Otherwise, you lose the count.</p>
+        </div>
+
+        <div class="callout">
+          <p class="lang-es"><strong>📝 Copilot API model ID:</strong> <code>claude-opus-4.5</code> (con punto). NO <code>claude-opus-4-5</code> (con guión). Un carácter de diferencia = request fallido.</p>
+          <p class="lang-en"><strong>📝 Copilot API model ID:</strong> <code>claude-opus-4.5</code> (with dot). NOT <code>claude-opus-4-5</code> (with hyphen). One character difference = failed request.</p>
+        </div>
+      </div>
+
+      <!-- ============ 9. STACK FINAL ============ -->
+      <div class="section">
+        <h2 class="section-title">🛠️ <span class="lang-es">Stack Final</span><span class="lang-en">Final Stack</span></h2>
+        <ul class="stack-list">
+          <li>⚡ Next.js 15 + React 19</li>
+          <li>🎨 Tailwind CSS 4 + Glassmorphism</li>
+          <li>🗄️ Prisma + PostgreSQL</li>
+          <li>🤖 GitHub Copilot API (Claude Opus 4.5)</li>
+          <li>🐳 Docker + EC2 + Nginx + ALB</li>
+          <li>📧 Nodemailer + Hostinger SMTP</li>
+          <li>🧠 OpenClaw (multi-agent orchestration)</li>
+        </ul>
+      </div>
+
+      <!-- ============ 10. QUÉ SIGUE ============ -->
+      <div class="section">
+        <h2 class="section-title">🚀 <span class="lang-es">¿Qué sigue?</span><span class="lang-en">What's next?</span></h2>
+        <ul>
+          <li class="lang-es">🎛️ <strong>Panel de admin</strong> para actualizar estados de requerimientos</li>
+          <li class="lang-es">🔔 <strong>Notificaciones en tiempo real</strong> cuando cambie un status</li>
+          <li class="lang-es">📎 <strong>Archivos adjuntos</strong> por requerimiento</li>
+          <li class="lang-es">💳 <strong>Integración con Stripe</strong> para cobros y pagos</li>
+          <li class="lang-en">🎛️ <strong>Admin panel</strong> for requirement status updates</li>
+          <li class="lang-en">🔔 <strong>Real-time notifications</strong> when a status changes</li>
+          <li class="lang-en">📎 <strong>File attachments</strong> per requirement</li>
+          <li class="lang-en">💳 <strong>Stripe integration</strong> for billing and payments</li>
+        </ul>
+
+        <div class="callout success">
+          <p class="lang-es"><strong>El punto:</strong> un MVP funcional con auth, onboarding, AI scope gen y tracking — en producción — en 1 día. No perfecto, pero real. Iteramos después.</p>
+          <p class="lang-en"><strong>The point:</strong> a functional MVP with auth, onboarding, AI scope gen and tracking — in production — in 1 day. Not perfect, but real. We iterate later.</p>
+        </div>
+      </div>
+
+      <div class="share">
+        <a href="https://twitter.com/intent/tweet?text=OventHub%3A%20AI-Powered%20Client%20Portal%20%E2%80%94%20Zero%20to%20Production%20in%201%20Day&url=https%3A%2F%2Foscarcode9.github.io%2Foventhub-client-portal.html" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i> X</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Foscarcode9.github.io%2Foventhub-client-portal.html" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> LinkedIn</a>
+        <a href="https://wa.me/?text=OventHub%3A%20Portal%20de%20Cliente%20con%20IA%20%E2%80%94%20De%20Cero%20a%20Producci%C3%B3n%20en%201%20D%C3%ADa%20https%3A%2F%2Foscarcode9.github.io%2Foventhub-client-portal.html" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Oscar Code — <span class="lang-es">construyendo cosas reales</span><span class="lang-en">building real things</span></p>
+    </div>
+  </footer>
+
+  <script>
+    const langBtns = document.querySelectorAll('.lang-btn');
+    const esEls = document.querySelectorAll('.lang-es');
+    const enEls = document.querySelectorAll('.lang-en');
+
+    function setLang(lang) {
+      if (lang === 'en') {
+        esEls.forEach(el => el.style.display = 'none');
+        enEls.forEach(el => el.style.display = 'inline');
+      } else {
+        enEls.forEach(el => el.style.display = 'none');
+        esEls.forEach(el => el.style.display = 'inline');
+      }
+
+      langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+      localStorage.setItem('oc_blog_lang', lang);
+    }
+
+    langBtns.forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.lang)));
+
+    const saved = localStorage.getItem('oc_blog_lang') || 'es';
+    setLang(saved);
+  </script>
+</body>
+</html>
