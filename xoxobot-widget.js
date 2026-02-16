@@ -103,7 +103,7 @@
     #xoxo-input::placeholder { color: #64748b; }
     #xoxo-send {
       background: linear-gradient(135deg, #6366f1, #8b5cf6); border: none;
-      color: white; width: 40px; height: 40px; border-radius: 10px;
+      color: white; width: 40px; height: 40px; border-radius: 50%;
       cursor: pointer; font-size: 16px; transition: opacity 0.2s;
       display: flex; align-items: center; justify-content: center;
     }
