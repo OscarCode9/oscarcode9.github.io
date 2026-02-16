@@ -416,7 +416,7 @@
         <span class="post-tag">AI Agents</span>
         <span class="post-tag devops">DevOps</span>
         <br><br>
-        <span>&#x1F4C5; 14-15 de Febrero, 2026 &#183; &#x23F1;&#xFE0F; 12 min de lectura &#183; Actualizado con post-mortem</span>
+        <span>&#x1F4C5; 14-16 de Febrero, 2026 &#183; &#x23F1;&#xFE0F; 15 min de lectura &#183; Actualizado con post-mortem y an&#225;lisis de falla triple</span>
       </div>
     </div>
   </header>
@@ -885,7 +885,7 @@
         <li><strong>Reinicio del sistema</strong> &#8212; Node.js del sistema + gateway que se restaura.</li>
       </ul>
 
-      <p>El &#250;nico escenario que <em>no</em> est&#225; cubierto es si los 4 proveedores fallan al mismo tiempo. Pero seamos honestos, si OpenAI, GitHub Copilot, Y Anthropic est&#225;n todos ca&#237;dos al mismo tiempo... probablemente tenemos problemas m&#225;s grandes que un agente de WhatsApp.</p>
+      <p><s>El &#250;nico escenario que <em>no</em> est&#225; cubierto es si los 4 proveedores fallan al mismo tiempo.</s> Spoiler: s&#237; pas&#243;. Sigue leyendo.</p>
 
       <!-- ===== SECTION 11: POST-MORTEM ===== -->
       <h2>11. Post-Mortem: Cuando el Failover No Failoverea</h2>
@@ -1005,12 +1005,153 @@
         <p>Puedes agregar m&#225;s canales (Telegram, Slack) como fallback de comunicaci&#243;n, configurar alertas por email cuando el watchdog detecta una falla, o incluso agregar proveedores locales (Ollama, LM Studio) como &#250;ltimo-&#250;ltimo recurso para funcionar completamente offline. Las posibilidades con OpenClaw son infinitas.</p>
       </div>
 
+      <!-- ===== SECTION 13: FALLA TRIPLE ===== -->
+      <h2>13. La Tormenta Perfecta: Los 3 Proveedores Cayeron a la Vez</h2>
+
+      <p>Recuerdan que dije que si los 3 proveedores fallan al mismo tiempo &#8220;tenemos problemas m&#225;s grandes&#8221;? Bueno, pas&#243;. Horas despu&#233;s de publicar este post, los 3 murieron simult&#225;neamente:</p>
+
+      <div class="warning-box">
+        <h4>&#x1F480; Error: All models failed (3)</h4>
+        <p>
+          <code>github-copilot/claude-opus-4.6</code>: cooldown (rate_limit)<br>
+          <code>anthropic/claude-sonnet-4-5-20250929</code>: OAuth token refresh failed<br>
+          <code>openai-codex/gpt-5.3-codex</code>: ChatGPT Go plan usage limit (~5936 min)
+        </p>
+      </div>
+
+      <p>Tres fallas distintas, cada una por una raz&#243;n diferente. Un rate limit, un token expirado, y un l&#237;mite de plan. La combinaci&#243;n perfecta para dejar al bot completamente muerto.</p>
+
+      <h3>Root cause #1: Tokens de Anthropic expirados en el Keychain</h3>
+
+      <p>Las credenciales de Claude Code en el macOS Keychain estaban expiradas <strong>desde septiembre 2025</strong>. Claude Code funciona en memoria con tokens frescos, pero <strong>no actualiza el Keychain</strong> cuando renueva sus tokens internamente. OpenClaw lee del Keychain → obtiene tokens viejos → OAuth refresh falla → proveedor muerto.</p>
+
+      <pre><code><span class="comment"># Verificar cu&#225;ndo se modific&#243; el Keychain:</span>
+<span class="command">security find-generic-password</span> <span class="flag">-s</span> <span class="string">"Claude Code-credentials"</span> <span class="flag">-g</span> 2>&amp;1 | grep mdat
+<span class="output">mdat=0x323032353039... (September 2025!)</span></code></pre>
+
+      <h3>Root cause #2: El cooldown exponencial en cascada</h3>
+
+      <p>Revis&#233; el c&#243;digo fuente de OpenClaw y encontr&#233; la trampa. Cuando un proveedor recibe un error 429 (rate limit), OpenClaw pone el perfil de autenticaci&#243;n en <strong>cooldown exponencial</strong>:</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Error #</th>
+            <th>Cooldown</th>
+            <th>Efecto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1er error</td>
+            <td>60 segundos</td>
+            <td>Pausa corta, tolerable</td>
+          </tr>
+          <tr>
+            <td>2do error</td>
+            <td>5 minutos</td>
+            <td>Empieza a doler</td>
+          </tr>
+          <tr>
+            <td>3er error</td>
+            <td>25 minutos</td>
+            <td>Proveedor b&#225;sicamente muerto</td>
+          </tr>
+          <tr>
+            <td>4to+ error</td>
+            <td>1 hora (m&#225;ximo)</td>
+            <td>Game over</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>El problema: el cooldown es <strong>global por perfil</strong>. Si el gateway procesa m&#250;ltiples mensajes de WhatsApp concurrentemente (o un cron job al mismo tiempo), cada request fallido incrementa el contador. En segundos, el cooldown escala de 60s a 1 hora, y <strong>todos</strong> los requests siguientes fallan instant&#225;neamente sin siquiera intentar llamar al API.</p>
+
+      <p>Adem&#225;s, descubr&#237; en los logs que los &#8220;rate limits&#8221; de 23 segundos en realidad eran <strong>timeouts</strong>. El API de Anthropic se colgaba (en vez de devolver 429 instant&#225;neo), el request expiraba, y OpenClaw lo clasificaba como rate limit con el comentario en el c&#243;digo: <code>// Treat timeout as potential rate limit (Antigravity hangs on rate limit)</code>.</p>
+
+      <h3>Root cause #3: Config error que elimin&#243; un proveedor de la cadena</h3>
+
+      <p>Durante el debugging, cambi&#233; el modelo primario de <code>openai-codex</code> a <code>anthropic</code> para forzar pruebas directas. Esto caus&#243; que la cadena de failover pasara de <strong>3 proveedores a 2</strong>:</p>
+
+      <pre><code><span class="comment"># Config durante debugging (MAL):</span>
+<span class="string">"primary"</span>: <span class="string">"anthropic/claude-sonnet-4-5-20250929"</span>    <span class="comment">// anthropic como primario</span>
+<span class="string">"fallbacks"</span>: [
+  <span class="string">"github-copilot/claude-opus-4.6"</span>,              <span class="comment">// fallback 1</span>
+  <span class="string">"anthropic/claude-sonnet-4-5-20250929"</span>          <span class="comment">// duplicado = eliminado</span>
+]
+<span class="comment">// Resultado: solo 2 proveedores! openai-codex qued&#243; fuera</span>
+
+<span class="comment"># Config correcta:</span>
+<span class="string">"primary"</span>: <span class="string">"openai-codex/gpt-5.3-codex"</span>               <span class="comment">// openai como primario</span>
+<span class="string">"fallbacks"</span>: [
+  <span class="string">"github-copilot/claude-opus-4.6"</span>,              <span class="comment">// fallback 1</span>
+  <span class="string">"anthropic/claude-sonnet-4-5-20250929"</span>          <span class="comment">// fallback 2</span>
+]
+<span class="comment">// Resultado: 3 proveedores en cadena</span></code></pre>
+
+      <p>Los logs del gateway confirmaban: <code>All models failed (2)</code> &#8212; no 3. OpenClaw deduplica los modelos, as&#237; que anthropic como primario + anthropic como fallback = un solo proveedor.</p>
+
+      <h3>El fix: Tokens frescos via OAuth PKCE + restaurar la cadena</h3>
+
+      <p>La soluci&#243;n tuvo 3 partes:</p>
+
+      <p><strong>Parte 1:</strong> Obtener tokens frescos de Anthropic haciendo el flujo OAuth PKCE manualmente (el mismo que usa Claude Code internamente):</p>
+
+      <pre><code><span class="comment"># 1. Generar PKCE verifier + challenge</span>
+<span class="comment"># 2. Abrir URL de autorizaci&#243;n en claude.ai/oauth/authorize</span>
+<span class="comment"># 3. Copiar el c&#243;digo del callback</span>
+<span class="comment"># 4. Intercambiar c&#243;digo por tokens frescos:</span>
+<span class="command">curl</span> <span class="flag">-X POST</span> <span class="string">https://console.anthropic.com/v1/oauth/token</span> \
+  <span class="flag">-H</span> <span class="string">"Content-Type: application/json"</span> \
+  <span class="flag">-d</span> <span class="string">'{"grant_type":"authorization_code","code":"...","code_verifier":"...","client_id":"...","redirect_uri":"..."}'</span>
+
+<span class="comment"># Resultado: access_token + refresh_token frescos (8 horas)</span></code></pre>
+
+      <p><strong>Parte 2:</strong> Restaurar el modelo primario a <code>openai-codex/gpt-5.3-codex</code> para tener los 3 proveedores en la cadena.</p>
+
+      <p><strong>Parte 3:</strong> Limpiar los cooldowns acumulados en <code>auth-profiles.json</code> y reiniciar el gateway:</p>
+
+      <pre><code><span class="comment"># Limpiar cooldowns (en auth-profiles.json, cambiar usageStats a vac&#237;o):</span>
+<span class="string">"usageStats"</span>: {}
+
+<span class="comment"># Reiniciar:</span>
+<span class="command">openclaw gateway restart</span></code></pre>
+
+      <p>Resultado del test despu&#233;s del fix:</p>
+
+      <pre><code><span class="command">openclaw agent</span> <span class="flag">--session-id</span> <span class="string">"test-fix"</span> <span class="flag">-m</span> <span class="string">"di OK"</span>
+<span class="output">[failover] openai-codex: rate_limit (10s) &#8594; skip</span>
+<span class="output">[failover] github-copilot: rate_limit (22s) &#8594; skip</span>
+<span class="output">[failover] anthropic: &#10004; success</span>
+<span class="output">OK</span></code></pre>
+
+      <div class="tip-box">
+        <h4>&#10004; Bot restaurado</h4>
+        <p>Los 2 primeros proveedores siguen con rate limit temporal, pero el tercero (Anthropic con tokens frescos) responde correctamente. La cadena de failover funciona como debe: si los primeros fallan, el tercero entra.</p>
+      </div>
+
+      <!-- ===== SECTION 14: LECCIONES ===== -->
+      <h2>14. Lecciones del Incidente</h2>
+
+      <ol>
+        <li><strong>El Keychain miente.</strong> Claude Code funciona en memoria con tokens frescos pero no actualiza el Keychain. Si dependes del Keychain para credenciales, verifica que no est&#233;n expiradas.</li>
+        <li><strong>El cooldown exponencial es una espada de doble filo.</strong> Protege contra spam al API, pero en un escenario con m&#250;ltiples requests concurrentes, un solo error escala en segundos a 1 hora de bloqueo total.</li>
+        <li><strong>Nunca cambies el primary model para &#8220;debug r&#225;pido&#8221;.</strong> Si tu primary es igual a un fallback, OpenClaw deduplica y pierdes un proveedor de la cadena sin darte cuenta.</li>
+        <li><strong>Los timeouts se clasifican como rate limits.</strong> Una respuesta lenta del API (23s timeout) cuenta igual que un 429 real. Esto acelera el cooldown exponencial artificialmente.</li>
+        <li><strong>Limpia <code>usageStats</code> despu&#233;s de arreglar la causa ra&#237;z.</strong> Si no limpias los cooldowns acumulados, el gateway sigue rechazando requests instant&#225;neamente incluso con tokens frescos.</li>
+      </ol>
+
+      <div class="openclaw-box">
+        <h4>&#x1F99E; El setup actualizado</h4>
+        <p>Despu&#233;s de este incidente, la cadena de failover tiene <strong>3 proveedores activos</strong> con tokens verificados, cooldowns limpios, y el primary model correctamente configurado. La pr&#243;xima vez que un proveedor falle, los otros dos entran. Y si los 3 fallan... bueno, ya s&#233; c&#243;mo arreglarlo en 5 minutos en vez de 5 horas.</p>
+      </div>
+
     </div>
   </main>
 
   <footer class="post-footer">
     <div class="container">
-      <p>Escrito por <strong>Oscar Mart&#237;nez</strong> &#8212; 14 de febrero de 2026</p>
+      <p>Escrito por <strong>Oscar Mart&#237;nez</strong> &#8212; 14-16 de febrero de 2026</p>
       <p style="margin-top: 10px;">
         <a href="index.html">Volver al inicio</a>
       </p>
