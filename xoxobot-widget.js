@@ -110,9 +110,10 @@
     #xoxo-send:disabled { opacity: 0.4; cursor: not-allowed; }
     @media (max-width: 480px) {
       #xoxo-window {
-        width: 100vw; height: 100vh; height: 100dvh;
-        top: 0; left: 0; right: 0; bottom: 0;
-        border-radius: 0; border: none;
+        width: 100vw !important; height: 100vh !important; height: 100dvh !important;
+        top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+        border-radius: 0 !important; border: none !important;
+        max-height: none !important;
       }
       #xoxo-bubble { bottom: 16px; right: 16px; }
     }
@@ -139,7 +140,7 @@
     </div>
     <div id="xoxo-messages"></div>
     <div id="xoxo-input-area">
-      <input id="xoxo-input" placeholder="Escribe un mensaje..." maxlength="500">
+      <input id="xoxo-input" placeholder="Escribe un mensaje..." maxlength="500" autocomplete="off" autocorrect="off" autocapitalize="sentences">
       <button id="xoxo-send">➤</button>
     </div>
   `;
@@ -254,7 +255,7 @@
       welcomed = true;
       addMessage("assistant", "¡Hola! Soy XoxoBot 🪼 el asistente de OventLabs. ¿En qué te puedo ayudar? 💜");
     }
-    if (isOpen) input.focus();
+    if (isOpen) { /* don't auto-focus on mobile to avoid keyboard popup */ }
   });
 
   win.querySelector("#xoxo-close").addEventListener("click", () => {
