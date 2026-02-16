@@ -166,7 +166,11 @@
   }
 
   function escapeHtml(t) {
-    return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+    return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+      .replace(/\*(.+?)\*/g,"<em>$1</em>")
+      .replace(/`(.+?)`/g,'<code style="background:rgba(99,102,241,0.2);padding:1px 4px;border-radius:4px;font-size:12px">$1</code>')
+      .replace(/\n/g,"<br>");
   }
 
   function showTyping() {
