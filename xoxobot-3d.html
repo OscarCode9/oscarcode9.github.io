@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XoxoBot 3D — Working Hard! 🪼</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;color:#e0e0ff}
+canvas{display:block;position:fixed;top:0;left:0;z-index:0}
+#hud{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
+#title{text-align:center;padding:18px 0 0;font-size:1.6rem;font-weight:700;
+  background:linear-gradient(90deg,#b388ff,#6fa3ef,#ff9eb5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:none;letter-spacing:1px}
+#stats{display:flex;justify-content:center;gap:24px;padding:10px 0;flex-wrap:wrap}
+.stat{background:rgba(124,92,191,0.2);border:1px solid rgba(155,125,212,0.3);border-radius:12px;padding:6px 16px;font-size:.85rem;backdrop-filter:blur(6px)}
+.stat span{color:#b388ff;font-weight:700;font-size:1rem}
+#buttons{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:20;pointer-events:all;flex-wrap:wrap;justify-content:center}
+#buttons button{background:rgba(124,92,191,0.25);border:1px solid rgba(155,125,212,0.5);color:#e0d0ff;padding:10px 20px;border-radius:20px;font-size:.9rem;cursor:pointer;
+  backdrop-filter:blur(8px);transition:all .3s;pointer-events:all}
+#buttons button:hover{background:rgba(155,125,212,0.45);transform:scale(1.05);box-shadow:0 0 20px rgba(155,125,212,0.4)}
+#buttons button:active{transform:scale(0.95)}
+#terminal{position:fixed;bottom:0;left:0;width:100%;height:100px;background:rgba(10,10,20,0.85);border-top:1px solid rgba(155,125,212,0.3);
+  padding:8px 16px;overflow:hidden;z-index:15;font-family:'Courier New',monospace;font-size:.78rem;color:#9b7dd4;backdrop-filter:blur(10px)}
+#terminal-lines{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.tline{opacity:0;animation:fadeIn .4s forwards;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
+.tline:nth-child(odd){color:#6fa3ef}
+@keyframes fadeIn{to{opacity:1}}
+#footer{position:fixed;bottom:4px;right:12px;font-size:.65rem;color:rgba(155,125,212,0.5);z-index:20}
+#click-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(179,136,255,0.6);font-size:.75rem;z-index:15;
+  animation:hintPulse 3s ease-in-out infinite;pointer-events:none;text-align:center}
+@keyframes hintPulse{0%,100%{opacity:0}50%{opacity:1}}
+@media(max-width:600px){
+  #title{font-size:1.1rem;padding-top:12px}
+  .stat{padding:4px 10px;font-size:.75rem}
+  #buttons button{padding:8px 14px;font-size:.8rem}
+  #terminal{height:80px;font-size:.7rem}
+}
+</style>
+</head>
+<body>
+<div id="hud">
+  <div id="title">XoxoBot 🪼 — Working Hard!</div>
+  <div id="stats">
+    <div class="stat">📧 Emails: <span id="c-email">0</span></div>
+    <div class="stat">📅 Citas: <span id="c-cal">0</span></div>
+    <div class="stat">💬 Chats: <span id="c-chat">0</span></div>
+    <div class="stat">💜 XOXO: <span id="c-xoxo">0</span></div>
+  </div>
+</div>
+<div id="click-hint">✨ Click en XoxoBot ✨</div>
+<div id="buttons">
+  <button onclick="doEmail()">📧 Enviar Email</button>
+  <button onclick="doCal()">📅 Agendar Cita</button>
+  <button onclick="doChat()">💬 Nuevo Chat</button>
+</div>
+<div id="terminal"><div id="terminal-lines"></div></div>
+<div id="footer">Powered by OventLabs • Created by OscarCode9</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// --- Scene Setup ---
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x0a0a14,0.035);
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.1,100);
+camera.position.set(0,1.5,7);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.2;
+document.body.prepend(renderer.domElement);
+
+// Lights
+scene.add(new THREE.AmbientLight(0x9b7dd4,0.4));
+const pl1=new THREE.PointLight(0x9b7dd4,1.5,20);pl1.position.set(-3,4,3);scene.add(pl1);
+const pl2=new THREE.PointLight(0x6fa3ef,1.2,20);pl2.position.set(3,2,4);scene.add(pl2);
+const pl3=new THREE.PointLight(0xff9eb5,0.6,15);pl3.position.set(0,-1,5);scene.add(pl3);
+
+// --- Materials ---
+const matBody=new THREE.MeshStandardMaterial({color:0x9b7dd4,roughness:0.6,metalness:0.1});
+const matBodyLight=new THREE.MeshStandardMaterial({color:0x6fa3ef,roughness:0.6,metalness:0.1});
+const matBranch=new THREE.MeshStandardMaterial({color:0x7c5cbf,roughness:0.5});
+const matCheek=new THREE.MeshStandardMaterial({color:0xff9eb5,roughness:0.8,transparent:true,opacity:0.7});
+const matEye=new THREE.MeshStandardMaterial({color:0x111111,roughness:0.2,metalness:0.5});
+const matShine=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.8});
+const matHeart=new THREE.MeshStandardMaterial({color:0xff6b9d,emissive:0xff3366,emissiveIntensity:0.3,roughness:0.4});
+const matMonitor=new THREE.MeshStandardMaterial({color:0x1a1a2e,roughness:0.3,metalness:0.7});
+const matScreen=new THREE.MeshStandardMaterial({color:0x0f0f2a,emissive:0x6fa3ef,emissiveIntensity:0.15});
+
+// --- Build XoxoBot ---
+const xoxo=new THREE.Group();
+
+// Body
+const body=new THREE.Mesh(new THREE.SphereGeometry(0.9,32,32),matBody);
+body.scale.set(1,1.1,0.9);
+xoxo.add(body);
+
+// Belly
+const belly=new THREE.Mesh(new THREE.SphereGeometry(0.65,32,32),matBodyLight);
+belly.position.set(0,-0.1,0.35);
+xoxo.add(belly);
+
+// Head
+const head=new THREE.Mesh(new THREE.SphereGeometry(0.7,32,32),matBody);
+head.position.set(0,1.05,0.1);
+head.scale.set(1.1,1,1);
+xoxo.add(head);
+
+// Eyes
+const mkEye=(x)=>{
+  const g=new THREE.Group();
+  const eye=new THREE.Mesh(new THREE.SphereGeometry(0.18,16,16),matEye);
+  const shine=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),matShine);
+  shine.position.set(0.05,0.06,0.15);
+  g.add(eye);g.add(shine);
+  g.position.set(x,1.15,0.55);
+  return g;
+};
+xoxo.add(mkEye(-0.28));xoxo.add(mkEye(0.28));
+
+// Mouth (smile)
+const smileCurve=new THREE.EllipseCurve(0,0,0.15,0.08,0,Math.PI,false,0);
+const smileGeo=new THREE.BufferGeometry().setFromPoints(smileCurve.getPoints(20));
+const smile=new THREE.Line(smileGeo,new THREE.LineBasicMaterial({color:0x333333}));
+smile.position.set(0,0.9,0.68);
+smile.rotation.x=-0.1;
+xoxo.add(smile);
+
+// Cheeks
+const mkCheek=(x)=>{
+  const c=new THREE.Mesh(new THREE.SphereGeometry(0.12,16,16),matCheek);
+  c.position.set(x,0.95,0.6);
+  c.scale.set(1,0.7,0.5);
+  return c;
+};
+xoxo.add(mkCheek(-0.48));xoxo.add(mkCheek(0.48));
+
+// Branquias (gills) - 3 per side
+const gills=[];
+const mkGill=(side,i)=>{
+  const g=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.07,0.55,8),matBranch);
+  const angle=(-0.3+i*0.3);
+  g.position.set(side*0.65,1.45+i*0.1,(-0.1+i*0.05));
+  g.rotation.z=side*(-0.5+i*0.15);
+  g.rotation.x=-0.2+i*0.1;
+  // tip sphere
+  const tip=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),matHeart);
+  tip.position.y=0.28;
+  g.add(tip);
+  gills.push(g);
+  return g;
+};
+for(let i=0;i<3;i++){xoxo.add(mkGill(-1,i));xoxo.add(mkGill(1,i));}
+
+// Arms
+const mkArm=(x)=>{
+  const a=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.08,0.6,8),matBody);
+  a.position.set(x,-0.1,0.3);
+  a.rotation.z=x>0?-0.5:0.5;
+  a.rotation.x=-0.4;
+  return a;
+};
+xoxo.add(mkArm(-0.85));xoxo.add(mkArm(0.85));
+
+// Tail
+const tailCurve=new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0,-0.8,-0.5),new THREE.Vector3(0.3,-1.1,-0.8),
+  new THREE.Vector3(0.1,-1.3,-1.1),new THREE.Vector3(-0.2,-1.2,-1.3)
+]);
+const tail=new THREE.Mesh(new THREE.TubeGeometry(tailCurve,20,0.08,8,false),matBody);
+xoxo.add(tail);
+
+// Heart
+const heartShape=new THREE.Shape();
+const hx=0,hy=0;
+heartShape.moveTo(hx,hy+0.25);
+heartShape.bezierCurveTo(hx,hy+0.25,hx-0.25,hy,hx-0.25,hy);
+heartShape.bezierCurveTo(hx-0.25,hy-0.15,hx,hy-0.3,hx,hy-0.45);
+heartShape.bezierCurveTo(hx,hy-0.3,hx+0.25,hy-0.15,hx+0.25,hy);
+heartShape.bezierCurveTo(hx+0.25,hy,hx,hy+0.25,hx,hy+0.25);
+const heartGeo=new THREE.ExtrudeGeometry(heartShape,{depth:0.08,bevelEnabled:true,bevelSize:0.02,bevelThickness:0.02});
+const heart=new THREE.Mesh(heartGeo,matHeart);
+heart.scale.set(0.7,0.7,0.7);
+heart.position.set(0,0.1,0.75);
+heart.rotation.x=0.1;
+xoxo.add(heart);
+
+xoxo.position.set(-0.5,0.3,0);
+scene.add(xoxo);
+
+// --- Monitor ---
+const monitor=new THREE.Group();
+const mFrame=new THREE.Mesh(new THREE.BoxGeometry(2.8,1.8,0.08),matMonitor);
+const mScreen=new THREE.Mesh(new THREE.PlaneGeometry(2.5,1.5),matScreen);
+mScreen.position.z=0.05;
+const mStand=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.12,0.6,8),matMonitor);
+mStand.position.y=-1.2;
+const mBase=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,0.05,16),matMonitor);
+mBase.position.y=-1.5;
+monitor.add(mFrame);monitor.add(mScreen);monitor.add(mStand);monitor.add(mBase);
+monitor.position.set(1.8,1.8,-1.5);
+monitor.rotation.y=-0.3;
+scene.add(monitor);
+
+// Monitor glow
+const mGlow=new THREE.PointLight(0x6fa3ef,0.5,5);
+mGlow.position.copy(monitor.position);mGlow.position.z+=0.5;
+scene.add(mGlow);
+
+// --- Desk ---
+const desk=new THREE.Mesh(new THREE.BoxGeometry(4,0.08,2),new THREE.MeshStandardMaterial({color:0x1a1a2e,roughness:0.4,metalness:0.6}));
+desk.position.set(1,-.55,-1);
+scene.add(desk);
+
+// --- Background Particles ---
+const pCount=300;
+const pGeo=new THREE.BufferGeometry();
+const pPos=new Float32Array(pCount*3);
+const pCol=new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){
+  pPos[i*3]=(Math.random()-0.5)*30;
+  pPos[i*3+1]=(Math.random()-0.5)*20;
+  pPos[i*3+2]=(Math.random()-0.5)*30-5;
+  const c=new THREE.Color().setHSL(0.7+Math.random()*0.15,0.6,0.5+Math.random()*0.3);
+  pCol[i*3]=c.r;pCol[i*3+1]=c.g;pCol[i*3+2]=c.b;
+}
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
+const pMat=new THREE.PointsMaterial({size:0.06,vertexColors:true,transparent:true,opacity:0.7});
+const particles=new THREE.Points(pGeo,pMat);
+scene.add(particles);
+
+// --- Floating Task Objects Pool ---
+const floaters=[];
+
+function createEnvelope(){
+  const g=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.BoxGeometry(0.35,0.25,0.02),new THREE.MeshStandardMaterial({color:0xb388ff,emissive:0x9b7dd4,emissiveIntensity:0.3}));
+  const flap=new THREE.Mesh(new THREE.ConeGeometry(0.18,0.15,4),new THREE.MeshStandardMaterial({color:0x9b7dd4,emissive:0x7c5cbf,emissiveIntensity:0.2}));
+  flap.rotation.z=Math.PI;flap.position.y=0.13;
+  g.add(body);g.add(flap);
+  g.position.set(-0.5+Math.random(),0.5+Math.random()*2,Math.random()*2-1);
+  g.userData={vel:new THREE.Vector3((Math.random()-0.3)*0.02,0.01+Math.random()*0.02,(Math.random()-0.5)*0.01),life:120+Math.random()*120};
+  return g;
+}
+
+function createCalendar(){
+  const g=new THREE.Group();
+  const page=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.35,0.02),new THREE.MeshStandardMaterial({color:0xe0d0ff,emissive:0xb388ff,emissiveIntensity:0.2}));
+  const header=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.08,0.025),new THREE.MeshStandardMaterial({color:0xff6b9d,emissive:0xff3366,emissiveIntensity:0.3}));
+  header.position.y=0.135;
+  g.add(page);g.add(header);
+  g.position.set(1+Math.random(),1+Math.random()*1.5,-1+Math.random());
+  g.userData={vel:new THREE.Vector3((Math.random()-0.5)*0.01,0.015+Math.random()*0.01,(Math.random()-0.5)*0.01),life:150+Math.random()*100};
+  return g;
+}
+
+function createBubble(){
+  const g=new THREE.Mesh(new THREE.SphereGeometry(0.12+Math.random()*0.1,16,16),
+    new THREE.MeshStandardMaterial({color:0x6fa3ef,emissive:0x6fa3ef,emissiveIntensity:0.3,transparent:true,opacity:0.6}));
+  g.position.set(-1+Math.random()*3,0.5+Math.random()*2,Math.random()*2-1);
+  g.userData={vel:new THREE.Vector3((Math.random()-0.5)*0.015,0.02+Math.random()*0.015,(Math.random()-0.5)*0.01),life:100+Math.random()*100};
+  return g;
+}
+
+function createHeart(){
+  const hs=new THREE.Shape();
+  hs.moveTo(0,0.15);hs.bezierCurveTo(0,0.15,-0.15,0,-0.15,0);
+  hs.bezierCurveTo(-0.15,-0.1,0,-0.2,0,-0.28);
+  hs.bezierCurveTo(0,-0.2,0.15,-0.1,0.15,0);
+  hs.bezierCurveTo(0.15,0,0,0.15,0,0.15);
+  const m=new THREE.Mesh(new THREE.ExtrudeGeometry(hs,{depth:0.04,bevelEnabled:false}),
+    new THREE.MeshStandardMaterial({color:0xff6b9d,emissive:0xff3366,emissiveIntensity:0.5,transparent:true,opacity:0.8}));
+  m.position.set(-0.5+Math.random()*1.5,0.8+Math.random()*1.5,Math.random()*2);
+  m.userData={vel:new THREE.Vector3((Math.random()-0.5)*0.02,0.025+Math.random()*0.02,(Math.random()-0.5)*0.01),life:80+Math.random()*80};
+  return m;
+}
+
+function spawnFloater(type){
+  let f;
+  if(type==='email')f=createEnvelope();
+  else if(type==='cal')f=createCalendar();
+  else if(type==='chat')f=createBubble();
+  else f=createHeart();
+  scene.add(f);
+  floaters.push(f);
+}
+
+// --- Counters & Logs ---
+let counts={email:0,cal:0,chat:0,xoxo:0};
+const logMsgs={
+  email:["✉️ Email enviado a cliente@empresa.com","✉️ Email enviado a soporte@oventlabs.com","✉️ Newsletter enviado a 2,847 suscriptores","✉️ Email de bienvenida enviado","✉️ Cotización enviada a nuevo lead"],
+  cal:["📅 Cita agendada: Consultoría IA - 10:00 AM","📅 Meeting: Sprint Review - 3:00 PM","📅 Demo con cliente - Mañana 11:00 AM","📅 Onboarding call agendado - 2:00 PM","📅 Cita: Revisión de proyecto - 4:30 PM"],
+  chat:["💬 Chat respondido: ¿Qué cursos tienen?","💬 Chat: ¡Gracias XoxoBot! 💜","💬 Respondido: ¿Cómo integro la API?","💬 Chat: Necesito ayuda con mi proyecto","💬 Respondido: ¡Claro! Te paso la info"],
+  xoxo:["💜 XOXO sent!","💜 Spreading love~ XOXO!","💜 ¡Abrazo virtual enviado! XOXO","💜 XoxoBot says: XOXO 🪼","💜 Love & code~ XOXO!"]
+};
+const termEl=document.getElementById('terminal-lines');
+function addLog(type){
+  const msgs=logMsgs[type];
+  const msg=msgs[Math.floor(Math.random()*msgs.length)];
+  const d=document.createElement('div');
+  d.className='tline';
+  d.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;
+  termEl.appendChild(d);
+  if(termEl.children.length>5)termEl.removeChild(termEl.firstChild);
+}
+function updateStats(){
+  document.getElementById('c-email').textContent=counts.email;
+  document.getElementById('c-cal').textContent=counts.cal;
+  document.getElementById('c-chat').textContent=counts.chat;
+  document.getElementById('c-xoxo').textContent=counts.xoxo;
+}
+
+function doAction(type){
+  counts[type]++;
+  updateStats();
+  addLog(type);
+  spawnFloater(type);
+}
+function doEmail(){doAction('email');}
+function doCal(){doAction('cal');}
+function doChat(){doAction('chat');}
+function doXoxo(){doAction('xoxo');for(let i=0;i<3;i++)spawnFloater('xoxo');}
+
+// Auto-increment
+setInterval(()=>{const t=['email','cal','chat','xoxo'];doAction(t[Math.floor(Math.random()*t.length)]);},3500);
+
+// --- Mouse/Touch tracking ---
+let mouseX=0,mouseY=0;
+document.addEventListener('mousemove',e=>{mouseX=(e.clientX/innerWidth-0.5)*2;mouseY=(e.clientY/innerHeight-0.5)*2;});
+document.addEventListener('touchmove',e=>{const t=e.touches[0];mouseX=(t.clientX/innerWidth-0.5)*2;mouseY=(t.clientY/innerHeight-0.5)*2;},{passive:true});
+
+// --- Click on XoxoBot ---
+const raycaster=new THREE.Raycaster();
+const mouse2=new THREE.Vector2();
+let clickAnim=0;
+
+function onClick(e){
+  const cx=e.clientX||(e.touches&&e.touches[0].clientX);
+  const cy=e.clientY||(e.touches&&e.touches[0].clientY);
+  if(!cx)return;
+  mouse2.x=(cx/innerWidth)*2-1;
+  mouse2.y=-(cy/innerHeight)*2+1;
+  raycaster.setFromCamera(mouse2,camera);
+  const hits=raycaster.intersectObjects(xoxo.children,true);
+  if(hits.length>0){
+    clickAnim=1;
+    doXoxo();
+    document.getElementById('click-hint').style.display='none';
+  }
+}
+renderer.domElement.addEventListener('click',onClick);
+renderer.domElement.addEventListener('touchstart',onClick,{passive:true});
+
+// --- Resize ---
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+// --- Animation Loop ---
+const clock=new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  const t=clock.getElapsedTime();
+  const dt=clock.getDelta();
+
+  // XoxoBot idle float
+  xoxo.position.y=0.3+Math.sin(t*1.2)*0.15;
+
+  // Follow mouse
+  xoxo.rotation.y+=(mouseX*0.4-xoxo.rotation.y)*0.03;
+  xoxo.rotation.x+=(-mouseY*0.15-xoxo.rotation.x)*0.03;
+
+  // Gills animation
+  gills.forEach((g,i)=>{
+    g.rotation.z+=Math.sin(t*2+i*0.5)*0.003;
+    g.rotation.x+=Math.cos(t*1.5+i*0.7)*0.002;
+  });
+
+  // Heart pulse
+  const hp=1+Math.sin(t*3)*0.08;
+  heart.scale.set(0.7*hp,0.7*hp,0.7*hp);
+
+  // Click animation
+  if(clickAnim>0){
+    xoxo.rotation.y+=0.15;
+    xoxo.position.y+=Math.sin(clickAnim*Math.PI)*0.03;
+    clickAnim-=0.02;
+    if(clickAnim<=0)clickAnim=0;
+  }
+
+  // Monitor glow pulse
+  mGlow.intensity=0.5+Math.sin(t*2)*0.2;
+  matScreen.emissiveIntensity=0.15+Math.sin(t*1.5)*0.05;
+
+  // Floaters
+  for(let i=floaters.length-1;i>=0;i--){
+    const f=floaters[i];
+    f.position.add(f.userData.vel);
+    f.rotation.y+=0.02;
+    f.rotation.x+=0.01;
+    f.userData.life--;
+    if(f.userData.life<30){
+      if(f.material)f.material.opacity=f.userData.life/30;
+    }
+    if(f.userData.life<=0){
+      scene.remove(f);
+      floaters.splice(i,1);
+    }
+  }
+
+  // Particles drift
+  const pp=particles.geometry.attributes.position.array;
+  for(let i=0;i<pCount;i++){
+    pp[i*3+1]+=Math.sin(t+i)*0.001;
+    pp[i*3]+=Math.cos(t*0.5+i)*0.0005;
+  }
+  particles.geometry.attributes.position.needsUpdate=true;
+  particles.rotation.y=t*0.01;
+
+  renderer.render(scene,camera);
+}
+animate();
+
+// Initial logs
+setTimeout(()=>addLog('email'),500);
+setTimeout(()=>addLog('chat'),1500);
+setTimeout(()=>addLog('cal'),2500);
+</script>
+</body>
+</html>
