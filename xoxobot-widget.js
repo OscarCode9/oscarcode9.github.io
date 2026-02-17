@@ -29,7 +29,7 @@
       transform: scale(1.12);
       box-shadow: 0 6px 32px rgba(99,102,241,0.6), 0 0 0 0 rgba(99,102,241,0);
     }
-    #xoxo-bubble img { width: 54px; height: 54px; border-radius: 50%; object-fit: contain; background: transparent; }
+    #xoxo-bubble img { width: 64px; height: 64px; border-radius: 50%; object-fit: contain; background: transparent; }
     @keyframes xoxo-gradient {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
