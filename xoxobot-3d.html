@@ -2,12 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>XoxoBot 3D — Working Hard! 🪼</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a14;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;color:#e0e0ff}
+body{background:#0a0a14;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;color:#e0e0ff;touch-action:none}
 canvas{display:block;position:fixed;top:0;left:0;z-index:0}
+
+/* --- HUD Visualization Mode --- */
 #hud{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
 #title{text-align:center;padding:18px 0 0;font-size:1.6rem;font-weight:700;
   background:linear-gradient(90deg,#b388ff,#6fa3ef,#ff9eb5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -16,10 +18,10 @@ canvas{display:block;position:fixed;top:0;left:0;z-index:0}
 .stat{background:rgba(124,92,191,0.2);border:1px solid rgba(155,125,212,0.3);border-radius:12px;padding:6px 16px;font-size:.85rem;backdrop-filter:blur(6px)}
 .stat span{color:#b388ff;font-weight:700;font-size:1rem}
 #buttons{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:20;pointer-events:all;flex-wrap:wrap;justify-content:center}
-#buttons button{background:rgba(124,92,191,0.25);border:1px solid rgba(155,125,212,0.5);color:#e0d0ff;padding:10px 20px;border-radius:20px;font-size:.9rem;cursor:pointer;
+#buttons button,.mode-btn{background:rgba(124,92,191,0.25);border:1px solid rgba(155,125,212,0.5);color:#e0d0ff;padding:10px 20px;border-radius:20px;font-size:.9rem;cursor:pointer;
   backdrop-filter:blur(8px);transition:all .3s;pointer-events:all}
-#buttons button:hover{background:rgba(155,125,212,0.45);transform:scale(1.05);box-shadow:0 0 20px rgba(155,125,212,0.4)}
-#buttons button:active{transform:scale(0.95)}
+#buttons button:hover,.mode-btn:hover{background:rgba(155,125,212,0.45);transform:scale(1.05);box-shadow:0 0 20px rgba(155,125,212,0.4)}
+#buttons button:active,.mode-btn:active{transform:scale(0.95)}
 #terminal{position:fixed;bottom:0;left:0;width:100%;height:100px;background:rgba(10,10,20,0.85);border-top:1px solid rgba(155,125,212,0.3);
   padding:8px 16px;overflow:hidden;z-index:15;font-family:'Courier New',monospace;font-size:.78rem;color:#9b7dd4;backdrop-filter:blur(10px)}
 #terminal-lines{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
@@ -30,15 +32,48 @@ canvas{display:block;position:fixed;top:0;left:0;z-index:0}
 #click-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(179,136,255,0.6);font-size:.75rem;z-index:15;
   animation:hintPulse 3s ease-in-out infinite;pointer-events:none;text-align:center}
 @keyframes hintPulse{0%,100%{opacity:0}50%{opacity:1}}
+
+/* --- Mode Switcher --- */
+#mode-switcher{position:fixed;top:12px;right:12px;z-index:30;display:flex;gap:8px}
+
+/* --- Game HUD --- */
+#game-hud{position:fixed;top:0;left:0;width:100%;pointer-events:none;z-index:25;display:none;padding:14px 20px}
+#game-hud .gh-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+#game-hud .gh-item{background:rgba(124,92,191,0.25);border:1px solid rgba(155,125,212,0.4);border-radius:14px;padding:8px 18px;font-size:1rem;backdrop-filter:blur(6px);font-weight:700}
+#game-hud .gh-score{color:#b388ff;font-size:1.3rem}
+#game-hud .gh-lives span{color:#ff6b9d}
+#game-hud .gh-level{color:#6fa3ef}
+
+/* --- Game Over Overlay --- */
+#game-over{position:fixed;top:0;left:0;width:100%;height:100%;z-index:40;display:none;
+  background:rgba(10,10,20,0.92);flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#game-over h1{font-size:2.5rem;margin-bottom:12px;
+  background:linear-gradient(90deg,#ff6b9d,#b388ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#game-over .go-score{font-size:1.5rem;margin:8px 0;color:#e0d0ff}
+#game-over .go-high{font-size:1rem;color:#b388ff;margin-bottom:24px}
+#game-over button{background:linear-gradient(135deg,#9b7dd4,#ff6b9d);border:none;color:#fff;padding:14px 36px;border-radius:30px;font-size:1.1rem;cursor:pointer;
+  transition:transform .2s;font-weight:700}
+#game-over button:hover{transform:scale(1.08)}
+
 @media(max-width:600px){
   #title{font-size:1.1rem;padding-top:12px}
   .stat{padding:4px 10px;font-size:.75rem}
-  #buttons button{padding:8px 14px;font-size:.8rem}
+  #buttons button,.mode-btn{padding:8px 14px;font-size:.8rem}
   #terminal{height:80px;font-size:.7rem}
+  #game-hud .gh-item{padding:5px 10px;font-size:.8rem}
+  #game-over h1{font-size:1.8rem}
 }
 </style>
 </head>
 <body>
+
+<!-- Mode Switcher -->
+<div id="mode-switcher">
+  <button class="mode-btn" id="btn-play" onclick="startGame()">🎮 Jugar</button>
+  <button class="mode-btn" id="btn-view" onclick="stopGame()" style="display:none">👀 Ver Trabajar</button>
+</div>
+
+<!-- Visualization HUD -->
 <div id="hud">
   <div id="title">XoxoBot 🪼 — Working Hard!</div>
   <div id="stats">
@@ -57,378 +92,819 @@ canvas{display:block;position:fixed;top:0;left:0;z-index:0}
 <div id="terminal"><div id="terminal-lines"></div></div>
 <div id="footer">Powered by OventLabs • Created by OscarCode9</div>
 
+<!-- Game HUD -->
+<div id="game-hud">
+  <div class="gh-row">
+    <div class="gh-item gh-score">💜 <span id="g-score">0</span></div>
+    <div class="gh-item gh-level">Nivel <span id="g-level">1</span></div>
+    <div class="gh-item gh-lives">❤️ <span id="g-lives">❤️❤️❤️❤️❤️</span></div>
+  </div>
+</div>
+
+<!-- Game Over -->
+<div id="game-over">
+  <h1>💔 Game Over</h1>
+  <div class="go-score">Corazones: <span id="go-score">0</span></div>
+  <div class="go-high">🏆 High Score: <span id="go-high">0</span></div>
+  <button onclick="retryGame()">🔄 Reintentar</button>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// --- Scene Setup ---
-const scene=new THREE.Scene();
-scene.fog=new THREE.FogExp2(0x0a0a14,0.035);
-const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.1,100);
-camera.position.set(0,1.5,7);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
-renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.2;
+// ============================================
+// SCENE SETUP
+// ============================================
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a14, 0.025);
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 1.2, 7);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.3;
 document.body.prepend(renderer.domElement);
 
 // Lights
-scene.add(new THREE.AmbientLight(0x9b7dd4,0.4));
-const pl1=new THREE.PointLight(0x9b7dd4,1.5,20);pl1.position.set(-3,4,3);scene.add(pl1);
-const pl2=new THREE.PointLight(0x6fa3ef,1.2,20);pl2.position.set(3,2,4);scene.add(pl2);
-const pl3=new THREE.PointLight(0xff9eb5,0.6,15);pl3.position.set(0,-1,5);scene.add(pl3);
+scene.add(new THREE.AmbientLight(0xc8b8ef, 0.6));
+const pl1 = new THREE.PointLight(0xb388ff, 1.2, 20); pl1.position.set(-3, 5, 4); scene.add(pl1);
+const pl2 = new THREE.PointLight(0x6fa3ef, 1.0, 20); pl2.position.set(3, 3, 5); scene.add(pl2);
+const pl3 = new THREE.PointLight(0xff9eb5, 0.6, 15); pl3.position.set(0, -1, 6); scene.add(pl3);
+const pl4 = new THREE.PointLight(0xffffff, 0.3, 10); pl4.position.set(0, 4, 2); scene.add(pl4);
 
-// --- Materials ---
-const matBody=new THREE.MeshStandardMaterial({color:0x9b7dd4,roughness:0.6,metalness:0.1});
-const matBodyLight=new THREE.MeshStandardMaterial({color:0x6fa3ef,roughness:0.6,metalness:0.1});
-const matBranch=new THREE.MeshStandardMaterial({color:0x7c5cbf,roughness:0.5});
-const matCheek=new THREE.MeshStandardMaterial({color:0xff9eb5,roughness:0.8,transparent:true,opacity:0.7});
-const matEye=new THREE.MeshStandardMaterial({color:0x111111,roughness:0.2,metalness:0.5});
-const matShine=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:0.8});
-const matHeart=new THREE.MeshStandardMaterial({color:0xff6b9d,emissive:0xff3366,emissiveIntensity:0.3,roughness:0.4});
-const matMonitor=new THREE.MeshStandardMaterial({color:0x1a1a2e,roughness:0.3,metalness:0.7});
-const matScreen=new THREE.MeshStandardMaterial({color:0x0f0f2a,emissive:0x6fa3ef,emissiveIntensity:0.15});
+// ============================================
+// MATERIALS
+// ============================================
+const matBodyTop = new THREE.MeshStandardMaterial({ color: 0xb8a9e8, roughness: 0.7, metalness: 0.05 });
+const matBodyBot = new THREE.MeshStandardMaterial({ color: 0x7fa8e0, roughness: 0.7, metalness: 0.05 });
+const matBodyMid = new THREE.MeshStandardMaterial({ color: 0x9ca8e4, roughness: 0.7, metalness: 0.05 });
+const matGill = new THREE.MeshStandardMaterial({ color: 0x8b6bb5, roughness: 0.5, metalness: 0.1 });
+const matCheek = new THREE.MeshStandardMaterial({ color: 0xff9eb5, roughness: 0.8, transparent: true, opacity: 0.75 });
+const matEye = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.15, metalness: 0.5 });
+const matShine = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.0 });
+const matHeart = new THREE.MeshStandardMaterial({ color: 0xe86b8a, emissive: 0xff3366, emissiveIntensity: 0.25, roughness: 0.45 });
+const matHeartLines = new THREE.MeshStandardMaterial({ color: 0xd05a78, roughness: 0.5 });
+const matSpot = new THREE.MeshStandardMaterial({ color: 0xc8bcef, roughness: 0.8, transparent: true, opacity: 0.25 });
+const matMonitor = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.3, metalness: 0.7 });
+const matScreen = new THREE.MeshStandardMaterial({ color: 0x0f0f2a, emissive: 0x6fa3ef, emissiveIntensity: 0.15 });
 
-// --- Build XoxoBot ---
-const xoxo=new THREE.Group();
+// ============================================
+// BUILD XOXOBOT - CUTE AXOLOTL
+// ============================================
+const xoxo = new THREE.Group();
 
-// Body
-const body=new THREE.Mesh(new THREE.SphereGeometry(0.9,32,32),matBody);
-body.scale.set(1,1.1,0.9);
-xoxo.add(body);
+// --- HEAD (large, ~60% of character) ---
+const headGroup = new THREE.Group();
 
-// Belly
-const belly=new THREE.Mesh(new THREE.SphereGeometry(0.65,32,32),matBodyLight);
-belly.position.set(0,-0.1,0.35);
-xoxo.add(belly);
+// Main head sphere
+const head = new THREE.Mesh(new THREE.SphereGeometry(1.05, 40, 40), matBodyTop);
+head.scale.set(1.1, 0.95, 1.0);
+headGroup.add(head);
 
-// Head
-const head=new THREE.Mesh(new THREE.SphereGeometry(0.7,32,32),matBody);
-head.position.set(0,1.05,0.1);
-head.scale.set(1.1,1,1);
-xoxo.add(head);
+// Lower head (gradient effect - bluer)
+const headLower = new THREE.Mesh(new THREE.SphereGeometry(0.95, 32, 32), matBodyBot);
+headLower.position.set(0, -0.3, 0);
+headLower.scale.set(1.05, 0.6, 0.95);
+headGroup.add(headLower);
 
-// Eyes
-const mkEye=(x)=>{
-  const g=new THREE.Group();
-  const eye=new THREE.Mesh(new THREE.SphereGeometry(0.18,16,16),matEye);
-  const shine=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),matShine);
-  shine.position.set(0.05,0.06,0.15);
-  g.add(eye);g.add(shine);
-  g.position.set(x,1.15,0.55);
+// Face front (slightly lighter, flat area)
+const faceFront = new THREE.Mesh(new THREE.SphereGeometry(0.85, 32, 32), matBodyMid);
+faceFront.position.set(0, -0.05, 0.35);
+faceFront.scale.set(1.0, 0.85, 0.5);
+headGroup.add(faceFront);
+
+headGroup.position.set(0, 1.15, 0);
+xoxo.add(headGroup);
+
+// --- EYES (very large, kawaii style) ---
+function makeEye(x) {
+  const g = new THREE.Group();
+  // Outer eye white rim
+  const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.28, 24, 24), new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.2 }));
+  g.add(eyeWhite);
+  // Main black eye
+  const eye = new THREE.Mesh(new THREE.SphereGeometry(0.26, 24, 24), matEye);
+  eye.position.z = 0.03;
+  g.add(eye);
+  // Big highlight
+  const shine1 = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 12), matShine);
+  shine1.position.set(0.07, 0.08, 0.22);
+  g.add(shine1);
+  // Small highlight
+  const shine2 = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), matShine);
+  shine2.position.set(-0.05, -0.05, 0.22);
+  g.add(shine2);
+  // Subtle lashes (3 small cylinders on top)
+  for (let i = 0; i < 3; i++) {
+    const lash = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.005, 0.08, 4), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+    lash.position.set(-0.08 + i * 0.08, 0.24, 0.12);
+    lash.rotation.z = (-0.3 + i * 0.3) * (x > 0 ? -1 : 1);
+    lash.rotation.x = -0.3;
+    g.add(lash);
+  }
+  g.position.set(x, 1.25, 0.7);
   return g;
-};
-xoxo.add(mkEye(-0.28));xoxo.add(mkEye(0.28));
+}
+const eyeL = makeEye(-0.35);
+const eyeR = makeEye(0.35);
+xoxo.add(eyeL); xoxo.add(eyeR);
 
-// Mouth (smile)
-const smileCurve=new THREE.EllipseCurve(0,0,0.15,0.08,0,Math.PI,false,0);
-const smileGeo=new THREE.BufferGeometry().setFromPoints(smileCurve.getPoints(20));
-const smile=new THREE.Line(smileGeo,new THREE.LineBasicMaterial({color:0x333333}));
-smile.position.set(0,0.9,0.68);
-smile.rotation.x=-0.1;
+// --- CHEEKS ---
+function makeCheek(x) {
+  const c = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), matCheek);
+  c.position.set(x, 0.95, 0.75);
+  c.scale.set(1.2, 0.8, 0.4);
+  return c;
+}
+xoxo.add(makeCheek(-0.55)); xoxo.add(makeCheek(0.55));
+
+// --- MOUTH (small cute smile) ---
+const smileCurve = new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(-0.12, 0, 0),
+  new THREE.Vector3(0, -0.06, 0.02),
+  new THREE.Vector3(0.12, 0, 0)
+);
+const smileGeo = new THREE.TubeGeometry(smileCurve, 16, 0.015, 8, false);
+const smile = new THREE.Mesh(smileGeo, new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.3 }));
+smile.position.set(0, 0.88, 0.88);
 xoxo.add(smile);
 
-// Cheeks
-const mkCheek=(x)=>{
-  const c=new THREE.Mesh(new THREE.SphereGeometry(0.12,16,16),matCheek);
-  c.position.set(x,0.95,0.6);
-  c.scale.set(1,0.7,0.5);
-  return c;
-};
-xoxo.add(mkCheek(-0.48));xoxo.add(mkCheek(0.48));
-
-// Branquias (gills) - 3 per side
-const gills=[];
-const mkGill=(side,i)=>{
-  const g=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.07,0.55,8),matBranch);
-  const angle=(-0.3+i*0.3);
-  g.position.set(side*0.65,1.45+i*0.1,(-0.1+i*0.05));
-  g.rotation.z=side*(-0.5+i*0.15);
-  g.rotation.x=-0.2+i*0.1;
-  // tip sphere
-  const tip=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),matHeart);
-  tip.position.y=0.28;
+// --- GILLS / BRANQUIAS (3 per side, rounded horn/fin shapes) ---
+const gills = [];
+function makeGill(side, index) {
+  const g = new THREE.Group();
+  // Main gill stem (tapered capsule-like)
+  const stem = new THREE.Mesh(new THREE.CapsuleGeometry(0.06, 0.45, 8, 12), matGill);
+  g.add(stem);
+  // Rounded tip
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), matGill);
+  tip.position.y = 0.28;
   g.add(tip);
+  // Smaller buds on gill
+  const bud1 = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), matGill);
+  bud1.position.set(side * 0.05, 0.15, 0.04);
+  g.add(bud1);
+
+  const angles = [-35, -10, 15];
+  const yOffs = [0.08, 0.15, 0.08];
+  const zOffs = [-0.1, 0.0, 0.1];
+
+  const angleRad = THREE.MathUtils.degToRad(angles[index]);
+  g.position.set(
+    side * (0.85 + index * 0.05),
+    1.65 + yOffs[index],
+    -0.1 + zOffs[index]
+  );
+  g.rotation.z = side * THREE.MathUtils.degToRad(-50 + index * 20);
+  g.rotation.x = THREE.MathUtils.degToRad(-20 + index * 15);
+
   gills.push(g);
   return g;
-};
-for(let i=0;i<3;i++){xoxo.add(mkGill(-1,i));xoxo.add(mkGill(1,i));}
+}
+for (let i = 0; i < 3; i++) { xoxo.add(makeGill(-1, i)); xoxo.add(makeGill(1, i)); }
 
-// Arms
-const mkArm=(x)=>{
-  const a=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.08,0.6,8),matBody);
-  a.position.set(x,-0.1,0.3);
-  a.rotation.z=x>0?-0.5:0.5;
-  a.rotation.x=-0.4;
-  return a;
-};
-xoxo.add(mkArm(-0.85));xoxo.add(mkArm(0.85));
+// --- BODY (smaller than head) ---
+const bodyGroup = new THREE.Group();
+const bodyMain = new THREE.Mesh(new THREE.SphereGeometry(0.7, 32, 32), matBodyBot);
+bodyMain.scale.set(1.0, 1.15, 0.85);
+bodyGroup.add(bodyMain);
 
-// Tail
-const tailCurve=new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0,-0.8,-0.5),new THREE.Vector3(0.3,-1.1,-0.8),
-  new THREE.Vector3(0.1,-1.3,-1.1),new THREE.Vector3(-0.2,-1.2,-1.3)
+// Upper body (connects to head, gradient)
+const bodyUpper = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), matBodyMid);
+bodyUpper.position.set(0, 0.35, 0);
+bodyUpper.scale.set(0.95, 0.7, 0.8);
+bodyGroup.add(bodyUpper);
+
+// Belly highlight
+const belly = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 24), new THREE.MeshStandardMaterial({ color: 0x9bc0ea, roughness: 0.7, metalness: 0.05 }));
+belly.position.set(0, -0.05, 0.3);
+belly.scale.set(0.8, 0.9, 0.5);
+bodyGroup.add(belly);
+
+// Spots (tie-dye pattern)
+for (let i = 0; i < 6; i++) {
+  const spot = new THREE.Mesh(new THREE.SphereGeometry(0.08 + Math.random() * 0.08, 12, 12), matSpot);
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.random() * Math.PI * 0.6 + 0.2;
+  spot.position.set(
+    Math.sin(phi) * Math.cos(theta) * 0.65,
+    Math.cos(phi) * 0.65 - 0.1,
+    Math.sin(phi) * Math.sin(theta) * 0.55
+  );
+  spot.scale.set(1.2, 0.8, 0.6);
+  bodyGroup.add(spot);
+}
+
+bodyGroup.position.set(0, -0.35, 0);
+xoxo.add(bodyGroup);
+
+// --- ARMS (short, rounded, hugging the heart) ---
+function makeArm(side) {
+  const g = new THREE.Group();
+  // Upper arm
+  const upper = new THREE.Mesh(new THREE.CapsuleGeometry(0.1, 0.3, 8, 8), matBodyBot);
+  upper.rotation.z = side * -0.8;
+  upper.rotation.x = -0.5;
+  g.add(upper);
+  // Hand (round paw)
+  const hand = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 12), matBodyBot);
+  hand.position.set(side * -0.25, -0.1, 0.18);
+  g.add(hand);
+  // Fingers (3 little bumps)
+  for (let i = 0; i < 3; i++) {
+    const finger = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), matBodyMid);
+    finger.position.set(side * (-0.28 - 0.03) + i * 0.04, -0.14, 0.22);
+    g.add(finger);
+  }
+  g.position.set(side * 0.55, -0.15, 0.2);
+  return g;
+}
+xoxo.add(makeArm(-1)); xoxo.add(makeArm(1));
+
+// --- LEGS/FEET (short, rounded, visible below) ---
+function makeFoot(x) {
+  const g = new THREE.Group();
+  const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.2, 8, 8), matBodyBot);
+  g.add(leg);
+  const foot = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 12), matBodyBot);
+  foot.position.set(0, -0.15, 0.06);
+  foot.scale.set(1.2, 0.7, 1.3);
+  g.add(foot);
+  // Toes
+  for (let i = 0; i < 3; i++) {
+    const toe = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), matBodyMid);
+    toe.position.set(-0.06 + i * 0.06, -0.2, 0.12);
+    g.add(toe);
+  }
+  g.position.set(x, -1.0, 0.1);
+  return g;
+}
+xoxo.add(makeFoot(-0.25)); xoxo.add(makeFoot(0.25));
+
+// --- TAIL (short, curved) ---
+const tailCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0, -0.6, -0.4),
+  new THREE.Vector3(0.25, -0.8, -0.65),
+  new THREE.Vector3(0.15, -0.95, -0.85),
+  new THREE.Vector3(-0.1, -0.85, -0.95)
 ]);
-const tail=new THREE.Mesh(new THREE.TubeGeometry(tailCurve,20,0.08,8,false),matBody);
+const tail = new THREE.Mesh(new THREE.TubeGeometry(tailCurve, 20, 0.07, 8, false), matBodyBot);
 xoxo.add(tail);
+// Tail tip
+const tailTip = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), matBodyMid);
+tailTip.position.set(-0.1, -0.85, -0.95);
+xoxo.add(tailTip);
 
-// Heart
-const heartShape=new THREE.Shape();
-const hx=0,hy=0;
-heartShape.moveTo(hx,hy+0.25);
-heartShape.bezierCurveTo(hx,hy+0.25,hx-0.25,hy,hx-0.25,hy);
-heartShape.bezierCurveTo(hx-0.25,hy-0.15,hx,hy-0.3,hx,hy-0.45);
-heartShape.bezierCurveTo(hx,hy-0.3,hx+0.25,hy-0.15,hx+0.25,hy);
-heartShape.bezierCurveTo(hx+0.25,hy,hx,hy+0.25,hx,hy+0.25);
-const heartGeo=new THREE.ExtrudeGeometry(heartShape,{depth:0.08,bevelEnabled:true,bevelSize:0.02,bevelThickness:0.02});
-const heart=new THREE.Mesh(heartGeo,matHeart);
-heart.scale.set(0.7,0.7,0.7);
-heart.position.set(0,0.1,0.75);
-heart.rotation.x=0.1;
-xoxo.add(heart);
+// --- HEART with XOXO text ---
+const heartGroup = new THREE.Group();
 
-xoxo.position.set(-0.5,0.3,0);
+// Heart shape
+const hs = new THREE.Shape();
+const s = 1.0;
+hs.moveTo(0, 0.3 * s);
+hs.bezierCurveTo(0, 0.35 * s, -0.12 * s, 0.35 * s, -0.25 * s, 0.2 * s);
+hs.bezierCurveTo(-0.4 * s, 0.05 * s, -0.35 * s, -0.15 * s, -0.2 * s, -0.25 * s);
+hs.bezierCurveTo(-0.1 * s, -0.32 * s, 0, -0.42 * s, 0, -0.5 * s);
+hs.bezierCurveTo(0, -0.42 * s, 0.1 * s, -0.32 * s, 0.2 * s, -0.25 * s);
+hs.bezierCurveTo(0.35 * s, -0.15 * s, 0.4 * s, 0.05 * s, 0.25 * s, 0.2 * s);
+hs.bezierCurveTo(0.12 * s, 0.35 * s, 0, 0.35 * s, 0, 0.3 * s);
+
+const heartMesh = new THREE.Mesh(
+  new THREE.ExtrudeGeometry(hs, { depth: 0.12, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.02, bevelSegments: 3 }),
+  matHeart
+);
+heartGroup.add(heartMesh);
+
+// Corrugated/ribbed lines on heart
+for (let i = 0; i < 8; i++) {
+  const line = new THREE.Mesh(
+    new THREE.BoxGeometry(0.38, 0.012, 0.14),
+    matHeartLines
+  );
+  line.position.set(0, 0.2 - i * 0.08, 0.06);
+  heartGroup.add(line);
+}
+
+// XOXO text using canvas texture
+const xoxoCanvas = document.createElement('canvas');
+xoxoCanvas.width = 256; xoxoCanvas.height = 128;
+const xCtx = xoxoCanvas.getContext('2d');
+xCtx.fillStyle = 'rgba(0,0,0,0)';
+xCtx.fillRect(0, 0, 256, 128);
+xCtx.fillStyle = '#ffffff';
+xCtx.font = 'bold 60px Arial, sans-serif';
+xCtx.textAlign = 'center';
+xCtx.textBaseline = 'middle';
+xCtx.fillText('XOXO', 128, 64);
+const xoxoTex = new THREE.CanvasTexture(xoxoCanvas);
+const xoxoPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(0.45, 0.22),
+  new THREE.MeshBasicMaterial({ map: xoxoTex, transparent: true, depthWrite: false })
+);
+xoxoPlane.position.set(0, -0.08, 0.14);
+heartGroup.add(xoxoPlane);
+
+heartGroup.scale.set(0.6, 0.6, 0.6);
+heartGroup.position.set(0, -0.2, 0.55);
+heartGroup.rotation.x = 0.08;
+xoxo.add(heartGroup);
+
+xoxo.position.set(-0.5, 0.3, 0);
 scene.add(xoxo);
 
-// --- Monitor ---
-const monitor=new THREE.Group();
-const mFrame=new THREE.Mesh(new THREE.BoxGeometry(2.8,1.8,0.08),matMonitor);
-const mScreen=new THREE.Mesh(new THREE.PlaneGeometry(2.5,1.5),matScreen);
-mScreen.position.z=0.05;
-const mStand=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.12,0.6,8),matMonitor);
-mStand.position.y=-1.2;
-const mBase=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,0.05,16),matMonitor);
-mBase.position.y=-1.5;
-monitor.add(mFrame);monitor.add(mScreen);monitor.add(mStand);monitor.add(mBase);
-monitor.position.set(1.8,1.8,-1.5);
-monitor.rotation.y=-0.3;
-scene.add(monitor);
+// ============================================
+// MONITOR & DESK (visualization mode)
+// ============================================
+const vizGroup = new THREE.Group();
 
-// Monitor glow
-const mGlow=new THREE.PointLight(0x6fa3ef,0.5,5);
-mGlow.position.copy(monitor.position);mGlow.position.z+=0.5;
-scene.add(mGlow);
+const monitor = new THREE.Group();
+const mFrame = new THREE.Mesh(new THREE.BoxGeometry(2.8, 1.8, 0.08), matMonitor);
+const mScreen = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 1.5), matScreen);
+mScreen.position.z = 0.05;
+const mStand = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 0.6, 8), matMonitor);
+mStand.position.y = -1.2;
+const mBase = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 16), matMonitor);
+mBase.position.y = -1.5;
+monitor.add(mFrame); monitor.add(mScreen); monitor.add(mStand); monitor.add(mBase);
+monitor.position.set(1.8, 1.8, -1.5);
+monitor.rotation.y = -0.3;
+vizGroup.add(monitor);
 
-// --- Desk ---
-const desk=new THREE.Mesh(new THREE.BoxGeometry(4,0.08,2),new THREE.MeshStandardMaterial({color:0x1a1a2e,roughness:0.4,metalness:0.6}));
-desk.position.set(1,-.55,-1);
-scene.add(desk);
+const mGlow = new THREE.PointLight(0x6fa3ef, 0.5, 5);
+mGlow.position.copy(monitor.position); mGlow.position.z += 0.5;
+vizGroup.add(mGlow);
 
-// --- Background Particles ---
-const pCount=300;
-const pGeo=new THREE.BufferGeometry();
-const pPos=new Float32Array(pCount*3);
-const pCol=new Float32Array(pCount*3);
-for(let i=0;i<pCount;i++){
-  pPos[i*3]=(Math.random()-0.5)*30;
-  pPos[i*3+1]=(Math.random()-0.5)*20;
-  pPos[i*3+2]=(Math.random()-0.5)*30-5;
-  const c=new THREE.Color().setHSL(0.7+Math.random()*0.15,0.6,0.5+Math.random()*0.3);
-  pCol[i*3]=c.r;pCol[i*3+1]=c.g;pCol[i*3+2]=c.b;
+const desk = new THREE.Mesh(new THREE.BoxGeometry(4, 0.08, 2), new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.4, metalness: 0.6 }));
+desk.position.set(1, -0.55, -1);
+vizGroup.add(desk);
+
+scene.add(vizGroup);
+
+// ============================================
+// BACKGROUND PARTICLES
+// ============================================
+const pCount = 300;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(pCount * 3);
+const pCol = new Float32Array(pCount * 3);
+for (let i = 0; i < pCount; i++) {
+  pPos[i * 3] = (Math.random() - 0.5) * 30;
+  pPos[i * 3 + 1] = (Math.random() - 0.5) * 20;
+  pPos[i * 3 + 2] = (Math.random() - 0.5) * 30 - 5;
+  const c = new THREE.Color().setHSL(0.7 + Math.random() * 0.15, 0.6, 0.5 + Math.random() * 0.3);
+  pCol[i * 3] = c.r; pCol[i * 3 + 1] = c.g; pCol[i * 3 + 2] = c.b;
 }
-pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
-pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
-const pMat=new THREE.PointsMaterial({size:0.06,vertexColors:true,transparent:true,opacity:0.7});
-const particles=new THREE.Points(pGeo,pMat);
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+pGeo.setAttribute('color', new THREE.BufferAttribute(pCol, 3));
+const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.06, vertexColors: true, transparent: true, opacity: 0.7 }));
 scene.add(particles);
 
-// --- Floating Task Objects Pool ---
-const floaters=[];
+// ============================================
+// FLOATING TASK OBJECTS (visualization mode)
+// ============================================
+const floaters = [];
 
-function createEnvelope(){
-  const g=new THREE.Group();
-  const body=new THREE.Mesh(new THREE.BoxGeometry(0.35,0.25,0.02),new THREE.MeshStandardMaterial({color:0xb388ff,emissive:0x9b7dd4,emissiveIntensity:0.3}));
-  const flap=new THREE.Mesh(new THREE.ConeGeometry(0.18,0.15,4),new THREE.MeshStandardMaterial({color:0x9b7dd4,emissive:0x7c5cbf,emissiveIntensity:0.2}));
-  flap.rotation.z=Math.PI;flap.position.y=0.13;
-  g.add(body);g.add(flap);
-  g.position.set(-0.5+Math.random(),0.5+Math.random()*2,Math.random()*2-1);
-  g.userData={vel:new THREE.Vector3((Math.random()-0.3)*0.02,0.01+Math.random()*0.02,(Math.random()-0.5)*0.01),life:120+Math.random()*120};
+function createEnvelope() {
+  const g = new THREE.Group();
+  const b = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.25, 0.02), new THREE.MeshStandardMaterial({ color: 0xb388ff, emissive: 0x9b7dd4, emissiveIntensity: 0.3 }));
+  const fl = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.15, 4), new THREE.MeshStandardMaterial({ color: 0x9b7dd4, emissive: 0x7c5cbf, emissiveIntensity: 0.2 }));
+  fl.rotation.z = Math.PI; fl.position.y = 0.13;
+  g.add(b); g.add(fl);
+  g.position.set(-0.5 + Math.random(), 0.5 + Math.random() * 2, Math.random() * 2 - 1);
+  g.userData = { vel: new THREE.Vector3((Math.random() - 0.3) * 0.02, 0.01 + Math.random() * 0.02, (Math.random() - 0.5) * 0.01), life: 120 + Math.random() * 120 };
   return g;
 }
-
-function createCalendar(){
-  const g=new THREE.Group();
-  const page=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.35,0.02),new THREE.MeshStandardMaterial({color:0xe0d0ff,emissive:0xb388ff,emissiveIntensity:0.2}));
-  const header=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.08,0.025),new THREE.MeshStandardMaterial({color:0xff6b9d,emissive:0xff3366,emissiveIntensity:0.3}));
-  header.position.y=0.135;
-  g.add(page);g.add(header);
-  g.position.set(1+Math.random(),1+Math.random()*1.5,-1+Math.random());
-  g.userData={vel:new THREE.Vector3((Math.random()-0.5)*0.01,0.015+Math.random()*0.01,(Math.random()-0.5)*0.01),life:150+Math.random()*100};
+function createCalendar() {
+  const g = new THREE.Group();
+  const pg = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.35, 0.02), new THREE.MeshStandardMaterial({ color: 0xe0d0ff, emissive: 0xb388ff, emissiveIntensity: 0.2 }));
+  const hd = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.08, 0.025), new THREE.MeshStandardMaterial({ color: 0xff6b9d, emissive: 0xff3366, emissiveIntensity: 0.3 }));
+  hd.position.y = 0.135;
+  g.add(pg); g.add(hd);
+  g.position.set(1 + Math.random(), 1 + Math.random() * 1.5, -1 + Math.random());
+  g.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 0.01, 0.015 + Math.random() * 0.01, (Math.random() - 0.5) * 0.01), life: 150 + Math.random() * 100 };
   return g;
 }
-
-function createBubble(){
-  const g=new THREE.Mesh(new THREE.SphereGeometry(0.12+Math.random()*0.1,16,16),
-    new THREE.MeshStandardMaterial({color:0x6fa3ef,emissive:0x6fa3ef,emissiveIntensity:0.3,transparent:true,opacity:0.6}));
-  g.position.set(-1+Math.random()*3,0.5+Math.random()*2,Math.random()*2-1);
-  g.userData={vel:new THREE.Vector3((Math.random()-0.5)*0.015,0.02+Math.random()*0.015,(Math.random()-0.5)*0.01),life:100+Math.random()*100};
+function createBubble() {
+  const g = new THREE.Mesh(new THREE.SphereGeometry(0.12 + Math.random() * 0.1, 16, 16),
+    new THREE.MeshStandardMaterial({ color: 0x6fa3ef, emissive: 0x6fa3ef, emissiveIntensity: 0.3, transparent: true, opacity: 0.6 }));
+  g.position.set(-1 + Math.random() * 3, 0.5 + Math.random() * 2, Math.random() * 2 - 1);
+  g.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 0.015, 0.02 + Math.random() * 0.015, (Math.random() - 0.5) * 0.01), life: 100 + Math.random() * 100 };
   return g;
 }
-
-function createHeart(){
-  const hs=new THREE.Shape();
-  hs.moveTo(0,0.15);hs.bezierCurveTo(0,0.15,-0.15,0,-0.15,0);
-  hs.bezierCurveTo(-0.15,-0.1,0,-0.2,0,-0.28);
-  hs.bezierCurveTo(0,-0.2,0.15,-0.1,0.15,0);
-  hs.bezierCurveTo(0.15,0,0,0.15,0,0.15);
-  const m=new THREE.Mesh(new THREE.ExtrudeGeometry(hs,{depth:0.04,bevelEnabled:false}),
-    new THREE.MeshStandardMaterial({color:0xff6b9d,emissive:0xff3366,emissiveIntensity:0.5,transparent:true,opacity:0.8}));
-  m.position.set(-0.5+Math.random()*1.5,0.8+Math.random()*1.5,Math.random()*2);
-  m.userData={vel:new THREE.Vector3((Math.random()-0.5)*0.02,0.025+Math.random()*0.02,(Math.random()-0.5)*0.01),life:80+Math.random()*80};
+function createFloatingHeart() {
+  const sh = new THREE.Shape();
+  sh.moveTo(0, 0.15); sh.bezierCurveTo(0, 0.15, -0.15, 0, -0.15, 0);
+  sh.bezierCurveTo(-0.15, -0.1, 0, -0.2, 0, -0.28);
+  sh.bezierCurveTo(0, -0.2, 0.15, -0.1, 0.15, 0);
+  sh.bezierCurveTo(0.15, 0, 0, 0.15, 0, 0.15);
+  const m = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.04, bevelEnabled: false }),
+    new THREE.MeshStandardMaterial({ color: 0xff6b9d, emissive: 0xff3366, emissiveIntensity: 0.5, transparent: true, opacity: 0.8 }));
+  m.position.set(-0.5 + Math.random() * 1.5, 0.8 + Math.random() * 1.5, Math.random() * 2);
+  m.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 0.02, 0.025 + Math.random() * 0.02, (Math.random() - 0.5) * 0.01), life: 80 + Math.random() * 80 };
   return m;
 }
 
-function spawnFloater(type){
+function spawnFloater(type) {
   let f;
-  if(type==='email')f=createEnvelope();
-  else if(type==='cal')f=createCalendar();
-  else if(type==='chat')f=createBubble();
-  else f=createHeart();
+  if (type === 'email') f = createEnvelope();
+  else if (type === 'cal') f = createCalendar();
+  else if (type === 'chat') f = createBubble();
+  else f = createFloatingHeart();
   scene.add(f);
   floaters.push(f);
 }
 
-// --- Counters & Logs ---
-let counts={email:0,cal:0,chat:0,xoxo:0};
-const logMsgs={
-  email:["✉️ Email enviado a cliente@empresa.com","✉️ Email enviado a soporte@oventlabs.com","✉️ Newsletter enviado a 2,847 suscriptores","✉️ Email de bienvenida enviado","✉️ Cotización enviada a nuevo lead"],
-  cal:["📅 Cita agendada: Consultoría IA - 10:00 AM","📅 Meeting: Sprint Review - 3:00 PM","📅 Demo con cliente - Mañana 11:00 AM","📅 Onboarding call agendado - 2:00 PM","📅 Cita: Revisión de proyecto - 4:30 PM"],
-  chat:["💬 Chat respondido: ¿Qué cursos tienen?","💬 Chat: ¡Gracias XoxoBot! 💜","💬 Respondido: ¿Cómo integro la API?","💬 Chat: Necesito ayuda con mi proyecto","💬 Respondido: ¡Claro! Te paso la info"],
-  xoxo:["💜 XOXO sent!","💜 Spreading love~ XOXO!","💜 ¡Abrazo virtual enviado! XOXO","💜 XoxoBot says: XOXO 🪼","💜 Love & code~ XOXO!"]
+// ============================================
+// COUNTERS & TERMINAL LOGS
+// ============================================
+let counts = { email: 0, cal: 0, chat: 0, xoxo: 0 };
+const logMsgs = {
+  email: ["✉️ Email enviado a cliente@empresa.com", "✉️ Email enviado a soporte@oventlabs.com", "✉️ Newsletter enviado a 2,847 suscriptores", "✉️ Email de bienvenida enviado", "✉️ Cotización enviada a nuevo lead"],
+  cal: ["📅 Cita agendada: Consultoría IA - 10:00 AM", "📅 Meeting: Sprint Review - 3:00 PM", "📅 Demo con cliente - Mañana 11:00 AM", "📅 Onboarding call agendado - 2:00 PM", "📅 Cita: Revisión de proyecto - 4:30 PM"],
+  chat: ["💬 Chat respondido: ¿Qué cursos tienen?", "💬 Chat: ¡Gracias XoxoBot! 💜", "💬 Respondido: ¿Cómo integro la API?", "💬 Chat: Necesito ayuda con mi proyecto", "💬 Respondido: ¡Claro! Te paso la info"],
+  xoxo: ["💜 XOXO sent!", "💜 Spreading love~ XOXO!", "💜 ¡Abrazo virtual enviado! XOXO", "💜 XoxoBot says: XOXO 🪼", "💜 Love & code~ XOXO!"]
 };
-const termEl=document.getElementById('terminal-lines');
-function addLog(type){
-  const msgs=logMsgs[type];
-  const msg=msgs[Math.floor(Math.random()*msgs.length)];
-  const d=document.createElement('div');
-  d.className='tline';
-  d.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;
+const termEl = document.getElementById('terminal-lines');
+function addLog(type) {
+  const msgs = logMsgs[type];
+  const d = document.createElement('div');
+  d.className = 'tline';
+  d.textContent = `[${new Date().toLocaleTimeString()}] ${msgs[Math.floor(Math.random() * msgs.length)]}`;
   termEl.appendChild(d);
-  if(termEl.children.length>5)termEl.removeChild(termEl.firstChild);
+  if (termEl.children.length > 5) termEl.removeChild(termEl.firstChild);
 }
-function updateStats(){
-  document.getElementById('c-email').textContent=counts.email;
-  document.getElementById('c-cal').textContent=counts.cal;
-  document.getElementById('c-chat').textContent=counts.chat;
-  document.getElementById('c-xoxo').textContent=counts.xoxo;
+function updateStats() {
+  document.getElementById('c-email').textContent = counts.email;
+  document.getElementById('c-cal').textContent = counts.cal;
+  document.getElementById('c-chat').textContent = counts.chat;
+  document.getElementById('c-xoxo').textContent = counts.xoxo;
+}
+function doAction(type) { counts[type]++; updateStats(); addLog(type); spawnFloater(type); }
+function doEmail() { doAction('email'); }
+function doCal() { doAction('cal'); }
+function doChat() { doAction('chat'); }
+function doXoxo() { doAction('xoxo'); for (let i = 0; i < 3; i++) spawnFloater('xoxo'); }
+
+let autoInterval = setInterval(() => { const t = ['email', 'cal', 'chat', 'xoxo']; doAction(t[Math.floor(Math.random() * t.length)]); }, 3500);
+
+// ============================================
+// MOUSE / TOUCH TRACKING
+// ============================================
+let mouseX = 0, mouseY = 0, targetGameX = 0;
+document.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / innerWidth - 0.5) * 2;
+  mouseY = (e.clientY / innerHeight - 0.5) * 2;
+  if (gameActive) targetGameX = (e.clientX / innerWidth - 0.5) * 10;
+});
+document.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  mouseX = (t.clientX / innerWidth - 0.5) * 2;
+  mouseY = (t.clientY / innerHeight - 0.5) * 2;
+  if (gameActive) targetGameX = (t.clientX / innerWidth - 0.5) * 10;
+}, { passive: true });
+document.addEventListener('touchstart', e => {
+  if (gameActive) {
+    const t = e.touches[0];
+    targetGameX = (t.clientX / innerWidth - 0.5) * 10;
+  }
+}, { passive: true });
+
+// Accelerometer (mobile tilt)
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    if (gameActive && e.gamma !== null) {
+      targetGameX = (e.gamma / 45) * 5; // gamma is -90..90, map to game range
+    }
+  });
 }
 
-function doAction(type){
-  counts[type]++;
-  updateStats();
-  addLog(type);
-  spawnFloater(type);
+// ============================================
+// CLICK ON XOXOBOT
+// ============================================
+const raycaster = new THREE.Raycaster();
+const mouse2 = new THREE.Vector2();
+let clickAnim = 0;
+function onClick(e) {
+  if (gameActive) return;
+  const cx = e.clientX || (e.touches && e.touches[0].clientX);
+  const cy = e.clientY || (e.touches && e.touches[0].clientY);
+  if (!cx) return;
+  mouse2.x = (cx / innerWidth) * 2 - 1;
+  mouse2.y = -(cy / innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse2, camera);
+  const hits = raycaster.intersectObjects(xoxo.children, true);
+  if (hits.length > 0) { clickAnim = 1; doXoxo(); document.getElementById('click-hint').style.display = 'none'; }
 }
-function doEmail(){doAction('email');}
-function doCal(){doAction('cal');}
-function doChat(){doAction('chat');}
-function doXoxo(){doAction('xoxo');for(let i=0;i<3;i++)spawnFloater('xoxo');}
+renderer.domElement.addEventListener('click', onClick);
+renderer.domElement.addEventListener('touchstart', onClick, { passive: true });
 
-// Auto-increment
-setInterval(()=>{const t=['email','cal','chat','xoxo'];doAction(t[Math.floor(Math.random()*t.length)]);},3500);
+// ============================================
+// GAME: CATCH THE HEARTS
+// ============================================
+let gameActive = false;
+let gameScore = 0, gameLives = 5, gameLevel = 1, gameMissed = 0;
+let gameHearts = []; // falling hearts
+let gameParticles = []; // explosion particles
+let happyAnim = 0; // animation timer for catch celebration
+let gameSpawnTimer = 0;
+const GAME_BOUNDS_X = 5;
+const GAME_TOP_Y = 8;
+const GAME_BOTTOM_Y = -3;
+const GAME_CATCH_Y = -1.5;
 
-// --- Mouse/Touch tracking ---
-let mouseX=0,mouseY=0;
-document.addEventListener('mousemove',e=>{mouseX=(e.clientX/innerWidth-0.5)*2;mouseY=(e.clientY/innerHeight-0.5)*2;});
-document.addEventListener('touchmove',e=>{const t=e.touches[0];mouseX=(t.clientX/innerWidth-0.5)*2;mouseY=(t.clientY/innerHeight-0.5)*2;},{passive:true});
+function makeGameHeart(golden) {
+  const sh = new THREE.Shape();
+  const sc = 0.3;
+  sh.moveTo(0, 0.3 * sc); sh.bezierCurveTo(0, 0.35 * sc, -0.25 * sc, 0.35 * sc, -0.25 * sc, 0.15 * sc);
+  sh.bezierCurveTo(-0.25 * sc, -0.05 * sc, 0, -0.25 * sc, 0, -0.35 * sc);
+  sh.bezierCurveTo(0, -0.25 * sc, 0.25 * sc, -0.05 * sc, 0.25 * sc, 0.15 * sc);
+  sh.bezierCurveTo(0.25 * sc, 0.35 * sc, 0, 0.35 * sc, 0, 0.3 * sc);
 
-// --- Click on XoxoBot ---
-const raycaster=new THREE.Raycaster();
-const mouse2=new THREE.Vector2();
-let clickAnim=0;
+  const color = golden ? 0xffd700 : 0xb388ff;
+  const emissive = golden ? 0xffaa00 : 0x9b7dd4;
+  const mat = new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity: 0.5, transparent: true, opacity: 0.9 });
+  const mesh = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.06, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.01 }), mat);
 
-function onClick(e){
-  const cx=e.clientX||(e.touches&&e.touches[0].clientX);
-  const cy=e.clientY||(e.touches&&e.touches[0].clientY);
-  if(!cx)return;
-  mouse2.x=(cx/innerWidth)*2-1;
-  mouse2.y=-(cy/innerHeight)*2+1;
-  raycaster.setFromCamera(mouse2,camera);
-  const hits=raycaster.intersectObjects(xoxo.children,true);
-  if(hits.length>0){
-    clickAnim=1;
-    doXoxo();
-    document.getElementById('click-hint').style.display='none';
+  // Trail particles (small spheres attached)
+  const trail = [];
+  for (let i = 0; i < 5; i++) {
+    const tp = new THREE.Mesh(
+      new THREE.SphereGeometry(0.03 + Math.random() * 0.02, 6, 6),
+      new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity: 0.3, transparent: true, opacity: 0.4 - i * 0.07 })
+    );
+    tp.position.set((Math.random() - 0.5) * 0.1, 0.1 + i * 0.12, 0);
+    mesh.add(tp);
+    trail.push(tp);
+  }
+
+  const speed = 0.02 + gameLevel * 0.008 + Math.random() * 0.01;
+  mesh.position.set((Math.random() - 0.5) * GAME_BOUNDS_X * 1.6, GAME_TOP_Y + Math.random() * 2, 0);
+  mesh.userData = { speed, golden, trail, rotSpeed: (Math.random() - 0.5) * 0.08 };
+  return mesh;
+}
+
+function spawnCatchParticles(pos, color) {
+  for (let i = 0; i < 15; i++) {
+    const p = new THREE.Mesh(
+      new THREE.SphereGeometry(0.04 + Math.random() * 0.04, 6, 6),
+      new THREE.MeshStandardMaterial({
+        color: i % 2 === 0 ? color : 0xff9eb5,
+        emissive: color,
+        emissiveIntensity: 0.6,
+        transparent: true, opacity: 1
+      })
+    );
+    p.position.copy(pos);
+    p.userData = {
+      vel: new THREE.Vector3((Math.random() - 0.5) * 0.15, Math.random() * 0.15, (Math.random() - 0.5) * 0.1),
+      life: 40 + Math.random() * 30
+    };
+    scene.add(p);
+    gameParticles.push(p);
   }
 }
-renderer.domElement.addEventListener('click',onClick);
-renderer.domElement.addEventListener('touchstart',onClick,{passive:true});
 
-// --- Resize ---
-window.addEventListener('resize',()=>{
-  camera.aspect=innerWidth/innerHeight;
+function updateGameHUD() {
+  document.getElementById('g-score').textContent = gameScore;
+  document.getElementById('g-level').textContent = gameLevel;
+  let hearts = '';
+  for (let i = 0; i < gameLives; i++) hearts += '❤️';
+  document.getElementById('g-lives').innerHTML = hearts || '💔';
+}
+
+function startGame() {
+  gameActive = true;
+  gameScore = 0; gameLives = 5; gameLevel = 1; gameMissed = 0;
+  gameSpawnTimer = 0;
+
+  // Clean old game hearts
+  gameHearts.forEach(h => scene.remove(h));
+  gameHearts = [];
+  gameParticles.forEach(p => scene.remove(p));
+  gameParticles = [];
+
+  // Hide viz UI, show game UI
+  document.getElementById('hud').style.display = 'none';
+  document.getElementById('buttons').style.display = 'none';
+  document.getElementById('terminal').style.display = 'none';
+  document.getElementById('click-hint').style.display = 'none';
+  document.getElementById('game-hud').style.display = 'block';
+  document.getElementById('game-over').style.display = 'none';
+  document.getElementById('btn-play').style.display = 'none';
+  document.getElementById('btn-view').style.display = 'inline-block';
+
+  vizGroup.visible = false;
+  clearInterval(autoInterval);
+
+  // Move xoxo to game position
+  xoxo.position.set(0, GAME_CATCH_Y, 0);
+  xoxo.rotation.set(0, 0, 0);
+
+  updateGameHUD();
+}
+
+function stopGame() {
+  gameActive = false;
+
+  // Clean game objects
+  gameHearts.forEach(h => scene.remove(h));
+  gameHearts = [];
+  gameParticles.forEach(p => scene.remove(p));
+  gameParticles = [];
+
+  // Restore viz UI
+  document.getElementById('hud').style.display = '';
+  document.getElementById('buttons').style.display = '';
+  document.getElementById('terminal').style.display = '';
+  document.getElementById('game-hud').style.display = 'none';
+  document.getElementById('game-over').style.display = 'none';
+  document.getElementById('btn-play').style.display = 'inline-block';
+  document.getElementById('btn-view').style.display = 'none';
+
+  vizGroup.visible = true;
+  xoxo.position.set(-0.5, 0.3, 0);
+
+  autoInterval = setInterval(() => { const t = ['email', 'cal', 'chat', 'xoxo']; doAction(t[Math.floor(Math.random() * t.length)]); }, 3500);
+}
+
+function gameOver() {
+  gameActive = false;
+  const highScore = parseInt(localStorage.getItem('xoxobot-highscore') || '0');
+  if (gameScore > highScore) localStorage.setItem('xoxobot-highscore', gameScore);
+  const best = Math.max(gameScore, highScore);
+
+  document.getElementById('go-score').textContent = gameScore;
+  document.getElementById('go-high').textContent = best;
+  document.getElementById('game-over').style.display = 'flex';
+  document.getElementById('game-hud').style.display = 'none';
+}
+
+function retryGame() {
+  document.getElementById('game-over').style.display = 'none';
+  startGame();
+}
+
+// ============================================
+// RESIZE
+// ============================================
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
+  renderer.setSize(innerWidth, innerHeight);
 });
 
-// --- Animation Loop ---
-const clock=new THREE.Clock();
-function animate(){
+// ============================================
+// ANIMATION LOOP
+// ============================================
+const clock = new THREE.Clock();
+function animate() {
   requestAnimationFrame(animate);
-  const t=clock.getElapsedTime();
-  const dt=clock.getDelta();
+  const t = clock.getElapsedTime();
+  const dt = Math.min(clock.getDelta(), 0.05);
 
-  // XoxoBot idle float
-  xoxo.position.y=0.3+Math.sin(t*1.2)*0.15;
+  if (gameActive) {
+    // === GAME MODE ===
+    // Move xoxo to follow mouse/touch
+    const targetX = Math.max(-GAME_BOUNDS_X, Math.min(GAME_BOUNDS_X, targetGameX));
+    xoxo.position.x += (targetX - xoxo.position.x) * 0.12;
+    xoxo.position.y = GAME_CATCH_Y + Math.sin(t * 3) * 0.05;
+    xoxo.rotation.y = Math.sin(t * 2) * 0.1;
+    xoxo.rotation.x = 0;
+    xoxo.rotation.z = (targetX - xoxo.position.x) * -0.05;
 
-  // Follow mouse
-  xoxo.rotation.y+=(mouseX*0.4-xoxo.rotation.y)*0.03;
-  xoxo.rotation.x+=(-mouseY*0.15-xoxo.rotation.x)*0.03;
+    // Happy animation (after catching)
+    if (happyAnim > 0) {
+      xoxo.position.y = GAME_CATCH_Y + Math.sin(happyAnim * Math.PI * 4) * 0.3 * happyAnim;
+      happyAnim -= 0.02;
+      if (happyAnim < 0) happyAnim = 0;
+    }
 
-  // Gills animation
-  gills.forEach((g,i)=>{
-    g.rotation.z+=Math.sin(t*2+i*0.5)*0.003;
-    g.rotation.x+=Math.cos(t*1.5+i*0.7)*0.002;
+    // Spawn hearts
+    gameSpawnTimer++;
+    const spawnRate = Math.max(20, 60 - gameLevel * 8);
+    if (gameSpawnTimer >= spawnRate) {
+      gameSpawnTimer = 0;
+      const golden = Math.random() < 0.1;
+      const h = makeGameHeart(golden);
+      scene.add(h);
+      gameHearts.push(h);
+    }
+
+    // Update game hearts
+    for (let i = gameHearts.length - 1; i >= 0; i--) {
+      const h = gameHearts[i];
+      h.position.y -= h.userData.speed;
+      h.rotation.y += h.userData.rotSpeed;
+      h.rotation.x += h.userData.rotSpeed * 0.5;
+
+      // Update trail
+      h.userData.trail.forEach((tp, ti) => {
+        tp.position.x = Math.sin(t * 3 + ti) * 0.05;
+      });
+
+      // Check catch (collision with xoxo)
+      const dx = h.position.x - xoxo.position.x;
+      const dy = h.position.y - xoxo.position.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 1.2) {
+        // Caught!
+        const pts = h.userData.golden ? 3 : 1;
+        gameScore += pts;
+        gameLevel = Math.floor(gameScore / 10) + 1;
+        happyAnim = 0.6;
+        spawnCatchParticles(h.position.clone(), h.userData.golden ? 0xffd700 : 0xb388ff);
+        scene.remove(h);
+        gameHearts.splice(i, 1);
+        updateGameHUD();
+        continue;
+      }
+
+      // Missed (fell below)
+      if (h.position.y < GAME_BOTTOM_Y) {
+        gameLives--;
+        scene.remove(h);
+        gameHearts.splice(i, 1);
+        updateGameHUD();
+        if (gameLives <= 0) { gameOver(); return; }
+      }
+    }
+
+    // Update game particles
+    for (let i = gameParticles.length - 1; i >= 0; i--) {
+      const p = gameParticles[i];
+      p.position.add(p.userData.vel);
+      p.userData.vel.y -= 0.004; // gravity
+      p.userData.life--;
+      p.material.opacity = Math.max(0, p.userData.life / 50);
+      if (p.userData.life <= 0) {
+        scene.remove(p);
+        gameParticles.splice(i, 1);
+      }
+    }
+
+  } else {
+    // === VISUALIZATION MODE ===
+    xoxo.position.y = 0.3 + Math.sin(t * 1.2) * 0.15;
+    xoxo.rotation.y += (mouseX * 0.4 - xoxo.rotation.y) * 0.03;
+    xoxo.rotation.x += (-mouseY * 0.15 - xoxo.rotation.x) * 0.03;
+
+    // Click anim
+    if (clickAnim > 0) {
+      xoxo.rotation.y += 0.15;
+      xoxo.position.y += Math.sin(clickAnim * Math.PI) * 0.03;
+      clickAnim -= 0.02;
+      if (clickAnim <= 0) clickAnim = 0;
+    }
+
+    // Monitor glow
+    mGlow.intensity = 0.5 + Math.sin(t * 2) * 0.2;
+    matScreen.emissiveIntensity = 0.15 + Math.sin(t * 1.5) * 0.05;
+
+    // Floaters
+    for (let i = floaters.length - 1; i >= 0; i--) {
+      const f = floaters[i];
+      f.position.add(f.userData.vel);
+      f.rotation.y += 0.02;
+      f.rotation.x += 0.01;
+      f.userData.life--;
+      if (f.userData.life < 30 && f.material) f.material.opacity = f.userData.life / 30;
+      if (f.userData.life <= 0) { scene.remove(f); floaters.splice(i, 1); }
+    }
+  }
+
+  // --- Always animate ---
+  // Gills
+  gills.forEach((g, i) => {
+    g.rotation.z += Math.sin(t * 2 + i * 0.5) * 0.003;
+    g.rotation.x += Math.cos(t * 1.5 + i * 0.7) * 0.002;
   });
 
   // Heart pulse
-  const hp=1+Math.sin(t*3)*0.08;
-  heart.scale.set(0.7*hp,0.7*hp,0.7*hp);
+  const hp = 1 + Math.sin(t * 3) * 0.08;
+  heartGroup.scale.set(0.6 * hp, 0.6 * hp, 0.6 * hp);
 
-  // Click animation
-  if(clickAnim>0){
-    xoxo.rotation.y+=0.15;
-    xoxo.position.y+=Math.sin(clickAnim*Math.PI)*0.03;
-    clickAnim-=0.02;
-    if(clickAnim<=0)clickAnim=0;
-  }
-
-  // Monitor glow pulse
-  mGlow.intensity=0.5+Math.sin(t*2)*0.2;
-  matScreen.emissiveIntensity=0.15+Math.sin(t*1.5)*0.05;
-
-  // Floaters
-  for(let i=floaters.length-1;i>=0;i--){
-    const f=floaters[i];
-    f.position.add(f.userData.vel);
-    f.rotation.y+=0.02;
-    f.rotation.x+=0.01;
-    f.userData.life--;
-    if(f.userData.life<30){
-      if(f.material)f.material.opacity=f.userData.life/30;
-    }
-    if(f.userData.life<=0){
-      scene.remove(f);
-      floaters.splice(i,1);
-    }
-  }
+  // Eye shine twinkle
+  const shineScale = 1 + Math.sin(t * 4) * 0.15;
+  eyeL.children[1].scale.setScalar(shineScale);
+  eyeR.children[1].scale.setScalar(shineScale);
 
   // Particles drift
-  const pp=particles.geometry.attributes.position.array;
-  for(let i=0;i<pCount;i++){
-    pp[i*3+1]+=Math.sin(t+i)*0.001;
-    pp[i*3]+=Math.cos(t*0.5+i)*0.0005;
+  const pp = particles.geometry.attributes.position.array;
+  for (let i = 0; i < pCount; i++) {
+    pp[i * 3 + 1] += Math.sin(t + i) * 0.001;
+    pp[i * 3] += Math.cos(t * 0.5 + i) * 0.0005;
   }
-  particles.geometry.attributes.position.needsUpdate=true;
-  particles.rotation.y=t*0.01;
+  particles.geometry.attributes.position.needsUpdate = true;
+  particles.rotation.y = t * 0.01;
 
-  renderer.render(scene,camera);
+  renderer.render(scene, camera);
 }
 animate();
 
 // Initial logs
-setTimeout(()=>addLog('email'),500);
-setTimeout(()=>addLog('chat'),1500);
-setTimeout(()=>addLog('cal'),2500);
+setTimeout(() => addLog('email'), 500);
+setTimeout(() => addLog('chat'), 1500);
+setTimeout(() => addLog('cal'), 2500);
 </script>
 </body>
 </html>
