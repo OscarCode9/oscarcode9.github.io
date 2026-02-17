@@ -4,7 +4,11 @@
  */
 (function() {
   const API_URL = "https://agents.oventlabs.com/api/chat";
-  const AVATAR_URL = "https://oscarcode9.github.io/xoxobot-avatar.gif";
+  const AVATAR_URLS = [
+    "https://oscarcode9.github.io/xoxobot-avatar.gif",
+    "https://oscarcode9.github.io/xoxobot-avatar2.gif"
+  ];
+  const AVATAR_URL = AVATAR_URLS[Math.floor(Math.random() * AVATAR_URLS.length)];
 
   const style = document.createElement("style");
   style.textContent = `
