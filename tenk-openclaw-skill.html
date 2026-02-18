@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TenK ahora en tu Asistente de IA — OpenClaw Skill | Oscar Code</title>
+  <meta name="description" content="Cómo construí la integración de TenK con OpenClaw: OAuth Device Flow, Flutter authorize page, skill CLI y landing page. De la idea al deploy en un día.">
+  <meta name="keywords" content="TenK, OpenClaw, skill, OAuth Device Flow, Flutter, Hono, Prisma, ClaHub, CLI, IA">
+  <meta property="og:title" content="TenK ahora en tu Asistente de IA — OpenClaw Skill">
+  <meta property="og:description" content="Construí un skill de OpenClaw para TenK con OAuth Device Flow, Flutter authorize page y CLI completo. Todo en producción.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #10B981;
+      --primary-dark: #059669;
+      --bg-dark: #0a0f1c;
+      --bg-card: #111827;
+      --bg-code: #0d1117;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.45);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-green: #10B981;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── HEADER ─────────────────────────────────────────────────── */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1f17 50%, #111827 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .post-header::before {
+      content: '';
+      position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(16,185,129,0.07) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(16,185,129,0.04) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+    @keyframes headerGlow {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(-2%,2%); }
+    }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--primary); text-decoration: none;
+      margin-bottom: 30px; transition: all 0.3s; position: relative;
+      font-size: 0.9rem; font-weight: 500;
+    }
+    .back-link:hover { gap: 12px; }
+
+    .post-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .tag {
+      padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+      background: rgba(16,185,129,0.12); color: var(--primary);
+      border: 1px solid rgba(16,185,129,0.25);
+    }
+    .tag.purple { background: rgba(179,136,255,0.12); color: #b388ff; border-color: rgba(179,136,255,0.25); }
+    .tag.blue   { background: rgba(79,195,247,0.12); color: #4fc3f7; border-color: rgba(79,195,247,0.25); }
+    .tag.orange { background: rgba(255,171,64,0.12); color: #ffab40; border-color: rgba(255,171,64,0.25); }
+
+    .post-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 800;
+      line-height: 1.15; margin-bottom: 16px; position: relative;
+    }
+    .post-header h1 .highlight { color: var(--primary); }
+
+    .post-meta { color: var(--text-muted); font-size: 0.9rem; position: relative; }
+    .post-meta span { margin: 0 8px; }
+
+    /* ── CONTENT ─────────────────────────────────────────────────── */
+    .post-content { padding: 60px 0 80px; }
+
+    .post-content h2 {
+      font-size: 1.6rem; font-weight: 700; margin: 56px 0 20px;
+      color: #fff;
+      padding-left: 16px;
+      border-left: 3px solid var(--primary);
+    }
+    .post-content h3 {
+      font-size: 1.15rem; font-weight: 600; margin: 36px 0 14px;
+      color: var(--primary);
+    }
+    .post-content p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.05rem; }
+    .post-content ul, .post-content ol {
+      margin: 0 0 20px 24px; color: var(--text-secondary); font-size: 1.05rem;
+    }
+    .post-content li { margin-bottom: 8px; }
+
+    /* ── CODE ─────────────────────────────────────────────────────── */
+    pre {
+      background: var(--bg-code); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 24px; overflow-x: auto;
+      margin: 24px 0; position: relative;
+    }
+    pre code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; }
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      background: rgba(16,185,129,0.1); color: var(--primary);
+      padding: 2px 7px; border-radius: 5px; font-size: 0.9em;
+    }
+    pre code { background: none; color: inherit; padding: 0; }
+
+    .code-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
+      color: var(--text-muted); text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* ── CALLOUT ─────────────────────────────────────────────────── */
+    .callout {
+      border-radius: 12px; padding: 20px 24px; margin: 28px 0;
+      border-left: 4px solid;
+    }
+    .callout.green  { background: rgba(16,185,129,0.08); border-color: var(--primary); }
+    .callout.blue   { background: rgba(79,195,247,0.08); border-color: #4fc3f7; }
+    .callout.purple { background: rgba(179,136,255,0.08); border-color: #b388ff; }
+    .callout.orange { background: rgba(255,171,64,0.08); border-color: #ffab40; }
+    .callout-title  { font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+    .callout p      { margin: 0; font-size: 0.95rem; }
+
+    /* ── DIAGRAM ─────────────────────────────────────────────────── */
+    .flow-diagram {
+      background: var(--bg-code); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 32px 24px; margin: 28px 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+      color: var(--text-secondary); line-height: 2;
+    }
+    .flow-step { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+    .flow-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35);
+      color: var(--primary); font-size: 0.78rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .flow-arrow { color: var(--primary); margin: 0 4px; }
+
+    /* ── RESULT CARD ─────────────────────────────────────────────── */
+    .result-card {
+      background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 28px; margin: 28px 0;
+    }
+    .result-card .rc-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 16px; color: var(--primary); }
+    .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.95rem; }
+    .result-row:last-child { border: none; }
+    .result-row .label { color: var(--text-muted); }
+    .result-row .value { color: var(--text-primary); font-weight: 500; }
+    .result-row .value.green { color: var(--primary); }
+
+    /* ── TERMINAL ─────────────────────────────────────────────────── */
+    .terminal {
+      background: #0d1117; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; overflow: hidden; margin: 24px 0;
+    }
+    .terminal-bar {
+      background: #161b22; padding: 10px 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.red { background: #ff5f57; }
+    .dot.yellow { background: #febc2e; }
+    .dot.green { background: #28c840; }
+    .terminal-body { padding: 20px 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.8; }
+    .t-prompt { color: var(--primary); }
+    .t-cmd { color: #e2e8f0; }
+    .t-out { color: #94a3b8; margin-left: 2px; }
+    .t-success { color: var(--primary); }
+    .t-info { color: #4fc3f7; }
+
+    /* ── SCREENSHOT ─────────────────────────────────────────────── */
+    .screenshot-frame {
+      background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; overflow: hidden; margin: 28px 0;
+    }
+    .screenshot-bar {
+      background: #1e293b; padding: 12px 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .url-bar {
+      background: rgba(255,255,255,0.06); border-radius: 6px;
+      padding: 4px 12px; font-size: 0.82rem; color: var(--text-muted);
+      font-family: monospace; flex: 1;
+    }
+    .screen-content { padding: 28px; }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    .post-footer {
+      background: var(--bg-card); border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 48px 20px; text-align: center;
+    }
+    .author-info { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 20px; }
+    .author-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #059669);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800; color: white;
+    }
+    .author-name { font-weight: 700; font-size: 1.1rem; }
+    .author-title { color: var(--text-muted); font-size: 0.88rem; }
+    .footer-links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .footer-links a { color: var(--primary); text-decoration: none; font-size: 0.9rem; transition: opacity 0.2s; }
+    .footer-links a:hover { opacity: 0.75; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="post-header">
+  <div class="container">
+    <a href="index.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> Oscar Code Blog
+    </a>
+
+    <div class="post-tags">
+      <span class="tag">TenK</span>
+      <span class="tag purple">OpenClaw</span>
+      <span class="tag blue">Flutter</span>
+      <span class="tag orange">OAuth Device Flow</span>
+    </div>
+
+    <h1>
+      <span class="highlight">TenK</span> ahora en tu<br>Asistente de IA
+    </h1>
+
+    <p class="post-meta">
+      <span><i class="far fa-calendar"></i> 18 Feb 2026</span>
+      <span>·</span>
+      <span><i class="far fa-clock"></i> 10 min lectura</span>
+      <span>·</span>
+      <span>OscarCode9</span>
+    </p>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="post-content">
+  <div class="container">
+
+    <p>
+      Si sigues el blog, sabes que <strong>TenK</strong> es mi app para registrar horas de práctica deliberada hacia las 10,000 horas.
+      Esta semana conecté TenK con <a href="https://openclaw.ai/" style="color: var(--primary);">OpenClaw</a> —
+      el asistente de IA que uso en mi Mac — para poder interactuar con la app directamente desde el chat.
+      Sin abrir la app. Sin buscar la pantalla. Solo "log 45 min de guitarra" y listo.
+    </p>
+
+    <p>
+      Esto requirió construir tres cosas desde cero:
+    </p>
+    <ul>
+      <li>Un <strong>sistema de auth seguro</strong> para que el asistente se autentique sin passwords en el chat</li>
+      <li>Una <strong>página de autorización</strong> en la app Flutter</li>
+      <li>Un <strong>skill CLI</strong> que OpenClaw puede ejecutar para hablar con la API de TenK</li>
+    </ul>
+
+    <h2>El problema: ¿cómo autentica un asistente?</h2>
+
+    <p>
+      Cuando tu asistente de IA quiere acceder a una API tuya, tienes tres opciones:
+    </p>
+
+    <ul>
+      <li><strong>API Key hardcodeada</strong> — inseguro, el key vive en el contexto del chat</li>
+      <li><strong>Magic Link</strong> — ok, pero requiere email y tiene UX rara</li>
+      <li><strong>OAuth Device Flow</strong> — lo mismo que usa GitHub CLI, Netflix en Smart TVs, VSCode para autenticarse. El dispositivo genera un código y <em>tú</em> lo apruebas desde el browser</li>
+    </ul>
+
+    <div class="callout green">
+      <div class="callout-title">¿Por qué Device Flow?</div>
+      <p>El asistente nunca ve tu contraseña. Tú inicias sesión en <em>tu</em> browser, apruebas o rechazas el acceso, y el asistente recibe un JWT. Exactamente como GitHub CLI.</p>
+    </div>
+
+    <h2>El flujo completo</h2>
+
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <span class="flow-num">1</span>
+        <span>Asistente: <code style="background:rgba(16,185,129,0.1); color: var(--primary); padding: 2px 8px; border-radius:4px">POST /api/device-auth/code</code> → recibe <strong>NTWN-5KZT</strong></span>
+      </div>
+      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">2</span>
+        <span>Asistente muestra: <em>"Abre este link: tenk.oventlabs.com/#/authorize/NTWN-5KZT"</em></span>
+      </div>
+      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">3</span>
+        <span>Tú abres el link → login con tu cuenta TenK → <strong>Autorizar</strong> o <strong>Rechazar</strong></span>
+      </div>
+      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">4</span>
+        <span>Asistente hace polling cada 3s → detecta <code style="background:rgba(16,185,129,0.1); color: var(--primary); padding: 2px 8px; border-radius:4px">approved</code> → recibe JWT</span>
+      </div>
+      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">5</span>
+        <span>Token guardado en <code style="background:rgba(16,185,129,0.1); color: var(--primary); padding: 2px 8px; border-radius:4px">~/.config/tenk-connect/token</code> (chmod 600)</span>
+      </div>
+    </div>
+
+    <h2>Backend: 4 endpoints en Hono + Prisma</h2>
+
+    <p>El backend corre en Bun + Hono. Agregué un módulo <code>device-auth</code> con su propia tabla en Postgres:</p>
+
+    <div class="code-label">prisma/schema.prisma</div>
+    <pre><code>model DeviceCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  userCode  String
+  status    String   @default("pending") // pending | approved | expired
+  userId    String?
+  email     String?
+  token     String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}</code></pre>
+
+    <div class="code-label">4 endpoints</div>
+    <pre><code>POST   /api/device-auth/code              → genera XXXX-XXXX (10 min expiry)
+GET    /api/device-auth/code/:code/status  → { status: pending|approved|expired, token? }
+GET    /api/device-auth/authorize/:code    → página HTML fallback
+POST   /api/device-auth/authorize/:code    → acepta JSON (sessionToken o email+password)</code></pre>
+
+    <p>
+      El POST de autorización acepta dos modos:
+    </p>
+    <ul>
+      <li><strong>sessionToken</strong> — si el usuario ya está loggeado en la app Flutter, manda su JWT y se autoriza en un click</li>
+      <li><strong>email + password</strong> — fallback clásico</li>
+    </ul>
+
+    <h2>La página de autorización en Flutter</h2>
+
+    <p>
+      Esta fue la parte más interesante. La web de TenK es una app Flutter (sí, Flutter Web en producción).
+      En lugar de servir una página HTML desde Hono, agregué una ruta <code>/authorize/:code</code> directamente en GoRouter.
+    </p>
+
+    <div class="callout blue">
+      <div class="callout-title">¿Por qué Flutter y no HTML?</div>
+      <p>La landing y toda la web ya son Flutter. Tendría dos sistemas de diseño si metía HTML crudo. Flutter mantiene branding consistente y puedo usar los mismos widgets, colores y el logo oficial.</p>
+    </div>
+
+    <p>La página tiene tres estados:</p>
+
+    <div class="screenshot-frame">
+      <div class="screenshot-bar">
+        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+        <div class="url-bar">tenk.oventlabs.com/#/authorize/NTWN-5KZT</div>
+      </div>
+      <div class="screen-content">
+        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">🔑</div>
+            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Step 1: Login</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Email + contraseña de TenK</div>
+          </div>
+          <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(16,185,129,0.06); border-radius: 10px; border: 1px solid rgba(16,185,129,0.2);">
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">✅</div>
+            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Step 2: Confirmar</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Tu nombre + permisos + Autorizar / Rechazar</div>
+          </div>
+          <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="font-size: 1.5rem; margin-bottom: 8px;">🎉</div>
+            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Done</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Asistente conectado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Si ya estás loggeado en TenK (SharedPreferences tiene el token), salta directo al Step 2.
+      Si el código ya expiró, muestra pantalla de error. Todo dentro del mismo widget con un enum de estados.
+    </p>
+
+    <div class="code-label">device_authorize_page.dart — estados</div>
+    <pre><code>enum _Step { loading, login, confirm, success, rejected, expired }
+
+// Si ya hay sesión guardada → salta a confirm
+final token = await _getStoredToken();
+if (token != null) {
+  final user = await _fetchMe(token);
+  if (user != null) {
+    setState(() => _step = _Step.confirm);
+    return;
+  }
+}
+// Si no → login form
+setState(() => _step = _Step.login);</code></pre>
+
+    <h2>El Skill CLI</h2>
+
+    <p>
+      Un skill de OpenClaw es básicamente un <code>SKILL.md</code> con instrucciones para el agente
+      más archivos de soporte (scripts, assets). El agente lee el SKILL.md cuando detecta que la tarea
+      aplica, y sigue las instrucciones.
+    </p>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">tenk.sh auth</span></div>
+        <div><span class="t-out">🔐 Iniciando autenticación con TenK...</span></div>
+        <div><span class="t-out"></span></div>
+        <div><span class="t-info">  👉  https://tenk.oventlabs.com/#/authorize/K7JC-SVAK</span></div>
+        <div><span class="t-out">  Código: K7JC-SVAK (expira en 600s)</span></div>
+        <div><span class="t-out">  ...</span></div>
+        <div><span class="t-success">✅ Autenticado exitosamente. Token guardado.</span></div>
+        <br>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">tenk.sh stats</span></div>
+        <div><span class="t-success">📊 Stats TenK:</span></div>
+        <div><span class="t-out">   Total: 247.5h de 10000h (2.47%)</span></div>
+        <div><span class="t-out">   Faltan: 9752.5h para las 10,000h</span></div>
+        <div><span class="t-out">   Habilidades activas: 8</span></div>
+        <br>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">tenk.sh log guitarra 45 "Arpegios flamencos"</span></div>
+        <div><span class="t-success">✅ Registrado: Guitarra — 45 min</span></div>
+      </div>
+    </div>
+
+    <p>El CLI tiene 7 comandos:</p>
+    <ul>
+      <li><code>auth</code> — device flow + polling hasta aprobado</li>
+      <li><code>skills</code> — lista habilidades con horas acumuladas</li>
+      <li><code>stats</code> — total de horas y % hacia 10,000h</li>
+      <li><code>log &lt;skill&gt; &lt;min&gt; [nota]</code> — registra sesión (fuzzy match por nombre)</li>
+      <li><code>streak</code> — cuándo practicaste por última vez cada skill</li>
+      <li><code>whoami</code> / <code>logout</code></li>
+    </ul>
+
+    <div class="callout orange">
+      <div class="callout-title">Detalle técnico: JSON injection fix</div>
+      <p>El primer draft construía el payload JSON concatenando strings en bash — un clásico vector de inyección. Lo corregí usando <code>python3 -c "import json, sys; print(json.dumps(...))"</code> con el argumento del usuario pasado como <code>sys.argv[1]</code>, nunca interpolado.</p>
+    </div>
+
+    <h2>La validación de seguridad de ClaHub</h2>
+
+    <p>
+      ClaHub (el repositorio de skills de OpenClaw) tiene un scanner automático antes de publicar.
+      El primer intento me flaggeó <strong>unicode control characters</strong> en el SKILL.md.
+    </p>
+
+    <p>
+      Curioso porque mi propio scanner decía "CLEAN". El problema: yo buscaba bytes &lt; 0x09 o entre 0x0a-0x20.
+      Pero hay caracteres Unicode en categorías <code>Cf</code> (format) y <code>Cc</code> (control) que pasan ese filtro.
+      Los emojis en el markdown (📊, ✍️, 🔥) fueron el culpable.
+    </p>
+
+    <p>La solución: reescribir todos los archivos del skill como <strong>pure ASCII</strong>:</p>
+
+    <div class="code-label">verificación antes de empaquetar</div>
+    <pre><code>python3 -c "
+import unicodedata
+text = open('SKILL.md').read()
+weird = [(i, hex(ord(c)), unicodedata.name(c,'UNKNOWN'))
+         for i, c in enumerate(text)
+         if unicodedata.category(c) in ('Cf','Cc','Cs') and c not in '\n\r\t']
+print('CLEAN' if not weird else f'BAD: {weird[:5]}')
+"</code></pre>
+
+    <p>
+      Después de limpiar: todos los archivos CLEAN. El scanner pasó en el segundo intento.
+    </p>
+
+    <h2>La landing page actualizada</h2>
+
+    <p>
+      Con el skill funcionando, actualicé la landing de TenK para comunicar la integración.
+      Agregué una sección oscura antes del footer con:
+    </p>
+    <ul>
+      <li>Logo oficial de TenK × logo de OpenClaw (🦞)</li>
+      <li>Preview de chat en terminal mostrando el skill en acción</li>
+      <li>Comando de instalación: <code>npx clawhub@latest install tenk-connect</code></li>
+      <li>CTA a <a href="https://openclaw.ai/" style="color: var(--primary);">openclaw.ai</a></li>
+    </ul>
+
+    <h2>Deploy y lo que quedó en producción</h2>
+
+    <div class="result-card">
+      <div class="rc-title">Estado final en producción</div>
+      <div class="result-row"><span class="label">Backend (Hono + Prisma)</span><span class="value green">✅ device_codes table + 4 endpoints</span></div>
+      <div class="result-row"><span class="label">Flutter web (/authorize/:code)</span><span class="value green">✅ live en tenk.oventlabs.com</span></div>
+      <div class="result-row"><span class="label">Skill CLI (tenk.sh)</span><span class="value green">✅ auth, skills, stats, log, streak</span></div>
+      <div class="result-row"><span class="label">Paquete ClaHub</span><span class="value green">✅ pure ASCII, JSON-safe</span></div>
+      <div class="result-row"><span class="label">Landing page</span><span class="value green">✅ sección OpenClaw live</span></div>
+      <div class="result-row"><span class="label">Datos de producción</span><span class="value green">✅ 22 users, 35 skills — 0 pérdidas</span></div>
+    </div>
+
+    <h2>Lo que aprendí</h2>
+
+    <p>
+      <strong>OAuth Device Flow es subestimado.</strong> Es el patrón correcto cuando el "dispositivo" no tiene browser propio
+      — un CLI, una TV, un asistente de IA. La mayoría de devs van directo a API keys sin pensar en alternativas más seguras.
+    </p>
+
+    <p>
+      <strong>Flutter Web vale la pena para consistencia.</strong> Podría haber servido HTML desde Hono en 30 minutos.
+      Pero tener la página de autorización en Flutter significa el mismo sistema de diseño, los mismos colores, el mismo logo,
+      los mismos widgets. A largo plazo eso importa.
+    </p>
+
+    <p>
+      <strong>Los scanners de seguridad son más estrictos de lo que crees.</strong>
+      Mi checklist de "no hay secrets hardcodeados" no es suficiente.
+      Unicode format chars en markdown pueden parecer intent malicioso.
+      Pure ASCII es la forma más segura de distribuir archivos de configuración de agentes.
+    </p>
+
+    <div class="callout green">
+      <div class="callout-title">Pruébalo</div>
+      <p>
+        App: <a href="https://tenk.oventlabs.com" style="color: var(--primary);">tenk.oventlabs.com</a><br>
+        Skill: <a href="https://clawhub.com" style="color: var(--primary);">clawhub.com</a> → busca <strong>tenk-connect</strong><br>
+        OpenClaw: <a href="https://openclaw.ai" style="color: var(--primary);">openclaw.ai</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="post-footer">
+  <div class="author-info">
+    <div class="author-avatar">O</div>
+    <div>
+      <div class="author-name">OscarCode9</div>
+      <div class="author-title">Builder @ OventLabs · Aguascalientes, México</div>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="index.html"><i class="fas fa-home"></i> Blog</a>
+    <a href="https://tenk.oventlabs.com" target="_blank"><i class="fas fa-external-link-alt"></i> TenK</a>
+    <a href="https://openclaw.ai" target="_blank"><i class="fas fa-external-link-alt"></i> OpenClaw</a>
+    <a href="https://github.com/OscarCode9" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+  </div>
+</div>
+
+</body>
+</html>
