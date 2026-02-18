@@ -289,31 +289,8 @@
 
     <h2>El flujo completo</h2>
 
-    <div class="flow-diagram">
-      <div class="flow-step">
-        <span class="flow-num">1</span>
-        <span>Asistente: <code style="background:rgba(16,185,129,0.1); color: var(--primary); padding: 2px 8px; border-radius:4px">POST /api/device-auth/code</code> → recibe <strong>NTWN-5KZT</strong></span>
-      </div>
-      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
-      <div class="flow-step">
-        <span class="flow-num">2</span>
-        <span>Asistente muestra: <em>"Abre este link: tenk.oventlabs.com/#/authorize/NTWN-5KZT"</em></span>
-      </div>
-      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
-      <div class="flow-step">
-        <span class="flow-num">3</span>
-        <span>Tú abres el link → login con tu cuenta TenK → <strong>Autorizar</strong> o <strong>Rechazar</strong></span>
-      </div>
-      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
-      <div class="flow-step">
-        <span class="flow-num">4</span>
-        <span>Asistente hace polling cada 3s → detecta <code style="background:rgba(16,185,129,0.1); color: var(--primary); padding: 2px 8px; border-radius:4px">approved</code> → recibe JWT</span>
-      </div>
-      <div style="padding-left: 38px; color: rgba(255,255,255,0.2); font-size: 1.2rem;">↓</div>
-      <div class="flow-step">
-        <span class="flow-num">5</span>
-        <span>Token guardado en <code style="background:rgba(16,185,129,0.1); color: var(--primary); padding: 2px 8px; border-radius:4px">~/.config/tenk-connect/token</code> (chmod 600)</span>
-      </div>
+    <div style="margin: 28px 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+      <img src="diagram-device-flow.png" alt="OAuth Device Flow — TenK x OpenClaw" style="width:100%; display:block; background:#fff;">
     </div>
 
     <h2>Backend: 4 endpoints en Hono + Prisma</h2>
@@ -483,6 +460,12 @@ print('CLEAN' if not weird else f'BAD: {weird[:5]}')
     <p>
       Después de limpiar: todos los archivos CLEAN. El scanner pasó en el segundo intento.
     </p>
+
+    <h2>Arquitectura del sistema</h2>
+
+    <div style="margin: 28px 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+      <img src="diagram-architecture.png" alt="Arquitectura — TenK Skill" style="width:100%; display:block; background:#fff;">
+    </div>
 
     <h2>La landing page actualizada</h2>
 
