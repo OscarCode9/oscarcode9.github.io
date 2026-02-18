@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" font-family="'Segoe UI',system-ui,sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#10B981"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#0ea5e9"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8b5cf6"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="820" height="340" fill="#f8fafc" rx="12"/>
+
+  <!-- Title -->
+  <text x="410" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">OAuth Device Flow</text>
+  <text x="410" y="60" text-anchor="middle" font-size="13" fill="#64748b">TenK x OpenClaw — cómo funciona la autenticación</text>
+
+  <!-- Actor boxes -->
+  <!-- OpenClaw CLI -->
+  <rect x="30" y="80" width="185" height="52" rx="8" fill="#ecfdf5" stroke="#10B981" stroke-width="2"/>
+  <text x="122" y="101" text-anchor="middle" font-size="13" font-weight="600" fill="#065f46">OpenClaw CLI</text>
+  <text x="122" y="120" text-anchor="middle" font-size="11" fill="#6b7280">tenk.sh auth</text>
+
+  <!-- TenK API -->
+  <rect x="317" y="80" width="185" height="52" rx="8" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="409" y="101" text-anchor="middle" font-size="13" font-weight="600" fill="#0c4a6e">TenK API</text>
+  <text x="409" y="120" text-anchor="middle" font-size="11" fill="#6b7280">Hono · device-auth</text>
+
+  <!-- Flutter Web -->
+  <rect x="604" y="80" width="185" height="52" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="696" y="101" text-anchor="middle" font-size="13" font-weight="600" fill="#4c1d95">Flutter Web</text>
+  <text x="696" y="120" text-anchor="middle" font-size="11" fill="#6b7280">/authorize/:code</text>
+
+  <!-- Arrow CLI → API (POST /code) -->
+  <line x1="218" y1="106" x2="313" y2="106" stroke="#0ea5e9" stroke-width="1.8" marker-end="url(#arr-blue)"/>
+  <text x="265" y="99" text-anchor="middle" font-size="10" fill="#0369a1">POST /code</text>
+
+  <!-- Arrow API → Flutter (opens URL) -->
+  <line x1="505" y1="106" x2="600" y2="106" stroke="#8b5cf6" stroke-width="1.8" marker-end="url(#arr-purple)"/>
+  <text x="552" y="99" text-anchor="middle" font-size="10" fill="#6d28d9">opens URL</text>
+
+  <!-- Divider -->
+  <line x1="30" y1="152" x2="790" y2="152" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Steps left (CLI) -->
+  <text x="40" y="174" font-size="12" fill="#374151">
+    <tspan font-weight="700" fill="#10B981">① </tspan>Genera código XXXX-XXXX (expira en 10 min)
+  </text>
+  <text x="40" y="196" font-size="12" fill="#374151">
+    <tspan font-weight="700" fill="#0ea5e9">② </tspan>Muestra el link al usuario
+  </text>
+  <text x="40" y="218" font-size="12" fill="#374151">
+    <tspan font-weight="700" fill="#64748b">③ </tspan>Hace polling de /status cada 3 segundos
+  </text>
+  <text x="40" y="248" font-size="13" font-weight="600" fill="#10B981">
+    ④  approved → recibe JWT (válido 7 días) ✓
+  </text>
+
+  <!-- Steps right (Flutter) -->
+  <text x="450" y="174" font-size="12" fill="#374151">
+    <tspan font-weight="700" fill="#8b5cf6">① </tspan>Abre URL en el browser
+  </text>
+  <text x="450" y="196" font-size="12" fill="#374151">
+    <tspan font-weight="700" fill="#8b5cf6">② </tspan>Login con su cuenta TenK
+  </text>
+  <text x="450" y="218" font-size="12" fill="#374151">
+    <tspan font-weight="700" fill="#8b5cf6">③ </tspan>Ve el código + lista de permisos
+  </text>
+  <text x="450" y="248" font-size="13" font-weight="600" fill="#8b5cf6">
+    ④  Click Autorizar o Rechazar
+  </text>
+
+  <!-- Token storage note -->
+  <rect x="30" y="270" width="760" height="52" rx="8" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="40" y="291" font-size="11" fill="#475569">
+    <tspan font-weight="700">Token storage: </tspan>~/.config/tenk-connect/token  (chmod 600)
+  </text>
+  <text x="40" y="310" font-size="11" fill="#475569">
+    Mismo patrón que GitHub CLI, Netflix TV, Google Device Auth — el usuario siempre tiene el control.
+  </text>
+</svg>
