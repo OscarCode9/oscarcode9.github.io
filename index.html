@@ -112,10 +112,11 @@
     .hero-image-wrapper img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 4px solid var(--primary);
-      box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+      object-fit: contain;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
     }
 
     .hero-mascot {
@@ -411,6 +412,17 @@
 
     .about-content {
       max-width: 900px;
+    }
+
+    .about-photo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
     }
 
     .about-intro h3 {
@@ -1029,7 +1041,6 @@
     <div class="container">
       <div class="hero-content">
         <p class="hero-role"><span id="typing-role" class="typing-text"></span></p>
-        <img class="hero-mascot" src="xoxo-mascot.gif" alt="XoxoBot Mascot">
         <h1 class="hero-title"><span class="lang-es">Hey, soy Oscar</span><span class="lang-en">Hey, I'm Oscar</span></h1>
         <p class="hero-description">
           <span class="lang-es">Llevo +10 años rompiendo y arreglando código. Me gusta crear apps que funcionen bien 
@@ -1073,7 +1084,7 @@
       <div class="hero-image">
         <div class="hero-image-wrapper">
           <div class="hero-image-glow"></div>
-          <img src="public/image.png" alt="Oscar Martínez">
+          <img src="xoxo-mascot.gif" alt="XoxoBot Mascot">
         </div>
       </div>
     </div>
@@ -1090,6 +1101,7 @@
       <div class="about-container">
         <div class="about-content">
           <div class="about-intro">
+            <img src="public/image.png" alt="Oscar Martínez" class="about-photo">
             <h3>Hey, soy <span class="highlight">Oscar Martínez</span> 👋</h3>
             <p class="about-tagline">
               <span class="code-tag">&lt;developer&gt;</span> <span class="lang-es">construyendo software que importa</span><span class="lang-en">building software that matters</span> <span class="code-tag">&lt;/developer&gt;</span>
