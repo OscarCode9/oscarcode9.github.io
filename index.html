@@ -118,6 +118,19 @@
       box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
     }
 
+    .hero-mascot {
+      position: absolute;
+      right: -40px;
+      bottom: -20px;
+      width: 150px;
+      height: auto;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35));
+      pointer-events: none;
+    }
+
     .hero-image-glow {
       position: absolute;
       top: -15px;
@@ -945,6 +958,7 @@
       .hero-content { text-align: left; max-width: 100%; order: 2; }
       .hero-image { order: 1; margin-bottom: 30px; }
       .hero-image-wrapper { width: 180px; height: 180px; }
+      .hero-mascot { width: 110px; right: -30px; bottom: -15px; }
       .hero-title { font-size: 2.2rem; }
       .hero-stats { gap: 25px; }
     }
@@ -963,6 +977,7 @@
       .blog-item { flex-direction: column; align-items: flex-start; gap: 15px; }
       .blog-item-arrow { display: none; }
       .hero-image-wrapper { width: 140px; height: 140px; }
+      .hero-mascot { width: 90px; right: -20px; bottom: -10px; }
     }
   </style>
   <script src="public/i18n.js"></script>
@@ -1051,6 +1066,7 @@
         <div class="hero-image-wrapper">
           <div class="hero-image-glow"></div>
           <img src="public/image.png" alt="Oscar Martínez">
+          <img class="hero-mascot" src="xoxo-mascot.gif" alt="XoxoBot Mascot">
         </div>
       </div>
     </div>
