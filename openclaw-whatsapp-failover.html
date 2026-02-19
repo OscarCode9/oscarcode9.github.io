@@ -37,7 +37,6 @@
       padding: 0 20px;
     }
 
-    /* ========== HEADER ========== */
     .post-header {
       text-align: center;
       padding: 80px 20px 60px;
@@ -124,7 +123,6 @@
       border-color: rgba(255,171,64,0.3);
     }
 
-    /* ========== CONTENT ========== */
     .post-content {
       padding: 60px 0;
     }
@@ -170,7 +168,6 @@
       border-bottom-color: var(--accent-green);
     }
 
-    /* ========== CODE BLOCKS ========== */
     .post-content code {
       background: rgba(0,212,255,0.12);
       color: var(--primary);
@@ -204,7 +201,6 @@
     .post-content pre .string { color: #a5d6ff; }
     .post-content pre .output { color: var(--text-muted); font-style: italic; }
 
-    /* ========== WARNING BOX ========== */
     .warning-box {
       background: rgba(255,107,107,0.08);
       border: 1px solid rgba(255,107,107,0.3);
@@ -225,12 +221,13 @@
       margin: 0;
     }
 
+    .warning-box p:not(:last-child) { margin-bottom: 10px; }
+
     .warning-box code {
       background: rgba(255,107,107,0.15);
       color: var(--accent-red);
     }
 
-    /* ========== INFO BOX ========== */
     .info-box {
       background: rgba(79,195,247,0.08);
       border: 1px solid rgba(79,195,247,0.3);
@@ -250,7 +247,6 @@
       color: var(--text-secondary);
     }
 
-    /* ========== TIP BOX ========== */
     .tip-box {
       background: rgba(105,240,174,0.08);
       border: 1px solid rgba(105,240,174,0.3);
@@ -271,7 +267,6 @@
       margin: 0;
     }
 
-    /* ========== ORANGE BOX (OpenClaw branding) ========== */
     .openclaw-box {
       background: rgba(255,171,64,0.08);
       border: 1px solid rgba(255,171,64,0.3);
@@ -292,7 +287,6 @@
       margin: 0;
     }
 
-    /* ========== TABLE ========== */
     .comparison-table {
       width: 100%;
       border-collapse: collapse;
@@ -325,7 +319,6 @@
       background: rgba(0,212,255,0.05);
     }
 
-    /* ========== SUMMARY BOX ========== */
     .summary-box {
       background: linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(105,240,174,0.08) 100%);
       border: 1px solid rgba(0,212,255,0.25);
@@ -345,7 +338,6 @@
       color: var(--text-secondary);
     }
 
-    /* ========== ASCII ART ========== */
     .ascii-diagram {
       background: #0d1117;
       border: 1px solid rgba(0,212,255,0.2);
@@ -360,7 +352,6 @@
       white-space: pre;
     }
 
-    /* ========== FOOTER ========== */
     .post-footer {
       text-align: center;
       padding: 60px 20px;
@@ -382,7 +373,6 @@
       color: var(--accent-orange);
     }
 
-    /* ========== RESPONSIVE ========== */
     @media (max-width: 768px) {
       .post-title { font-size: 1.8em; }
       .post-subtitle { font-size: 1em; }
@@ -390,7 +380,7 @@
       .post-content pre { padding: 15px; }
     }
   </style>
-
+  <script src="public/i18n.js"></script>
   <link rel="stylesheet" href="visits-badge.css">
   <script src="visits-badge.js" defer></script>
 </head>
@@ -399,9 +389,10 @@
   <header class="post-header">
     <div class="container">
       <a href="index.html" class="back-link">
-        <i class="fas fa-arrow-left"></i> Volver al inicio
+        <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <h1 class="post-title">&#x1F99E; OpenClaw: WhatsApp + Multi-Provider Failover &#8212; Nunca M&#225;s Offline</h1>
+      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+      <h1 class="post-title"><span class="lang-es">🦞 OpenClaw: WhatsApp + Multi-Provider Failover — Nunca Más Offline</span><span class="lang-en">🦞 OpenClaw: WhatsApp + Multi-Provider Failover — Never Offline Again</span></h1>
     <div class="ov-views-wrap">
       <div class="ov-views-badge" data-ov-visits>
         <span class="ov-dot"></span>
@@ -410,13 +401,13 @@
       </div>
     </div>
 
-      <p class="post-subtitle">C&#243;mo configur&#233; un agente de IA con 4 proveedores de respaldo, watchdog autom&#225;tico y reconexi&#243;n de WhatsApp para que nunca deje de responder.</p>
+      <p class="post-subtitle"><span class="lang-es">Cómo configuré un agente de IA con 4 proveedores de respaldo, watchdog automático y reconexión de WhatsApp para que nunca deje de responder.</span><span class="lang-en">How I configured an AI agent with 4 backup providers, an automatic watchdog, and WhatsApp reconnection so it never stops responding.</span></p>
       <div class="post-meta">
         <span class="post-tag">OpenClaw</span>
         <span class="post-tag">AI Agents</span>
         <span class="post-tag devops">DevOps</span>
         <br><br>
-        <span>&#x1F4C5; 14-16 de Febrero, 2026 &#183; &#x23F1;&#xFE0F; 15 min de lectura &#183; Actualizado con post-mortem y an&#225;lisis de falla triple</span>
+        <span><span class="lang-es">📅 14-16 de Febrero, 2026 · ⏱️ 15 min de lectura · Actualizado con post-mortem y análisis de falla triple</span><span class="lang-en">📅 February 14-16, 2026 · ⏱️ 15 min read · Updated with post-mortem and triple failure analysis</span></span>
       </div>
     </div>
   </header>
@@ -424,26 +415,30 @@
   <main class="post-content">
     <div class="container">
 
-      <!-- INTRO -->
-      <p>Si usas <strong>OpenClaw</strong> para tener un agente de IA accesible por WhatsApp, sabes que la experiencia es incre&#237;ble... hasta que deja de funcionar. Un reinicio del gateway, un token expirado, un DNS que falla &#8212; y de repente tu agente est&#225; muerto y nadie te avisa.</p>
+      <p class="lang-es">Si usas <strong>OpenClaw</strong> para tener un agente de IA accesible por WhatsApp, sabes que la experiencia es increíble... hasta que deja de funcionar. Un reinicio del gateway, un token expirado, un DNS que falla — y de repente tu agente está muerto y nadie te avisa.</p>
+      <p class="lang-en">If you use <strong>OpenClaw</strong> to have an AI agent accessible via WhatsApp, you know the experience is incredible... until it stops working. A gateway restart, an expired token, a failed DNS — and suddenly your agent is dead and nobody tells you.</p>
 
-      <p>En este post te explico c&#243;mo configur&#233; mi setup para que sea <strong>pr&#225;cticamente indestructible</strong>: reconexi&#243;n autom&#225;tica de WhatsApp, un watchdog que revisa cada 15 minutos, y 4 proveedores de modelo en cadena de failover para que si uno se cae, el siguiente entre inmediatamente.</p>
+      <p class="lang-es">En este post te explico cómo configuré mi setup para que sea <strong>prácticamente indestructible</strong>: reconexión automática de WhatsApp, un watchdog que revisa cada 15 minutos, y 4 proveedores de modelo en cadena de failover para que si uno se cae, el siguiente entre inmediatamente.</p>
+      <p class="lang-en">In this post I explain how I configured my setup to be <strong>practically indestructible</strong>: automatic WhatsApp reconnection, a watchdog that checks every 15 minutes, and 4 model providers in a failover chain so if one goes down, the next one steps in immediately.</p>
 
       <div class="openclaw-box">
-        <h4>&#x1F99E; &#191;Qu&#233; es OpenClaw?</h4>
-        <p>OpenClaw es una plataforma open-source para crear agentes de IA con acceso a canales de mensajer&#237;a (WhatsApp, Telegram, etc.), herramientas del sistema, y m&#250;ltiples proveedores de modelos. B&#225;sicamente, un agente que vive en tu terminal y responde por WhatsApp.</p>
+        <h4><span class="lang-es">🦞 ¿Qué es OpenClaw?</span><span class="lang-en">🦞 What is OpenClaw?</span></h4>
+        <p class="lang-es">OpenClaw es una plataforma open-source para crear agentes de IA con acceso a canales de mensajería (WhatsApp, Telegram, etc.), herramientas del sistema, y múltiples proveedores de modelos. Básicamente, un agente que vive en tu terminal y responde por WhatsApp.</p>
+        <p class="lang-en">OpenClaw is an open-source platform for creating AI agents with access to messaging channels (WhatsApp, Telegram, etc.), system tools, and multiple model providers. Basically, an agent that lives in your terminal and responds via WhatsApp.</p>
       </div>
 
-      <!-- ===== SECTION 1: EL PROBLEMA ===== -->
-      <h2>1. El Problema</h2>
+      <h2><span class="lang-es">1. El Problema</span><span class="lang-en">1. The Problem</span></h2>
 
-      <p>Todo empez&#243; cuando not&#233; que mi agente de OpenClaw hab&#237;a dejado de responder por WhatsApp. Le mandaba mensajes y nada. Silencio absoluto.</p>
+      <p class="lang-es">Todo empezó cuando noté que mi agente de OpenClaw había dejado de responder por WhatsApp. Le mandaba mensajes y nada. Silencio absoluto.</p>
+      <p class="lang-en">It all started when I noticed my OpenClaw agent had stopped responding via WhatsApp. I'd send messages and nothing. Complete silence.</p>
 
-      <p>Al revisar los logs, encontr&#233; <strong>dos errores</strong> que se estaban encadenando:</p>
+      <p class="lang-es">Al revisar los logs, encontré <strong>dos errores</strong> que se estaban encadenando:</p>
+      <p class="lang-en">Looking at the logs, I found <strong>two errors</strong> that were chaining together:</p>
 
       <div class="warning-box">
-        <h4>&#x26A0;&#xFE0F; Error 1: DNS temporal &#8212; ENOTFOUND</h4>
-        <p>El gateway de WhatsApp no pod&#237;a resolver <code>web.whatsapp.com</code>. Esto pasa cuando hay una interrupci&#243;n de red moment&#225;nea o el gateway se reinicia y la resoluci&#243;n DNS a&#250;n no est&#225; lista.</p>
+        <h4><span class="lang-es">⚠️ Error 1: DNS temporal — ENOTFOUND</span><span class="lang-en">⚠️ Error 1: Temporary DNS — ENOTFOUND</span></h4>
+        <p class="lang-es">El gateway de WhatsApp no podía resolver <code>web.whatsapp.com</code>. Esto pasa cuando hay una interrupción de red momentánea o el gateway se reinicia y la resolución DNS aún no está lista.</p>
+        <p class="lang-en">The WhatsApp gateway couldn't resolve <code>web.whatsapp.com</code>. This happens when there's a momentary network interruption or the gateway restarts and DNS resolution isn't ready yet.</p>
       </div>
 
       <pre><code><span class="output">[ERROR] WhatsApp channel disconnected</span>
@@ -453,8 +448,9 @@
 <span class="output">  status: STOPPED</span></code></pre>
 
       <div class="warning-box">
-        <h4>&#x26A0;&#xFE0F; Error 2: Token de Copilot expirado &#8212; HTTP 403</h4>
-        <p>El proveedor principal (GitHub Copilot) estaba devolviendo 403 Forbidden. El token de autenticaci&#243;n hab&#237;a expirado y no se renov&#243; autom&#225;ticamente. Resultado: a&#250;n cuando el canal se reconectara, el agente no pod&#237;a generar respuestas.</p>
+        <h4><span class="lang-es">⚠️ Error 2: Token de Copilot expirado — HTTP 403</span><span class="lang-en">⚠️ Error 2: Copilot Token Expired — HTTP 403</span></h4>
+        <p class="lang-es">El proveedor principal (GitHub Copilot) estaba devolviendo 403 Forbidden. El token de autenticación había expirado y no se renovó automáticamente. Resultado: aún cuando el canal se reconectara, el agente no podía generar respuestas.</p>
+        <p class="lang-en">The primary provider (GitHub Copilot) was returning 403 Forbidden. The authentication token had expired and didn't auto-renew. Result: even when the channel reconnected, the agent couldn't generate responses.</p>
       </div>
 
       <pre><code><span class="output">[ERROR] Model provider failed: github-copilot/claude-opus-4.6</span>
@@ -462,141 +458,156 @@
 <span class="output">  message: "Token expired or revoked"</span>
 <span class="output">  fallback: none configured</span></code></pre>
 
-      <p>O sea: <strong>doble falla</strong>. El canal de comunicaci&#243;n muerto Y el proveedor de modelo muerto. Sin fallback. Sin watchdog. Sin recuperaci&#243;n autom&#225;tica. Un desastre.</p>
+      <p class="lang-es">O sea: <strong>doble falla</strong>. El canal de comunicación muerto Y el proveedor de modelo muerto. Sin fallback. Sin watchdog. Sin recuperación automática. Un desastre.</p>
+      <p class="lang-en">In other words: <strong>double failure</strong>. The communication channel dead AND the model provider dead. No fallback. No watchdog. No automatic recovery. A disaster.</p>
 
-      <!-- ===== SECTION 2: DIAGN&#211;STICO ===== -->
-      <h2>2. Diagn&#243;stico</h2>
+      <h2><span class="lang-es">2. Diagnóstico</span><span class="lang-en">2. Diagnosis</span></h2>
 
-      <p>Antes de arreglar nada, hay que entender qu&#233; pas&#243;. OpenClaw tiene comandos muy &#250;tiles para diagnosticar el estado de todo el sistema.</p>
+      <p class="lang-es">Antes de arreglar nada, hay que entender qué pasó. OpenClaw tiene comandos muy útiles para diagnosticar el estado de todo el sistema.</p>
+      <p class="lang-en">Before fixing anything, you need to understand what happened. OpenClaw has very useful commands for diagnosing the state of the entire system.</p>
 
-      <h3>Revisar el estado de los canales</h3>
+      <h3><span class="lang-es">Revisar el estado de los canales</span><span class="lang-en">Check Channel Status</span></h3>
 
       <pre><code><span class="command">openclaw channels status</span></code></pre>
 
-      <p>Esto muestra el estado de cada canal conectado. En mi caso, WhatsApp aparec&#237;a como <code>STOPPED</code>:</p>
+      <p class="lang-es">Esto muestra el estado de cada canal conectado. En mi caso, WhatsApp aparecía como <code>STOPPED</code>:</p>
+      <p class="lang-en">This shows the status of each connected channel. In my case, WhatsApp appeared as <code>STOPPED</code>:</p>
 
       <pre><code><span class="output">Channel      Status      Last Activity         Uptime</span>
-<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">─────────    ────────    ──────────────────    ──────</span>
 <span class="output">whatsapp     STOPPED     2026-02-13 08:42      0s</span>
 <span class="output">terminal     CONNECTED   2026-02-14 10:15      1d 2h</span></code></pre>
 
-      <h3>Revisar los logs del canal</h3>
+      <h3><span class="lang-es">Revisar los logs del canal</span><span class="lang-en">Check Channel Logs</span></h3>
 
       <pre><code><span class="command">openclaw channels logs</span> <span class="flag">--channel whatsapp</span> <span class="flag">--tail 50</span></code></pre>
 
-      <p>Aqu&#237; es donde encontr&#233; los errores de DNS que mencion&#233; arriba. Los logs te dan el detalle completo de qu&#233; pas&#243; y cu&#225;ndo.</p>
+      <p class="lang-es">Aquí es donde encontré los errores de DNS que mencioné arriba. Los logs te dan el detalle completo de qué pasó y cuándo.</p>
+      <p class="lang-en">This is where I found the DNS errors I mentioned above. The logs give you the full detail of what happened and when.</p>
 
-      <h3>Health check general</h3>
+      <h3><span class="lang-es">Health check general</span><span class="lang-en">General Health Check</span></h3>
 
       <pre><code><span class="command">openclaw health</span></code></pre>
 
       <pre><code><span class="output">Component          Status    Details</span>
-<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;         &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
-<span class="output">Gateway            &#10004; OK     pid: 48291, uptime: 1d 2h</span>
-<span class="output">WhatsApp Channel   &#10008; FAIL   STOPPED - ENOTFOUND web.whatsapp.com</span>
-<span class="output">Model: openai      &#10004; OK     gpt-5.3-codex responding</span>
-<span class="output">Model: copilot     &#10008; FAIL   403 Forbidden - token expired</span>
-<span class="output">Node.js            &#10004; OK     v22.14.0</span>
-<span class="output">Cron               &#10004; OK     0 active jobs</span></code></pre>
+<span class="output">─────────────      ──────    ───────</span>
+<span class="output">Gateway            ✓ OK     pid: 48291, uptime: 1d 2h</span>
+<span class="output">WhatsApp Channel   ✗ FAIL   STOPPED - ENOTFOUND web.whatsapp.com</span>
+<span class="output">Model: openai      ✓ OK     gpt-5.3-codex responding</span>
+<span class="output">Model: copilot     ✗ FAIL   403 Forbidden - token expired</span>
+<span class="output">Node.js            ✓ OK     v22.14.0</span>
+<span class="output">Cron               ✓ OK     0 active jobs</span></code></pre>
 
       <div class="info-box">
-        <h4>&#x1F4A1; Pro tip</h4>
-        <p>Siempre corre <code>openclaw health</code> primero. Te da una vista panor&#225;mica de todo lo que est&#225; bien y mal en un solo comando. Desde ah&#237; sabes d&#243;nde enfocarte.</p>
+        <h4>💡 Pro tip</h4>
+        <p class="lang-es">Siempre corre <code>openclaw health</code> primero. Te da una vista panorámica de todo lo que está bien y mal en un solo comando. Desde ahí sabes dónde enfocarte.</p>
+        <p class="lang-en">Always run <code>openclaw health</code> first. It gives you a panoramic view of everything that's working and not in a single command. From there you know where to focus.</p>
       </div>
 
-      <!-- ===== SECTION 3: RECONECTAR WHATSAPP ===== -->
-      <h2>3. Soluci&#243;n 1: Reconectar WhatsApp</h2>
+      <h2><span class="lang-es">3. Solución 1: Reconectar WhatsApp</span><span class="lang-en">3. Solution 1: Reconnect WhatsApp</span></h2>
 
-      <p>Lo primero es lo primero: restaurar la conexi&#243;n del canal de WhatsApp.</p>
+      <p class="lang-es">Lo primero es lo primero: restaurar la conexión del canal de WhatsApp.</p>
+      <p class="lang-en">First things first: restore the WhatsApp channel connection.</p>
 
-      <h3>Paso 1: Re-autenticar el canal</h3>
+      <h3><span class="lang-es">Paso 1: Re-autenticar el canal</span><span class="lang-en">Step 1: Re-authenticate the Channel</span></h3>
 
       <pre><code><span class="command">openclaw channels login</span> <span class="flag">--channel whatsapp</span></code></pre>
 
-      <p>Esto regenera la sesi&#243;n de WhatsApp. Te va a pedir escanear un c&#243;digo QR desde tu tel&#233;fono (igual que WhatsApp Web). Una vez escaneado, la sesi&#243;n queda activa.</p>
+      <p class="lang-es">Esto regenera la sesión de WhatsApp. Te va a pedir escanear un código QR desde tu teléfono (igual que WhatsApp Web). Una vez escaneado, la sesión queda activa.</p>
+      <p class="lang-en">This regenerates the WhatsApp session. It will ask you to scan a QR code from your phone (just like WhatsApp Web). Once scanned, the session becomes active.</p>
 
-      <h3>Paso 2: Reiniciar el gateway</h3>
+      <h3><span class="lang-es">Paso 2: Reiniciar el gateway</span><span class="lang-en">Step 2: Restart the Gateway</span></h3>
 
       <pre><code><span class="command">openclaw gateway restart</span></code></pre>
 
-      <p>El gateway es el proceso que mantiene las conexiones activas. Al reiniciarlo, se reconectan todos los canales con las sesiones actualizadas.</p>
+      <p class="lang-es">El gateway es el proceso que mantiene las conexiones activas. Al reiniciarlo, se reconectan todos los canales con las sesiones actualizadas.</p>
+      <p class="lang-en">The gateway is the process that keeps connections active. When restarting it, all channels reconnect with updated sessions.</p>
 
       <pre><code><span class="output">Gateway restarting...</span>
-<span class="output">  WhatsApp: reconnecting... &#10004; CONNECTED</span>
-<span class="output">  Terminal: reconnecting... &#10004; CONNECTED</span>
+<span class="output">  WhatsApp: reconnecting... ✓ CONNECTED</span>
+<span class="output">  Terminal: reconnecting... ✓ CONNECTED</span>
 <span class="output">Gateway ready (pid: 51023)</span></code></pre>
 
-      <h3>Paso 3: Verificar</h3>
+      <h3><span class="lang-es">Paso 3: Verificar</span><span class="lang-en">Step 3: Verify</span></h3>
 
       <pre><code><span class="command">openclaw channels status</span>
 
 <span class="output">Channel      Status       Last Activity         Uptime</span>
-<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">─────────    ─────────    ──────────────────    ──────</span>
 <span class="output">whatsapp     CONNECTED    2026-02-14 10:30      2m</span>
 <span class="output">terminal     CONNECTED    2026-02-14 10:30      1d 2h</span></code></pre>
 
       <div class="tip-box">
-        <h4>&#10004; Canal restaurado</h4>
-        <p>WhatsApp vuelve a estar <code>CONNECTED</code>. Pero esto fue un fix manual. Si se vuelve a caer a las 3am, &#191;qui&#233;n lo reconecta? Nadie. Por eso necesitamos el watchdog.</p>
+        <h4><span class="lang-es">✔ Canal restaurado</span><span class="lang-en">✔ Channel Restored</span></h4>
+        <p class="lang-es">WhatsApp vuelve a estar <code>CONNECTED</code>. Pero esto fue un fix manual. Si se vuelve a caer a las 3am, ¿quién lo reconecta? Nadie. Por eso necesitamos el watchdog.</p>
+        <p class="lang-en">WhatsApp is <code>CONNECTED</code> again. But this was a manual fix. If it goes down again at 3am, who reconnects it? Nobody. That's why we need the watchdog.</p>
       </div>
 
-      <!-- ===== SECTION 4: WATCHDOG ===== -->
-      <h2>4. Soluci&#243;n 2: Watchdog Autom&#225;tico (Cron)</h2>
+      <h2><span class="lang-es">4. Solución 2: Watchdog Automático (Cron)</span><span class="lang-en">4. Solution 2: Automatic Watchdog (Cron)</span></h2>
 
-      <p>La idea es simple: un cron job que corre cada 15 minutos, revisa si WhatsApp est&#225; conectado, y si no lo est&#225;, lo reconecta autom&#225;ticamente. Lo mejor es que OpenClaw tiene esto integrado &#8212; no necesitas crontab del sistema ni scripts externos.</p>
+      <p class="lang-es">La idea es simple: un cron job que corre cada 15 minutos, revisa si WhatsApp está conectado, y si no lo está, lo reconecta automáticamente. Lo mejor es que OpenClaw tiene esto integrado — no necesitas crontab del sistema ni scripts externos.</p>
+      <p class="lang-en">The idea is simple: a cron job that runs every 15 minutes, checks if WhatsApp is connected, and if it isn't, reconnects it automatically. The best part is that OpenClaw has this built in — you don't need system crontab or external scripts.</p>
 
-      <h3>Crear el watchdog</h3>
+      <h3><span class="lang-es">Crear el watchdog</span><span class="lang-en">Create the Watchdog</span></h3>
 
       <pre><code><span class="command">openclaw cron add</span> \
   <span class="flag">--name</span> <span class="string">"whatsapp-watchdog"</span> \
   <span class="flag">--every</span> <span class="string">15m</span> \
-  <span class="flag">--message</span> <span class="string">"Revisa el estado del canal de WhatsApp. Si est&#225; desconectado o stopped, ejecuta 'openclaw gateway restart' para reconectarlo."</span> \
+  <span class="flag">--message</span> <span class="string">"Revisa el estado del canal de WhatsApp. Si está desconectado o stopped, ejecuta 'openclaw gateway restart' para reconectarlo."</span> \
   <span class="flag">--channel</span> <span class="string">whatsapp</span> \
   <span class="flag">--to</span> <span class="string">"+52XXXXXXXXXX"</span> \
   <span class="flag">--best-effort-deliver</span></code></pre>
 
-      <p>&#191;Qu&#233; hace esto exactamente?</p>
+      <p class="lang-es">¿Qué hace esto exactamente?</p>
+      <p class="lang-en">What does this do exactly?</p>
 
       <ul>
-        <li><code>--every 15m</code> &#8212; Se ejecuta cada 15 minutos.</li>
-        <li><code>--message</code> &#8212; Le dice al agente qu&#233; hacer. El agente usa sus tools para verificar el estado y tomar acci&#243;n.</li>
-        <li><code>--channel whatsapp</code> &#8212; El contexto del canal a monitorear.</li>
-        <li><code>--to "+52XXXXXXXXXX"</code> &#8212; N&#250;mero de destino para las notificaciones.</li>
-        <li><code>--best-effort-deliver</code> &#8212; Si no puede entregar el mensaje (porque WhatsApp est&#225; ca&#237;do), no falla el cron &#8212; simplemente lo intenta y sigue adelante.</li>
+        <li class="lang-es"><code>--every 15m</code> — Se ejecuta cada 15 minutos.</li>
+        <li class="lang-en"><code>--every 15m</code> — Runs every 15 minutes.</li>
+        <li class="lang-es"><code>--message</code> — Le dice al agente qué hacer. El agente usa sus tools para verificar el estado y tomar acción.</li>
+        <li class="lang-en"><code>--message</code> — Tells the agent what to do. The agent uses its tools to check status and take action.</li>
+        <li class="lang-es"><code>--channel whatsapp</code> — El contexto del canal a monitorear.</li>
+        <li class="lang-en"><code>--channel whatsapp</code> — The channel context to monitor.</li>
+        <li class="lang-es"><code>--to "+52XXXXXXXXXX"</code> — Número de destino para las notificaciones.</li>
+        <li class="lang-en"><code>--to "+52XXXXXXXXXX"</code> — Destination number for notifications.</li>
+        <li class="lang-es"><code>--best-effort-deliver</code> — Si no puede entregar el mensaje (porque WhatsApp está caído), no falla el cron — simplemente lo intenta y sigue adelante.</li>
+        <li class="lang-en"><code>--best-effort-deliver</code> — If it can't deliver the message (because WhatsApp is down), the cron doesn't fail — it simply tries and moves on.</li>
       </ul>
 
       <div class="info-box">
-        <h4>&#x1F504; &#191;C&#243;mo funciona internamente?</h4>
-        <p>El cron de OpenClaw no es un crontab de Unix. Es un scheduler interno que vive en el gateway. Cada 15 minutos, invoca al agente con el mensaje que le diste, el agente analiza el estado usando sus herramientas (<code>channels_status</code>, <code>gateway_restart</code>, etc.) y toma las acciones necesarias. Es como tener un DevOps bot viviendo en tu m&#225;quina.</p>
+        <h4><span class="lang-es">🔄 ¿Cómo funciona internamente?</span><span class="lang-en">🔄 How Does It Work Internally?</span></h4>
+        <p class="lang-es">El cron de OpenClaw no es un crontab de Unix. Es un scheduler interno que vive en el gateway. Cada 15 minutos, invoca al agente con el mensaje que le diste, el agente analiza el estado usando sus herramientas (<code>channels_status</code>, <code>gateway_restart</code>, etc.) y toma las acciones necesarias. Es como tener un DevOps bot viviendo en tu máquina.</p>
+        <p class="lang-en">The OpenClaw cron is not a Unix crontab. It's an internal scheduler that lives in the gateway. Every 15 minutes, it invokes the agent with the message you gave it, the agent analyzes status using its tools (<code>channels_status</code>, <code>gateway_restart</code>, etc.) and takes the necessary actions. It's like having a DevOps bot living on your machine.</p>
       </div>
 
-      <h3>Verificar que el cron est&#225; activo</h3>
+      <h3><span class="lang-es">Verificar que el cron está activo</span><span class="lang-en">Verify That the Cron Is Active</span></h3>
 
       <pre><code><span class="command">openclaw cron list</span>
 
 <span class="output">Name                  Interval    Next Run              Channel     Status</span>
-<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;      &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;   &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span class="output">──────────────────    ────────    ──────────────────    ─────────   ──────</span>
 <span class="output">whatsapp-watchdog     15m         2026-02-14 10:45      whatsapp    ACTIVE</span></code></pre>
 
       <div class="tip-box">
-        <h4>&#10004; Watchdog activo</h4>
-        <p>Ahora si WhatsApp se desconecta a las 3am, el watchdog lo detecta en m&#225;ximo 15 minutos y lo reconecta solo. Puedes dormir tranquilo.</p>
+        <h4><span class="lang-es">✔ Watchdog activo</span><span class="lang-en">✔ Watchdog Active</span></h4>
+        <p class="lang-es">Ahora si WhatsApp se desconecta a las 3am, el watchdog lo detecta en máximo 15 minutos y lo reconecta solo. Puedes dormir tranquilo.</p>
+        <p class="lang-en">Now if WhatsApp disconnects at 3am, the watchdog detects it in at most 15 minutes and reconnects it on its own. You can sleep easy.</p>
       </div>
 
-      <!-- ===== SECTION 5: MULTI-PROVIDER FAILOVER ===== -->
-      <h2>5. Soluci&#243;n 3: Multi-Provider Failover</h2>
+      <h2><span class="lang-es">5. Solución 3: Multi-Provider Failover</span><span class="lang-en">5. Solution 3: Multi-Provider Failover</span></h2>
 
-      <p>El canal ya se reconecta solo. Pero &#191;qu&#233; pasa si el <em>modelo</em> falla? Si tu &#250;nico proveedor es GitHub Copilot y el token expira, el agente recibe mensajes pero no puede responder. Necesitamos un plan B. Y un plan C. Y un plan D.</p>
+      <p class="lang-es">El canal ya se reconecta solo. Pero ¿qué pasa si el <em>modelo</em> falla? Si tu único proveedor es GitHub Copilot y el token expira, el agente recibe mensajes pero no puede responder. Necesitamos un plan B. Y un plan C. Y un plan D.</p>
+      <p class="lang-en">The channel already reconnects on its own. But what if the <em>model</em> fails? If your only provider is GitHub Copilot and the token expires, the agent receives messages but can't respond. We need a plan B. And a plan C. And a plan D.</p>
 
-      <h3>La cadena de failover</h3>
+      <h3><span class="lang-es">La cadena de failover</span><span class="lang-en">The Failover Chain</span></h3>
 
       <table class="comparison-table">
         <thead>
           <tr>
-            <th>Prioridad</th>
-            <th>Proveedor</th>
-            <th>Modelo</th>
-            <th>Notas</th>
+            <th><span class="lang-es">Prioridad</span><span class="lang-en">Priority</span></th>
+            <th><span class="lang-es">Proveedor</span><span class="lang-en">Provider</span></th>
+            <th><span class="lang-es">Modelo</span><span class="lang-en">Model</span></th>
+            <th><span class="lang-es">Notas</span><span class="lang-en">Notes</span></th>
           </tr>
         </thead>
         <tbody>
@@ -604,141 +615,156 @@
             <td><strong>Primary</strong></td>
             <td>OpenAI Codex</td>
             <td><code>openai-codex/gpt-5.3-codex</code></td>
-            <td>El m&#225;s r&#225;pido, ideal para respuestas del d&#237;a a d&#237;a</td>
+            <td><span class="lang-es">El más rápido, ideal para respuestas del día a día</span><span class="lang-en">The fastest, ideal for day-to-day responses</span></td>
           </tr>
           <tr>
             <td><strong>Fallback #1</strong></td>
             <td>GitHub Copilot</td>
             <td><code>github-copilot/claude-opus-4.6</code></td>
-            <td>Claude Opus v&#237;a Copilot proxy, muy capaz</td>
+            <td><span class="lang-es">Claude Opus vía Copilot proxy, muy capaz</span><span class="lang-en">Claude Opus via Copilot proxy, very capable</span></td>
           </tr>
           <tr>
             <td><strong>Fallback #2</strong></td>
             <td>Copilot Proxy</td>
             <td><code>copilot-proxy/claude-sonnet-4.5</code></td>
-            <td>Sonnet v&#237;a Copilot, m&#225;s ligero pero confiable</td>
+            <td><span class="lang-es">Sonnet vía Copilot, más ligero pero confiable</span><span class="lang-en">Sonnet via Copilot, lighter but reliable</span></td>
           </tr>
           <tr>
             <td><strong>Fallback #3</strong></td>
             <td>Anthropic (Claude Code)</td>
             <td><code>anthropic/claude-sonnet-4-5-20250929</code></td>
-            <td>Directo desde Claude Code subscription</td>
+            <td><span class="lang-es">Directo desde Claude Code subscription</span><span class="lang-en">Directly from Claude Code subscription</span></td>
           </tr>
         </tbody>
       </table>
 
-      <p>La l&#243;gica es: si el proveedor primario falla (timeout, 403, 500, rate limit), OpenClaw autom&#225;ticamente intenta el siguiente en la lista. Si ese tambi&#233;n falla, pasa al siguiente. As&#237; sucesivamente hasta que uno responda.</p>
+      <p class="lang-es">La lógica es: si el proveedor primario falla (timeout, 403, 500, rate limit), OpenClaw automáticamente intenta el siguiente en la lista. Si ese también falla, pasa al siguiente. Así sucesivamente hasta que uno responda.</p>
+      <p class="lang-en">The logic is: if the primary provider fails (timeout, 403, 500, rate limit), OpenClaw automatically tries the next one on the list. If that one also fails, it moves to the next. And so on until one responds.</p>
 
-      <h3>Configurar los fallbacks</h3>
+      <h3><span class="lang-es">Configurar los fallbacks</span><span class="lang-en">Configure the Fallbacks</span></h3>
 
       <pre><code><span class="command">openclaw config set</span> <span class="flag">agents.defaults.model.fallbacks</span> \
   <span class="string">'["github-copilot/claude-opus-4.6","copilot-proxy/claude-sonnet-4.5","anthropic/claude-sonnet-4-5-20250929"]'</span> \
   <span class="flag">--json</span></code></pre>
 
-      <pre><code><span class="output">&#10004; Config updated: agents.defaults.model.fallbacks</span>
+      <pre><code><span class="output">✓ Config updated: agents.defaults.model.fallbacks</span>
 <span class="output">   [0] github-copilot/claude-opus-4.6</span>
 <span class="output">   [1] copilot-proxy/claude-sonnet-4.5</span>
 <span class="output">   [2] anthropic/claude-sonnet-4-5-20250929</span></code></pre>
 
       <div class="info-box">
-        <h4>&#x1F4A1; &#191;Por qu&#233; este orden?</h4>
-        <p>El modelo primario (<code>openai-codex/gpt-5.3-codex</code>) ya est&#225; configurado como default. Los fallbacks se prueban en orden. Puse Claude Opus primero porque es el m&#225;s capaz. Sonnet como segundo porque es r&#225;pido y barato. Y el de Anthropic directo como &#250;ltimo recurso porque usa los cr&#233;ditos de mi suscripci&#243;n de Claude Code.</p>
+        <h4><span class="lang-es">💡 ¿Por qué este orden?</span><span class="lang-en">💡 Why This Order?</span></h4>
+        <p class="lang-es">El modelo primario (<code>openai-codex/gpt-5.3-codex</code>) ya está configurado como default. Los fallbacks se prueban en orden. Puse Claude Opus primero porque es el más capaz. Sonnet como segundo porque es rápido y barato. Y el de Anthropic directo como último recurso porque usa los créditos de mi suscripción de Claude Code.</p>
+        <p class="lang-en">The primary model (<code>openai-codex/gpt-5.3-codex</code>) is already configured as default. Fallbacks are tried in order. I put Claude Opus first because it's the most capable. Sonnet as second because it's fast and cheap. And Anthropic direct as last resort because it uses my Claude Code subscription credits.</p>
       </div>
 
-      <!-- ===== SECTION 6: GITHUB COPILOT AUTH ===== -->
-      <h2>6. Configurar GitHub Copilot como Provider</h2>
+      <h2><span class="lang-es">6. Configurar GitHub Copilot como Provider</span><span class="lang-en">6. Configure GitHub Copilot as Provider</span></h2>
 
-      <p>Para que OpenClaw pueda usar modelos v&#237;a GitHub Copilot, necesitas autenticarte con el device flow de GitHub:</p>
+      <p class="lang-es">Para que OpenClaw pueda usar modelos vía GitHub Copilot, necesitas autenticarte con el device flow de GitHub:</p>
+      <p class="lang-en">For OpenClaw to use models via GitHub Copilot, you need to authenticate with the GitHub device flow:</p>
 
       <pre><code><span class="command">openclaw models auth login-github-copilot</span></code></pre>
 
-      <pre><code><span class="output">&#x1F510; GitHub Copilot Authentication</span>
+      <pre><code><span class="output">🔐 GitHub Copilot Authentication</span>
 <span class="output">   Open this URL in your browser:</span>
-<span class="output">   &#8594; https://github.com/login/device</span>
+<span class="output">   → https://github.com/login/device</span>
 <span class="output"></span>
 <span class="output">   Enter this code: ABCD-1234</span>
 <span class="output"></span>
 <span class="output">   Waiting for authorization...</span></code></pre>
 
-      <p>El proceso es:</p>
+      <p class="lang-es">El proceso es:</p>
+      <p class="lang-en">The process is:</p>
       <ol>
-        <li>Abre <a href="https://github.com/login/device" target="_blank">https://github.com/login/device</a> en tu navegador.</li>
-        <li>Ingresa el c&#243;digo que te muestra la terminal.</li>
-        <li>Autoriza el acceso.</li>
-        <li>La terminal detecta la autorizaci&#243;n autom&#225;ticamente.</li>
+        <li class="lang-es">Abre <a href="https://github.com/login/device" target="_blank">https://github.com/login/device</a> en tu navegador.</li>
+        <li class="lang-en">Open <a href="https://github.com/login/device" target="_blank">https://github.com/login/device</a> in your browser.</li>
+        <li class="lang-es">Ingresa el código que te muestra la terminal.</li>
+        <li class="lang-en">Enter the code shown in the terminal.</li>
+        <li class="lang-es">Autoriza el acceso.</li>
+        <li class="lang-en">Authorize access.</li>
+        <li class="lang-es">La terminal detecta la autorización automáticamente.</li>
+        <li class="lang-en">The terminal automatically detects the authorization.</li>
       </ol>
 
-      <pre><code><span class="output">   &#10004; Authenticated as @oscarcode9</span>
+      <pre><code><span class="output">   ✓ Authenticated as @oscarcode9</span>
 <span class="output">   Token stored securely.</span>
 <span class="output">   Available models: claude-opus-4.6, claude-sonnet-4.5, gpt-4o, o1...</span></code></pre>
 
       <div class="warning-box">
-        <h4>&#x26A0;&#xFE0F; Token expiration</h4>
-        <p>Los tokens de Copilot expiran peri&#243;dicamente. Si ves errores 403, re-ejecuta <code>openclaw models auth login-github-copilot</code> para renovar. Con el failover configurado, incluso si el token expira, los otros proveedores toman el relevo mientras lo renuevas.</p>
+        <h4>⚠️ Token expiration</h4>
+        <p class="lang-es">Los tokens de Copilot expiran periódicamente. Si ves errores 403, re-ejecuta <code>openclaw models auth login-github-copilot</code> para renovar. Con el failover configurado, incluso si el token expira, los otros proveedores toman el relevo mientras lo renuevas.</p>
+        <p class="lang-en">Copilot tokens expire periodically. If you see 403 errors, re-run <code>openclaw models auth login-github-copilot</code> to renew. With failover configured, even if the token expires, the other providers take over while you renew it.</p>
       </div>
 
-      <!-- ===== SECTION 7: CLAUDE CODE PROVIDER ===== -->
-      <h2>7. Configurar Claude Code como Provider</h2>
+      <h2><span class="lang-es">7. Configurar Claude Code como Provider</span><span class="lang-en">7. Configure Claude Code as Provider</span></h2>
 
-      <p>Esta es la parte m&#225;s elegante del setup. OpenClaw puede leer las credenciales de Claude Code directamente desde el <strong>macOS Keychain</strong>. Si ya tienes Claude Code instalado y autenticado, no necesitas configurar tokens ni API keys manualmente.</p>
+      <p class="lang-es">Esta es la parte más elegante del setup. OpenClaw puede leer las credenciales de Claude Code directamente desde el <strong>macOS Keychain</strong>. Si ya tienes Claude Code instalado y autenticado, no necesitas configurar tokens ni API keys manualmente.</p>
+      <p class="lang-en">This is the most elegant part of the setup. OpenClaw can read Claude Code credentials directly from the <strong>macOS Keychain</strong>. If you already have Claude Code installed and authenticated, you don't need to configure tokens or API keys manually.</p>
 
       <div class="tip-box">
-        <h4>&#x1F511; Credenciales autom&#225;ticas</h4>
-        <p>OpenClaw busca las credenciales en el Keychain de macOS bajo el nombre <code>Claude Code-credentials</code>. Si Claude Code est&#225; autenticado en tu m&#225;quina, OpenClaw las encuentra y las usa directamente. Zero config.</p>
+        <h4><span class="lang-es">🔑 Credenciales automáticas</span><span class="lang-en">🔑 Automatic Credentials</span></h4>
+        <p class="lang-es">OpenClaw busca las credenciales en el Keychain de macOS bajo el nombre <code>Claude Code-credentials</code>. Si Claude Code está autenticado en tu máquina, OpenClaw las encuentra y las usa directamente. Zero config.</p>
+        <p class="lang-en">OpenClaw looks for credentials in the macOS Keychain under the name <code>Claude Code-credentials</code>. If Claude Code is authenticated on your machine, OpenClaw finds and uses them directly. Zero config.</p>
       </div>
 
-      <p>Lo &#250;nico que necesitas hacer es decirle a OpenClaw que ese modelo existe como opci&#243;n:</p>
+      <p class="lang-es">Lo único que necesitas hacer es decirle a OpenClaw que ese modelo existe como opción:</p>
+      <p class="lang-en">The only thing you need to do is tell OpenClaw that model exists as an option:</p>
 
       <pre><code><span class="command">openclaw config set</span> <span class="flag">agents.defaults.models.anthropic/claude-sonnet-4-5-20250929</span> <span class="string">'{}'</span> <span class="flag">--json</span></code></pre>
 
-      <pre><code><span class="output">&#10004; Config updated: agents.defaults.models.anthropic/claude-sonnet-4-5-20250929</span>
-<span class="output">   Auth: macOS Keychain (Claude Code-credentials) &#10004;</span>
+      <pre><code><span class="output">✓ Config updated: agents.defaults.models.anthropic/claude-sonnet-4-5-20250929</span>
+<span class="output">   Auth: macOS Keychain (Claude Code-credentials) ✓</span>
 <span class="output">   Model: claude-sonnet-4-5-20250929</span>
 <span class="output">   Status: ready</span></code></pre>
 
-      <p>Eso es todo. El <code>{}</code> vac&#237;o significa &#8220;usa las credenciales que ya tienes&#8221;. OpenClaw detecta el Keychain, extrae el token, y lo usa cuando necesita hacer requests a la API de Anthropic.</p>
+      <p class="lang-es">Eso es todo. El <code>{}</code> vacío significa "usa las credenciales que ya tienes". OpenClaw detecta el Keychain, extrae el token, y lo usa cuando necesita hacer requests a la API de Anthropic.</p>
+      <p class="lang-en">That's it. The empty <code>{}</code> means "use the credentials you already have". OpenClaw detects the Keychain, extracts the token, and uses it when it needs to make requests to the Anthropic API.</p>
 
       <div class="info-box">
-        <h4>&#x1F4A1; &#191;Por qu&#233; es el &#250;ltimo fallback?</h4>
-        <p>Porque los requests a la API directa de Anthropic se descuentan de tu suscripci&#243;n de Claude Code. Los otros proveedores (Copilot) usan sus propios cr&#233;ditos. Entonces reservo Anthropic directo como &#250;ltimo recurso para no gastar cr&#233;ditos innecesariamente.</p>
+        <h4><span class="lang-es">💡 ¿Por qué es el último fallback?</span><span class="lang-en">💡 Why Is It the Last Fallback?</span></h4>
+        <p class="lang-es">Porque los requests a la API directa de Anthropic se descuentan de tu suscripción de Claude Code. Los otros proveedores (Copilot) usan sus propios créditos. Entonces reservo Anthropic directo como último recurso para no gastar créditos innecesariamente.</p>
+        <p class="lang-en">Because requests to the direct Anthropic API are deducted from your Claude Code subscription. The other providers (Copilot) use their own credits. So I reserve Anthropic direct as a last resort to avoid spending credits unnecessarily.</p>
       </div>
 
-      <!-- ===== SECTION 8: NODE.JS ===== -->
-      <h2>8. Instalar Node.js del Sistema</h2>
+      <h2><span class="lang-es">8. Instalar Node.js del Sistema</span><span class="lang-en">8. Install System Node.js</span></h2>
 
-      <p>El gateway de OpenClaw corre sobre Node.js. Si est&#225;s usando la versi&#243;n que viene con alg&#250;n version manager (nvm, fnm, etc.), puede haber problemas de estabilidad cuando el gateway se ejecuta como proceso de fondo &#8212; especialmente despu&#233;s de reinicios del sistema.</p>
+      <p class="lang-es">El gateway de OpenClaw corre sobre Node.js. Si estás usando la versión que viene con algún version manager (nvm, fnm, etc.), puede haber problemas de estabilidad cuando el gateway se ejecuta como proceso de fondo — especialmente después de reinicios del sistema.</p>
+      <p class="lang-en">The OpenClaw gateway runs on Node.js. If you're using the version that comes with a version manager (nvm, fnm, etc.), there can be stability issues when the gateway runs as a background process — especially after system restarts.</p>
 
-      <p>La soluci&#243;n es instalar Node.js directamente con Homebrew para que est&#233; disponible a nivel de sistema:</p>
+      <p class="lang-es">La solución es instalar Node.js directamente con Homebrew para que esté disponible a nivel de sistema:</p>
+      <p class="lang-en">The solution is to install Node.js directly with Homebrew so it's available system-wide:</p>
 
       <pre><code><span class="command">brew install node</span></code></pre>
 
-      <p>Despu&#233;s, ejecuta el doctor de OpenClaw para que detecte y use la instalaci&#243;n del sistema:</p>
+      <p class="lang-es">Después, ejecuta el doctor de OpenClaw para que detecte y use la instalación del sistema:</p>
+      <p class="lang-en">Then, run the OpenClaw doctor so it detects and uses the system installation:</p>
 
       <pre><code><span class="command">openclaw doctor --fix</span></code></pre>
 
-      <pre><code><span class="output">&#x1F50D; Running diagnostics...</span>
+      <pre><code><span class="output">🔍 Running diagnostics...</span>
 <span class="output"></span>
-<span class="output">  Node.js        &#10004;  v22.14.0 (/opt/homebrew/bin/node)</span>
-<span class="output">  npm            &#10004;  v10.9.2</span>
-<span class="output">  Gateway        &#10004;  running (pid: 51023)</span>
-<span class="output">  WhatsApp       &#10004;  CONNECTED</span>
-<span class="output">  Models         &#10004;  4 configured (1 primary + 3 fallbacks)</span>
-<span class="output">  Cron           &#10004;  1 active job</span>
-<span class="output">  Keychain       &#10004;  Claude Code-credentials found</span>
+<span class="output">  Node.js        ✓  v22.14.0 (/opt/homebrew/bin/node)</span>
+<span class="output">  npm            ✓  v10.9.2</span>
+<span class="output">  Gateway        ✓  running (pid: 51023)</span>
+<span class="output">  WhatsApp       ✓  CONNECTED</span>
+<span class="output">  Models         ✓  4 configured (1 primary + 3 fallbacks)</span>
+<span class="output">  Cron           ✓  1 active job</span>
+<span class="output">  Keychain       ✓  Claude Code-credentials found</span>
 <span class="output"></span>
-<span class="output">&#10004; All checks passed. No fixes needed.</span></code></pre>
+<span class="output">✓ All checks passed. No fixes needed.</span></code></pre>
 
       <div class="tip-box">
-        <h4>&#10004; Sistema estable</h4>
-        <p>Con Node.js instalado v&#237;a Homebrew, el gateway tiene una instalaci&#243;n de Node confiable que no depende de la sesi&#243;n de shell ni de variables de entorno de nvm. Esto es especialmente importante para que el watchdog funcione correctamente en background.</p>
+        <h4><span class="lang-es">✔ Sistema estable</span><span class="lang-en">✔ Stable System</span></h4>
+        <p class="lang-es">Con Node.js instalado vía Homebrew, el gateway tiene una instalación de Node confiable que no depende de la sesión de shell ni de variables de entorno de nvm. Esto es especialmente importante para que el watchdog funcione correctamente en background.</p>
+        <p class="lang-en">With Node.js installed via Homebrew, the gateway has a reliable Node installation that doesn't depend on the shell session or nvm environment variables. This is especially important for the watchdog to work correctly in the background.</p>
       </div>
 
-      <!-- ===== SECTION 9: VERIFICAR TODO ===== -->
-      <h2>9. Verificar Todo</h2>
+      <h2><span class="lang-es">9. Verificar Todo</span><span class="lang-en">9. Verify Everything</span></h2>
 
-      <p>Ya tenemos todo configurado. Ahora hay que probar que cada proveedor funciona y que el canal de WhatsApp entrega los mensajes correctamente.</p>
+      <p class="lang-es">Ya tenemos todo configurado. Ahora hay que probar que cada proveedor funciona y que el canal de WhatsApp entrega los mensajes correctamente.</p>
+      <p class="lang-en">Everything is configured. Now let's verify that each provider works and that the WhatsApp channel delivers messages correctly.</p>
 
-      <h3>Probar el env&#237;o por WhatsApp</h3>
+      <h3><span class="lang-es">Probar el envío por WhatsApp</span><span class="lang-en">Test WhatsApp Delivery</span></h3>
 
       <pre><code><span class="command">openclaw agent</span> \
   <span class="flag">-m</span> <span class="string">"Responde con: Soy [provider] y estoy funcionando"</span> \
@@ -746,176 +772,190 @@
   <span class="flag">--channel</span> <span class="string">whatsapp</span> \
   <span class="flag">--deliver</span></code></pre>
 
-      <p>Si todo est&#225; bien, deber&#237;as recibir un mensaje en WhatsApp con el nombre del proveedor que respondi&#243;.</p>
+      <p class="lang-es">Si todo está bien, deberías recibir un mensaje en WhatsApp con el nombre del proveedor que respondió.</p>
+      <p class="lang-en">If everything is working, you should receive a message on WhatsApp with the name of the provider that responded.</p>
 
-      <h3>Verificar la configuraci&#243;n de modelos</h3>
+      <h3><span class="lang-es">Verificar la configuración de modelos</span><span class="lang-en">Verify Model Configuration</span></h3>
 
       <pre><code><span class="command">openclaw models list</span></code></pre>
 
       <pre><code><span class="output">Role          Provider                Model                              Status</span>
-<span class="output">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;    &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;      &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;      &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
-<span class="output">default       openai-codex            gpt-5.3-codex                      &#10004; OK</span>
-<span class="output">fallback#1    github-copilot          claude-opus-4.6                    &#10004; OK</span>
-<span class="output">fallback#2    copilot-proxy           claude-sonnet-4.5                  &#10004; OK</span>
-<span class="output">fallback#3    anthropic               claude-sonnet-4-5-20250929         &#10004; OK</span></code></pre>
+<span class="output">──────────    ──────────────────      ─────────────────────────────      ──────</span>
+<span class="output">default       openai-codex            gpt-5.3-codex                      ✓ OK</span>
+<span class="output">fallback#1    github-copilot          claude-opus-4.6                    ✓ OK</span>
+<span class="output">fallback#2    copilot-proxy           claude-sonnet-4.5                  ✓ OK</span>
+<span class="output">fallback#3    anthropic               claude-sonnet-4-5-20250929         ✓ OK</span></code></pre>
 
-      <p>Los 4 proveedores deben mostrar <code>OK</code>. Si alguno muestra error, revisa la autenticaci&#243;n de ese proveedor espec&#237;fico.</p>
+      <p class="lang-es">Los 4 proveedores deben mostrar <code>OK</code>. Si alguno muestra error, revisa la autenticación de ese proveedor específico.</p>
+      <p class="lang-en">All 4 providers should show <code>OK</code>. If any shows an error, check the authentication for that specific provider.</p>
 
-      <h3>Probar el failover manualmente</h3>
-
-      <p>Para verificar que el failover funciona, puedes forzar una falla temporal en el proveedor primario:</p>
+      <h3><span class="lang-es">Probar el failover manualmente</span><span class="lang-en">Test Failover Manually</span></h3>
 
       <pre><code><span class="comment"># Deshabilitar temporalmente el proveedor primario</span>
 <span class="command">openclaw config set</span> <span class="flag">agents.defaults.model.enabled</span> <span class="string">false</span>
 
-<span class="comment"># Enviar un mensaje &#8212; deber&#237;a usar fallback#1</span>
-<span class="command">openclaw agent</span> <span class="flag">-m</span> <span class="string">"&#191;Qu&#233; modelo me est&#225; respondiendo?"</span> <span class="flag">--to</span> <span class="string">"+52XXXXXXXXXX"</span> <span class="flag">--channel</span> <span class="string">whatsapp</span> <span class="flag">--deliver</span>
+<span class="comment"># Enviar un mensaje — debería usar fallback#1</span>
+<span class="command">openclaw agent</span> <span class="flag">-m</span> <span class="string">"¿Qué modelo me está respondiendo?"</span> <span class="flag">--to</span> <span class="string">"+52XXXXXXXXXX"</span> <span class="flag">--channel</span> <span class="string">whatsapp</span> <span class="flag">--deliver</span>
 
 <span class="comment"># Re-habilitar el proveedor primario</span>
 <span class="command">openclaw config set</span> <span class="flag">agents.defaults.model.enabled</span> <span class="string">true</span></code></pre>
 
       <div class="tip-box">
-        <h4>&#10004; Failover verificado</h4>
-        <p>Si recibes respuesta cuando el primario est&#225; deshabilitado, el failover est&#225; funcionando correctamente. El agente cambi&#243; autom&#225;ticamente al siguiente proveedor disponible.</p>
+        <h4><span class="lang-es">✔ Failover verificado</span><span class="lang-en">✔ Failover Verified</span></h4>
+        <p class="lang-es">Si recibes respuesta cuando el primario está deshabilitado, el failover está funcionando correctamente. El agente cambió automáticamente al siguiente proveedor disponible.</p>
+        <p class="lang-en">If you receive a response when the primary is disabled, failover is working correctly. The agent automatically switched to the next available provider.</p>
       </div>
 
-      <!-- ===== SECTION 10: RESULTADO FINAL ===== -->
-      <h2>10. Resultado Final</h2>
+      <h2><span class="lang-es">10. Resultado Final</span><span class="lang-en">10. Final Result</span></h2>
 
-      <p>Aqu&#237; est&#225; el diagrama completo del flujo de failover:</p>
+      <p class="lang-es">Aquí está el diagrama completo del flujo de failover:</p>
+      <p class="lang-en">Here's the complete failover flow diagram:</p>
 
       <div class="ascii-diagram">
-  &#x1F4F1; WhatsApp Message
-       &#9474;
-       &#9660;
-  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
-  &#9474;   OpenClaw Gateway      &#9474;&#9668;&#9472;&#9472;&#9472;&#9472; Watchdog (cada 15min)
-  &#9474;   (Node.js process)     &#9474;      reconecta si STOPPED
-  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
-           &#9474;
-           &#9660;
-  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
-  &#9474;   Model Router          &#9474;
-  &#9474;   (failover chain)      &#9474;
-  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
-           &#9474;
-     &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
-     &#9474;                                                &#9474;
-     &#9660;                                                &#9474;
-  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
-  &#9474; PRIMARY          &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
-  &#9474; openai-codex/    &#9474;                                &#9474;
-  &#9474; gpt-5.3-codex    &#9474;                                &#9474;
-  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
-         &#9474; FAIL                                    &#9474;
-         &#9660;                                            &#9474;
-  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
-  &#9474; FALLBACK #1      &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
-  &#9474; github-copilot/  &#9474;                                &#9474;
-  &#9474; claude-opus-4.6  &#9474;                                &#9474;
-  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
-         &#9474; FAIL                                    &#9474;
-         &#9660;                                            &#9474;
-  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
-  &#9474; FALLBACK #2      &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
-  &#9474; copilot-proxy/   &#9474;                                &#9474;
-  &#9474; claude-sonnet-4.5&#9474;                                &#9474;
-  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
-         &#9474; FAIL                                    &#9474;
-         &#9660;                                            &#9474;
-  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;                                &#9474;
-  &#9474; FALLBACK #3      &#9474;&#9472;&#9472;&#9472;&#9472; OK &#9472;&#9472;&#9472;&#9472; Responde &#9472;&#9472;&#9654;  &#x1F4F1;&#9474;
-  &#9474; anthropic/       &#9474;                                &#9474;
-  &#9474; claude-sonnet-4-5&#9474;                                &#9474;
-  &#9474; (Claude Code)    &#9474;                                &#9474;
-  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;                                &#9474;
-                                                      &#9474;
-  &#9668;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</div>
+  📱 WhatsApp Message
+       │
+       ↓
+  ┌────────────────────────┐
+  │   OpenClaw Gateway     │◄──── Watchdog (cada 15min / every 15min)
+  │   (Node.js process)    │      reconecta si STOPPED / reconnects if STOPPED
+  └────────┬───────────────┘
+           │
+           ↓
+  ┌────────────────────────┐
+  │   Model Router         │
+  │   (failover chain)     │
+  └────────┬───────────────┘
+           │
+     ┌─────┴────────────────────────────────────┐
+     │                                          │
+     ↓                                          │
+  ┌──────────────────┐                          │
+  │ PRIMARY          │──── OK ──── Responde ──► 📱│
+  │ openai-codex/    │                          │
+  │ gpt-5.3-codex    │                          │
+  └──────┬───────────┘                          │
+         │ FAIL                                 │
+         ↓                                      │
+  ┌──────────────────┐                          │
+  │ FALLBACK #1      │──── OK ──── Responde ──► 📱│
+  │ github-copilot/  │                          │
+  │ claude-opus-4.6  │                          │
+  └──────┬───────────┘                          │
+         │ FAIL                                 │
+         ↓                                      │
+  ┌──────────────────┐                          │
+  │ FALLBACK #2      │──── OK ──── Responde ──► 📱│
+  │ copilot-proxy/   │                          │
+  │ claude-sonnet-4.5│                          │
+  └──────┬───────────┘                          │
+         │ FAIL                                 │
+         ↓                                      │
+  ┌──────────────────┐                          │
+  │ FALLBACK #3      │──── OK ──── Responde ──► 📱│
+  │ anthropic/       │                          │
+  │ claude-sonnet-4-5│                          │
+  │ (Claude Code)    │                          │
+  └──────────────────┘                          │
+                                                │
+  ◄───────────────────────────────────────────── </div>
 
-      <h3>Resumen de lo que configuramos</h3>
+      <h3><span class="lang-es">Resumen de lo que configuramos</span><span class="lang-en">Summary of What We Configured</span></h3>
 
       <div class="summary-box">
-        <h3>&#x1F99E; Setup Final</h3>
-        <p>Un agente de OpenClaw que es pr&#225;cticamente indestructible:</p>
+        <h3><span class="lang-es">🦞 Setup Final</span><span class="lang-en">🦞 Final Setup</span></h3>
+        <p><span class="lang-es">Un agente de OpenClaw que es prácticamente indestructible:</span><span class="lang-en">An OpenClaw agent that is practically indestructible:</span></p>
       </div>
 
       <table class="comparison-table">
         <thead>
           <tr>
-            <th>Componente</th>
-            <th>Qu&#233; hace</th>
-            <th>Estado</th>
+            <th><span class="lang-es">Componente</span><span class="lang-en">Component</span></th>
+            <th><span class="lang-es">Qué hace</span><span class="lang-en">What It Does</span></th>
+            <th><span class="lang-es">Estado</span><span class="lang-en">Status</span></th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>WhatsApp Channel</strong></td>
-            <td>Canal de comunicaci&#243;n principal</td>
-            <td>&#10004; CONNECTED</td>
+            <td><span class="lang-es">Canal de comunicación principal</span><span class="lang-en">Main communication channel</span></td>
+            <td>✓ CONNECTED</td>
           </tr>
           <tr>
             <td><strong>Watchdog Cron</strong></td>
-            <td>Revisa WhatsApp cada 15 min, reconecta si se cae</td>
-            <td>&#10004; ACTIVE</td>
+            <td><span class="lang-es">Revisa WhatsApp cada 15 min, reconecta si se cae</span><span class="lang-en">Checks WhatsApp every 15 min, reconnects if it goes down</span></td>
+            <td>✓ ACTIVE</td>
           </tr>
           <tr>
-            <td><strong>4 Proveedores</strong></td>
-            <td>Cadena de failover autom&#225;tica de modelos</td>
-            <td>&#10004; 4/4 OK</td>
+            <td><strong>4 <span class="lang-es">Proveedores</span><span class="lang-en">Providers</span></strong></td>
+            <td><span class="lang-es">Cadena de failover automática de modelos</span><span class="lang-en">Automatic model failover chain</span></td>
+            <td>✓ 4/4 OK</td>
           </tr>
           <tr>
             <td><strong>Node.js (Homebrew)</strong></td>
-            <td>Runtime estable a nivel de sistema</td>
-            <td>&#10004; v22.14.0</td>
+            <td><span class="lang-es">Runtime estable a nivel de sistema</span><span class="lang-en">Stable system-level runtime</span></td>
+            <td>✓ v22.14.0</td>
           </tr>
           <tr>
             <td><strong>Claude Code Keychain</strong></td>
-            <td>Credenciales Anthropic sin configuraci&#243;n manual</td>
-            <td>&#10004; Auto-detected</td>
+            <td><span class="lang-es">Credenciales Anthropic sin configuración manual</span><span class="lang-en">Anthropic credentials without manual configuration</span></td>
+            <td>✓ Auto-detected</td>
           </tr>
         </tbody>
       </table>
 
-      <p>Con esta configuraci&#243;n, el agente puede sobrevivir:</p>
+      <p class="lang-es">Con esta configuración, el agente puede sobrevivir:</p>
+      <p class="lang-en">With this configuration, the agent can survive:</p>
       <ul>
-        <li><strong>Ca&#237;da de WhatsApp</strong> &#8212; el watchdog lo reconecta en 15 minutos m&#225;ximo.</li>
-        <li><strong>Token de Copilot expirado</strong> &#8212; usa el siguiente proveedor en la cadena.</li>
-        <li><strong>Rate limit de OpenAI</strong> &#8212; pasa a Copilot autom&#225;ticamente.</li>
-        <li><strong>Ca&#237;da total de Copilot</strong> &#8212; usa Anthropic directo v&#237;a Claude Code credentials.</li>
-        <li><strong>Reinicio del sistema</strong> &#8212; Node.js del sistema + gateway que se restaura.</li>
+        <li class="lang-es"><strong>Caída de WhatsApp</strong> — el watchdog lo reconecta en 15 minutos máximo.</li>
+        <li class="lang-en"><strong>WhatsApp outage</strong> — the watchdog reconnects it in at most 15 minutes.</li>
+        <li class="lang-es"><strong>Token de Copilot expirado</strong> — usa el siguiente proveedor en la cadena.</li>
+        <li class="lang-en"><strong>Expired Copilot token</strong> — uses the next provider in the chain.</li>
+        <li class="lang-es"><strong>Rate limit de OpenAI</strong> — pasa a Copilot automáticamente.</li>
+        <li class="lang-en"><strong>OpenAI rate limit</strong> — automatically falls back to Copilot.</li>
+        <li class="lang-es"><strong>Caída total de Copilot</strong> — usa Anthropic directo vía Claude Code credentials.</li>
+        <li class="lang-en"><strong>Complete Copilot outage</strong> — uses Anthropic directly via Claude Code credentials.</li>
+        <li class="lang-es"><strong>Reinicio del sistema</strong> — Node.js del sistema + gateway que se restaura.</li>
+        <li class="lang-en"><strong>System restart</strong> — system Node.js + gateway that restores itself.</li>
       </ul>
 
-      <p><s>El &#250;nico escenario que <em>no</em> est&#225; cubierto es si los 4 proveedores fallan al mismo tiempo.</s> Spoiler: s&#237; pas&#243;. Sigue leyendo.</p>
+      <p><s><span class="lang-es">El único escenario que <em>no</em> está cubierto es si los 4 proveedores fallan al mismo tiempo.</span><span class="lang-en">The only scenario <em>not</em> covered is if all 4 providers fail at the same time.</span></s> <span class="lang-es">Spoiler: sí pasó. Sigue leyendo.</span><span class="lang-en">Spoiler: it happened. Keep reading.</span></p>
 
-      <!-- ===== SECTION 11: POST-MORTEM ===== -->
-      <h2>11. Post-Mortem: Cuando el Failover No Failoverea</h2>
+      <h2><span class="lang-es">11. Post-Mortem: Cuando el Failover No Failoverea</span><span class="lang-en">11. Post-Mortem: When Failover Doesn't Fail Over</span></h2>
 
-      <p>Plot twist: despu&#233;s de configurar todo lo anterior, el bot se volvi&#243; a caer. Le mandaba mensajes por WhatsApp y respond&#237;a <code>"Connection error."</code> como texto literal. La cadena de failover estaba configurada... pero no funcionaba.</p>
+      <p class="lang-es">Plot twist: después de configurar todo lo anterior, el bot se volvió a caer. Le mandaba mensajes por WhatsApp y respondía <code>"Connection error."</code> como texto literal. La cadena de failover estaba configurada... pero no funcionaba.</p>
+      <p class="lang-en">Plot twist: after configuring everything above, the bot went down again. I'd send messages via WhatsApp and it would respond with <code>"Connection error."</code> as literal text. The failover chain was configured... but wasn't working.</p>
 
       <div class="warning-box">
-        <h4>&#x26A0;&#xFE0F; El error real</h4>
-        <p>Al revisar los logs del agente, encontr&#233; esto: <code>FailoverError: No API key found for provider "anthropic". Auth store: ~/.openclaw/agents/main/agent/auth-profiles.json</code>. Anthropic fallaba porque sus credenciales <strong>no estaban en el auth-profiles del agente</strong>.</p>
+        <h4><span class="lang-es">⚠️ El error real</span><span class="lang-en">⚠️ The Real Error</span></h4>
+        <p class="lang-es">Al revisar los logs del agente, encontré esto: <code>FailoverError: No API key found for provider "anthropic". Auth store: ~/.openclaw/agents/main/agent/auth-profiles.json</code>. Anthropic fallaba porque sus credenciales <strong>no estaban en el auth-profiles del agente</strong>.</p>
+        <p class="lang-en">Looking at the agent logs, I found this: <code>FailoverError: No API key found for provider "anthropic". Auth store: ~/.openclaw/agents/main/agent/auth-profiles.json</code>. Anthropic was failing because its credentials <strong>were not in the agent's auth-profiles</strong>.</p>
       </div>
 
-      <h3>&#191;Qu&#233; pas&#243;?</h3>
+      <h3><span class="lang-es">¿Qué pasó?</span><span class="lang-en">What Happened?</span></h3>
 
-      <p>El problema fue que configuramos el modelo de Anthropic en <code>openclaw.json</code> (la config global), pero <strong>nunca copiamos las credenciales al archivo de autenticaci&#243;n del agente</strong>. OpenClaw separa la configuraci&#243;n de modelos de la autenticaci&#243;n:</p>
+      <p class="lang-es">El problema fue que configuramos el modelo de Anthropic en <code>openclaw.json</code> (la config global), pero <strong>nunca copiamos las credenciales al archivo de autenticación del agente</strong>. OpenClaw separa la configuración de modelos de la autenticación:</p>
+      <p class="lang-en">The problem was that we configured the Anthropic model in <code>openclaw.json</code> (the global config), but <strong>never copied the credentials to the agent's authentication file</strong>. OpenClaw separates model configuration from authentication:</p>
 
       <ul>
-        <li><code>openclaw.json</code> &#8212; Define qu&#233; modelos existen y cu&#225;l es el primary/fallback.</li>
-        <li><code>agents/main/agent/auth-profiles.json</code> &#8212; Contiene los tokens/credenciales reales que el agente usa para autenticarse con cada proveedor.</li>
+        <li class="lang-es"><code>openclaw.json</code> — Define qué modelos existen y cuál es el primary/fallback.</li>
+        <li class="lang-en"><code>openclaw.json</code> — Defines what models exist and which is the primary/fallback.</li>
+        <li class="lang-es"><code>agents/main/agent/auth-profiles.json</code> — Contiene los tokens/credenciales reales que el agente usa para autenticarse con cada proveedor.</li>
+        <li class="lang-en"><code>agents/main/agent/auth-profiles.json</code> — Contains the actual tokens/credentials the agent uses to authenticate with each provider.</li>
       </ul>
 
-      <p>OpenAI y GitHub Copilot s&#237; ten&#237;an sus credenciales ah&#237;. Anthropic no. Entonces cuando OpenAI fallaba y GitHub Copilot estaba en cooldown por rate limit, el failover intentaba Anthropic... y tambi&#233;n fallaba. El agente se quedaba sin opciones y respond&#237;a con el error como texto.</p>
+      <p class="lang-es">OpenAI y GitHub Copilot sí tenían sus credenciales ahí. Anthropic no. Entonces cuando OpenAI fallaba y GitHub Copilot estaba en cooldown por rate limit, el failover intentaba Anthropic... y también fallaba. El agente se quedaba sin opciones y respondía con el error como texto.</p>
+      <p class="lang-en">OpenAI and GitHub Copilot did have their credentials there. Anthropic didn't. So when OpenAI failed and GitHub Copilot was in cooldown from rate limiting, failover tried Anthropic... and that also failed. The agent ran out of options and responded with the error as text.</p>
 
-      <h3>El fix: Registrar las credenciales de Claude Code en el agente</h3>
+      <h3><span class="lang-es">El fix: Registrar las credenciales de Claude Code en el agente</span><span class="lang-en">The Fix: Register Claude Code Credentials in the Agent</span></h3>
 
-      <p>Las credenciales de Claude Code viven en el macOS Keychain. Hay que copiarlas al <code>auth-profiles.json</code> del agente para que el failover pueda usarlas:</p>
+      <p class="lang-es">Las credenciales de Claude Code viven en el macOS Keychain. Hay que copiarlas al <code>auth-profiles.json</code> del agente para que el failover pueda usarlas:</p>
+      <p class="lang-en">Claude Code credentials live in the macOS Keychain. They need to be copied to the agent's <code>auth-profiles.json</code> so failover can use them:</p>
 
       <pre><code><span class="comment"># 1. Extraer las credenciales del Keychain</span>
 <span class="command">security find-generic-password</span> <span class="flag">-s</span> <span class="string">"Claude Code-credentials"</span> <span class="flag">-w</span></code></pre>
 
-      <p>Esto devuelve un JSON con <code>accessToken</code>, <code>refreshToken</code>, y <code>expiresAt</code>. Luego hay que agregarlos al auth-profiles:</p>
+      <p class="lang-es">Esto devuelve un JSON con <code>accessToken</code>, <code>refreshToken</code>, y <code>expiresAt</code>. Luego hay que agregarlos al auth-profiles:</p>
+      <p class="lang-en">This returns a JSON with <code>accessToken</code>, <code>refreshToken</code>, and <code>expiresAt</code>. Then they need to be added to auth-profiles:</p>
 
       <pre><code><span class="comment"># 2. Agregar perfil de Anthropic en auth-profiles.json</span>
 <span class="comment"># Archivo: ~/.openclaw/agents/main/agent/auth-profiles.json</span>
@@ -932,86 +972,91 @@
 <span class="comment"># Y agregar en "lastGood":</span>
 <span class="string">"anthropic"</span>: <span class="string">"anthropic:claude-code"</span></code></pre>
 
-      <p>Despu&#233;s de agregar las credenciales, reiniciar el gateway:</p>
+      <p class="lang-es">Después de agregar las credenciales, reiniciar el gateway:</p>
+      <p class="lang-en">After adding the credentials, restart the gateway:</p>
 
       <pre><code><span class="command">openclaw gateway restart</span></code></pre>
 
-      <h3>El otro bug: el watchdog no encontraba <code>openclaw</code></h3>
+      <h3><span class="lang-es">El otro bug: el watchdog no encontraba <code>openclaw</code></span><span class="lang-en">The Other Bug: The Watchdog Couldn't Find <code>openclaw</code></span></h3>
 
-      <p>El cron watchdog ejecutaba <code>openclaw gateway restart</code> pero fallaba con <code>zsh:1: command not found: openclaw</code>. El gateway corre como un proceso de fondo (LaunchAgent) y su shell no tiene el mismo PATH que tu terminal.</p>
+      <p class="lang-es">El cron watchdog ejecutaba <code>openclaw gateway restart</code> pero fallaba con <code>zsh:1: command not found: openclaw</code>. El gateway corre como un proceso de fondo (LaunchAgent) y su shell no tiene el mismo PATH que tu terminal.</p>
+      <p class="lang-en">The cron watchdog ran <code>openclaw gateway restart</code> but failed with <code>zsh:1: command not found: openclaw</code>. The gateway runs as a background process (LaunchAgent) and its shell doesn't have the same PATH as your terminal.</p>
 
-      <p>La soluci&#243;n: usar la <strong>ruta absoluta</strong> del binario en el mensaje del cron:</p>
+      <p class="lang-es">La solución: usar la <strong>ruta absoluta</strong> del binario en el mensaje del cron:</p>
+      <p class="lang-en">The solution: use the <strong>absolute path</strong> to the binary in the cron message:</p>
 
       <pre><code><span class="comment"># Antes (fallaba en background):</span>
 <span class="output">"Ejecuta 'openclaw gateway restart' para reconectarlo."</span>
 
-<span class="comment"># Despu&#233;s (funciona siempre):</span>
+<span class="comment"># Después (funciona siempre):</span>
 <span class="output">"Ejecuta '/ruta/completa/a/openclaw gateway restart' para reconectarlo."</span></code></pre>
 
       <div class="tip-box">
-        <h4>&#10004; Lecci&#243;n aprendida</h4>
-        <p>Configurar el failover tiene <strong>dos partes</strong>: (1) registrar los modelos en la config global, y (2) asegurarte de que las <strong>credenciales</strong> de cada proveedor est&#233;n en el <code>auth-profiles.json</code> del agente. Si falta cualquiera de las dos, el failover no funciona. Y para cron jobs, siempre usa rutas absolutas.</p>
+        <h4><span class="lang-es">✔ Lección aprendida</span><span class="lang-en">✔ Lesson Learned</span></h4>
+        <p class="lang-es">Configurar el failover tiene <strong>dos partes</strong>: (1) registrar los modelos en la config global, y (2) asegurarte de que las <strong>credenciales</strong> de cada proveedor estén en el <code>auth-profiles.json</code> del agente. Si falta cualquiera de las dos, el failover no funciona. Y para cron jobs, siempre usa rutas absolutas.</p>
+        <p class="lang-en">Configuring failover has <strong>two parts</strong>: (1) register models in the global config, and (2) make sure the <strong>credentials</strong> of each provider are in the agent's <code>auth-profiles.json</code>. If either is missing, failover doesn't work. And for cron jobs, always use absolute paths.</p>
       </div>
 
-      <!-- ===== SECTION 12: CHECKLIST ===== -->
-      <h2>12. Checklist Final</h2>
+      <h2><span class="lang-es">12. Checklist Final</span><span class="lang-en">12. Final Checklist</span></h2>
 
-      <p>Para asegurarte de que tu setup est&#225; completo y no te pase lo que a m&#237;, revisa cada punto:</p>
+      <p class="lang-es">Para asegurarte de que tu setup está completo y no te pase lo que a mí, revisa cada punto:</p>
+      <p class="lang-en">To make sure your setup is complete and you don't go through what I did, check each point:</p>
 
       <table class="comparison-table">
         <thead>
           <tr>
             <th>Check</th>
-            <th>Comando</th>
-            <th>Qu&#233; verificar</th>
+            <th><span class="lang-es">Comando</span><span class="lang-en">Command</span></th>
+            <th><span class="lang-es">Qué verificar</span><span class="lang-en">What to Verify</span></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>WhatsApp conectado</td>
+            <td><span class="lang-es">WhatsApp conectado</span><span class="lang-en">WhatsApp Connected</span></td>
             <td><code>openclaw channels status</code></td>
             <td>Status = CONNECTED</td>
           </tr>
           <tr>
-            <td>Modelo primario responde</td>
+            <td><span class="lang-es">Modelo primario responde</span><span class="lang-en">Primary Model Responds</span></td>
             <td><code>openclaw agent -m "ping" --deliver</code></td>
-            <td>Recibes respuesta en WhatsApp</td>
+            <td><span class="lang-es">Recibes respuesta en WhatsApp</span><span class="lang-en">You receive a response on WhatsApp</span></td>
           </tr>
           <tr>
-            <td>Fallbacks configurados</td>
+            <td><span class="lang-es">Fallbacks configurados</span><span class="lang-en">Fallbacks Configured</span></td>
             <td><code>openclaw config get agents.defaults.model</code></td>
-            <td>Primary + fallbacks listados</td>
+            <td><span class="lang-es">Primary + fallbacks listados</span><span class="lang-en">Primary + fallbacks listed</span></td>
           </tr>
           <tr>
-            <td>Auth de CADA proveedor</td>
-            <td>Revisar <code>auth-profiles.json</code></td>
-            <td>Todos los fallbacks tienen credenciales</td>
+            <td><span class="lang-es">Auth de CADA proveedor</span><span class="lang-en">Auth for EACH Provider</span></td>
+            <td><span class="lang-es">Revisar</span><span class="lang-en">Check</span> <code>auth-profiles.json</code></td>
+            <td><span class="lang-es">Todos los fallbacks tienen credenciales</span><span class="lang-en">All fallbacks have credentials</span></td>
           </tr>
           <tr>
-            <td>Watchdog activo</td>
+            <td><span class="lang-es">Watchdog activo</span><span class="lang-en">Watchdog Active</span></td>
             <td><code>openclaw cron list</code></td>
             <td>whatsapp-watchdog = ACTIVE</td>
           </tr>
           <tr>
-            <td>Watchdog usa ruta absoluta</td>
-            <td>Revisar <code>cron/jobs.json</code></td>
-            <td>Ruta completa al binario openclaw</td>
+            <td><span class="lang-es">Watchdog usa ruta absoluta</span><span class="lang-en">Watchdog Uses Absolute Path</span></td>
+            <td><span class="lang-es">Revisar</span><span class="lang-en">Check</span> <code>cron/jobs.json</code></td>
+            <td><span class="lang-es">Ruta completa al binario openclaw</span><span class="lang-en">Full path to openclaw binary</span></td>
           </tr>
         </tbody>
       </table>
 
       <div class="openclaw-box">
-        <h4>&#x1F99E; Para los que quieren ir m&#225;s all&#225;</h4>
-        <p>Puedes agregar m&#225;s canales (Telegram, Slack) como fallback de comunicaci&#243;n, configurar alertas por email cuando el watchdog detecta una falla, o incluso agregar proveedores locales (Ollama, LM Studio) como &#250;ltimo-&#250;ltimo recurso para funcionar completamente offline. Las posibilidades con OpenClaw son infinitas.</p>
+        <h4><span class="lang-es">🦞 Para los que quieren ir más allá</span><span class="lang-en">🦞 For Those Who Want to Go Further</span></h4>
+        <p class="lang-es">Puedes agregar más canales (Telegram, Slack) como fallback de comunicación, configurar alertas por email cuando el watchdog detecta una falla, o incluso agregar proveedores locales (Ollama, LM Studio) como último-último recurso para funcionar completamente offline. Las posibilidades con OpenClaw son infinitas.</p>
+        <p class="lang-en">You can add more channels (Telegram, Slack) as communication fallback, configure email alerts when the watchdog detects a failure, or even add local providers (Ollama, LM Studio) as a last-last resort to work completely offline. The possibilities with OpenClaw are endless.</p>
       </div>
 
-      <!-- ===== SECTION 13: FALLA TRIPLE ===== -->
-      <h2>13. La Tormenta Perfecta: Los 3 Proveedores Cayeron a la Vez</h2>
+      <h2><span class="lang-es">13. La Tormenta Perfecta: Los 3 Proveedores Cayeron a la Vez</span><span class="lang-en">13. The Perfect Storm: All 3 Providers Went Down at Once</span></h2>
 
-      <p>Recuerdan que dije que si los 3 proveedores fallan al mismo tiempo &#8220;tenemos problemas m&#225;s grandes&#8221;? Bueno, pas&#243;. Horas despu&#233;s de publicar este post, los 3 murieron simult&#225;neamente:</p>
+      <p class="lang-es">Recuerdan que dije que si los 3 proveedores fallan al mismo tiempo "tenemos problemas más grandes"? Bueno, pasó. Horas después de publicar este post, los 3 murieron simultáneamente:</p>
+      <p class="lang-en">Remember when I said if all 3 providers fail at the same time "we have bigger problems"? Well, it happened. Hours after publishing this post, all 3 died simultaneously:</p>
 
       <div class="warning-box">
-        <h4>&#x1F480; Error: All models failed (3)</h4>
+        <h4>💀 Error: All models failed (3)</h4>
         <p>
           <code>github-copilot/claude-opus-4.6</code>: cooldown (rate_limit)<br>
           <code>anthropic/claude-sonnet-4-5-20250929</code>: OAuth token refresh failed<br>
@@ -1019,69 +1064,75 @@
         </p>
       </div>
 
-      <p>Tres fallas distintas, cada una por una raz&#243;n diferente. Un rate limit, un token expirado, y un l&#237;mite de plan. La combinaci&#243;n perfecta para dejar al bot completamente muerto.</p>
+      <p class="lang-es">Tres fallas distintas, cada una por una razón diferente. Un rate limit, un token expirado, y un límite de plan. La combinación perfecta para dejar al bot completamente muerto.</p>
+      <p class="lang-en">Three distinct failures, each for a different reason. A rate limit, an expired token, and a plan limit. The perfect combination to leave the bot completely dead.</p>
 
-      <h3>Root cause #1: Tokens de Anthropic expirados en el Keychain</h3>
+      <h3><span class="lang-es">Root cause #1: Tokens de Anthropic expirados en el Keychain</span><span class="lang-en">Root cause #1: Expired Anthropic Tokens in the Keychain</span></h3>
 
-      <p>Las credenciales de Claude Code en el macOS Keychain estaban expiradas <strong>desde septiembre 2025</strong>. Claude Code funciona en memoria con tokens frescos, pero <strong>no actualiza el Keychain</strong> cuando renueva sus tokens internamente. OpenClaw lee del Keychain → obtiene tokens viejos → OAuth refresh falla → proveedor muerto.</p>
+      <p class="lang-es">Las credenciales de Claude Code en el macOS Keychain estaban expiradas <strong>desde septiembre 2025</strong>. Claude Code funciona en memoria con tokens frescos, pero <strong>no actualiza el Keychain</strong> cuando renueva sus tokens internamente. OpenClaw lee del Keychain → obtiene tokens viejos → OAuth refresh falla → proveedor muerto.</p>
+      <p class="lang-en">Claude Code credentials in the macOS Keychain had been expired <strong>since September 2025</strong>. Claude Code works in memory with fresh tokens, but <strong>doesn't update the Keychain</strong> when it renews its tokens internally. OpenClaw reads from Keychain → gets old tokens → OAuth refresh fails → provider dead.</p>
 
-      <pre><code><span class="comment"># Verificar cu&#225;ndo se modific&#243; el Keychain:</span>
-<span class="command">security find-generic-password</span> <span class="flag">-s</span> <span class="string">"Claude Code-credentials"</span> <span class="flag">-g</span> 2>&amp;1 | grep mdat
+      <pre><code><span class="comment"># Verificar cuándo se modificó el Keychain:</span>
+<span class="command">security find-generic-password</span> <span class="flag">-s</span> <span class="string">"Claude Code-credentials"</span> <span class="flag">-g</span> 2&gt;&amp;1 | grep mdat
 <span class="output">mdat=0x323032353039... (September 2025!)</span></code></pre>
 
-      <h3>Root cause #2: El cooldown exponencial en cascada</h3>
+      <h3><span class="lang-es">Root cause #2: El cooldown exponencial en cascada</span><span class="lang-en">Root cause #2: The Cascading Exponential Cooldown</span></h3>
 
-      <p>Revis&#233; el c&#243;digo fuente de OpenClaw y encontr&#233; la trampa. Cuando un proveedor recibe un error 429 (rate limit), OpenClaw pone el perfil de autenticaci&#243;n en <strong>cooldown exponencial</strong>:</p>
+      <p class="lang-es">Revisé el código fuente de OpenClaw y encontré la trampa. Cuando un proveedor recibe un error 429 (rate limit), OpenClaw pone el perfil de autenticación en <strong>cooldown exponencial</strong>:</p>
+      <p class="lang-en">I reviewed the OpenClaw source code and found the trap. When a provider receives a 429 error (rate limit), OpenClaw puts the authentication profile in <strong>exponential cooldown</strong>:</p>
 
       <table class="comparison-table">
         <thead>
           <tr>
-            <th>Error #</th>
+            <th><span class="lang-es">Error #</span><span class="lang-en">Error #</span></th>
             <th>Cooldown</th>
-            <th>Efecto</th>
+            <th><span class="lang-es">Efecto</span><span class="lang-en">Effect</span></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>1er error</td>
-            <td>60 segundos</td>
-            <td>Pausa corta, tolerable</td>
+            <td><span class="lang-es">1er error</span><span class="lang-en">1st error</span></td>
+            <td>60 <span class="lang-es">segundos</span><span class="lang-en">seconds</span></td>
+            <td><span class="lang-es">Pausa corta, tolerable</span><span class="lang-en">Short pause, tolerable</span></td>
           </tr>
           <tr>
-            <td>2do error</td>
-            <td>5 minutos</td>
-            <td>Empieza a doler</td>
+            <td><span class="lang-es">2do error</span><span class="lang-en">2nd error</span></td>
+            <td>5 <span class="lang-es">minutos</span><span class="lang-en">minutes</span></td>
+            <td><span class="lang-es">Empieza a doler</span><span class="lang-en">Starting to hurt</span></td>
           </tr>
           <tr>
-            <td>3er error</td>
-            <td>25 minutos</td>
-            <td>Proveedor b&#225;sicamente muerto</td>
+            <td><span class="lang-es">3er error</span><span class="lang-en">3rd error</span></td>
+            <td>25 <span class="lang-es">minutos</span><span class="lang-en">minutes</span></td>
+            <td><span class="lang-es">Proveedor básicamente muerto</span><span class="lang-en">Provider basically dead</span></td>
           </tr>
           <tr>
-            <td>4to+ error</td>
-            <td>1 hora (m&#225;ximo)</td>
+            <td><span class="lang-es">4to+ error</span><span class="lang-en">4th+ error</span></td>
+            <td>1 <span class="lang-es">hora (máximo)</span><span class="lang-en">hour (maximum)</span></td>
             <td>Game over</td>
           </tr>
         </tbody>
       </table>
 
-      <p>El problema: el cooldown es <strong>global por perfil</strong>. Si el gateway procesa m&#250;ltiples mensajes de WhatsApp concurrentemente (o un cron job al mismo tiempo), cada request fallido incrementa el contador. En segundos, el cooldown escala de 60s a 1 hora, y <strong>todos</strong> los requests siguientes fallan instant&#225;neamente sin siquiera intentar llamar al API.</p>
+      <p class="lang-es">El problema: el cooldown es <strong>global por perfil</strong>. Si el gateway procesa múltiples mensajes de WhatsApp concurrentemente (o un cron job al mismo tiempo), cada request fallido incrementa el contador. En segundos, el cooldown escala de 60s a 1 hora, y <strong>todos</strong> los requests siguientes fallan instantáneamente sin siquiera intentar llamar al API.</p>
+      <p class="lang-en">The problem: cooldown is <strong>global per profile</strong>. If the gateway processes multiple WhatsApp messages concurrently (or a cron job at the same time), each failed request increments the counter. In seconds, cooldown escalates from 60s to 1 hour, and <strong>all</strong> subsequent requests fail instantly without even trying to call the API.</p>
 
-      <p>Adem&#225;s, descubr&#237; en los logs que los &#8220;rate limits&#8221; de 23 segundos en realidad eran <strong>timeouts</strong>. El API de Anthropic se colgaba (en vez de devolver 429 instant&#225;neo), el request expiraba, y OpenClaw lo clasificaba como rate limit con el comentario en el c&#243;digo: <code>// Treat timeout as potential rate limit (Antigravity hangs on rate limit)</code>.</p>
+      <p class="lang-es">Además, descubrí en los logs que los "rate limits" de 23 segundos en realidad eran <strong>timeouts</strong>. El API de Anthropic se colgaba (en vez de devolver 429 instantáneo), el request expiraba, y OpenClaw lo clasificaba como rate limit con el comentario en el código: <code>// Treat timeout as potential rate limit (Antigravity hangs on rate limit)</code>.</p>
+      <p class="lang-en">Additionally, I discovered in the logs that the 23-second "rate limits" were actually <strong>timeouts</strong>. The Anthropic API would hang (instead of returning an instant 429), the request would expire, and OpenClaw classified it as a rate limit with the code comment: <code>// Treat timeout as potential rate limit (Antigravity hangs on rate limit)</code>.</p>
 
-      <h3>Root cause #3: Config error que elimin&#243; un proveedor de la cadena</h3>
+      <h3><span class="lang-es">Root cause #3: Config error que eliminó un proveedor de la cadena</span><span class="lang-en">Root cause #3: Config Error That Removed a Provider from the Chain</span></h3>
 
-      <p>Durante el debugging, cambi&#233; el modelo primario de <code>openai-codex</code> a <code>anthropic</code> para forzar pruebas directas. Esto caus&#243; que la cadena de failover pasara de <strong>3 proveedores a 2</strong>:</p>
+      <p class="lang-es">Durante el debugging, cambié el modelo primario de <code>openai-codex</code> a <code>anthropic</code> para forzar pruebas directas. Esto causó que la cadena de failover pasara de <strong>3 proveedores a 2</strong>:</p>
+      <p class="lang-en">During debugging, I changed the primary model from <code>openai-codex</code> to <code>anthropic</code> to force direct testing. This caused the failover chain to go from <strong>3 providers to 2</strong>:</p>
 
-      <pre><code><span class="comment"># Config durante debugging (MAL):</span>
+      <pre><code><span class="comment"># Config durante debugging (MAL / WRONG):</span>
 <span class="string">"primary"</span>: <span class="string">"anthropic/claude-sonnet-4-5-20250929"</span>    <span class="comment">// anthropic como primario</span>
 <span class="string">"fallbacks"</span>: [
   <span class="string">"github-copilot/claude-opus-4.6"</span>,              <span class="comment">// fallback 1</span>
   <span class="string">"anthropic/claude-sonnet-4-5-20250929"</span>          <span class="comment">// duplicado = eliminado</span>
 ]
-<span class="comment">// Resultado: solo 2 proveedores! openai-codex qued&#243; fuera</span>
+<span class="comment">// Resultado: solo 2 proveedores! openai-codex quedó fuera</span>
 
-<span class="comment"># Config correcta:</span>
+<span class="comment"># Config correcta / Correct config:</span>
 <span class="string">"primary"</span>: <span class="string">"openai-codex/gpt-5.3-codex"</span>               <span class="comment">// openai como primario</span>
 <span class="string">"fallbacks"</span>: [
   <span class="string">"github-copilot/claude-opus-4.6"</span>,              <span class="comment">// fallback 1</span>
@@ -1089,61 +1140,73 @@
 ]
 <span class="comment">// Resultado: 3 proveedores en cadena</span></code></pre>
 
-      <p>Los logs del gateway confirmaban: <code>All models failed (2)</code> &#8212; no 3. OpenClaw deduplica los modelos, as&#237; que anthropic como primario + anthropic como fallback = un solo proveedor.</p>
+      <p class="lang-es">Los logs del gateway confirmaban: <code>All models failed (2)</code> — no 3. OpenClaw deduplica los modelos, así que anthropic como primario + anthropic como fallback = un solo proveedor.</p>
+      <p class="lang-en">The gateway logs confirmed: <code>All models failed (2)</code> — not 3. OpenClaw deduplicates models, so anthropic as primary + anthropic as fallback = a single provider.</p>
 
-      <h3>El fix: Tokens frescos via OAuth PKCE + restaurar la cadena</h3>
+      <h3><span class="lang-es">El fix: Tokens frescos via OAuth PKCE + restaurar la cadena</span><span class="lang-en">The Fix: Fresh Tokens via OAuth PKCE + Restore the Chain</span></h3>
 
-      <p>La soluci&#243;n tuvo 3 partes:</p>
+      <p class="lang-es">La solución tuvo 3 partes:</p>
+      <p class="lang-en">The solution had 3 parts:</p>
 
-      <p><strong>Parte 1:</strong> Obtener tokens frescos de Anthropic haciendo el flujo OAuth PKCE manualmente (el mismo que usa Claude Code internamente):</p>
+      <p class="lang-es"><strong>Parte 1:</strong> Obtener tokens frescos de Anthropic haciendo el flujo OAuth PKCE manualmente (el mismo que usa Claude Code internamente):</p>
+      <p class="lang-en"><strong>Part 1:</strong> Get fresh Anthropic tokens by doing the OAuth PKCE flow manually (the same one Claude Code uses internally):</p>
 
       <pre><code><span class="comment"># 1. Generar PKCE verifier + challenge</span>
-<span class="comment"># 2. Abrir URL de autorizaci&#243;n en claude.ai/oauth/authorize</span>
-<span class="comment"># 3. Copiar el c&#243;digo del callback</span>
-<span class="comment"># 4. Intercambiar c&#243;digo por tokens frescos:</span>
+<span class="comment"># 2. Abrir URL de autorización en claude.ai/oauth/authorize</span>
+<span class="comment"># 3. Copiar el código del callback</span>
+<span class="comment"># 4. Intercambiar código por tokens frescos:</span>
 <span class="command">curl</span> <span class="flag">-X POST</span> <span class="string">https://console.anthropic.com/v1/oauth/token</span> \
   <span class="flag">-H</span> <span class="string">"Content-Type: application/json"</span> \
   <span class="flag">-d</span> <span class="string">'{"grant_type":"authorization_code","code":"...","code_verifier":"...","client_id":"...","redirect_uri":"..."}'</span>
 
 <span class="comment"># Resultado: access_token + refresh_token frescos (8 horas)</span></code></pre>
 
-      <p><strong>Parte 2:</strong> Restaurar el modelo primario a <code>openai-codex/gpt-5.3-codex</code> para tener los 3 proveedores en la cadena.</p>
+      <p class="lang-es"><strong>Parte 2:</strong> Restaurar el modelo primario a <code>openai-codex/gpt-5.3-codex</code> para tener los 3 proveedores en la cadena.</p>
+      <p class="lang-en"><strong>Part 2:</strong> Restore the primary model to <code>openai-codex/gpt-5.3-codex</code> to have all 3 providers in the chain.</p>
 
-      <p><strong>Parte 3:</strong> Limpiar los cooldowns acumulados en <code>auth-profiles.json</code> y reiniciar el gateway:</p>
+      <p class="lang-es"><strong>Parte 3:</strong> Limpiar los cooldowns acumulados en <code>auth-profiles.json</code> y reiniciar el gateway:</p>
+      <p class="lang-en"><strong>Part 3:</strong> Clear the accumulated cooldowns in <code>auth-profiles.json</code> and restart the gateway:</p>
 
-      <pre><code><span class="comment"># Limpiar cooldowns (en auth-profiles.json, cambiar usageStats a vac&#237;o):</span>
+      <pre><code><span class="comment"># Limpiar cooldowns (en auth-profiles.json, cambiar usageStats a vacío):</span>
 <span class="string">"usageStats"</span>: {}
 
 <span class="comment"># Reiniciar:</span>
 <span class="command">openclaw gateway restart</span></code></pre>
 
-      <p>Resultado del test despu&#233;s del fix:</p>
+      <p class="lang-es">Resultado del test después del fix:</p>
+      <p class="lang-en">Test result after the fix:</p>
 
       <pre><code><span class="command">openclaw agent</span> <span class="flag">--session-id</span> <span class="string">"test-fix"</span> <span class="flag">-m</span> <span class="string">"di OK"</span>
-<span class="output">[failover] openai-codex: rate_limit (10s) &#8594; skip</span>
-<span class="output">[failover] github-copilot: rate_limit (22s) &#8594; skip</span>
-<span class="output">[failover] anthropic: &#10004; success</span>
+<span class="output">[failover] openai-codex: rate_limit (10s) → skip</span>
+<span class="output">[failover] github-copilot: rate_limit (22s) → skip</span>
+<span class="output">[failover] anthropic: ✓ success</span>
 <span class="output">OK</span></code></pre>
 
       <div class="tip-box">
-        <h4>&#10004; Bot restaurado</h4>
-        <p>Los 2 primeros proveedores siguen con rate limit temporal, pero el tercero (Anthropic con tokens frescos) responde correctamente. La cadena de failover funciona como debe: si los primeros fallan, el tercero entra.</p>
+        <h4><span class="lang-es">✔ Bot restaurado</span><span class="lang-en">✔ Bot Restored</span></h4>
+        <p class="lang-es">Los 2 primeros proveedores siguen con rate limit temporal, pero el tercero (Anthropic con tokens frescos) responde correctamente. La cadena de failover funciona como debe: si los primeros fallan, el tercero entra.</p>
+        <p class="lang-en">The first 2 providers still have temporary rate limits, but the third (Anthropic with fresh tokens) responds correctly. The failover chain works as it should: if the first ones fail, the third one steps in.</p>
       </div>
 
-      <!-- ===== SECTION 14: LECCIONES ===== -->
-      <h2>14. Lecciones del Incidente</h2>
+      <h2><span class="lang-es">14. Lecciones del Incidente</span><span class="lang-en">14. Lessons from the Incident</span></h2>
 
       <ol>
-        <li><strong>El Keychain miente.</strong> Claude Code funciona en memoria con tokens frescos pero no actualiza el Keychain. Si dependes del Keychain para credenciales, verifica que no est&#233;n expiradas.</li>
-        <li><strong>El cooldown exponencial es una espada de doble filo.</strong> Protege contra spam al API, pero en un escenario con m&#250;ltiples requests concurrentes, un solo error escala en segundos a 1 hora de bloqueo total.</li>
-        <li><strong>Nunca cambies el primary model para &#8220;debug r&#225;pido&#8221;.</strong> Si tu primary es igual a un fallback, OpenClaw deduplica y pierdes un proveedor de la cadena sin darte cuenta.</li>
-        <li><strong>Los timeouts se clasifican como rate limits.</strong> Una respuesta lenta del API (23s timeout) cuenta igual que un 429 real. Esto acelera el cooldown exponencial artificialmente.</li>
-        <li><strong>Limpia <code>usageStats</code> despu&#233;s de arreglar la causa ra&#237;z.</strong> Si no limpias los cooldowns acumulados, el gateway sigue rechazando requests instant&#225;neamente incluso con tokens frescos.</li>
+        <li class="lang-es"><strong>El Keychain miente.</strong> Claude Code funciona en memoria con tokens frescos pero no actualiza el Keychain. Si dependes del Keychain para credenciales, verifica que no estén expiradas.</li>
+        <li class="lang-en"><strong>The Keychain lies.</strong> Claude Code works in memory with fresh tokens but doesn't update the Keychain. If you rely on the Keychain for credentials, verify they're not expired.</li>
+        <li class="lang-es"><strong>El cooldown exponencial es una espada de doble filo.</strong> Protege contra spam al API, pero en un escenario con múltiples requests concurrentes, un solo error escala en segundos a 1 hora de bloqueo total.</li>
+        <li class="lang-en"><strong>Exponential cooldown is a double-edged sword.</strong> It protects against API spam, but in a scenario with multiple concurrent requests, a single error escalates in seconds to 1 hour of total blocking.</li>
+        <li class="lang-es"><strong>Nunca cambies el primary model para "debug rápido".</strong> Si tu primary es igual a un fallback, OpenClaw deduplica y pierdes un proveedor de la cadena sin darte cuenta.</li>
+        <li class="lang-en"><strong>Never change the primary model for "quick debugging".</strong> If your primary equals a fallback, OpenClaw deduplicates and you lose a provider from the chain without realizing it.</li>
+        <li class="lang-es"><strong>Los timeouts se clasifican como rate limits.</strong> Una respuesta lenta del API (23s timeout) cuenta igual que un 429 real. Esto acelera el cooldown exponencial artificialmente.</li>
+        <li class="lang-en"><strong>Timeouts are classified as rate limits.</strong> A slow API response (23s timeout) counts the same as a real 429. This artificially accelerates exponential cooldown.</li>
+        <li class="lang-es"><strong>Limpia <code>usageStats</code> después de arreglar la causa raíz.</strong> Si no limpias los cooldowns acumulados, el gateway sigue rechazando requests instantáneamente incluso con tokens frescos.</li>
+        <li class="lang-en"><strong>Clean <code>usageStats</code> after fixing the root cause.</strong> If you don't clear the accumulated cooldowns, the gateway keeps rejecting requests instantly even with fresh tokens.</li>
       </ol>
 
       <div class="openclaw-box">
-        <h4>&#x1F99E; El setup actualizado</h4>
-        <p>Despu&#233;s de este incidente, la cadena de failover tiene <strong>3 proveedores activos</strong> con tokens verificados, cooldowns limpios, y el primary model correctamente configurado. La pr&#243;xima vez que un proveedor falle, los otros dos entran. Y si los 3 fallan... bueno, ya s&#233; c&#243;mo arreglarlo en 5 minutos en vez de 5 horas.</p>
+        <h4><span class="lang-es">🦞 El setup actualizado</span><span class="lang-en">🦞 The Updated Setup</span></h4>
+        <p class="lang-es">Después de este incidente, la cadena de failover tiene <strong>3 proveedores activos</strong> con tokens verificados, cooldowns limpios, y el primary model correctamente configurado. La próxima vez que un proveedor falle, los otros dos entran. Y si los 3 fallan... bueno, ya sé cómo arreglarlo en 5 minutos en vez de 5 horas.</p>
+        <p class="lang-en">After this incident, the failover chain has <strong>3 active providers</strong> with verified tokens, clean cooldowns, and the primary model correctly configured. Next time a provider fails, the other two step in. And if all 3 fail... well, now I know how to fix it in 5 minutes instead of 5 hours.</p>
       </div>
 
     </div>
@@ -1151,9 +1214,9 @@
 
   <footer class="post-footer">
     <div class="container">
-      <p>Escrito por <strong>Oscar Mart&#237;nez</strong> &#8212; 14-16 de febrero de 2026</p>
+      <p><span class="lang-es">Escrito por <strong>Oscar Martínez</strong> — 14-16 de febrero de 2026</span><span class="lang-en">Written by <strong>Oscar Martínez</strong> — February 14-16, 2026</span></p>
       <p style="margin-top: 10px;">
-        <a href="index.html">Volver al inicio</a>
+        <a href="index.html"><span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span></a>
       </p>
     </div>
   </footer>

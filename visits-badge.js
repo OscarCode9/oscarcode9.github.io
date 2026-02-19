@@ -1,6 +1,7 @@
 (() => {
   const API_BASE = "https://agents.oventlabs.com";
   const HIT_URL = API_BASE + "/api/visits/hit";
+  const GET_URL = API_BASE + "/api/visits";
 
   function format(n) {
     try {
@@ -17,6 +18,14 @@
       body: JSON.stringify({ path })
     });
     if (!res.ok) throw new Error("HIT_FAILED");
+    return await res.json();
+  }
+
+  async function get(path) {
+    const res = await fetch(GET_URL + "?path=" + encodeURIComponent(path), {
+      method: "GET"
+    });
+    if (!res.ok) throw new Error("GET_FAILED");
     return await res.json();
   }
 
@@ -37,12 +46,13 @@
       badges.map(async (el) => {
         const pathAttr = el.getAttribute("data-ov-path");
         const path = normalizePath(pathAttr || pagePath);
+        const readonly = el.hasAttribute("data-ov-readonly");
 
         el.classList.add("is-loading");
         const countEl = el.querySelector(".ov-count");
 
         try {
-          const data = await hit(path);
+          const data = readonly ? await get(path) : await hit(path);
           if (countEl) countEl.textContent = format(data?.count ?? 0);
         } catch {
           el.classList.add("is-error");

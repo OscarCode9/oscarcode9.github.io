@@ -42,7 +42,6 @@
       padding: 0 20px;
     }
 
-    /* ========== HEADER ========== */
     .post-header {
       text-align: center;
       padding: 80px 20px 60px;
@@ -125,7 +124,6 @@
     .post-tag.bot { background: var(--accent-blue); color: #000; }
     .post-tag.fun { background: var(--accent-orange); color: #000; }
 
-    /* ========== CONTENT ========== */
     .post-content {
       padding: 60px 0 80px;
     }
@@ -201,7 +199,6 @@
       color: var(--text-secondary);
     }
 
-    /* Callout boxes */
     .callout {
       border-left: 4px solid var(--accent-purple);
       background: var(--bg-card);
@@ -226,7 +223,6 @@
       margin-bottom: 10px;
     }
 
-    /* Images */
     .post-image {
       text-align: center;
       margin: 30px 0;
@@ -252,7 +248,6 @@
       font-style: italic;
     }
 
-    /* Diagram */
     .diagram {
       background: var(--bg-code);
       border: 1px solid rgba(179,136,255,0.2);
@@ -284,7 +279,6 @@
       font-style: italic;
     }
 
-    /* Section numbers */
     .section-number {
       display: inline-flex;
       align-items: center;
@@ -299,7 +293,6 @@
       margin-right: 12px;
     }
 
-    /* Stat highlight */
     .stat-highlight {
       display: flex;
       align-items: center;
@@ -326,7 +319,6 @@
       font-size: 0.95em;
     }
 
-    /* Takeaways */
     .takeaways {
       background: linear-gradient(135deg, rgba(179,136,255,0.1) 0%, rgba(79,195,247,0.05) 100%);
       border: 1px solid rgba(179,136,255,0.2);
@@ -348,7 +340,6 @@
       margin-bottom: 12px;
     }
 
-    /* Footer */
     .post-footer {
       text-align: center;
       padding: 60px 20px;
@@ -361,7 +352,6 @@
       text-decoration: none;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       .post-title { font-size: 1.7em; }
       .post-header { padding: 60px 15px 40px; }
@@ -370,7 +360,7 @@
       .stat-highlight .stat-number { font-size: 2em; }
     }
   </style>
-
+  <script src="public/i18n.js"></script>
   <link rel="stylesheet" href="visits-badge.css">
   <script src="visits-badge.js" defer></script>
 </head>
@@ -380,9 +370,10 @@
   <header class="post-header">
     <div class="container">
       <a href="index.html" class="back-link">
-        <i class="fas fa-arrow-left"></i> Volver al inicio
+        <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <h1 class="post-title">Cómo le di alma a un Axolotl Digital 🪼</h1>
+      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+      <h1 class="post-title"><span class="lang-es">Cómo le di alma a un Axolotl Digital 🪼</span><span class="lang-en">How I Gave Soul to a Digital Axolotl 🪼</span></h1>
 
       <div class="ov-views-wrap">
         <div class="ov-views-badge" data-ov-visits>
@@ -392,15 +383,15 @@
         </div>
       </div>
 
-      <p class="post-subtitle">La historia de XoxoBot: el asistente de OventLabs que chatea, manda emails y agenda citas — todo con personalidad de axolotl</p>
+      <p class="post-subtitle"><span class="lang-es">La historia de XoxoBot: el asistente de OventLabs que chatea, manda emails y agenda citas — todo con personalidad de axolotl</span><span class="lang-en">The story of XoxoBot: the OventLabs assistant that chats, sends emails, and schedules appointments — all with axolotl personality</span></p>
       <div class="post-meta">
         <span class="post-tag ai">IA / GPT-4o</span>
         <span class="post-tag bot">Chatbot</span>
         <span class="post-tag fun">🪼 XoxoBot</span>
         <br><br>
-        <i class="far fa-clock"></i> 16 de febrero de 2026 &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> <span class="lang-es">16 de febrero de 2026</span><span class="lang-en">February 16, 2026</span> &nbsp;|&nbsp;
         <i class="far fa-user"></i> Oscar Martinez (OscarCode9) &nbsp;|&nbsp;
-        <i class="far fa-clock"></i> ~8 min de lectura
+        <i class="far fa-clock"></i> <span class="lang-es">~8 min de lectura</span><span class="lang-en">~8 min read</span>
       </div>
     </div>
   </header>
@@ -409,59 +400,71 @@
   <main class="post-content">
     <div class="container">
 
-      <!-- INTRO -->
       <div class="callout">
-        <p><strong>🪼 XoxoBot es el asistente virtual de <a href="https://oventlabs.com">OventLabs</a>.</strong> Un axolotl morado digital que vive en <a href="https://agents.oventlabs.com">agents.oventlabs.com</a>, chatea con GPT-4o, manda emails y agenda citas en Google Calendar con Meet automático. Y tiene peluche.</p>
+        <p class="lang-es"><strong>🪼 XoxoBot es el asistente virtual de <a href="https://oventlabs.com">OventLabs</a>.</strong> Un axolotl morado digital que vive en <a href="https://agents.oventlabs.com">agents.oventlabs.com</a>, chatea con GPT-4o, manda emails y agenda citas en Google Calendar con Meet automático. Y tiene peluche.</p>
+        <p class="lang-en"><strong>🪼 XoxoBot is the virtual assistant of <a href="https://oventlabs.com">OventLabs</a>.</strong> A purple digital axolotl that lives at <a href="https://agents.oventlabs.com">agents.oventlabs.com</a>, chats with GPT-4o, sends emails, and schedules appointments in Google Calendar with automatic Meet. And it has a plushie.</p>
       </div>
 
-      <p>Todo empezó con una pregunta simple: <strong>¿cómo hago que los visitantes de mi sitio puedan hablar con alguien… sin que yo esté ahí?</strong> La respuesta obvia era un chatbot. La respuesta real fue crear un axolotl con personalidad, herramientas reales y un peluche de la vida real llamado XOXO.</p>
+      <p class="lang-es">Todo empezó con una pregunta simple: <strong>¿cómo hago que los visitantes de mi sitio puedan hablar con alguien… sin que yo esté ahí?</strong> La respuesta obvia era un chatbot. La respuesta real fue crear un axolotl con personalidad, herramientas reales y un peluche de la vida real llamado XOXO.</p>
+      <p class="lang-en">It all started with a simple question: <strong>how do I let visitors to my site talk to someone… without me being there?</strong> The obvious answer was a chatbot. The real answer was to create an axolotl with personality, real tools, and a real-life plushie named XOXO.</p>
 
-      <p>Este post es la historia completa: desde el diseño en ChatGPT hasta el widget en producción. Vamos. 🚀</p>
+      <p class="lang-es">Este post es la historia completa: desde el diseño en ChatGPT hasta el widget en producción. Vamos. 🚀</p>
+      <p class="lang-en">This post is the full story: from design in ChatGPT to the production widget. Let's go. 🚀</p>
 
       <figure class="post-image avatar">
         <img src="xoxobot-avatar.gif" alt="XoxoBot avatar animado">
-        <figcaption>XoxoBot en su forma final: un GIF de 73 frames con background removal</figcaption>
+        <figcaption><span class="lang-es">XoxoBot en su forma final: un GIF de 73 frames con background removal</span><span class="lang-en">XoxoBot in its final form: a 73-frame GIF with background removal</span></figcaption>
       </figure>
 
 
-      <!-- SECCIÓN 1: EL ORIGEN -->
-      <h2><span class="section-number">1</span> El Origen: De Emoji a Avatar</h2>
+      <h2><span class="section-number">1</span> <span class="lang-es">El Origen: De Emoji a Avatar</span><span class="lang-en">The Origin: From Emoji to Avatar</span></h2>
 
-      <p>XoxoBot no nació como un chatbot. Nació como un <strong>emoji</strong>.</p>
+      <p class="lang-es">XoxoBot no nació como un chatbot. Nació como un <strong>emoji</strong>.</p>
+      <p class="lang-en">XoxoBot wasn't born as a chatbot. It was born as an <strong>emoji</strong>.</p>
 
-      <p>Cuando estaba diseñando la identidad de OventLabs, quería una mascota que fuera memorable, mexicana y tech-friendly. Los axolotes son endémicos de México, se regeneran (como el buen código después de un refactor), y son adorables. Perfect fit.</p>
+      <p class="lang-es">Cuando estaba diseñando la identidad de OventLabs, quería una mascota que fuera memorable, mexicana y tech-friendly. Los axolotes son endémicos de México, se regeneran (como el buen código después de un refactor), y son adorables. Perfect fit.</p>
+      <p class="lang-en">When designing OventLabs' identity, I wanted a mascot that was memorable, Mexican, and tech-friendly. Axolotls are endemic to Mexico, they regenerate (like good code after a refactor), and they're adorable. Perfect fit.</p>
 
-      <h3>La evolución visual</h3>
+      <h3><span class="lang-es">La evolución visual</span><span class="lang-en">The Visual Evolution</span></h3>
 
       <ol>
-        <li><strong>Diseño con ChatGPT</strong> — Le pedí a ChatGPT que generara el diseño original del axolotl morado. Varias iteraciones hasta que quedó el look perfecto: cute, morado-azulado, con esos ojos grandes.</li>
-        <li><strong>Animación con Grok</strong> — Tomé el diseño y se lo pasé a Grok para que lo animara. El resultado: un GIF del axolotl con movimiento, vida propia.</li>
-        <li><strong>Background removal con rembg</strong> — El GIF tenía fondo, así que usé <code>rembg</code> para procesarlo frame por frame. <strong>73 frames</strong>, cada uno pasado por el modelo de segmentación de IA. El resultado: un axolotl morado flotando en transparencia pura.</li>
-        <li><strong>Peluche real XOXO</strong> — El 14 de febrero (sí, San Valentín 🥰), mi novia me regaló un peluche de axolotl morado-azulado que sostiene un corazón con "XOXO". Ella lo eligió porque sabía que estaba construyendo al bot y le pareció perfecto. Tiene razón. Desde entonces, XOXO vive en mi escritorio junto al monitor, cuidando que el código compile. Es la mascota oficial de OventLabs.</li>
+        <li class="lang-es"><strong>Diseño con ChatGPT</strong> — Le pedí a ChatGPT que generara el diseño original del axolotl morado. Varias iteraciones hasta que quedó el look perfecto: cute, morado-azulado, con esos ojos grandes.</li>
+        <li class="lang-en"><strong>Design with ChatGPT</strong> — I asked ChatGPT to generate the original purple axolotl design. Several iterations until the perfect look: cute, purple-blue, with those big eyes.</li>
+        <li class="lang-es"><strong>Animación con Grok</strong> — Tomé el diseño y se lo pasé a Grok para que lo animara. El resultado: un GIF del axolotl con movimiento, vida propia.</li>
+        <li class="lang-en"><strong>Animation with Grok</strong> — I took the design and passed it to Grok to animate it. The result: a GIF of the axolotl with movement, with a life of its own.</li>
+        <li class="lang-es"><strong>Background removal con rembg</strong> — El GIF tenía fondo, así que usé <code>rembg</code> para procesarlo frame por frame. <strong>73 frames</strong>, cada uno pasado por el modelo de segmentación de IA. El resultado: un axolotl morado flotando en transparencia pura.</li>
+        <li class="lang-en"><strong>Background removal with rembg</strong> — The GIF had a background, so I used <code>rembg</code> to process it frame by frame. <strong>73 frames</strong>, each passed through an AI segmentation model. The result: a purple axolotl floating in pure transparency.</li>
+        <li class="lang-es"><strong>Peluche real XOXO</strong> — El 14 de febrero (sí, San Valentín 🥰), mi novia me regaló un peluche de axolotl morado-azulado que sostiene un corazón con "XOXO". Ella lo eligió porque sabía que estaba construyendo al bot y le pareció perfecto. Tiene razón. Desde entonces, XOXO vive en mi escritorio junto al monitor, cuidando que el código compile. Es la mascota oficial de OventLabs.</li>
+        <li class="lang-en"><strong>Real XOXO Plushie</strong> — On February 14th (yes, Valentine's Day 🥰), my girlfriend gave me a purple-blue axolotl plushie holding a heart with "XOXO". She chose it because she knew I was building the bot and thought it was perfect. She's right. Since then, XOXO lives on my desk next to the monitor, watching over the code. It's the official OventLabs mascot.</li>
       </ol>
 
       <figure class="post-image">
         <img src="xoxobot-plushie.jpg" alt="XOXO, el peluche de axolotl morado">
-        <figcaption>XOXO, el peluche oficial — regalo de San Valentín. Vive en el escritorio junto al monitor. 💜</figcaption>
+        <figcaption><span class="lang-es">XOXO, el peluche oficial — regalo de San Valentín. Vive en el escritorio junto al monitor. 💜</span><span class="lang-en">XOXO, the official plushie — a Valentine's Day gift. Lives on the desk next to the monitor. 💜</span></figcaption>
       </figure>
 
       <div class="callout fun">
-        <p><strong>🧸 Fun fact:</strong> El nombre "XoxoBot" viene de <strong>XOXO</strong> (hugs and kisses) + <strong>Bot</strong>. Y su emoji oficial es 🪼 — técnicamente es una medusa, pero si entrecierras los ojos, parece un axolotl. Close enough.</p>
+        <p class="lang-es"><strong>🧸 Fun fact:</strong> El nombre "XoxoBot" viene de <strong>XOXO</strong> (hugs and kisses) + <strong>Bot</strong>. Y su emoji oficial es 🪼 — técnicamente es una medusa, pero si entrecierras los ojos, parece un axolotl. Close enough.</p>
+        <p class="lang-en"><strong>🧸 Fun fact:</strong> The name "XoxoBot" comes from <strong>XOXO</strong> (hugs and kisses) + <strong>Bot</strong>. And its official emoji is 🪼 — technically it's a jellyfish, but if you squint, it looks like an axolotl. Close enough.</p>
       </div>
 
 
-      <!-- SECCIÓN 2: EL CEREBRO -->
-      <h2><span class="section-number">2</span> El Cerebro: GPT-4o + Tool Calling</h2>
+      <h2><span class="section-number">2</span> <span class="lang-es">El Cerebro: GPT-4o + Tool Calling</span><span class="lang-en">The Brain: GPT-4o + Tool Calling</span></h2>
 
-      <p>Un avatar bonito sin cerebro es solo un GIF. XoxoBot necesitaba poder <strong>conversar, entender contexto y ejecutar acciones reales</strong>.</p>
+      <p class="lang-es">Un avatar bonito sin cerebro es solo un GIF. XoxoBot necesitaba poder <strong>conversar, entender contexto y ejecutar acciones reales</strong>.</p>
+      <p class="lang-en">A pretty avatar without a brain is just a GIF. XoxoBot needed to be able to <strong>converse, understand context, and execute real actions</strong>.</p>
 
       <h3>Tech Stack</h3>
 
       <ul>
-        <li><strong>Runtime:</strong> Next.js API route (serverless)</li>
-        <li><strong>Modelo:</strong> GPT-4o vía Copilot API (GitHub Copilot)</li>
-        <li><strong>Streaming:</strong> SSE (Server-Sent Events) para respuestas en tiempo real</li>
-        <li><strong>Tool calling:</strong> Marker-based — el modelo emite markers especiales que el backend intercepta y ejecuta</li>
+        <li class="lang-es"><strong>Runtime:</strong> Next.js API route (serverless)</li>
+        <li class="lang-en"><strong>Runtime:</strong> Next.js API route (serverless)</li>
+        <li class="lang-es"><strong>Modelo:</strong> GPT-4o vía Copilot API (GitHub Copilot)</li>
+        <li class="lang-en"><strong>Model:</strong> GPT-4o via Copilot API (GitHub Copilot)</li>
+        <li class="lang-es"><strong>Streaming:</strong> SSE (Server-Sent Events) para respuestas en tiempo real</li>
+        <li class="lang-en"><strong>Streaming:</strong> SSE (Server-Sent Events) for real-time responses</li>
+        <li class="lang-es"><strong>Tool calling:</strong> Marker-based — el modelo emite markers especiales que el backend intercepta y ejecuta</li>
+        <li class="lang-en"><strong>Tool calling:</strong> Marker-based — the model emits special markers that the backend intercepts and executes</li>
       </ul>
 
       <div class="diagram">
@@ -476,89 +479,112 @@
                │ SendGrid│  │ Google │  │ Google      │
                │ (email) │  │Calendar│  │ Meet (auto) │
                └─────────┘  └────────┘  └─────────────┘</code></pre>
-        <p class="diagram-caption">Arquitectura de XoxoBot: widget → API → GPT-4o → tools</p>
+        <p class="diagram-caption"><span class="lang-es">Arquitectura de XoxoBot: widget → API → GPT-4o → tools</span><span class="lang-en">XoxoBot architecture: widget → API → GPT-4o → tools</span></p>
       </div>
 
       <h3>Marker-based Tool Calling</h3>
 
-      <p>En vez de usar el function calling nativo de OpenAI (que requiere un segundo request), implementé un sistema de <strong>markers</strong>. Cuando GPT-4o quiere ejecutar una acción, emite un marker especial en el stream:</p>
+      <p class="lang-es">En vez de usar el function calling nativo de OpenAI (que requiere un segundo request), implementé un sistema de <strong>markers</strong>. Cuando GPT-4o quiere ejecutar una acción, emite un marker especial en el stream:</p>
+      <p class="lang-en">Instead of using OpenAI's native function calling (which requires a second request), I implemented a <strong>markers</strong> system. When GPT-4o wants to execute an action, it emits a special marker in the stream:</p>
 
       <pre><code>Claro, voy a agendar tu cita 📅
 [[TOOL:schedule_meeting|{"date":"2026-02-20","time":"10:00","title":"Demo OventLabs"}]]
 ¡Listo! Tu cita quedó agendada con Google Meet incluido.</code></pre>
 
-      <p>El backend detecta el marker <code>[[TOOL:...]]</code>, ejecuta la función correspondiente, inyecta el resultado y sigue streameando. <strong>Todo en un solo request.</strong> Sin round-trips extra. El usuario ve la respuesta fluir en tiempo real.</p>
+      <p class="lang-es">El backend detecta el marker <code>[[TOOL:...]]</code>, ejecuta la función correspondiente, inyecta el resultado y sigue streameando. <strong>Todo en un solo request.</strong> Sin round-trips extra. El usuario ve la respuesta fluir en tiempo real.</p>
+      <p class="lang-en">The backend detects the <code>[[TOOL:...]]</code> marker, executes the corresponding function, injects the result, and keeps streaming. <strong>All in a single request.</strong> No extra round-trips. The user sees the response flow in real time.</p>
 
-      <h3>Las herramientas</h3>
+      <h3><span class="lang-es">Las herramientas</span><span class="lang-en">The Tools</span></h3>
 
       <ul>
-        <li>💬 <strong>Chat con IA</strong> — Conversación natural con GPT-4o, contexto de OventLabs, respuestas en español</li>
-        <li>📧 <strong>Envío de emails</strong> — Vía SendGrid. El usuario dice "mándame info a mi@email.com" y XoxoBot lo hace</li>
-        <li>📅 <strong>Agendar citas</strong> — Crea eventos en Google Calendar con <strong>Google Meet automático</strong>. El usuario solo dice cuándo quiere reunirse</li>
+        <li class="lang-es">💬 <strong>Chat con IA</strong> — Conversación natural con GPT-4o, contexto de OventLabs, respuestas en español</li>
+        <li class="lang-en">💬 <strong>Chat with AI</strong> — Natural conversation with GPT-4o, OventLabs context, responses in Spanish</li>
+        <li class="lang-es">📧 <strong>Envío de emails</strong> — Vía SendGrid. El usuario dice "mándame info a mi@email.com" y XoxoBot lo hace</li>
+        <li class="lang-en">📧 <strong>Email sending</strong> — Via SendGrid. The user says "send me info to my@email.com" and XoxoBot does it</li>
+        <li class="lang-es">📅 <strong>Agendar citas</strong> — Crea eventos en Google Calendar con <strong>Google Meet automático</strong>. El usuario solo dice cuándo quiere reunirse</li>
+        <li class="lang-en">📅 <strong>Scheduling appointments</strong> — Creates events in Google Calendar with <strong>automatic Google Meet</strong>. The user just says when they want to meet</li>
       </ul>
 
       <div class="stat-highlight">
         <div class="stat-number">~800ms</div>
-        <div class="stat-label">Time to first token. El usuario ve la respuesta empezar a aparecer casi inmediatamente gracias a SSE streaming.</div>
+        <div class="stat-label"><span class="lang-es">Time to first token. El usuario ve la respuesta empezar a aparecer casi inmediatamente gracias a SSE streaming.</span><span class="lang-en">Time to first token. The user sees the response start appearing almost immediately thanks to SSE streaming.</span></div>
       </div>
 
 
-      <!-- SECCIÓN 3: LA PERSONALIDAD -->
-      <h2><span class="section-number">3</span> La Personalidad: No Es Solo un Bot</h2>
+      <h2><span class="section-number">3</span> <span class="lang-es">La Personalidad: No Es Solo un Bot</span><span class="lang-en">The Personality: It's Not Just a Bot</span></h2>
 
-      <p>Cualquiera puede conectar GPT-4o a un widget. Lo que hace diferente a XoxoBot es su <strong>personalidad</strong>.</p>
+      <p class="lang-es">Cualquiera puede conectar GPT-4o a un widget. Lo que hace diferente a XoxoBot es su <strong>personalidad</strong>.</p>
+      <p class="lang-en">Anyone can connect GPT-4o to a widget. What makes XoxoBot different is its <strong>personality</strong>.</p>
 
-      <p>El system prompt de XoxoBot define a un personaje muy específico:</p>
+      <p class="lang-es">El system prompt de XoxoBot define a un personaje muy específico:</p>
+      <p class="lang-en">XoxoBot's system prompt defines a very specific character:</p>
 
       <ul>
-        <li>🪼 Es un <strong>axolotl morado digital</strong> — y lo sabe. Hace referencias a axolotes, regeneración y vida acuática</li>
-        <li>🤓 Es <strong>nerdy pero accesible</strong> — puede explicar arquitectura de microservicios o simplemente recomendar un café</li>
-        <li>😊 Usa <strong>emojis con moderación</strong> — suficientes para ser friendly, no tantos como para parecer spam</li>
-        <li>🇲🇽 Habla <strong>español como lengua principal</strong> — con toques de inglés técnico cuando aplica</li>
-        <li>💜 Representa a <strong>OventLabs</strong> — conoce los servicios, precios, tech stack y puede hablar de proyectos reales</li>
+        <li class="lang-es">🪼 Es un <strong>axolotl morado digital</strong> — y lo sabe. Hace referencias a axolotes, regeneración y vida acuática</li>
+        <li class="lang-en">🪼 It's a <strong>purple digital axolotl</strong> — and it knows it. Makes references to axolotls, regeneration, and aquatic life</li>
+        <li class="lang-es">🤓 Es <strong>nerdy pero accesible</strong> — puede explicar arquitectura de microservicios o simplemente recomendar un café</li>
+        <li class="lang-en">🤓 It's <strong>nerdy but accessible</strong> — can explain microservices architecture or simply recommend a coffee</li>
+        <li class="lang-es">😊 Usa <strong>emojis con moderación</strong> — suficientes para ser friendly, no tantos como para parecer spam</li>
+        <li class="lang-en">😊 Uses <strong>emojis with moderation</strong> — enough to be friendly, not so many as to feel like spam</li>
+        <li class="lang-es">🇲🇽 Habla <strong>español como lengua principal</strong> — con toques de inglés técnico cuando aplica</li>
+        <li class="lang-en">🇲🇽 Speaks <strong>Spanish as its main language</strong> — with touches of technical English when applicable</li>
+        <li class="lang-es">💜 Representa a <strong>OventLabs</strong> — conoce los servicios, precios, tech stack y puede hablar de proyectos reales</li>
+        <li class="lang-en">💜 Represents <strong>OventLabs</strong> — knows the services, prices, tech stack and can talk about real projects</li>
       </ul>
 
       <div class="callout info">
-        <p><strong>💡 La clave del system prompt:</strong> No le digo "sé amigable". Le doy <em>contexto, ejemplos y límites</em>. Sabe qué puede hacer (agendar citas), qué no puede hacer (dar precios exactos sin contexto) y cuándo escalar a un humano. Un buen system prompt es como onboarding de un empleado, no una lista de reglas.</p>
+        <p class="lang-es"><strong>💡 La clave del system prompt:</strong> No le digo "sé amigable". Le doy <em>contexto, ejemplos y límites</em>. Sabe qué puede hacer (agendar citas), qué no puede hacer (dar precios exactos sin contexto) y cuándo escalar a un humano. Un buen system prompt es como onboarding de un empleado, no una lista de reglas.</p>
+        <p class="lang-en"><strong>💡 The key to the system prompt:</strong> I don't tell it "be friendly". I give it <em>context, examples, and limits</em>. It knows what it can do (schedule appointments), what it can't do (give exact prices without context), and when to escalate to a human. A good system prompt is like employee onboarding, not a list of rules.</p>
       </div>
 
 
-      <!-- SECCIÓN 4: EL WIDGET -->
-      <h2><span class="section-number">4</span> El Widget: Embebible y Mobile-First</h2>
+      <h2><span class="section-number">4</span> <span class="lang-es">El Widget: Embebible y Mobile-First</span><span class="lang-en">The Widget: Embeddable and Mobile-First</span></h2>
 
-      <p>XoxoBot vive como un <strong>widget embebible</strong> — un botón flotante que abre un chat. Cualquier sitio puede integrarlo con un <code>&lt;script&gt;</code> tag.</p>
+      <p class="lang-es">XoxoBot vive como un <strong>widget embebible</strong> — un botón flotante que abre un chat. Cualquier sitio puede integrarlo con un <code>&lt;script&gt;</code> tag.</p>
+      <p class="lang-en">XoxoBot lives as an <strong>embeddable widget</strong> — a floating button that opens a chat. Any site can integrate it with a <code>&lt;script&gt;</code> tag.</p>
 
-      <h3>Features del widget</h3>
+      <h3><span class="lang-es">Features del widget</span><span class="lang-en">Widget Features</span></h3>
 
       <ul>
-        <li>📱 <strong>Fullscreen en mobile</strong> — En pantallas chicas, el chat ocupa toda la pantalla. Nada de modales diminutos</li>
-        <li>📝 <strong>Markdown rendering</strong> — Las respuestas de XoxoBot soportan bold, listas, código, links</li>
-        <li>⚡ <strong>Quick actions</strong> — Botones predefinidos: "¿Qué servicios ofrecen?", "Quiero agendar una demo", "Contactar a un humano"</li>
-        <li>🛡️ <strong>Rate limiting</strong> — Protección contra spam y abuso de la API</li>
-        <li>🎨 <strong>Dark theme nativo</strong> — Porque los devs no usan light mode</li>
-        <li>💬 <strong>Streaming visual</strong> — Las palabras aparecen una por una, como si XoxoBot estuviera escribiendo</li>
+        <li class="lang-es">📱 <strong>Fullscreen en mobile</strong> — En pantallas chicas, el chat ocupa toda la pantalla. Nada de modales diminutos</li>
+        <li class="lang-en">📱 <strong>Fullscreen on mobile</strong> — On small screens, the chat takes up the whole screen. No tiny modals</li>
+        <li class="lang-es">📝 <strong>Markdown rendering</strong> — Las respuestas de XoxoBot soportan bold, listas, código, links</li>
+        <li class="lang-en">📝 <strong>Markdown rendering</strong> — XoxoBot's responses support bold, lists, code, links</li>
+        <li class="lang-es">⚡ <strong>Quick actions</strong> — Botones predefinidos: "¿Qué servicios ofrecen?", "Quiero agendar una demo", "Contactar a un humano"</li>
+        <li class="lang-en">⚡ <strong>Quick actions</strong> — Predefined buttons: "What services do you offer?", "I want to schedule a demo", "Contact a human"</li>
+        <li class="lang-es">🛡️ <strong>Rate limiting</strong> — Protección contra spam y abuso de la API</li>
+        <li class="lang-en">🛡️ <strong>Rate limiting</strong> — Protection against spam and API abuse</li>
+        <li class="lang-es">🎨 <strong>Dark theme nativo</strong> — Porque los devs no usan light mode</li>
+        <li class="lang-en">🎨 <strong>Native dark theme</strong> — Because devs don't use light mode</li>
+        <li class="lang-es">💬 <strong>Streaming visual</strong> — Las palabras aparecen una por una, como si XoxoBot estuviera escribiendo</li>
+        <li class="lang-en">💬 <strong>Visual streaming</strong> — Words appear one by one, as if XoxoBot were typing</li>
       </ul>
 
       <div class="stat-highlight">
-        <div class="stat-number">1 línea</div>
-        <div class="stat-label">de código para integrar XoxoBot en cualquier sitio. Un <code>&lt;script&gt;</code> tag y listo.</div>
+        <div class="stat-number">1 <span class="lang-es">línea</span><span class="lang-en">line</span></div>
+        <div class="stat-label"><span class="lang-es">de código para integrar XoxoBot en cualquier sitio. Un <code>&lt;script&gt;</code> tag y listo.</span><span class="lang-en">of code to integrate XoxoBot into any site. One <code>&lt;script&gt;</code> tag and done.</span></div>
       </div>
 
 
-      <!-- SECCIÓN 5: LA PIPELINE DEL GIF -->
-      <h2><span class="section-number">5</span> La Pipeline del GIF: 73 Frames de Magia</h2>
+      <h2><span class="section-number">5</span> <span class="lang-es">La Pipeline del GIF: 73 Frames de Magia</span><span class="lang-en">The GIF Pipeline: 73 Frames of Magic</span></h2>
 
-      <p>Esto merece su propia sección porque fue más trabajo del que esperaba.</p>
+      <p class="lang-es">Esto merece su propia sección porque fue más trabajo del que esperaba.</p>
+      <p class="lang-en">This deserves its own section because it was more work than I expected.</p>
 
-      <p>El GIF original del axolotl tenía un fondo sólido. Para usarlo como avatar flotante necesitaba transparencia. El problema: <strong>GIFs con transparencia + background removal = pesadilla</strong>.</p>
+      <p class="lang-es">El GIF original del axolotl tenía un fondo sólido. Para usarlo como avatar flotante necesitaba transparencia. El problema: <strong>GIFs con transparencia + background removal = pesadilla</strong>.</p>
+      <p class="lang-en">The original axolotl GIF had a solid background. To use it as a floating avatar I needed transparency. The problem: <strong>GIFs with transparency + background removal = nightmare</strong>.</p>
 
-      <h3>El proceso</h3>
+      <h3><span class="lang-es">El proceso</span><span class="lang-en">The Process</span></h3>
 
       <ol>
-        <li><strong>Extraer frames</strong> — Separé el GIF en 73 imágenes PNG individuales</li>
-        <li><strong>rembg en cada frame</strong> — Usé <code>rembg</code> (modelo U2-Net) para remover el fondo de cada frame. Batch processing con un script de Python</li>
-        <li><strong>Cleanup manual</strong> — Algunos frames quedaban con artefactos en las branquias (las partes semi-transparentes del axolotl). Tuve que ajustar thresholds</li>
-        <li><strong>Reensamblar</strong> — Junté los 73 frames de vuelta en un GIF animado con transparencia</li>
+        <li class="lang-es"><strong>Extraer frames</strong> — Separé el GIF en 73 imágenes PNG individuales</li>
+        <li class="lang-en"><strong>Extract frames</strong> — I split the GIF into 73 individual PNG images</li>
+        <li class="lang-es"><strong>rembg en cada frame</strong> — Usé <code>rembg</code> (modelo U2-Net) para remover el fondo de cada frame. Batch processing con un script de Python</li>
+        <li class="lang-en"><strong>rembg on each frame</strong> — Used <code>rembg</code> (U2-Net model) to remove the background from each frame. Batch processing with a Python script</li>
+        <li class="lang-es"><strong>Cleanup manual</strong> — Algunos frames quedaban con artefactos en las branquias (las partes semi-transparentes del axolotl). Tuve que ajustar thresholds</li>
+        <li class="lang-en"><strong>Manual cleanup</strong> — Some frames had artifacts on the gills (the semi-transparent parts of the axolotl). I had to adjust thresholds</li>
+        <li class="lang-es"><strong>Reensamblar</strong> — Junté los 73 frames de vuelta en un GIF animado con transparencia</li>
+        <li class="lang-en"><strong>Reassemble</strong> — I joined the 73 frames back into an animated GIF with transparency</li>
       </ol>
 
       <pre><code># El script simplificado
@@ -571,48 +597,60 @@ for i, frame_path in enumerate(sorted(glob.glob("frames/*.png"))):
     output = remove(img)
     output.save(f"clean/{i:03d}.png")</code></pre>
 
-      <p>¿El resultado? Un axolotl morado flotando en el vacío digital, listo para saludar a los visitantes. <strong>Worth it.</strong></p>
+      <p class="lang-es">¿El resultado? Un axolotl morado flotando en el vacío digital, listo para saludar a los visitantes. <strong>Worth it.</strong></p>
+      <p class="lang-en">The result? A purple axolotl floating in the digital void, ready to greet visitors. <strong>Worth it.</strong></p>
 
 
-      <!-- SECCIÓN 6: LO QUE VIENE -->
-      <h2><span class="section-number">6</span> Lo Que Viene: El Roadmap</h2>
+      <h2><span class="section-number">6</span> <span class="lang-es">Lo Que Viene: El Roadmap</span><span class="lang-en">What's Coming: The Roadmap</span></h2>
 
-      <p>XoxoBot ya es funcional, pero apenas estamos empezando. Lo que viene:</p>
+      <p class="lang-es">XoxoBot ya es funcional, pero apenas estamos empezando. Lo que viene:</p>
+      <p class="lang-en">XoxoBot is already functional, but we're just getting started. What's coming:</p>
 
       <ul>
-        <li>📊 <strong>Google Sheets lead capture</strong> — Cada conversación relevante se guarda automáticamente como lead en una hoja de cálculo</li>
-        <li>💰 <strong>Cotizaciones automáticas</strong> — Basado en el tipo de proyecto, XoxoBot podrá dar estimados de costo y timeline</li>
-        <li>🎙️ <strong>Voice</strong> — Input y output de voz. Hablar con XoxoBot en vez de escribir</li>
-        <li>📈 <strong>Analytics</strong> — Dashboard con métricas: conversaciones, conversiones, preguntas frecuentes, satisfaction score</li>
-        <li>🔗 <strong>Más integraciones</strong> — Slack, WhatsApp Business, Notion</li>
+        <li class="lang-es">📊 <strong>Google Sheets lead capture</strong> — Cada conversación relevante se guarda automáticamente como lead en una hoja de cálculo</li>
+        <li class="lang-en">📊 <strong>Google Sheets lead capture</strong> — Every relevant conversation is automatically saved as a lead in a spreadsheet</li>
+        <li class="lang-es">💰 <strong>Cotizaciones automáticas</strong> — Basado en el tipo de proyecto, XoxoBot podrá dar estimados de costo y timeline</li>
+        <li class="lang-en">💰 <strong>Automatic quotes</strong> — Based on project type, XoxoBot will be able to give cost and timeline estimates</li>
+        <li class="lang-es">🎙️ <strong>Voice</strong> — Input y output de voz. Hablar con XoxoBot en vez de escribir</li>
+        <li class="lang-en">🎙️ <strong>Voice</strong> — Voice input and output. Talking to XoxoBot instead of typing</li>
+        <li class="lang-es">📈 <strong>Analytics</strong> — Dashboard con métricas: conversaciones, conversiones, preguntas frecuentes, satisfaction score</li>
+        <li class="lang-en">📈 <strong>Analytics</strong> — Dashboard with metrics: conversations, conversions, frequently asked questions, satisfaction score</li>
+        <li class="lang-es">🔗 <strong>Más integraciones</strong> — Slack, WhatsApp Business, Notion</li>
+        <li class="lang-en">🔗 <strong>More integrations</strong> — Slack, WhatsApp Business, Notion</li>
       </ul>
 
       <div class="callout">
-        <p><strong>🔮 La visión:</strong> XoxoBot no es solo un chatbot — es el <strong>primer punto de contacto</strong> de OventLabs. La idea es que cualquier persona pueda llegar al sitio, hablar con XoxoBot, entender qué hacemos, agendar una demo y recibir una cotización preliminar… todo sin que un humano intervenga. Cuando el humano entra, ya tiene todo el contexto.</p>
+        <p class="lang-es"><strong>🔮 La visión:</strong> XoxoBot no es solo un chatbot — es el <strong>primer punto de contacto</strong> de OventLabs. La idea es que cualquier persona pueda llegar al sitio, hablar con XoxoBot, entender qué hacemos, agendar una demo y recibir una cotización preliminar… todo sin que un humano intervenga. Cuando el humano entra, ya tiene todo el contexto.</p>
+        <p class="lang-en"><strong>🔮 The vision:</strong> XoxoBot is not just a chatbot — it's the <strong>first point of contact</strong> for OventLabs. The idea is that anyone can come to the site, chat with XoxoBot, understand what we do, schedule a demo, and receive a preliminary quote… all without a human intervening. When the human enters, they already have all the context.</p>
       </div>
 
 
-      <!-- TAKEAWAYS -->
       <div class="takeaways">
         <h3>🪼 TL;DR</h3>
         <ul>
-          <li><strong>XoxoBot</strong> es el asistente virtual de OventLabs — un axolotl morado que chatea con GPT-4o</li>
-          <li><strong>Capabilities:</strong> chat con IA, envío de emails (SendGrid), agendar citas en Google Calendar con Meet automático</li>
+          <li class="lang-es"><strong>XoxoBot</strong> es el asistente virtual de OventLabs — un axolotl morado que chatea con GPT-4o</li>
+          <li class="lang-en"><strong>XoxoBot</strong> is the virtual assistant of OventLabs — a purple axolotl that chats with GPT-4o</li>
+          <li class="lang-es"><strong>Capabilities:</strong> chat con IA, envío de emails (SendGrid), agendar citas en Google Calendar con Meet automático</li>
+          <li class="lang-en"><strong>Capabilities:</strong> AI chat, email sending (SendGrid), scheduling appointments in Google Calendar with automatic Meet</li>
           <li><strong>Tech:</strong> Next.js API route + Copilot API (GPT-4o) + SSE streaming + marker-based tool calling</li>
-          <li><strong>El avatar</strong> pasó de diseño en ChatGPT → animación con Grok → background removal con rembg (73 frames) → peluche real llamado XOXO</li>
-          <li><strong>El nombre:</strong> XOXO (hugs & kisses) + Bot. Emoji oficial: 🪼</li>
-          <li><strong>Widget:</strong> embebible, fullscreen mobile, markdown, quick actions, rate limiting</li>
-          <li><strong>Lo que viene:</strong> lead capture, cotizaciones, voice, analytics</li>
-          <li>Vive en <a href="https://agents.oventlabs.com">agents.oventlabs.com</a> — ve a saludarlo 💜</li>
+          <li class="lang-es"><strong>El avatar</strong> pasó de diseño en ChatGPT → animación con Grok → background removal con rembg (73 frames) → peluche real llamado XOXO</li>
+          <li class="lang-en"><strong>The avatar</strong> went from design in ChatGPT → animation with Grok → background removal with rembg (73 frames) → real plushie named XOXO</li>
+          <li class="lang-es"><strong>El nombre:</strong> XOXO (hugs &amp; kisses) + Bot. Emoji oficial: 🪼</li>
+          <li class="lang-en"><strong>The name:</strong> XOXO (hugs &amp; kisses) + Bot. Official emoji: 🪼</li>
+          <li class="lang-es"><strong>Widget:</strong> embebible, fullscreen mobile, markdown, quick actions, rate limiting</li>
+          <li class="lang-en"><strong>Widget:</strong> embeddable, fullscreen mobile, markdown, quick actions, rate limiting</li>
+          <li class="lang-es"><strong>Lo que viene:</strong> lead capture, cotizaciones, voice, analytics</li>
+          <li class="lang-en"><strong>What's coming:</strong> lead capture, quotes, voice, analytics</li>
+          <li class="lang-es">Vive en <a href="https://agents.oventlabs.com">agents.oventlabs.com</a> — ve a saludarlo 💜</li>
+          <li class="lang-en">Lives at <a href="https://agents.oventlabs.com">agents.oventlabs.com</a> — go say hi 💜</li>
         </ul>
       </div>
 
 
-      <!-- FOOTER -->
       <div class="post-footer">
-        <p>Escrito por <strong>Oscar Martinez (OscarCode9)</strong> — 16 de febrero de 2026</p>
+        <p><span class="lang-es">Escrito por <strong>Oscar Martinez (OscarCode9)</strong> — 16 de febrero de 2026</span><span class="lang-en">Written by <strong>Oscar Martinez (OscarCode9)</strong> — February 16, 2026</span></p>
         <p style="margin-top: 10px; color: var(--text-muted);">
-          <a href="index.html">← Volver al inicio</a>
+          <a href="index.html"><span class="lang-es">← Volver al inicio</span><span class="lang-en">← Back to home</span></a>
         </p>
       </div>
 

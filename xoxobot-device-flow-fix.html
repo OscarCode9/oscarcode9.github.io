@@ -333,19 +333,32 @@
     .string { color: #ce9178; }
     .function { color: #dcdcaa; }
   </style>
+  <script src="public/i18n.js"></script>
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
 </head>
 <body>
 
 <header class="post-header">
   <div class="container">
     <a href="index.html" class="back-link">
-      <i class="fas fa-arrow-left"></i> Volver al blog
+      <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span>
     </a>
-    <h1 class="post-title">Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼</h1>
-    <p class="post-subtitle">Un token expirado, un HTTP 403, y cómo mi agente de IA lo resolvió en 15 minutos</p>
+    <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+    <h1 class="post-title"><span class="lang-es">Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼</span><span class="lang-en">Debugging XoxoBot: OAuth Tokens and the Copilot API 🪼</span></h1>
+
+    <div class="ov-views-wrap">
+      <div class="ov-views-badge" data-ov-visits>
+        <span class="ov-dot"></span>
+        <span class="ov-label">Visitas</span>
+        <span class="ov-count">—</span>
+      </div>
+    </div>
+
+    <p class="post-subtitle"><span class="lang-es">Un token expirado, un HTTP 403, y cómo mi agente de IA lo resolvió en 15 minutos</span><span class="lang-en">An expired token, an HTTP 403, and how my AI agent solved it in 15 minutes</span></p>
     <div class="post-meta">
       <span><i class="fas fa-calendar"></i> 18 Feb 2026</span>
-      <span><i class="fas fa-clock"></i> 6 min lectura</span>
+      <span><i class="fas fa-clock"></i> <span class="lang-es">6 min lectura</span><span class="lang-en">6 min read</span></span>
       <span><i class="fas fa-tag"></i> Debugging, OAuth, APIs</span>
     </div>
   </div>
@@ -356,59 +369,68 @@
     
     <div class="emoji-big">🔥 → 🔍 → ✅</div>
 
-    <p>Ayer por la noche, XoxoBot (mi chatbot axolotl 🪼) dejó de funcionar. El mensaje: <strong>"Ups, algo falló 😅 Intenta de nuevo."</strong></p>
+    <p class="lang-es">Ayer por la noche, XoxoBot (mi chatbot axolotl 🪼) dejó de funcionar. El mensaje: <strong>"Ups, algo falló 😅 Intenta de nuevo."</strong></p>
+    <p class="lang-en">Last night, XoxoBot (my axolotl chatbot 🪼) stopped working. The message: <strong>"Oops, something went wrong 😅 Try again."</strong></p>
 
-    <p>No era el tipo de error que te dice qué pasó. Era el peor tipo: un catch genérico que esconde el problema real. Pero tengo un arma secreta: <strong>OscarCode9</strong>, mi agente de IA corriendo en OpenClaw. Le dije que lo arreglara, y esto es lo que encontró.</p>
+    <p class="lang-es">No era el tipo de error que te dice qué pasó. Era el peor tipo: un catch genérico que esconde el problema real. Pero tengo un arma secreta: <strong>OscarCode9</strong>, mi agente de IA corriendo en OpenClaw. Le dije que lo arreglara, y esto es lo que encontró.</p>
+    <p class="lang-en">It wasn't the kind of error that tells you what happened. It was the worst kind: a generic catch that hides the real problem. But I have a secret weapon: <strong>OscarCode9</strong>, my AI agent running in OpenClaw. I told it to fix it, and this is what it found.</p>
 
-    <h2><i class="fas fa-bug"></i> El Problema</h2>
+    <h2><i class="fas fa-bug"></i> <span class="lang-es">El Problema</span><span class="lang-en">The Problem</span></h2>
 
-    <p>XoxoBot usa la API de GitHub Copilot para generar respuestas. El flujo de autenticación era así:</p>
+    <p class="lang-es">XoxoBot usa la API de GitHub Copilot para generar respuestas. El flujo de autenticación era así:</p>
+    <p class="lang-en">XoxoBot uses the GitHub Copilot API to generate responses. The authentication flow was like this:</p>
 
     <div class="flow-diagram">
       <div class="flow-step">
         <div class="flow-number">1</div>
-        <div>Widget genera un <code>clientId</code> único por usuario</div>
+        <div><span class="lang-es">Widget genera un <code>clientId</code> único por usuario</span><span class="lang-en">Widget generates a unique <code>clientId</code> per user</span></div>
       </div>
       <div class="flow-step">
         <div class="flow-number">2</div>
-        <div>API busca auth del usuario en base de datos</div>
+        <div><span class="lang-es">API busca auth del usuario en base de datos</span><span class="lang-en">API looks up user auth in the database</span></div>
       </div>
       <div class="flow-step error">
         <div class="flow-number">3</div>
-        <div>Si no existe → Pide <strong>device flow</strong> OAuth con GitHub</div>
+        <div><span class="lang-es">Si no existe → Pide <strong>device flow</strong> OAuth con GitHub</span><span class="lang-en">If not found → Requests <strong>device flow</strong> OAuth with GitHub</span></div>
       </div>
       <div class="flow-step error">
         <div class="flow-number">4</div>
-        <div>Usuario autoriza con scope <code>read:user</code></div>
+        <div><span class="lang-es">Usuario autoriza con scope <code>read:user</code></span><span class="lang-en">User authorizes with scope <code>read:user</code></span></div>
       </div>
       <div class="flow-step error">
         <div class="flow-number">5</div>
-        <div>API intenta intercambiar token por Copilot API token → <strong>💥 FAIL</strong></div>
+        <div><span class="lang-es">API intenta intercambiar token por Copilot API token → <strong>💥 FAIL</strong></span><span class="lang-en">API attempts to exchange token for Copilot API token → <strong>💥 FAIL</strong></span></div>
       </div>
     </div>
 
     <div class="highlight-box">
-      <p><strong>🎯 Problema #1:</strong> El scope <code>read:user</code> no tiene permisos para acceder a la API de Copilot. Necesitas una suscripción activa de GitHub Copilot.</p>
-      <p><strong>🎯 Problema #2:</strong> El token OAuth (<code>ghu_...</code>) del servidor había expirado. Estos tokens duran ~8 horas.</p>
+      <p class="lang-es"><strong>🎯 Problema #1:</strong> El scope <code>read:user</code> no tiene permisos para acceder a la API de Copilot. Necesitas una suscripción activa de GitHub Copilot.</p>
+      <p class="lang-en"><strong>🎯 Problem #1:</strong> The <code>read:user</code> scope doesn't have permissions to access the Copilot API. You need an active GitHub Copilot subscription.</p>
+      <p class="lang-es"><strong>🎯 Problema #2:</strong> El token OAuth (<code>ghu_...</code>) del servidor había expirado. Estos tokens duran ~8 horas.</p>
+      <p class="lang-en"><strong>🎯 Problem #2:</strong> The server's OAuth token (<code>ghu_...</code>) had expired. These tokens last ~8 hours.</p>
     </div>
 
-    <h2><i class="fas fa-search"></i> El Diagnóstico</h2>
+    <h2><i class="fas fa-search"></i> <span class="lang-es">El Diagnóstico</span><span class="lang-en">The Diagnosis</span></h2>
 
-    <p>OscarCode9 hizo lo que haría cualquier dev decente: revisar los logs.</p>
+    <p class="lang-es">OscarCode9 hizo lo que haría cualquier dev decente: revisar los logs.</p>
+    <p class="lang-en">OscarCode9 did what any decent dev would do: check the logs.</p>
 
     <div class="code-filename">docker logs ovents-landing</div>
     <pre><code>Chat API error: Error: Copilot token exchange failed: HTTP 403
     at getCopilotApiToken (.next/server/app/api/chat/route.js:170:1031)</code></pre>
 
-    <p>Un <code>403 Forbidden</code>. El token existía pero GitHub lo rechazaba. Confirmado: token expirado.</p>
+    <p class="lang-es">Un <code>403 Forbidden</code>. El token existía pero GitHub lo rechazaba. Confirmado: token expirado.</p>
+    <p class="lang-en">A <code>403 Forbidden</code>. The token existed but GitHub rejected it. Confirmed: expired token.</p>
 
-    <h2><i class="fas fa-lightbulb"></i> La Solución</h2>
+    <h2><i class="fas fa-lightbulb"></i> <span class="lang-es">La Solución</span><span class="lang-en">The Solution</span></h2>
 
-    <p>En lugar de arreglar el device flow (que requeriría que cada usuario tenga Copilot), implementamos un <strong>fallback inteligente</strong>:</p>
+    <p class="lang-es">En lugar de arreglar el device flow (que requeriría que cada usuario tenga Copilot), implementamos un <strong>fallback inteligente</strong>:</p>
+    <p class="lang-en">Instead of fixing the device flow (which would require every user to have Copilot), we implemented an <strong>intelligent fallback</strong>:</p>
 
-    <h3>1. Fallback al Token del Servidor</h3>
+    <h3><span class="lang-es">1. Fallback al Token del Servidor</span><span class="lang-en">1. Fallback to the Server Token</span></h3>
 
-    <p>Si el usuario no tiene auth, en lugar de pedir device flow, usamos el token del servidor:</p>
+    <p class="lang-es">Si el usuario no tiene auth, en lugar de pedir device flow, usamos el token del servidor:</p>
+    <p class="lang-en">If the user has no auth, instead of requesting device flow, we use the server token:</p>
 
     <div class="code-filename">lib/copilot-api.ts</div>
     <pre><code><span class="keyword">export async function</span> <span class="function">getCopilotApiTokenForClient</span>(clientId?: string) {
@@ -428,11 +450,13 @@
   <span class="keyword">return</span> <span class="function">getCopilotApiToken</span>();
 }</code></pre>
 
-    <h3>2. Soporte para Tokens Directos</h3>
+    <h3><span class="lang-es">2. Soporte para Tokens Directos</span><span class="lang-en">2. Support for Direct Tokens</span></h3>
 
-    <p>Descubrimos que OpenClaw ya tenía un token válido guardado. El problema: era un token <strong>Copilot API</strong> (<code>tid=...</code>), no un token OAuth (<code>ghu_...</code>).</p>
+    <p class="lang-es">Descubrimos que OpenClaw ya tenía un token válido guardado. El problema: era un token <strong>Copilot API</strong> (<code>tid=...</code>), no un token OAuth (<code>ghu_...</code>).</p>
+    <p class="lang-en">We discovered that OpenClaw already had a valid token stored. The problem: it was a <strong>Copilot API</strong> token (<code>tid=...</code>), not an OAuth token (<code>ghu_...</code>).</p>
 
-    <p>Agregamos detección automática:</p>
+    <p class="lang-es">Agregamos detección automática:</p>
+    <p class="lang-en">We added automatic detection:</p>
 
     <div class="code-filename">lib/copilot-api.ts</div>
     <pre><code><span class="comment">// If token is already a Copilot API token, use it directly</span>
@@ -449,17 +473,22 @@
 }</code></pre>
 
     <div class="highlight-box success">
-      <p><strong>✅ Resultado:</strong> El bot ahora acepta tanto tokens OAuth (<code>ghu_...</code>) como tokens Copilot directos (<code>tid=...</code>). Si uno falla, usa el otro.</p>
+      <p class="lang-es"><strong>✅ Resultado:</strong> El bot ahora acepta tanto tokens OAuth (<code>ghu_...</code>) como tokens Copilot directos (<code>tid=...</code>). Si uno falla, usa el otro.</p>
+      <p class="lang-en"><strong>✅ Result:</strong> The bot now accepts both OAuth tokens (<code>ghu_...</code>) and direct Copilot tokens (<code>tid=...</code>). If one fails, it uses the other.</p>
     </div>
 
-    <h2><i class="fas fa-rocket"></i> El Deploy</h2>
+    <h2><i class="fas fa-rocket"></i> <span class="lang-es">El Deploy</span><span class="lang-en">The Deploy</span></h2>
 
-    <p>El fix requirió:</p>
+    <p class="lang-es">El fix requirió:</p>
+    <p class="lang-en">The fix required:</p>
 
     <ol>
-      <li>Modificar <code>lib/copilot-api.ts</code></li>
-      <li>Actualizar el token en producción</li>
-      <li>Rebuild del container Docker</li>
+      <li class="lang-es">Modificar <code>lib/copilot-api.ts</code></li>
+      <li class="lang-en">Modify <code>lib/copilot-api.ts</code></li>
+      <li class="lang-es">Actualizar el token en producción</li>
+      <li class="lang-en">Update the token in production</li>
+      <li class="lang-es">Rebuild del container Docker</li>
+      <li class="lang-en">Rebuild the Docker container</li>
     </ol>
 
     <pre><code><span class="comment"># Subir archivo modificado</span>
@@ -475,27 +504,33 @@ docker run -d --name ovents-landing <span class="string">-p 3001:3001</span> \
   ovents-landing:prod</code></pre>
 
     <div class="highlight-box info">
-      <p><strong>⚠️ Nota importante:</strong> El port mapping debe ser <code>-p 3001:3001</code>, NO <code>-p 3001:3000</code>. Este error causa 502 Bad Gateway y me ha mordido múltiples veces.</p>
+      <p class="lang-es"><strong>⚠️ Nota importante:</strong> El port mapping debe ser <code>-p 3001:3001</code>, NO <code>-p 3001:3000</code>. Este error causa 502 Bad Gateway y me ha mordido múltiples veces.</p>
+      <p class="lang-en"><strong>⚠️ Important note:</strong> The port mapping must be <code>-p 3001:3001</code>, NOT <code>-p 3001:3000</code>. This error causes 502 Bad Gateway and has bitten me multiple times.</p>
     </div>
 
-    <h2><i class="fas fa-graduation-cap"></i> Lecciones Aprendidas</h2>
+    <h2><i class="fas fa-graduation-cap"></i> <span class="lang-es">Lecciones Aprendidas</span><span class="lang-en">Lessons Learned</span></h2>
 
     <ol>
-      <li><strong>Los tokens OAuth expiran.</strong> Los <code>ghu_</code> de GitHub duran ~8 horas. Implementa refresh o fallbacks.</li>
-      <li><strong>El scope importa.</strong> <code>read:user</code> no da acceso a Copilot. Cada API tiene sus permisos.</li>
-      <li><strong>Fallbacks > Errores.</strong> Es mejor que el bot use un token del servidor que mostrar "algo falló".</li>
-      <li><strong>Docker cache te puede trollear.</strong> Si cambias un archivo, usa <code>--no-cache</code> o Docker no lo detecta.</li>
-      <li><strong>Los agentes de IA son útiles para debugging.</strong> OscarCode9 encontró el problema, propuso la solución, y deployó. Yo solo aprobé.</li>
+      <li class="lang-es"><strong>Los tokens OAuth expiran.</strong> Los <code>ghu_</code> de GitHub duran ~8 horas. Implementa refresh o fallbacks.</li>
+      <li class="lang-en"><strong>OAuth tokens expire.</strong> GitHub's <code>ghu_</code> tokens last ~8 hours. Implement refresh or fallbacks.</li>
+      <li class="lang-es"><strong>El scope importa.</strong> <code>read:user</code> no da acceso a Copilot. Cada API tiene sus permisos.</li>
+      <li class="lang-en"><strong>Scope matters.</strong> <code>read:user</code> doesn't give access to Copilot. Each API has its permissions.</li>
+      <li class="lang-es"><strong>Fallbacks &gt; Errores.</strong> Es mejor que el bot use un token del servidor que mostrar "algo falló".</li>
+      <li class="lang-en"><strong>Fallbacks &gt; Errors.</strong> It's better for the bot to use a server token than to show "something went wrong".</li>
+      <li class="lang-es"><strong>Docker cache te puede trollear.</strong> Si cambias un archivo, usa <code>--no-cache</code> o Docker no lo detecta.</li>
+      <li class="lang-en"><strong>Docker cache can troll you.</strong> If you change a file, use <code>--no-cache</code> or Docker won't detect it.</li>
+      <li class="lang-es"><strong>Los agentes de IA son útiles para debugging.</strong> OscarCode9 encontró el problema, propuso la solución, y deployó. Yo solo aprobé.</li>
+      <li class="lang-en"><strong>AI agents are useful for debugging.</strong> OscarCode9 found the problem, proposed the solution, and deployed. I just approved.</li>
     </ol>
 
-    <h2><i class="fas fa-clock"></i> Tiempo Total</h2>
+    <h2><i class="fas fa-clock"></i> <span class="lang-es">Tiempo Total</span><span class="lang-en">Total Time</span></h2>
 
     <div class="flow-diagram">
       <div class="flow-step">
         <div class="flow-number">📊</div>
         <div>
-          <strong>~15 minutos</strong> de diagnóstico + fix + deploy<br>
-          <span style="color: var(--text-muted);">Hecho por OscarCode9 (agente de IA) mientras yo veía los logs</span>
+          <strong>~15 <span class="lang-es">minutos</span><span class="lang-en">minutes</span></strong> <span class="lang-es">de diagnóstico + fix + deploy</span><span class="lang-en">of diagnosis + fix + deploy</span><br>
+          <span style="color: var(--text-muted);"><span class="lang-es">Hecho por OscarCode9 (agente de IA) mientras yo veía los logs</span><span class="lang-en">Done by OscarCode9 (AI agent) while I watched the logs</span></span>
         </div>
       </div>
     </div>
@@ -504,7 +539,8 @@ docker run -d --name ovents-landing <span class="string">-p 3001:3001</span> \
       <img src="xoxobot-avatar.gif" alt="XoxoBot" class="author-avatar">
       <div class="author-info">
         <h4>XoxoBot 🪼</h4>
-        <p>El asistente que casi muere por un token expirado, pero sobrevivió gracias a un fallback elegante. Ahora más fuerte que nunca.</p>
+        <p class="lang-es">El asistente que casi muere por un token expirado, pero sobrevivió gracias a un fallback elegante. Ahora más fuerte que nunca.</p>
+        <p class="lang-en">The assistant that almost died from an expired token, but survived thanks to an elegant fallback. Now stronger than ever.</p>
       </div>
     </div>
 
@@ -513,12 +549,12 @@ docker run -d --name ovents-landing <span class="string">-p 3001:3001</span> \
 
 <footer class="post-footer">
   <div class="container">
-    <p style="color: var(--text-secondary); margin-bottom: 20px;">¿Quieres probar a XoxoBot?</p>
+    <p style="color: var(--text-secondary); margin-bottom: 20px;"><span class="lang-es">¿Quieres probar a XoxoBot?</span><span class="lang-en">Want to try XoxoBot?</span></p>
     <a href="index.html" class="cta-button">
-      <i class="fas fa-comments"></i> Chatear con XoxoBot
+      <i class="fas fa-comments"></i> <span class="lang-es">Chatear con XoxoBot</span><span class="lang-en">Chat with XoxoBot</span>
     </a>
     <a href="xoxobot-birth.html" class="cta-button secondary">
-      <i class="fas fa-book"></i> Historia de XoxoBot
+      <i class="fas fa-book"></i> <span class="lang-es">Historia de XoxoBot</span><span class="lang-en">XoxoBot Story</span>
     </a>
   </div>
 </footer>

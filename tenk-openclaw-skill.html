@@ -37,7 +37,6 @@
 
     .container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
 
-    /* ── HEADER ─────────────────────────────────────────────────── */
     .post-header {
       text-align: center;
       padding: 80px 20px 60px;
@@ -86,14 +85,11 @@
     .post-meta { color: var(--text-muted); font-size: 0.9rem; position: relative; }
     .post-meta span { margin: 0 8px; }
 
-    /* ── CONTENT ─────────────────────────────────────────────────── */
     .post-content { padding: 60px 0 80px; }
 
     .post-content h2 {
       font-size: 1.6rem; font-weight: 700; margin: 56px 0 20px;
-      color: #fff;
-      padding-left: 16px;
-      border-left: 3px solid var(--primary);
+      color: #fff; padding-left: 16px; border-left: 3px solid var(--primary);
     }
     .post-content h3 {
       font-size: 1.15rem; font-weight: 600; margin: 36px 0 14px;
@@ -105,7 +101,6 @@
     }
     .post-content li { margin-bottom: 8px; }
 
-    /* ── CODE ─────────────────────────────────────────────────────── */
     pre {
       background: var(--bg-code); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px; padding: 24px; overflow-x: auto;
@@ -121,14 +116,11 @@
 
     .code-label {
       font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
-      color: var(--text-muted); text-transform: uppercase;
-      margin-bottom: 12px;
+      color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;
     }
 
-    /* ── CALLOUT ─────────────────────────────────────────────────── */
     .callout {
-      border-radius: 12px; padding: 20px 24px; margin: 28px 0;
-      border-left: 4px solid;
+      border-radius: 12px; padding: 20px 24px; margin: 28px 0; border-left: 4px solid;
     }
     .callout.green  { background: rgba(16,185,129,0.08); border-color: var(--primary); }
     .callout.blue   { background: rgba(79,195,247,0.08); border-color: #4fc3f7; }
@@ -137,7 +129,6 @@
     .callout-title  { font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
     .callout p      { margin: 0; font-size: 0.95rem; }
 
-    /* ── DIAGRAM ─────────────────────────────────────────────────── */
     .flow-diagram {
       background: var(--bg-code); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px; padding: 32px 24px; margin: 28px 0;
@@ -151,9 +142,7 @@
       color: var(--primary); font-size: 0.78rem; font-weight: 700;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .flow-arrow { color: var(--primary); margin: 0 4px; }
 
-    /* ── RESULT CARD ─────────────────────────────────────────────── */
     .result-card {
       background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px; padding: 28px; margin: 28px 0;
@@ -165,7 +154,6 @@
     .result-row .value { color: var(--text-primary); font-weight: 500; }
     .result-row .value.green { color: var(--primary); }
 
-    /* ── TERMINAL ─────────────────────────────────────────────────── */
     .terminal {
       background: #0d1117; border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px; overflow: hidden; margin: 24px 0;
@@ -185,7 +173,6 @@
     .t-success { color: var(--primary); }
     .t-info { color: #4fc3f7; }
 
-    /* ── SCREENSHOT ─────────────────────────────────────────────── */
     .screenshot-frame {
       background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px; overflow: hidden; margin: 28px 0;
@@ -201,7 +188,6 @@
     }
     .screen-content { padding: 28px; }
 
-    /* ── FOOTER ─────────────────────────────────────────────────── */
     .post-footer {
       background: var(--bg-card); border-top: 1px solid rgba(255,255,255,0.08);
       padding: 48px 20px; text-align: center;
@@ -219,6 +205,9 @@
     .footer-links a { color: var(--primary); text-decoration: none; font-size: 0.9rem; transition: opacity 0.2s; }
     .footer-links a:hover { opacity: 0.75; }
   </style>
+  <script src="public/i18n.js"></script>
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
 </head>
 <body>
 
@@ -226,8 +215,9 @@
 <div class="post-header">
   <div class="container">
     <a href="index.html" class="back-link">
-      <i class="fas fa-arrow-left"></i> Oscar Code Blog
+      <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
     </a>
+    <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
 
     <div class="post-tags">
       <span class="tag">TenK</span>
@@ -237,13 +227,22 @@
     </div>
 
     <h1>
-      <span class="highlight">TenK</span> ahora en tu<br>Asistente de IA
+      <span class="lang-es"><span class="highlight">TenK</span> ahora en tu<br>Asistente de IA</span>
+      <span class="lang-en"><span class="highlight">TenK</span> Now in Your<br>AI Assistant</span>
     </h1>
+
+    <div class="ov-views-wrap">
+      <div class="ov-views-badge" data-ov-visits>
+        <span class="ov-dot"></span>
+        <span class="ov-label">Visitas</span>
+        <span class="ov-count">—</span>
+      </div>
+    </div>
 
     <p class="post-meta">
       <span><i class="far fa-calendar"></i> 18 Feb 2026</span>
       <span>·</span>
-      <span><i class="far fa-clock"></i> 10 min lectura</span>
+      <span><i class="far fa-clock"></i> <span class="lang-es">10 min lectura</span><span class="lang-en">10 min read</span></span>
       <span>·</span>
       <span>OscarCode9</span>
     </p>
@@ -254,48 +253,60 @@
 <div class="post-content">
   <div class="container">
 
-    <p>
+    <p class="lang-es">
       Si sigues el blog, sabes que <strong>TenK</strong> es mi app para registrar horas de práctica deliberada hacia las 10,000 horas.
       Esta semana conecté TenK con <a href="https://openclaw.ai/" style="color: var(--primary);">OpenClaw</a> —
       el asistente de IA que uso en mi Mac — para poder interactuar con la app directamente desde el chat.
       Sin abrir la app. Sin buscar la pantalla. Solo "log 45 min de guitarra" y listo.
     </p>
-
-    <p>
-      Esto requirió construir tres cosas desde cero:
+    <p class="lang-en">
+      If you follow the blog, you know <strong>TenK</strong> is my app for logging deliberate practice hours toward 10,000 hours.
+      This week I connected TenK with <a href="https://openclaw.ai/" style="color: var(--primary);">OpenClaw</a> —
+      the AI assistant I use on my Mac — so I can interact with the app directly from chat.
+      No opening the app. No hunting for the screen. Just "log 45 min of guitar" and done.
     </p>
+
+    <p class="lang-es">Esto requirió construir tres cosas desde cero:</p>
+    <p class="lang-en">This required building three things from scratch:</p>
     <ul>
-      <li>Un <strong>sistema de auth seguro</strong> para que el asistente se autentique sin passwords en el chat</li>
-      <li>Una <strong>página de autorización</strong> en la app Flutter</li>
-      <li>Un <strong>skill CLI</strong> que OpenClaw puede ejecutar para hablar con la API de TenK</li>
+      <li class="lang-es">Un <strong>sistema de auth seguro</strong> para que el asistente se autentique sin passwords en el chat</li>
+      <li class="lang-en">A <strong>secure auth system</strong> so the assistant can authenticate without passwords in the chat</li>
+      <li class="lang-es">Una <strong>página de autorización</strong> en la app Flutter</li>
+      <li class="lang-en">An <strong>authorization page</strong> in the Flutter app</li>
+      <li class="lang-es">Un <strong>skill CLI</strong> que OpenClaw puede ejecutar para hablar con la API de TenK</li>
+      <li class="lang-en">A <strong>CLI skill</strong> that OpenClaw can execute to talk to the TenK API</li>
     </ul>
 
-    <h2>El problema: ¿cómo autentica un asistente?</h2>
+    <h2><span class="lang-es">El problema: ¿cómo autentica un asistente?</span><span class="lang-en">The Problem: How Does an Assistant Authenticate?</span></h2>
 
-    <p>
-      Cuando tu asistente de IA quiere acceder a una API tuya, tienes tres opciones:
-    </p>
+    <p class="lang-es">Cuando tu asistente de IA quiere acceder a una API tuya, tienes tres opciones:</p>
+    <p class="lang-en">When your AI assistant wants to access your API, you have three options:</p>
 
     <ul>
-      <li><strong>API Key hardcodeada</strong> — inseguro, el key vive en el contexto del chat</li>
-      <li><strong>Magic Link</strong> — ok, pero requiere email y tiene UX rara</li>
-      <li><strong>OAuth Device Flow</strong> — lo mismo que usa GitHub CLI, Netflix en Smart TVs, VSCode para autenticarse. El dispositivo genera un código y <em>tú</em> lo apruebas desde el browser</li>
+      <li class="lang-es"><strong>API Key hardcodeada</strong> — inseguro, el key vive en el contexto del chat</li>
+      <li class="lang-en"><strong>Hardcoded API Key</strong> — insecure, the key lives in the chat context</li>
+      <li class="lang-es"><strong>Magic Link</strong> — ok, pero requiere email y tiene UX rara</li>
+      <li class="lang-en"><strong>Magic Link</strong> — ok, but requires email and has a weird UX</li>
+      <li class="lang-es"><strong>OAuth Device Flow</strong> — lo mismo que usa GitHub CLI, Netflix en Smart TVs, VSCode para autenticarse. El dispositivo genera un código y <em>tú</em> lo apruebas desde el browser</li>
+      <li class="lang-en"><strong>OAuth Device Flow</strong> — the same thing GitHub CLI, Netflix on Smart TVs, and VSCode use to authenticate. The device generates a code and <em>you</em> approve it from the browser</li>
     </ul>
 
     <div class="callout green">
-      <div class="callout-title">¿Por qué Device Flow?</div>
-      <p>El asistente nunca ve tu contraseña. Tú inicias sesión en <em>tu</em> browser, apruebas o rechazas el acceso, y el asistente recibe un JWT. Exactamente como GitHub CLI.</p>
+      <div class="callout-title"><span class="lang-es">¿Por qué Device Flow?</span><span class="lang-en">Why Device Flow?</span></div>
+      <p class="lang-es">El asistente nunca ve tu contraseña. Tú inicias sesión en <em>tu</em> browser, apruebas o rechazas el acceso, y el asistente recibe un JWT. Exactamente como GitHub CLI.</p>
+      <p class="lang-en">The assistant never sees your password. You log in through <em>your</em> browser, approve or reject access, and the assistant receives a JWT. Exactly like GitHub CLI.</p>
     </div>
 
-    <h2>El flujo completo</h2>
+    <h2><span class="lang-es">El flujo completo</span><span class="lang-en">The Complete Flow</span></h2>
 
     <div style="margin: 28px 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
       <img src="diagram-device-flow.svg" alt="OAuth Device Flow — TenK x OpenClaw" style="width:100%; display:block; background:#fff;">
     </div>
 
-    <h2>Backend: 4 endpoints en Hono + Prisma</h2>
+    <h2><span class="lang-es">Backend: 4 endpoints en Hono + Prisma</span><span class="lang-en">Backend: 4 Endpoints in Hono + Prisma</span></h2>
 
-    <p>El backend corre en Bun + Hono. Agregué un módulo <code>device-auth</code> con su propia tabla en Postgres:</p>
+    <p class="lang-es">El backend corre en Bun + Hono. Agregué un módulo <code>device-auth</code> con su propia tabla en Postgres:</p>
+    <p class="lang-en">The backend runs on Bun + Hono. I added a <code>device-auth</code> module with its own table in Postgres:</p>
 
     <div class="code-label">prisma/schema.prisma</div>
     <pre><code>model DeviceCode {
@@ -317,27 +328,34 @@ GET    /api/device-auth/code/:code/status  → { status: pending|approved|expire
 GET    /api/device-auth/authorize/:code    → página HTML fallback
 POST   /api/device-auth/authorize/:code    → acepta JSON (sessionToken o email+password)</code></pre>
 
-    <p>
-      El POST de autorización acepta dos modos:
-    </p>
+    <p class="lang-es">El POST de autorización acepta dos modos:</p>
+    <p class="lang-en">The POST authorization endpoint accepts two modes:</p>
     <ul>
-      <li><strong>sessionToken</strong> — si el usuario ya está loggeado en la app Flutter, manda su JWT y se autoriza en un click</li>
-      <li><strong>email + password</strong> — fallback clásico</li>
+      <li class="lang-es"><strong>sessionToken</strong> — si el usuario ya está loggeado en la app Flutter, manda su JWT y se autoriza en un click</li>
+      <li class="lang-en"><strong>sessionToken</strong> — if the user is already logged in to the Flutter app, it sends their JWT and authorizes in one click</li>
+      <li class="lang-es"><strong>email + password</strong> — fallback clásico</li>
+      <li class="lang-en"><strong>email + password</strong> — classic fallback</li>
     </ul>
 
-    <h2>La página de autorización en Flutter</h2>
+    <h2><span class="lang-es">La página de autorización en Flutter</span><span class="lang-en">The Authorization Page in Flutter</span></h2>
 
-    <p>
+    <p class="lang-es">
       Esta fue la parte más interesante. La web de TenK es una app Flutter (sí, Flutter Web en producción).
       En lugar de servir una página HTML desde Hono, agregué una ruta <code>/authorize/:code</code> directamente en GoRouter.
     </p>
+    <p class="lang-en">
+      This was the most interesting part. The TenK web is a Flutter app (yes, Flutter Web in production).
+      Instead of serving an HTML page from Hono, I added an <code>/authorize/:code</code> route directly in GoRouter.
+    </p>
 
     <div class="callout blue">
-      <div class="callout-title">¿Por qué Flutter y no HTML?</div>
-      <p>La landing y toda la web ya son Flutter. Tendría dos sistemas de diseño si metía HTML crudo. Flutter mantiene branding consistente y puedo usar los mismos widgets, colores y el logo oficial.</p>
+      <div class="callout-title"><span class="lang-es">¿Por qué Flutter y no HTML?</span><span class="lang-en">Why Flutter and not HTML?</span></div>
+      <p class="lang-es">La landing y toda la web ya son Flutter. Tendría dos sistemas de diseño si metía HTML crudo. Flutter mantiene branding consistente y puedo usar los mismos widgets, colores y el logo oficial.</p>
+      <p class="lang-en">The landing and all the web are already Flutter. I'd have two design systems if I added raw HTML. Flutter keeps consistent branding and I can use the same widgets, colors, and official logo.</p>
     </div>
 
-    <p>La página tiene tres estados:</p>
+    <p class="lang-es">La página tiene tres estados:</p>
+    <p class="lang-en">The page has three states:</p>
 
     <div class="screenshot-frame">
       <div class="screenshot-bar">
@@ -349,28 +367,32 @@ POST   /api/device-auth/authorize/:code    → acepta JSON (sessionToken o email
           <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
             <div style="font-size: 1.5rem; margin-bottom: 8px;">🔑</div>
             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Step 1: Login</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">Email + contraseña de TenK</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Email + contraseña de TenK</span><span class="lang-en">Email + TenK password</span></div>
           </div>
           <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(16,185,129,0.06); border-radius: 10px; border: 1px solid rgba(16,185,129,0.2);">
             <div style="font-size: 1.5rem; margin-bottom: 8px;">✅</div>
-            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Step 2: Confirmar</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">Tu nombre + permisos + Autorizar / Rechazar</div>
+            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;"><span class="lang-es">Step 2: Confirmar</span><span class="lang-en">Step 2: Confirm</span></div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Tu nombre + permisos + Autorizar / Rechazar</span><span class="lang-en">Your name + permissions + Authorize / Reject</span></div>
           </div>
           <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
             <div style="font-size: 1.5rem; margin-bottom: 8px;">🎉</div>
             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Done</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">Asistente conectado</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Asistente conectado</span><span class="lang-en">Assistant connected</span></div>
           </div>
         </div>
       </div>
     </div>
 
-    <p>
+    <p class="lang-es">
       Si ya estás loggeado en TenK (SharedPreferences tiene el token), salta directo al Step 2.
       Si el código ya expiró, muestra pantalla de error. Todo dentro del mismo widget con un enum de estados.
     </p>
+    <p class="lang-en">
+      If you're already logged in to TenK (SharedPreferences has the token), it jumps directly to Step 2.
+      If the code has already expired, it shows an error screen. All within the same widget with a state enum.
+    </p>
 
-    <div class="code-label">device_authorize_page.dart — estados</div>
+    <div class="code-label">device_authorize_page.dart — <span class="lang-es">estados</span><span class="lang-en">states</span></div>
     <pre><code>enum _Step { loading, login, confirm, success, rejected, expired }
 
 // Si ya hay sesión guardada → salta a confirm
@@ -385,12 +407,17 @@ if (token != null) {
 // Si no → login form
 setState(() => _step = _Step.login);</code></pre>
 
-    <h2>El Skill CLI</h2>
+    <h2><span class="lang-es">El Skill CLI</span><span class="lang-en">The CLI Skill</span></h2>
 
-    <p>
+    <p class="lang-es">
       Un skill de OpenClaw es básicamente un <code>SKILL.md</code> con instrucciones para el agente
       más archivos de soporte (scripts, assets). El agente lee el SKILL.md cuando detecta que la tarea
       aplica, y sigue las instrucciones.
+    </p>
+    <p class="lang-en">
+      An OpenClaw skill is basically a <code>SKILL.md</code> with instructions for the agent
+      plus support files (scripts, assets). The agent reads the SKILL.md when it detects the task
+      applies and follows the instructions.
     </p>
 
     <div class="terminal">
@@ -417,37 +444,49 @@ setState(() => _step = _Step.login);</code></pre>
       </div>
     </div>
 
-    <p>El CLI tiene 7 comandos:</p>
+    <p class="lang-es">El CLI tiene 7 comandos:</p>
+    <p class="lang-en">The CLI has 7 commands:</p>
     <ul>
-      <li><code>auth</code> — device flow + polling hasta aprobado</li>
-      <li><code>skills</code> — lista habilidades con horas acumuladas</li>
-      <li><code>stats</code> — total de horas y % hacia 10,000h</li>
-      <li><code>log &lt;skill&gt; &lt;min&gt; [nota]</code> — registra sesión (fuzzy match por nombre)</li>
-      <li><code>streak</code> — cuándo practicaste por última vez cada skill</li>
+      <li><code>auth</code> — <span class="lang-es">device flow + polling hasta aprobado</span><span class="lang-en">device flow + polling until approved</span></li>
+      <li><code>skills</code> — <span class="lang-es">lista habilidades con horas acumuladas</span><span class="lang-en">lists skills with accumulated hours</span></li>
+      <li><code>stats</code> — <span class="lang-es">total de horas y % hacia 10,000h</span><span class="lang-en">total hours and % toward 10,000h</span></li>
+      <li><code>log &lt;skill&gt; &lt;min&gt; [nota]</code> — <span class="lang-es">registra sesión (fuzzy match por nombre)</span><span class="lang-en">logs session (fuzzy match by name)</span></li>
+      <li><code>streak</code> — <span class="lang-es">cuándo practicaste por última vez cada skill</span><span class="lang-en">when you last practiced each skill</span></li>
       <li><code>whoami</code> / <code>logout</code></li>
     </ul>
 
     <div class="callout orange">
-      <div class="callout-title">Detalle técnico: JSON injection fix</div>
-      <p>El primer draft construía el payload JSON concatenando strings en bash — un clásico vector de inyección. Lo corregí usando <code>python3 -c "import json, sys; print(json.dumps(...))"</code> con el argumento del usuario pasado como <code>sys.argv[1]</code>, nunca interpolado.</p>
+      <div class="callout-title"><span class="lang-es">Detalle técnico: JSON injection fix</span><span class="lang-en">Technical Detail: JSON Injection Fix</span></div>
+      <p class="lang-es">El primer draft construía el payload JSON concatenando strings en bash — un clásico vector de inyección. Lo corregí usando <code>python3 -c "import json, sys; print(json.dumps(...))"</code> con el argumento del usuario pasado como <code>sys.argv[1]</code>, nunca interpolado.</p>
+      <p class="lang-en">The first draft built the JSON payload by concatenating strings in bash — a classic injection vector. I fixed it using <code>python3 -c "import json, sys; print(json.dumps(...))"</code> with the user's argument passed as <code>sys.argv[1]</code>, never interpolated.</p>
     </div>
 
-    <h2>La validación de seguridad de ClaHub</h2>
+    <h2><span class="lang-es">La validación de seguridad de ClaHub</span><span class="lang-en">ClaHub Security Validation</span></h2>
 
-    <p>
+    <p class="lang-es">
       ClaHub (el repositorio de skills de OpenClaw) tiene un scanner automático antes de publicar.
       El primer intento me flaggeó <strong>unicode control characters</strong> en el SKILL.md.
     </p>
+    <p class="lang-en">
+      ClaHub (the OpenClaw skills repository) has an automatic scanner before publishing.
+      The first attempt flagged <strong>unicode control characters</strong> in the SKILL.md.
+    </p>
 
-    <p>
+    <p class="lang-es">
       Curioso porque mi propio scanner decía "CLEAN". El problema: yo buscaba bytes &lt; 0x09 o entre 0x0a-0x20.
       Pero hay caracteres Unicode en categorías <code>Cf</code> (format) y <code>Cc</code> (control) que pasan ese filtro.
       Los emojis en el markdown (📊, ✍️, 🔥) fueron el culpable.
     </p>
+    <p class="lang-en">
+      Curious, because my own scanner said "CLEAN". The problem: I was looking for bytes &lt; 0x09 or between 0x0a-0x20.
+      But there are Unicode characters in <code>Cf</code> (format) and <code>Cc</code> (control) categories that pass that filter.
+      The emojis in the markdown (📊, ✍️, 🔥) were the culprit.
+    </p>
 
-    <p>La solución: reescribir todos los archivos del skill como <strong>pure ASCII</strong>:</p>
+    <p class="lang-es">La solución: reescribir todos los archivos del skill como <strong>pure ASCII</strong>:</p>
+    <p class="lang-en">The solution: rewrite all skill files as <strong>pure ASCII</strong>:</p>
 
-    <div class="code-label">verificación antes de empaquetar</div>
+    <div class="code-label"><span class="lang-es">verificación antes de empaquetar</span><span class="lang-en">verification before packaging</span></div>
     <pre><code>python3 -c "
 import unicodedata
 text = open('SKILL.md').read()
@@ -457,66 +496,86 @@ weird = [(i, hex(ord(c)), unicodedata.name(c,'UNKNOWN'))
 print('CLEAN' if not weird else f'BAD: {weird[:5]}')
 "</code></pre>
 
-    <p>
-      Después de limpiar: todos los archivos CLEAN. El scanner pasó en el segundo intento.
-    </p>
+    <p class="lang-es">Después de limpiar: todos los archivos CLEAN. El scanner pasó en el segundo intento.</p>
+    <p class="lang-en">After cleaning: all files CLEAN. The scanner passed on the second attempt.</p>
 
-    <h2>Arquitectura del sistema</h2>
+    <h2><span class="lang-es">Arquitectura del sistema</span><span class="lang-en">System Architecture</span></h2>
 
     <div style="margin: 28px 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
       <img src="diagram-architecture.svg" alt="Arquitectura — TenK Skill" style="width:100%; display:block; background:#fff;">
     </div>
 
-    <h2>La landing page actualizada</h2>
+    <h2><span class="lang-es">La landing page actualizada</span><span class="lang-en">The Updated Landing Page</span></h2>
 
-    <p>
+    <p class="lang-es">
       Con el skill funcionando, actualicé la landing de TenK para comunicar la integración.
       Agregué una sección oscura antes del footer con:
     </p>
+    <p class="lang-en">
+      With the skill working, I updated the TenK landing to communicate the integration.
+      I added a dark section before the footer with:
+    </p>
     <ul>
-      <li>Logo oficial de TenK × logo de OpenClaw (🦞)</li>
-      <li>Preview de chat en terminal mostrando el skill en acción</li>
-      <li>Comando de instalación: <code>npx clawhub@latest install tenk-connect</code></li>
-      <li>CTA a <a href="https://openclaw.ai/" style="color: var(--primary);">openclaw.ai</a></li>
+      <li class="lang-es">Logo oficial de TenK × logo de OpenClaw (🦞)</li>
+      <li class="lang-en">Official TenK logo × OpenClaw logo (🦞)</li>
+      <li class="lang-es">Preview de chat en terminal mostrando el skill en acción</li>
+      <li class="lang-en">Chat preview in terminal showing the skill in action</li>
+      <li><span class="lang-es">Comando de instalación:</span><span class="lang-en">Install command:</span> <code>npx clawhub@latest install tenk-connect</code></li>
+      <li>CTA <span class="lang-es">a</span><span class="lang-en">to</span> <a href="https://openclaw.ai/" style="color: var(--primary);">openclaw.ai</a></li>
     </ul>
 
-    <h2>Deploy y lo que quedó en producción</h2>
+    <h2><span class="lang-es">Deploy y lo que quedó en producción</span><span class="lang-en">Deploy and What Ended Up in Production</span></h2>
 
     <div class="result-card">
-      <div class="rc-title">Estado final en producción</div>
+      <div class="rc-title"><span class="lang-es">Estado final en producción</span><span class="lang-en">Final Production Status</span></div>
       <div class="result-row"><span class="label">Backend (Hono + Prisma)</span><span class="value green">✅ device_codes table + 4 endpoints</span></div>
       <div class="result-row"><span class="label">Flutter web (/authorize/:code)</span><span class="value green">✅ live en tenk.oventlabs.com</span></div>
       <div class="result-row"><span class="label">Skill CLI (tenk.sh)</span><span class="value green">✅ auth, skills, stats, log, streak</span></div>
-      <div class="result-row"><span class="label">Paquete ClaHub</span><span class="value green">✅ pure ASCII, JSON-safe</span></div>
-      <div class="result-row"><span class="label">Landing page</span><span class="value green">✅ sección OpenClaw live</span></div>
-      <div class="result-row"><span class="label">Datos de producción</span><span class="value green">✅ 22 users, 35 skills — 0 pérdidas</span></div>
+      <div class="result-row"><span class="label"><span class="lang-es">Paquete ClaHub</span><span class="lang-en">ClaHub Package</span></span><span class="value green">✅ pure ASCII, JSON-safe</span></div>
+      <div class="result-row"><span class="label">Landing page</span><span class="value green">✅ <span class="lang-es">sección OpenClaw live</span><span class="lang-en">OpenClaw section live</span></span></div>
+      <div class="result-row"><span class="label"><span class="lang-es">Datos de producción</span><span class="lang-en">Production Data</span></span><span class="value green">✅ 22 users, 35 skills — 0 pérdidas</span></div>
     </div>
 
-    <h2>Lo que aprendí</h2>
+    <h2><span class="lang-es">Lo que aprendí</span><span class="lang-en">What I Learned</span></h2>
 
-    <p>
+    <p class="lang-es">
       <strong>OAuth Device Flow es subestimado.</strong> Es el patrón correcto cuando el "dispositivo" no tiene browser propio
       — un CLI, una TV, un asistente de IA. La mayoría de devs van directo a API keys sin pensar en alternativas más seguras.
     </p>
+    <p class="lang-en">
+      <strong>OAuth Device Flow is underrated.</strong> It's the right pattern when the "device" doesn't have its own browser
+      — a CLI, a TV, an AI assistant. Most devs go straight to API keys without thinking about more secure alternatives.
+    </p>
 
-    <p>
+    <p class="lang-es">
       <strong>Flutter Web vale la pena para consistencia.</strong> Podría haber servido HTML desde Hono en 30 minutos.
       Pero tener la página de autorización en Flutter significa el mismo sistema de diseño, los mismos colores, el mismo logo,
       los mismos widgets. A largo plazo eso importa.
     </p>
+    <p class="lang-en">
+      <strong>Flutter Web is worth it for consistency.</strong> I could have served HTML from Hono in 30 minutes.
+      But having the authorization page in Flutter means the same design system, same colors, same logo,
+      same widgets. Long-term, that matters.
+    </p>
 
-    <p>
+    <p class="lang-es">
       <strong>Los scanners de seguridad son más estrictos de lo que crees.</strong>
       Mi checklist de "no hay secrets hardcodeados" no es suficiente.
       Unicode format chars en markdown pueden parecer intent malicioso.
       Pure ASCII es la forma más segura de distribuir archivos de configuración de agentes.
     </p>
+    <p class="lang-en">
+      <strong>Security scanners are stricter than you think.</strong>
+      My "no hardcoded secrets" checklist isn't enough.
+      Unicode format chars in markdown can look like malicious intent.
+      Pure ASCII is the safest way to distribute agent configuration files.
+    </p>
 
     <div class="callout green">
-      <div class="callout-title">Pruébalo</div>
+      <div class="callout-title"><span class="lang-es">Pruébalo</span><span class="lang-en">Try It</span></div>
       <p>
         App: <a href="https://tenk.oventlabs.com" style="color: var(--primary);">tenk.oventlabs.com</a><br>
-        Skill: <a href="https://clawhub.com" style="color: var(--primary);">clawhub.com</a> → busca <strong>tenk-connect</strong><br>
+        Skill: <a href="https://clawhub.com" style="color: var(--primary);">clawhub.com</a> → <span class="lang-es">busca</span><span class="lang-en">search for</span> <strong>tenk-connect</strong><br>
         OpenClaw: <a href="https://openclaw.ai" style="color: var(--primary);">openclaw.ai</a>
       </p>
     </div>
