@@ -1,8 +1,27 @@
-// public/i18n.js — Bilingual support (ES/EN)
+// public/i18n.js — Bilingual support (ES/EN) with auto-detection
 (function() {
+  // Detect language: saved preference > browser language > default 'es'
+  function detectLanguage() {
+    var saved = localStorage.getItem('site-lang');
+    if (saved) return saved;
+    
+    // Check browser language
+    var browserLang = navigator.language || navigator.userLanguage || 'es';
+    // If browser is English (en, en-US, en-GB, etc.), use English
+    if (browserLang.toLowerCase().startsWith('en')) {
+      return 'en';
+    }
+    // Default to Spanish for es-*, and any other language
+    return 'es';
+  }
+
   // Set language IMMEDIATELY before rendering to avoid flicker
-  var savedLang = localStorage.getItem('site-lang') || 'es';
-  document.documentElement.lang = savedLang;
+  var currentLang = detectLanguage();
+  document.documentElement.lang = currentLang;
+  // Save detected preference so toggle works correctly
+  if (!localStorage.getItem('site-lang')) {
+    localStorage.setItem('site-lang', currentLang);
+  }
 
   // Inject CSS for language switching
   var style = document.createElement('style');
@@ -91,10 +110,10 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       updateToggles();
-      if (savedLang !== 'es') updatePlaceholders();
+      if (currentLang !== 'es') updatePlaceholders();
     });
   } else {
     updateToggles();
-    if (savedLang !== 'es') updatePlaceholders();
+    if (currentLang !== 'es') updatePlaceholders();
   }
 })();
