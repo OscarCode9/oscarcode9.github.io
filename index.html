@@ -112,22 +112,22 @@
     .hero-image-wrapper img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      border-radius: 0;
-      border: none;
-      box-shadow: none;
-      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
     }
 
     .hero-mascot {
-      display: block;
-      margin: 0 auto 2px auto;
-      width: 140px;
+      position: absolute;
+      right: -40px;
+      bottom: -20px;
+      width: 150px;
       height: auto;
       border: none !important;
       border-radius: 0 !important;
       box-shadow: none !important;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35));
       pointer-events: none;
     }
 
@@ -175,16 +175,15 @@
     }
 
     .hero-mascot {
-      width: 140px;
+      width: 120px;
       height: auto;
-      margin-bottom: 2px;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+      margin-bottom: 12px;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
     }
 
     .hero-title {
       font-size: 3rem;
       font-weight: 700;
-      margin-top: -5px;
       margin-bottom: 20px;
     }
 
@@ -412,17 +411,6 @@
 
     .about-content {
       max-width: 900px;
-    }
-
-    .about-photo {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      border: 3px solid var(--primary);
-      object-fit: cover;
-      display: block;
-      margin: 0 auto 20px auto;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
     }
 
     .about-intro h3 {
@@ -974,8 +962,8 @@
 
     @media (max-width: 992px) {
       .hero .container { flex-direction: column; text-align: left; }
-      .hero-content { text-align: left; max-width: 100%; order: 2; margin-top: -20px; }
-      .hero-image { order: 1; margin-bottom: 0; }
+      .hero-content { text-align: left; max-width: 100%; order: 2; }
+      .hero-image { order: 1; margin-bottom: 30px; }
       .hero-image-wrapper { width: 180px; height: 180px; }
       .hero-mascot { width: 100px; margin-bottom: 10px; }
       .hero-title { font-size: 2.2rem; }
@@ -983,11 +971,8 @@
     }
 
     @media (max-width: 600px) {
-      .hero { padding-top: 60px; }
-      .hero-content { margin-top: -30px; }
-      .hero-role { margin-bottom: 5px; }
-      .hero-image { margin-bottom: 0; }
-      .hero-title { font-size: 1.8rem; margin-top: 0; }
+      .hero { padding-top: 100px; }
+      .hero-title { font-size: 1.8rem; }
       .hero-stats { flex-direction: column; gap: 15px; }
       .stat-item { text-align: left; }
       .section { padding: 60px 0; }
@@ -1043,8 +1028,9 @@
   <section class="hero">
     <div class="container">
       <div class="hero-content">
+        <img class="hero-mascot" src="xoxo-mascot.gif" alt="XoxoBot Mascot">
         <p class="hero-role"><span id="typing-role" class="typing-text"></span></p>
-        <h1 class="hero-title"><span class="lang-es">Hey, soy Oscar</span><span class="lang-en">Hey, I'm Oscar</span></h1>
+        <h1 class="hero-title"><span class="lang-es">Hey, soy Oscar 🤙</span><span class="lang-en">Hey, I'm Oscar 🤙</span></h1>
         <p class="hero-description">
           <span class="lang-es">Llevo +10 años rompiendo y arreglando código. Me gusta crear apps que funcionen bien 
           y no exploten en producción (la mayoría de las veces 😅). Backend, frontend, lo que sea.</span>
@@ -1087,7 +1073,7 @@
       <div class="hero-image">
         <div class="hero-image-wrapper">
           <div class="hero-image-glow"></div>
-          <img src="xoxo-mascot.gif" alt="XoxoBot Mascot">
+          <img src="public/image.png" alt="Oscar Martínez">
         </div>
       </div>
     </div>
@@ -1104,7 +1090,6 @@
       <div class="about-container">
         <div class="about-content">
           <div class="about-intro">
-            <img src="public/image.png" alt="Oscar Martínez" class="about-photo">
             <h3>Hey, soy <span class="highlight">Oscar Martínez</span> 👋</h3>
             <p class="about-tagline">
               <span class="code-tag">&lt;developer&gt;</span> <span class="lang-es">construyendo software que importa</span><span class="lang-en">building software that matters</span> <span class="code-tag">&lt;/developer&gt;</span>
@@ -1212,7 +1197,20 @@
       </div>
 
       <div class="blog-list">
-        <!-- Post: XoxoBot Birth -->
+        <!-- Post: RAG Local Knowledge Base -->
+        <a href="rag-local-knowledge-base.html" class="blog-item">
+          <div class="blog-item-content">
+            <div class="blog-item-date">
+              <span class="blog-item-tag">RAG</span>
+              <span class="blog-item-tag" style="background: rgba(124,58,237,0.15); color: #a78bfa;">🧠 OpenClaw</span>
+              19 Feb 2026
+            </div>
+            <h3 class="blog-item-title"><span class="lang-es">RAG Local: Memoria Infinita para tu Agente de IA por $0</span><span class="lang-en">Local RAG: Infinite Memory for Your AI Agent for $0</span></h3>
+            <p class="blog-item-excerpt"><span class="lang-es">Construye tu propio Knowledge Base con búsqueda semántica usando Ollama + SQLite. Todo local, todo gratis, todo privado.</span><span class="lang-en">Build your own Knowledge Base with semantic search using Ollama + SQLite. All local, all free, all private.</span></p>
+          </div>
+          <i class="fas fa-arrow-right blog-item-arrow"></i>
+        </a>
+
         <!-- Post: TenK OpenClaw Skill -->
         <a href="tenk-openclaw-skill.html" class="blog-item">
           <div class="blog-item-content">
@@ -1223,20 +1221,6 @@
             </div>
             <h3 class="blog-item-title"><span class="lang-es">TenK ahora en tu Asistente de IA — OAuth Device Flow + Flutter + Skill CLI</span><span class="lang-en">TenK now in your AI Assistant — OAuth Device Flow + Flutter + Skill CLI</span></h3>
             <p class="blog-item-excerpt"><span class="lang-es">Cómo construí la integración de TenK con OpenClaw: OAuth Device Flow desde cero, página de autorización en Flutter Web, skill CLI y landing actualizada.</span><span class="lang-en">How I built TenK's OpenClaw integration: OAuth Device Flow from scratch, Flutter Web authorize page, skill CLI, and updated landing page.</span></p>
-          </div>
-          <i class="fas fa-arrow-right blog-item-arrow"></i>
-        </a>
-
-        <!-- Post: XoxoBot Device Flow Fix -->
-        <a href="xoxobot-device-flow-fix.html" class="blog-item">
-          <div class="blog-item-content">
-            <div class="blog-item-date">
-              <span class="blog-item-tag">Debugging</span>
-              <span class="blog-item-tag" style="background: rgba(255,107,107,0.15); color: #ff6b6b;">🔧 Fix</span>
-              18 Feb 2026
-            </div>
-            <h3 class="blog-item-title"><span class="lang-es">Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼</span><span class="lang-en">Debugging XoxoBot: OAuth Tokens and the Copilot API 🪼</span></h3>
-            <p class="blog-item-excerpt"><span class="lang-es">Un token expirado, un HTTP 403, y cómo mi agente de IA lo resolvió en 15 minutos con un fallback elegante.</span><span class="lang-en">An expired token, an HTTP 403, and how my AI agent fixed it in 15 minutes with an elegant fallback.</span></p>
           </div>
           <i class="fas fa-arrow-right blog-item-arrow"></i>
         </a>

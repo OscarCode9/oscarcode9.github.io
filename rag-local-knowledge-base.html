@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Local: Memoria Infinita para tu Agente de IA por $0 | Oscar Code</title>
+  <meta name="description" content="Cómo construir tu propio Knowledge Base con búsqueda semántica usando Ollama, SQLite y embeddings locales. Sin APIs de pago, todo en tu Mac.">
+  <meta name="keywords" content="RAG, Retrieval Augmented Generation, Ollama, embeddings, SQLite, Knowledge Base, IA local, mxbai-embed-large, OpenClaw">
+  <meta property="og:title" content="RAG Local: Memoria Infinita para tu Agente de IA por $0">
+  <meta property="og:description" content="Knowledge Base con búsqueda semántica. Embeddings locales. Cero costo. Setup en 1 hora.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #00897b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #0d2137 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(38,166,154,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(79,195,247,0.05) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.2em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+    }
+
+    .post-tag.ai { background: var(--accent-purple); }
+    .post-tag.backend { background: var(--accent-blue); color: #000; }
+    .post-tag.local { background: var(--accent-green); color: #000; }
+
+    /* ========== CONTENT ========== */
+    .post-content {
+      padding: 60px 0 80px;
+    }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--primary);
+      border-bottom: 2px solid rgba(38,166,154,0.3);
+      padding-bottom: 10px;
+    }
+
+    .post-content h2:first-child {
+      margin-top: 0;
+    }
+
+    .post-content h3 {
+      font-size: 1.35em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content h4 {
+      font-size: 1.1em;
+      margin: 25px 0 10px;
+      color: var(--accent-green);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong {
+      color: var(--text-primary);
+    }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover {
+      border-bottom-color: var(--primary);
+    }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li {
+      margin-bottom: 8px;
+    }
+
+    /* Code blocks */
+    .post-content pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    .post-content pre code {
+      color: var(--accent-green);
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 0.9em;
+    }
+
+    .post-content code {
+      background: var(--bg-code);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--accent-orange);
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 0.9em;
+    }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.warning {
+      border-left-color: var(--accent-orange);
+    }
+
+    .callout.danger {
+      border-left-color: var(--accent-red);
+    }
+
+    .callout.info {
+      border-left-color: var(--accent-blue);
+    }
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .callout p:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    /* Diagrams / ASCII art */
+    .diagram {
+      background: var(--bg-code);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 25px 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .diagram pre code {
+      color: var(--primary);
+      font-size: 0.82em;
+    }
+
+    .diagram-caption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Comparison boxes */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .comparison-box {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .comparison-box.bad {
+      border-color: rgba(255,107,107,0.3);
+    }
+
+    .comparison-box.good {
+      border-color: rgba(38,166,154,0.3);
+    }
+
+    .comparison-box h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .comparison-box.bad h4 { color: var(--accent-red); }
+    .comparison-box.good h4 { color: var(--accent-green); }
+
+    /* Section numbers */
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-right: 12px;
+    }
+
+    /* Key takeaways */
+    .takeaways {
+      background: linear-gradient(135deg, rgba(38,166,154,0.1) 0%, rgba(79,195,247,0.05) 100%);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+
+    .takeaways h3 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+
+    .takeaways ul {
+      color: var(--text-secondary);
+    }
+
+    .takeaways li {
+      margin-bottom: 12px;
+    }
+
+    /* Stat highlight */
+    .stat-highlight {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--bg-card);
+      border: 1px solid rgba(38,166,154,0.2);
+      border-radius: 12px;
+      padding: 20px 25px;
+      margin: 20px 0;
+    }
+
+    .stat-highlight .stat-number {
+      font-size: 2.5em;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .stat-highlight .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.95em;
+    }
+
+    /* Footer */
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+
+    .post-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.7em; }
+      .post-header { padding: 60px 15px 40px; }
+      .comparison { grid-template-columns: 1fr; }
+      .post-content h2 { font-size: 1.4em; }
+      .stat-highlight { flex-direction: column; text-align: center; gap: 10px; }
+      .stat-highlight .stat-number { font-size: 2em; }
+    }
+  </style>
+  <script src="public/i18n.js"></script>
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
+      </a>
+      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+      <h1 class="post-title"><span class="lang-es">RAG Local: Memoria Infinita para tu Agente de IA por $0</span><span class="lang-en">Local RAG: Infinite Memory for Your AI Agent for $0</span></h1>
+      <div class="ov-views-wrap">
+        <div class="ov-views-badge" data-ov-visits>
+          <span class="ov-dot"></span>
+          <span class="ov-label">Visitas</span>
+          <span class="ov-count">—</span>
+        </div>
+      </div>
+
+      <p class="post-subtitle"><span class="lang-es">Cómo construir un Knowledge Base con búsqueda semántica usando Ollama + SQLite. Sin APIs de pago. Todo local.</span><span class="lang-en">How to build a Knowledge Base with semantic search using Ollama + SQLite. No paid APIs. All local.</span></p>
+      <div class="post-meta">
+        <span class="post-tag ai">RAG</span>
+        <span class="post-tag local">Local</span>
+        <span class="post-tag backend">Embeddings</span>
+        <br><br>
+        <i class="far fa-clock"></i> <span class="lang-es">19 de febrero de 2026</span><span class="lang-en">February 19, 2026</span> &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Code × xoxo (AI) &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> <span class="lang-es">~10 min de lectura</span><span class="lang-en">~10 min read</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="post-content">
+    <div class="container">
+
+      <!-- INTRO / HOOK -->
+      <div class="callout danger">
+        <p class="lang-es"><strong>RAG ya no es cosa de empresas con presupuesto de OpenAI.</strong> Hoy construimos un Knowledge Base completo con búsqueda semántica. Costo total: $0. Tiempo: ~1 hora. Todo corre local en tu Mac.</p>
+        <p class="lang-en"><strong>RAG is no longer just for companies with OpenAI budgets.</strong> Today we built a complete Knowledge Base with semantic search. Total cost: $0. Time: ~1 hour. Everything runs locally on your Mac.</p>
+      </div>
+
+      <p class="lang-es">Esto no es un tutorial teórico. Es lo que construimos <strong>hoy</strong> como skill de <a href="https://github.com/ArekSrorth/OpenClaw">OpenClaw</a>. Un sistema donde puedo guardar artículos, URLs, documentos — y después preguntarle a mi agente de IA "¿qué leí sobre embeddings?" y que me encuentre exactamente lo relevante.</p>
+      <p class="lang-en">This isn't a theoretical tutorial. It's what we built <strong>today</strong> as an <a href="https://github.com/ArekSrorth/OpenClaw">OpenClaw</a> skill. A system where I can save articles, URLs, documents — and then ask my AI agent "what did I read about embeddings?" and have it find exactly what's relevant.</p>
+
+      <p class="lang-es">Y antes de que digas <em>"pero necesitas pagar por embeddings de OpenAI"</em> — no. <strong>Ollama + mxbai-embed-large</strong> es gratis, corre local, y en benchmarks <a href="https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1">supera a text-embedding-ada-002</a>.</p>
+      <p class="lang-en">And before you say <em>"but you need to pay for OpenAI embeddings"</em> — no. <strong>Ollama + mxbai-embed-large</strong> is free, runs locally, and in benchmarks <a href="https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1">outperforms text-embedding-ada-002</a>.</p>
+
+
+      <!-- ==================== SECCIÓN 1 ==================== -->
+      <h2><span class="section-number">1</span> <span class="lang-es">¿Qué Demonios es RAG?</span><span class="lang-en">What the Hell is RAG?</span></h2>
+
+      <p class="lang-es">RAG = <strong>Retrieval Augmented Generation</strong>. En español: darle memoria externa a tu LLM.</p>
+      <p class="lang-en">RAG = <strong>Retrieval Augmented Generation</strong>. In plain English: giving your LLM external memory.</p>
+
+      <p class="lang-es">El problema con los LLMs es que solo saben lo que estaba en su training data. No saben qué leíste ayer. No conocen tus documentos internos. No tienen idea de ese artículo que guardaste hace un mes.</p>
+      <p class="lang-en">The problem with LLMs is they only know what was in their training data. They don't know what you read yesterday. They don't know your internal documents. They have no idea about that article you saved a month ago.</p>
+
+      <p class="lang-es">RAG resuelve esto en 3 pasos:</p>
+      <p class="lang-en">RAG solves this in 3 steps:</p>
+
+      <div class="diagram">
+        <pre><code>┌────────────────────────────────────────────────────────────┐
+│                    CÓMO FUNCIONA RAG                        │
+│                                                            │
+│  1. INDEXAR                                                │
+│  ┌──────────┐    ┌────────────┐    ┌─────────────────┐    │
+│  │ Documento│───▶│ Embeddings │───▶│ Base de Datos   │    │
+│  │ o URL    │    │ (vectores) │    │ (SQLite)        │    │
+│  └──────────┘    └────────────┘    └─────────────────┘    │
+│                                                            │
+│  2. BUSCAR                                                 │
+│  ┌──────────┐    ┌────────────┐    ┌─────────────────┐    │
+│  │ "¿Qué    │───▶│ Embedding  │───▶│ Búsqueda por    │    │
+│  │ leí de   │    │ de query   │    │ similitud       │    │
+│  │ RAG?"    │    │            │    │ coseno          │    │
+│  └──────────┘    └────────────┘    └────────┬────────┘    │
+│                                              │             │
+│  3. GENERAR                                  ▼             │
+│  ┌──────────────────────────────────────────────────┐     │
+│  │ LLM recibe: tu pregunta + documentos relevantes  │     │
+│  │ → Respuesta con contexto de TU conocimiento      │     │
+│  └──────────────────────────────────────────────────┘     │
+└────────────────────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption"><span class="lang-es">Retrieval Augmented Generation: memoria infinita para tu agente</span><span class="lang-en">Retrieval Augmented Generation: infinite memory for your agent</span></p>
+      </div>
+
+      <p class="lang-es">La magia está en los <strong>embeddings</strong>. Son representaciones numéricas del significado de un texto. Dos textos sobre el mismo tema tendrán vectores similares, aunque usen palabras diferentes.</p>
+      <p class="lang-en">The magic is in <strong>embeddings</strong>. They're numerical representations of text meaning. Two texts about the same topic will have similar vectors, even if they use different words.</p>
+
+      <div class="callout info">
+        <p class="lang-es"><strong>💡 Ejemplo:</strong> "El perro corre en el parque" y "El can trota en el jardín" tienen embeddings casi idénticos. Una búsqueda por keywords no los conectaría. Una búsqueda semántica sí.</p>
+        <p class="lang-en"><strong>💡 Example:</strong> "The dog runs in the park" and "The canine trots in the garden" have nearly identical embeddings. A keyword search wouldn't connect them. A semantic search does.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 2 ==================== -->
+      <h2><span class="section-number">2</span> <span class="lang-es">El Stack: $0 y Todo Local</span><span class="lang-en">The Stack: $0 and All Local</span></h2>
+
+      <p class="lang-es">Aquí está lo que usamos:</p>
+      <p class="lang-en">Here's what we use:</p>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4><span class="lang-es">❌ Stack "Enterprise"</span><span class="lang-en">❌ "Enterprise" Stack</span></h4>
+          <ul>
+            <li><span class="lang-es"><strong>OpenAI Embeddings:</strong> $0.0001/1K tokens</span><span class="lang-en"><strong>OpenAI Embeddings:</strong> $0.0001/1K tokens</span></li>
+            <li><span class="lang-es"><strong>Pinecone/Weaviate:</strong> $70+/mes</span><span class="lang-en"><strong>Pinecone/Weaviate:</strong> $70+/month</span></li>
+            <li><span class="lang-es"><strong>AWS/GCP:</strong> Hosting adicional</span><span class="lang-en"><strong>AWS/GCP:</strong> Additional hosting</span></li>
+            <li><span class="lang-es"><strong>Privacidad:</strong> Todo en la nube 😬</span><span class="lang-en"><strong>Privacy:</strong> Everything in the cloud 😬</span></li>
+            <li><span class="lang-es"><strong>Costo mensual:</strong> $100-500+</span><span class="lang-en"><strong>Monthly cost:</strong> $100-500+</span></li>
+          </ul>
+        </div>
+        <div class="comparison-box good">
+          <h4><span class="lang-es">✅ Nuestro Stack</span><span class="lang-en">✅ Our Stack</span></h4>
+          <ul>
+            <li><span class="lang-es"><strong>Ollama + mxbai-embed-large:</strong> $0</span><span class="lang-en"><strong>Ollama + mxbai-embed-large:</strong> $0</span></li>
+            <li><span class="lang-es"><strong>SQLite:</strong> $0 (incluido en tu OS)</span><span class="lang-en"><strong>SQLite:</strong> $0 (included in your OS)</span></li>
+            <li><span class="lang-es"><strong>Hosting:</strong> Tu Mac</span><span class="lang-en"><strong>Hosting:</strong> Your Mac</span></li>
+            <li><span class="lang-es"><strong>Privacidad:</strong> 100% local 🔒</span><span class="lang-en"><strong>Privacy:</strong> 100% local 🔒</span></li>
+            <li><span class="lang-es"><strong>Costo mensual:</strong> $0</span><span class="lang-en"><strong>Monthly cost:</strong> $0</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3><span class="lang-es">Los Componentes</span><span class="lang-en">The Components</span></h3>
+
+      <h4>🦙 Ollama</h4>
+      <p class="lang-es"><a href="https://ollama.ai">Ollama</a> es como Docker pero para LLMs. Un comando y tienes modelos corriendo local. Lo usamos para los embeddings, no para generar texto (eso lo hace tu LLM principal).</p>
+      <p class="lang-en"><a href="https://ollama.ai">Ollama</a> is like Docker but for LLMs. One command and you have models running locally. We use it for embeddings, not for text generation (your main LLM handles that).</p>
+
+      <h4>🧠 mxbai-embed-large</h4>
+      <p class="lang-es">El modelo de embeddings de <a href="https://mixedbread.ai">Mixedbread AI</a>. 335M parámetros. Vectores de 1024 dimensiones. <strong>Supera a OpenAI's ada-002 en el benchmark MTEB.</strong> Y es open source.</p>
+      <p class="lang-en">The embeddings model from <a href="https://mixedbread.ai">Mixedbread AI</a>. 335M parameters. 1024-dimension vectors. <strong>Outperforms OpenAI's ada-002 on the MTEB benchmark.</strong> And it's open source.</p>
+
+      <div class="stat-highlight">
+        <div class="stat-number">64.68%</div>
+        <div class="stat-label"><span class="lang-es">Score MTEB de mxbai-embed-large vs 61.0% de text-embedding-ada-002</span><span class="lang-en">MTEB score for mxbai-embed-large vs 61.0% for text-embedding-ada-002</span></div>
+      </div>
+
+      <h4>🗄️ SQLite</h4>
+      <p class="lang-es">La base de datos más deployeada del mundo. Viene en tu Mac. Cero configuración. Para nuestro caso de uso (cientos o miles de documentos personales), es más que suficiente. No necesitas Pinecone.</p>
+      <p class="lang-en">The most deployed database in the world. Comes with your Mac. Zero configuration. For our use case (hundreds or thousands of personal documents), it's more than enough. You don't need Pinecone.</p>
+
+
+      <!-- ==================== SECCIÓN 3 ==================== -->
+      <h2><span class="section-number">3</span> <span class="lang-es">Setup en 15 Minutos</span><span class="lang-en">Setup in 15 Minutes</span></h2>
+
+      <p class="lang-es">Esto es todo lo que necesitas:</p>
+      <p class="lang-en">This is all you need:</p>
+
+      <h4><span class="lang-es">1. Instalar Ollama</span><span class="lang-en">1. Install Ollama</span></h4>
+      <pre><code># macOS
+brew install ollama
+
+# O descarga directa desde ollama.ai</code></pre>
+
+      <h4><span class="lang-es">2. Descargar el modelo de embeddings</span><span class="lang-en">2. Download the embeddings model</span></h4>
+      <pre><code>ollama pull mxbai-embed-large
+
+# Primera vez descarga ~670MB
+# Después corre instantáneo</code></pre>
+
+      <h4><span class="lang-es">3. Verificar que funciona</span><span class="lang-en">3. Verify it works</span></h4>
+      <pre><code>curl http://localhost:11434/api/embeddings -d '{
+  "model": "mxbai-embed-large",
+  "prompt": "Hola mundo"
+}'
+
+# Debería devolver un vector de 1024 dimensiones</code></pre>
+
+      <p class="lang-es">Eso es todo el setup. Ollama corre como servicio en background. Ahora tienes un endpoint local para generar embeddings de cualquier texto.</p>
+      <p class="lang-en">That's all the setup. Ollama runs as a background service. Now you have a local endpoint to generate embeddings for any text.</p>
+
+      <div class="callout">
+        <p class="lang-es"><strong>📝 Nota:</strong> En Apple Silicon (M1/M2/M3), los embeddings se generan en ~100ms por documento. En Intel puede tardar un poco más, pero sigue siendo instantáneo para uso interactivo.</p>
+        <p class="lang-en"><strong>📝 Note:</strong> On Apple Silicon (M1/M2/M3), embeddings generate in ~100ms per document. On Intel it might take slightly longer, but it's still instant for interactive use.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 4 ==================== -->
+      <h2><span class="section-number">4</span> <span class="lang-es">La Arquitectura del Knowledge Base</span><span class="lang-en">The Knowledge Base Architecture</span></h2>
+
+      <p class="lang-es">Nuestro KB tiene una estructura simple pero poderosa:</p>
+      <p class="lang-en">Our KB has a simple but powerful structure:</p>
+
+      <div class="diagram">
+        <pre><code>┌─────────────────────────────────────────────────────────────┐
+│                   KNOWLEDGE BASE SCHEMA                      │
+│                                                              │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                    documents                         │    │
+│  ├─────────────────────────────────────────────────────┤    │
+│  │ id          │ INTEGER PRIMARY KEY                   │    │
+│  │ title       │ TEXT                                  │    │
+│  │ content     │ TEXT (el texto completo)              │    │
+│  │ source_url  │ TEXT (opcional, de dónde vino)        │    │
+│  │ tags        │ TEXT (JSON array)                     │    │
+│  │ embedding   │ BLOB (vector de 1024 floats)          │    │
+│  │ created_at  │ DATETIME                              │    │
+│  │ updated_at  │ DATETIME                              │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                                                              │
+│  Índice: embedding para búsqueda por similitud              │
+│  (En SQLite usamos búsqueda lineal, suficiente para <10K    │
+│   docs. Para más, considera sqlite-vec o similar)           │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption"><span class="lang-es">Schema simple: documento + embedding + metadata</span><span class="lang-en">Simple schema: document + embedding + metadata</span></p>
+      </div>
+
+      <h3><span class="lang-es">El Flujo de Guardado</span><span class="lang-en">The Save Flow</span></h3>
+
+      <pre><code>// Pseudocódigo del flujo
+async function saveDocument(title, content, sourceUrl, tags) {
+  // 1. Generar embedding del contenido
+  const embedding = await ollama.embeddings({
+    model: 'mxbai-embed-large',
+    prompt: content
+  });
+  
+  // 2. Guardar en SQLite
+  db.run(`
+    INSERT INTO documents (title, content, source_url, tags, embedding)
+    VALUES (?, ?, ?, ?, ?)
+  `, [title, content, sourceUrl, JSON.stringify(tags), embedding]);
+}</code></pre>
+
+      <h3><span class="lang-es">El Flujo de Búsqueda</span><span class="lang-en">The Search Flow</span></h3>
+
+      <pre><code>// Búsqueda semántica
+async function search(query, limit = 5) {
+  // 1. Embedding de la query
+  const queryEmbedding = await ollama.embeddings({
+    model: 'mxbai-embed-large',
+    prompt: query
+  });
+  
+  // 2. Obtener todos los documentos
+  const docs = db.all('SELECT * FROM documents');
+  
+  // 3. Calcular similitud coseno con cada uno
+  const results = docs.map(doc => ({
+    ...doc,
+    similarity: cosineSimilarity(queryEmbedding, doc.embedding)
+  }));
+  
+  // 4. Ordenar por similitud y devolver top N
+  return results
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, limit);
+}</code></pre>
+
+      <div class="callout warning">
+        <p class="lang-es"><strong>⚠️ Sobre escalabilidad:</strong> Sí, estamos haciendo búsqueda lineal. Para un Knowledge Base personal (<10,000 documentos), esto toma milisegundos. Si necesitas millones de documentos, considera <code>sqlite-vec</code>, FAISS, o una base de datos vectorial dedicada. Pero para uso personal, keep it simple.</p>
+        <p class="lang-en"><strong>⚠️ On scalability:</strong> Yes, we're doing linear search. For a personal Knowledge Base (<10,000 documents), this takes milliseconds. If you need millions of documents, consider <code>sqlite-vec</code>, FAISS, or a dedicated vector database. But for personal use, keep it simple.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 5 ==================== -->
+      <h2><span class="section-number">5</span> <span class="lang-es">Integración con tu Agente</span><span class="lang-en">Integration with Your Agent</span></h2>
+
+      <p class="lang-es">Aquí es donde la magia se vuelve práctica. El Knowledge Base es un <strong>skill</strong> de OpenClaw, lo que significa que mi agente puede:</p>
+      <p class="lang-en">Here's where the magic becomes practical. The Knowledge Base is an OpenClaw <strong>skill</strong>, which means my agent can:</p>
+
+      <ul>
+        <li class="lang-es"><strong>Guardar:</strong> "Guarda este artículo en el KB con tags [rag, embeddings]"</li>
+        <li class="lang-en"><strong>Save:</strong> "Save this article to the KB with tags [rag, embeddings]"</li>
+        <li class="lang-es"><strong>Buscar:</strong> "¿Qué tengo guardado sobre autenticación con JWT?"</li>
+        <li class="lang-en"><strong>Search:</strong> "What do I have saved about JWT authentication?"</li>
+        <li class="lang-es"><strong>Fetch + Guardar:</strong> "Lee este URL y guárdalo en mi KB"</li>
+        <li class="lang-en"><strong>Fetch + Save:</strong> "Read this URL and save it to my KB"</li>
+      </ul>
+
+      <div class="diagram">
+        <pre><code>┌────────────────────────────────────────────────────────────┐
+│              FLUJO DE USO CON OPENCLAW                      │
+│                                                             │
+│  Usuario: "Guarda https://example.com/articulo-de-rag"     │
+│                          │                                  │
+│                          ▼                                  │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │ OpenClaw:                                             │  │
+│  │ 1. web_fetch → extrae contenido del URL              │  │
+│  │ 2. kb save → genera embedding + guarda en SQLite     │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                          │                                  │
+│                          ▼                                  │
+│  Usuario: "¿Qué sé sobre embeddings?"                      │
+│                          │                                  │
+│                          ▼                                  │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │ OpenClaw:                                             │  │
+│  │ 1. kb search "embeddings" → top 5 documentos         │  │
+│  │ 2. Incluye contexto en prompt al LLM                 │  │
+│  │ 3. Responde con información de TU knowledge base     │  │
+│  └──────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption"><span class="lang-es">El agente ahora tiene acceso a todo lo que has guardado</span><span class="lang-en">The agent now has access to everything you've saved</span></p>
+      </div>
+
+      <p class="lang-es">El skill expone comandos simples que el agente puede usar:</p>
+      <p class="lang-en">The skill exposes simple commands the agent can use:</p>
+
+      <pre><code># Guardar un documento
+kb save --title "Artículo sobre RAG" --content "..." --tags "rag,ai"
+
+# Guardar desde URL
+kb save-url --url "https://example.com/article" --tags "reference"
+
+# Buscar
+kb search --query "¿cómo funcionan los embeddings?" --limit 5
+
+# Listar recientes
+kb list --limit 10</code></pre>
+
+
+      <!-- ==================== SECCIÓN 6 ==================== -->
+      <h2><span class="section-number">6</span> <span class="lang-es">El Elefante en la Habitación: ¿Por Qué $10/mes Importa?</span><span class="lang-en">The Elephant in the Room: Why $10/month Matters</span></h2>
+
+      <p class="lang-es">Aquí viene el plot twist. El Knowledge Base es gratis. Pero el LLM que lo usa no lo era... hasta ahora.</p>
+      <p class="lang-en">Here's the plot twist. The Knowledge Base is free. But the LLM that uses it wasn't... until now.</p>
+
+      <div class="stat-highlight">
+        <div class="stat-number">$10/mes</div>
+        <div class="stat-label"><span class="lang-es">GitHub Copilot te da acceso a Claude Opus 4, GPT-4.5, Gemini 2.5 Pro. Los mismos modelos que las empresas pagan cientos por usar.</span><span class="lang-en">GitHub Copilot gives you access to Claude Opus 4, GPT-4.5, Gemini 2.5 Pro. The same models enterprises pay hundreds to use.</span></div>
+      </div>
+
+      <p class="lang-es">Peter Steinberger, el creador de OpenClaw, lo llama <strong>"shipping at inference speed"</strong>. Tienes los mejores modelos del mundo. Tienes un Knowledge Base local con tus documentos. Tienes herramientas de automatización. <strong>El stack está democratizado.</strong></p>
+      <p class="lang-en">Peter Steinberger, the creator of OpenClaw, calls it <strong>"shipping at inference speed"</strong>. You have the best models in the world. You have a local Knowledge Base with your documents. You have automation tools. <strong>The stack is democratized.</strong></p>
+
+      <div class="callout">
+        <p class="lang-es"><strong>La pregunta ya no es "¿tienes acceso a IA de primer nivel?"</strong> Por $10/mes, sí. Todos tienen. La pregunta ahora es: <strong>¿sabes usarla?</strong></p>
+        <p class="lang-en"><strong>The question is no longer "do you have access to top-tier AI?"</strong> For $10/month, yes. Everyone does. The question now is: <strong>do you know how to use it?</strong></p>
+      </div>
+
+      <p class="lang-es">El acceso ya no es el diferenciador. El conocimiento sí. Por eso construimos cosas como este Knowledge Base — para amplificar lo que ya sabemos, no para reemplazarlo.</p>
+      <p class="lang-en">Access is no longer the differentiator. Knowledge is. That's why we build things like this Knowledge Base — to amplify what we already know, not to replace it.</p>
+
+
+      <!-- ==================== SECCIÓN 7 ==================== -->
+      <h2><span class="section-number">7</span> <span class="lang-es">Privacidad: Por Qué Local Importa</span><span class="lang-en">Privacy: Why Local Matters</span></h2>
+
+      <p class="lang-es">Un Knowledge Base en la nube significa:</p>
+      <p class="lang-en">A cloud Knowledge Base means:</p>
+
+      <ul>
+        <li class="lang-es">Tus documentos privados en servidores de terceros</li>
+        <li class="lang-en">Your private documents on third-party servers</li>
+        <li class="lang-es">Dependencia de APIs que pueden cambiar precios o términos</li>
+        <li class="lang-en">Dependency on APIs that can change prices or terms</li>
+        <li class="lang-es">Latencia de red en cada query</li>
+        <li class="lang-en">Network latency on every query</li>
+        <li class="lang-es">Costos que escalan con uso</li>
+        <li class="lang-en">Costs that scale with usage</li>
+      </ul>
+
+      <p class="lang-es">Un Knowledge Base local significa:</p>
+      <p class="lang-en">A local Knowledge Base means:</p>
+
+      <ul>
+        <li class="lang-es"><strong>Tus datos nunca salen de tu máquina</strong> (excepto cuando los envías explícitamente al LLM)</li>
+        <li class="lang-en"><strong>Your data never leaves your machine</strong> (except when you explicitly send it to the LLM)</li>
+        <li class="lang-es">Funciona offline (los embeddings al menos)</li>
+        <li class="lang-en">Works offline (embeddings at least)</li>
+        <li class="lang-es">Costo fijo: $0</li>
+        <li class="lang-en">Fixed cost: $0</li>
+        <li class="lang-es">Sin límites de uso</li>
+        <li class="lang-en">No usage limits</li>
+      </ul>
+
+      <div class="callout warning">
+        <p class="lang-es"><strong>⚠️ Clarificación importante:</strong> Cuando haces una búsqueda y el agente usa los resultados para responder, el contenido sí va al LLM (Claude/GPT/etc). La diferencia es que <strong>tú controlas qué se envía</strong>. El KB y los embeddings son 100% locales. El LLM es donde decides qué contexto compartir.</p>
+        <p class="lang-en"><strong>⚠️ Important clarification:</strong> When you search and the agent uses results to respond, the content does go to the LLM (Claude/GPT/etc). The difference is <strong>you control what's sent</strong>. The KB and embeddings are 100% local. The LLM is where you decide what context to share.</p>
+      </div>
+
+
+      <!-- ==================== SECCIÓN 8 ==================== -->
+      <h2><span class="section-number">8</span> <span class="lang-es">Ideas para Extender</span><span class="lang-en">Ideas for Extensions</span></h2>
+
+      <p class="lang-es">Una vez que tienes el KB funcionando, las posibilidades son infinitas:</p>
+      <p class="lang-en">Once you have the KB running, the possibilities are endless:</p>
+
+      <h4>📚 <span class="lang-es">Importar tu Readwise/Instapaper</span><span class="lang-en">Import your Readwise/Instapaper</span></h4>
+      <p class="lang-es">Exporta tus highlights y artículos guardados, impórtalos al KB. Ahora puedes preguntarle a tu agente "¿qué he leído sobre productividad este año?".</p>
+      <p class="lang-en">Export your highlights and saved articles, import them to the KB. Now you can ask your agent "what have I read about productivity this year?".</p>
+
+      <h4>📝 <span class="lang-es">Indexar tus notas de Obsidian/Notion</span><span class="lang-en">Index your Obsidian/Notion notes</span></h4>
+      <p class="lang-es">Un script que sincroniza tu vault de Obsidian al KB. Búsqueda semántica sobre años de notas personales.</p>
+      <p class="lang-en">A script that syncs your Obsidian vault to the KB. Semantic search over years of personal notes.</p>
+
+      <h4>📧 <span class="lang-es">Emails importantes</span><span class="lang-en">Important emails</span></h4>
+      <p class="lang-es">Guarda emails clave (propuestas, contratos, decisiones) en el KB. "¿Qué acordamos con el cliente X sobre el precio?".</p>
+      <p class="lang-en">Save key emails (proposals, contracts, decisions) to the KB. "What did we agree with client X about pricing?".</p>
+
+      <h4>🎙️ <span class="lang-es">Transcripciones de reuniones</span><span class="lang-en">Meeting transcripts</span></h4>
+      <p class="lang-es">Transcribe tus llamadas de Zoom, guárdalas en el KB. "¿Qué mencionó Juan sobre el deadline en la última reunión?".</p>
+      <p class="lang-en">Transcribe your Zoom calls, save them to the KB. "What did Juan mention about the deadline in the last meeting?".</p>
+
+      <h4>📄 <span class="lang-es">Documentación técnica</span><span class="lang-en">Technical documentation</span></h4>
+      <p class="lang-es">Indexa la documentación de tus proyectos. El agente puede responder preguntas sobre tu propio código/arquitectura.</p>
+      <p class="lang-en">Index your project documentation. The agent can answer questions about your own code/architecture.</p>
+
+
+      <!-- ==================== TAKEAWAYS ==================== -->
+      <div class="takeaways">
+        <h3><span class="lang-es">💡 Ideas Clave</span><span class="lang-en">💡 Key Takeaways</span></h3>
+        <ul>
+          <li class="lang-es"><strong>RAG ya no requiere presupuesto enterprise.</strong> Ollama + mxbai-embed-large + SQLite = $0 y corre en tu Mac.</li>
+          <li class="lang-en"><strong>RAG no longer requires enterprise budget.</strong> Ollama + mxbai-embed-large + SQLite = $0 and runs on your Mac.</li>
+          
+          <li class="lang-es"><strong>mxbai-embed-large supera a OpenAI ada-002</strong> en benchmarks, y es completamente gratis y local.</li>
+          <li class="lang-en"><strong>mxbai-embed-large outperforms OpenAI ada-002</strong> in benchmarks, and it's completely free and local.</li>
+          
+          <li class="lang-es"><strong>Setup en 15 minutos:</strong> <code>brew install ollama && ollama pull mxbai-embed-large</code>. Listo.</li>
+          <li class="lang-en"><strong>Setup in 15 minutes:</strong> <code>brew install ollama && ollama pull mxbai-embed-large</code>. Done.</li>
+          
+          <li class="lang-es"><strong>SQLite es suficiente</strong> para un KB personal. No necesitas Pinecone ni bases vectoriales complejas.</li>
+          <li class="lang-en"><strong>SQLite is enough</strong> for a personal KB. You don't need Pinecone or complex vector databases.</li>
+          
+          <li class="lang-es"><strong>Privacidad por defecto:</strong> Embeddings y búsqueda son 100% locales. Tú decides qué contexto enviar al LLM.</li>
+          <li class="lang-en"><strong>Privacy by default:</strong> Embeddings and search are 100% local. You decide what context to send to the LLM.</li>
+          
+          <li class="lang-es"><strong>El stack está democratizado.</strong> Por $10/mes (Copilot) tienes LLMs de primer nivel + KB local gratuito. El diferenciador ya no es el acceso — es el conocimiento.</li>
+          <li class="lang-en"><strong>The stack is democratized.</strong> For $10/month (Copilot) you get top-tier LLMs + free local KB. The differentiator is no longer access — it's knowledge.</li>
+        </ul>
+      </div>
+
+
+      <!-- FOOTER -->
+      <div class="post-footer">
+        <p><span class="lang-es">Escrito por <strong>Oscar Code × xoxo (AI)</strong> — 19 de febrero de 2026</span><span class="lang-en">Written by <strong>Oscar Code × xoxo (AI)</strong> — February 19, 2026</span></p>
+        <p style="margin-top: 10px; color: var(--text-muted);">
+          <a href="index.html"><span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span></a> &nbsp;|&nbsp;
+          <a href="https://github.com/ArekSrorth/OpenClaw"><span class="lang-es">OpenClaw en GitHub</span><span class="lang-en">OpenClaw on GitHub</span></a> &nbsp;|&nbsp;
+          <a href="https://ollama.ai">Ollama</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
