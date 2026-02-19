@@ -4,6 +4,15 @@
  */
 (function() {
   const API_URL = "https://agents.oventlabs.com/api/chat";
+  const DEVICE_START_URL = "https://agents.oventlabs.com/api/copilot/device/start";
+  const DEVICE_POLL_URL = "https://agents.oventlabs.com/api/copilot/device/poll";
+
+  const clientIdKey = "xoxo_client_id";
+  let clientId = localStorage.getItem(clientIdKey);
+  if (!clientId) {
+    clientId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `xoxo_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem(clientIdKey, clientId);
+  }
   const AVATAR_URLS = [
     "https://oscarcode9.github.io/xoxobot-avatar.gif",
     "https://oscarcode9.github.io/xoxobot-avatar2.gif"
@@ -346,8 +355,19 @@
       var res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: history.slice(-10) }),
+        body: JSON.stringify({ message: text, history: history.slice(-10), clientId: clientId }),
       });
+
+      if (res.status === 401) {
+        var errData = await res.json().catch(function(){ return {}; });
+        if (errData && errData.error === "DEVICE_FLOW_REQUIRED") {
+          removeTyping();
+          await startDeviceFlow(text);
+          sending = false;
+          sendBtn.disabled = false;
+          return;
+        }
+      }
 
       removeTyping();
       if (!res.ok) throw new Error("API error");
@@ -393,6 +413,61 @@
 
     sending = false;
     sendBtn.disabled = false;
+  }
+
+  async function startDeviceFlow(lastMessage) {
+    try {
+      var res = await fetch(DEVICE_START_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientId: clientId }),
+      });
+      var data = await res.json();
+      if (!data || !data.user_code) {
+        addMessage("assistant", "Ups, no pude iniciar la autorización. Intenta más tarde.");
+        return;
+      }
+
+      var msg = "Para continuar necesito que autorices tu cuenta:\n\n" +
+        "1) Abre: " + data.verification_uri + "\n" +
+        "2) Escribe este código: " + data.user_code + "\n\n" +
+        "Cuando autorices, yo sigo automáticamente. 💜";
+      addMessage("assistant", msg);
+
+      await pollDeviceFlow(data.device_code, data.interval || 5, lastMessage);
+    } catch (e) {
+      addMessage("assistant", "Ups, no pude iniciar la autorización. Intenta más tarde.");
+    }
+  }
+
+  async function pollDeviceFlow(deviceCode, intervalSec, lastMessage) {
+    var tries = 0;
+    var maxTries = 120;
+    var timer = setInterval(async function() {
+      tries += 1;
+      if (tries > maxTries) {
+        clearInterval(timer);
+        addMessage("assistant", "La autorización expiró. Intenta de nuevo.");
+        return;
+      }
+      try {
+        var res = await fetch(DEVICE_POLL_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clientId: clientId, deviceCode: deviceCode }),
+        });
+        var data = await res.json();
+        if (data.status === "approved") {
+          clearInterval(timer);
+          addMessage("assistant", "Listo ✅ ya estás autorizado. Reintentando...");
+          input.value = lastMessage;
+          send();
+        } else if (data.status === "expired") {
+          clearInterval(timer);
+          addMessage("assistant", "El código expiró. Vuelve a intentar.");
+        }
+      } catch (e) {}
+    }, (intervalSec || 5) * 1000);
   }
 
   bubble.addEventListener("click", function() {
