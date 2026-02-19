@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼 | Oscar Code</title>
+  <meta name="description" content="Cómo arreglé el error 'Ups, algo falló' en XoxoBot. Token OAuth expirado, fallback al servidor, y lecciones sobre GitHub Copilot API.">
+  <meta name="keywords" content="XoxoBot, GitHub Copilot, OAuth, device flow, API, debugging, tokens, OventLabs">
+  <meta property="og:title" content="Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼">
+  <meta property="og:description" content="Un token expirado, un 403, y la solución elegante: fallback automático al token del servidor.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #00897b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #2a1a3e 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,107,107,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(79,195,247,0.05) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.2em;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.9em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .post-content {
+      padding: 60px 0;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      margin: 50px 0 20px;
+      color: var(--accent-orange);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2 i {
+      font-size: 0.8em;
+      opacity: 0.8;
+    }
+
+    h3 {
+      font-size: 1.3em;
+      margin: 30px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(255,107,107,0.1) 0%, rgba(255,171,64,0.1) 100%);
+      border-left: 4px solid var(--accent-red);
+      padding: 20px 25px;
+      border-radius: 0 12px 12px 0;
+      margin: 30px 0;
+    }
+
+    .highlight-box.success {
+      background: linear-gradient(135deg, rgba(105,240,174,0.1) 0%, rgba(38,166,154,0.1) 100%);
+      border-left-color: var(--accent-green);
+    }
+
+    .highlight-box.info {
+      background: linear-gradient(135deg, rgba(79,195,247,0.1) 0%, rgba(179,136,255,0.1) 100%);
+      border-left-color: var(--accent-blue);
+    }
+
+    .highlight-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    code {
+      background: var(--bg-code);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 0.9em;
+      color: var(--accent-purple);
+    }
+
+    pre {
+      background: var(--bg-code);
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin: 20px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--text-primary);
+    }
+
+    .code-filename {
+      background: rgba(179,136,255,0.2);
+      color: var(--accent-purple);
+      padding: 8px 15px;
+      border-radius: 8px 8px 0 0;
+      font-size: 0.85em;
+      margin-bottom: -1px;
+      display: inline-block;
+    }
+
+    ul, ol {
+      color: var(--text-secondary);
+      margin: 20px 0;
+      padding-left: 30px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .emoji-big {
+      font-size: 4em;
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .flow-diagram {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 30px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.1);
+    }
+
+    .flow-step:last-child {
+      border-bottom: none;
+    }
+
+    .flow-number {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .flow-step.error .flow-number {
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+    }
+
+    .flow-step.success .flow-number {
+      background: linear-gradient(135deg, var(--accent-green), var(--primary));
+    }
+
+    .author-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 50px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .author-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary);
+    }
+
+    .author-info h4 {
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .author-info p {
+      color: var(--text-muted);
+      font-size: 0.9em;
+      margin-bottom: 0;
+    }
+
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--bg-card);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 15px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin: 10px;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(38,166,154,0.3);
+    }
+
+    .cta-button.secondary {
+      background: var(--bg-dark);
+      border: 2px solid var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.8em; }
+      .author-card { flex-direction: column; text-align: center; }
+    }
+
+    .comment { color: #6a9955; }
+    .keyword { color: #569cd6; }
+    .string { color: #ce9178; }
+    .function { color: #dcdcaa; }
+  </style>
+</head>
+<body>
+
+<header class="post-header">
+  <div class="container">
+    <a href="index.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> Volver al blog
+    </a>
+    <h1 class="post-title">Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼</h1>
+    <p class="post-subtitle">Un token expirado, un HTTP 403, y cómo mi agente de IA lo resolvió en 15 minutos</p>
+    <div class="post-meta">
+      <span><i class="fas fa-calendar"></i> 18 Feb 2026</span>
+      <span><i class="fas fa-clock"></i> 6 min lectura</span>
+      <span><i class="fas fa-tag"></i> Debugging, OAuth, APIs</span>
+    </div>
+  </div>
+</header>
+
+<main class="post-content">
+  <div class="container">
+    
+    <div class="emoji-big">🔥 → 🔍 → ✅</div>
+
+    <p>Ayer por la noche, XoxoBot (mi chatbot axolotl 🪼) dejó de funcionar. El mensaje: <strong>"Ups, algo falló 😅 Intenta de nuevo."</strong></p>
+
+    <p>No era el tipo de error que te dice qué pasó. Era el peor tipo: un catch genérico que esconde el problema real. Pero tengo un arma secreta: <strong>OscarCode9</strong>, mi agente de IA corriendo en OpenClaw. Le dije que lo arreglara, y esto es lo que encontró.</p>
+
+    <h2><i class="fas fa-bug"></i> El Problema</h2>
+
+    <p>XoxoBot usa la API de GitHub Copilot para generar respuestas. El flujo de autenticación era así:</p>
+
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <div class="flow-number">1</div>
+        <div>Widget genera un <code>clientId</code> único por usuario</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-number">2</div>
+        <div>API busca auth del usuario en base de datos</div>
+      </div>
+      <div class="flow-step error">
+        <div class="flow-number">3</div>
+        <div>Si no existe → Pide <strong>device flow</strong> OAuth con GitHub</div>
+      </div>
+      <div class="flow-step error">
+        <div class="flow-number">4</div>
+        <div>Usuario autoriza con scope <code>read:user</code></div>
+      </div>
+      <div class="flow-step error">
+        <div class="flow-number">5</div>
+        <div>API intenta intercambiar token por Copilot API token → <strong>💥 FAIL</strong></div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p><strong>🎯 Problema #1:</strong> El scope <code>read:user</code> no tiene permisos para acceder a la API de Copilot. Necesitas una suscripción activa de GitHub Copilot.</p>
+      <p><strong>🎯 Problema #2:</strong> El token OAuth (<code>ghu_...</code>) del servidor había expirado. Estos tokens duran ~8 horas.</p>
+    </div>
+
+    <h2><i class="fas fa-search"></i> El Diagnóstico</h2>
+
+    <p>OscarCode9 hizo lo que haría cualquier dev decente: revisar los logs.</p>
+
+    <div class="code-filename">docker logs ovents-landing</div>
+    <pre><code>Chat API error: Error: Copilot token exchange failed: HTTP 403
+    at getCopilotApiToken (.next/server/app/api/chat/route.js:170:1031)</code></pre>
+
+    <p>Un <code>403 Forbidden</code>. El token existía pero GitHub lo rechazaba. Confirmado: token expirado.</p>
+
+    <h2><i class="fas fa-lightbulb"></i> La Solución</h2>
+
+    <p>En lugar de arreglar el device flow (que requeriría que cada usuario tenga Copilot), implementamos un <strong>fallback inteligente</strong>:</p>
+
+    <h3>1. Fallback al Token del Servidor</h3>
+
+    <p>Si el usuario no tiene auth, en lugar de pedir device flow, usamos el token del servidor:</p>
+
+    <div class="code-filename">lib/copilot-api.ts</div>
+    <pre><code><span class="keyword">export async function</span> <span class="function">getCopilotApiTokenForClient</span>(clientId?: string) {
+  <span class="comment">// Try user's own token if they have one</span>
+  <span class="keyword">if</span> (clientId) {
+    <span class="keyword">const</span> auth = <span class="keyword">await</span> prisma.copilotAuth.findUnique({ where: { clientId } });
+    <span class="keyword">if</span> (auth) {
+      <span class="keyword">try</span> {
+        <span class="comment">// ... intentar usar token del usuario</span>
+      } <span class="keyword">catch</span> (e) {
+        console.warn(<span class="string">`User token failed, using server token`</span>);
+      }
+    }
+  }
+  
+  <span class="comment">// Fallback to server's Copilot token (always available)</span>
+  <span class="keyword">return</span> <span class="function">getCopilotApiToken</span>();
+}</code></pre>
+
+    <h3>2. Soporte para Tokens Directos</h3>
+
+    <p>Descubrimos que OpenClaw ya tenía un token válido guardado. El problema: era un token <strong>Copilot API</strong> (<code>tid=...</code>), no un token OAuth (<code>ghu_...</code>).</p>
+
+    <p>Agregamos detección automática:</p>
+
+    <div class="code-filename">lib/copilot-api.ts</div>
+    <pre><code><span class="comment">// If token is already a Copilot API token, use it directly</span>
+<span class="keyword">if</span> (githubToken.startsWith(<span class="string">"tid="</span>)) {
+  <span class="comment">// Extract expiration from token: exp=&lt;timestamp&gt;</span>
+  <span class="keyword">const</span> expMatch = githubToken.match(<span class="string">/exp=(\d+)/</span>);
+  <span class="keyword">const</span> expiresAt = expMatch ? parseInt(expMatch[1], 10) * 1000 : Date.now() + 30 * 60 * 1000;
+  
+  cachedCopilotToken = { token: githubToken, expiresAt };
+  <span class="keyword">return</span> {
+    token: githubToken,
+    baseUrl: <span class="function">deriveCopilotBaseUrl</span>(githubToken),
+  };
+}</code></pre>
+
+    <div class="highlight-box success">
+      <p><strong>✅ Resultado:</strong> El bot ahora acepta tanto tokens OAuth (<code>ghu_...</code>) como tokens Copilot directos (<code>tid=...</code>). Si uno falla, usa el otro.</p>
+    </div>
+
+    <h2><i class="fas fa-rocket"></i> El Deploy</h2>
+
+    <p>El fix requirió:</p>
+
+    <ol>
+      <li>Modificar <code>lib/copilot-api.ts</code></li>
+      <li>Actualizar el token en producción</li>
+      <li>Rebuild del container Docker</li>
+    </ol>
+
+    <pre><code><span class="comment"># Subir archivo modificado</span>
+scp -i ~/TenK/truck.pem lib/copilot-api.ts ec2-user@3.145.149.229:~/ovents-landing/lib/
+
+<span class="comment"># Rebuild sin cache (importante!)</span>
+ssh ... "docker build --no-cache -t ovents-landing:prod ."
+
+<span class="comment"># Recrear container con el mapping correcto</span>
+docker run -d --name ovents-landing <span class="string">-p 3001:3001</span> \
+  --env-file ~/ovents-landing/.env \
+  --network backend_tenk-network \
+  ovents-landing:prod</code></pre>
+
+    <div class="highlight-box info">
+      <p><strong>⚠️ Nota importante:</strong> El port mapping debe ser <code>-p 3001:3001</code>, NO <code>-p 3001:3000</code>. Este error causa 502 Bad Gateway y me ha mordido múltiples veces.</p>
+    </div>
+
+    <h2><i class="fas fa-graduation-cap"></i> Lecciones Aprendidas</h2>
+
+    <ol>
+      <li><strong>Los tokens OAuth expiran.</strong> Los <code>ghu_</code> de GitHub duran ~8 horas. Implementa refresh o fallbacks.</li>
+      <li><strong>El scope importa.</strong> <code>read:user</code> no da acceso a Copilot. Cada API tiene sus permisos.</li>
+      <li><strong>Fallbacks > Errores.</strong> Es mejor que el bot use un token del servidor que mostrar "algo falló".</li>
+      <li><strong>Docker cache te puede trollear.</strong> Si cambias un archivo, usa <code>--no-cache</code> o Docker no lo detecta.</li>
+      <li><strong>Los agentes de IA son útiles para debugging.</strong> OscarCode9 encontró el problema, propuso la solución, y deployó. Yo solo aprobé.</li>
+    </ol>
+
+    <h2><i class="fas fa-clock"></i> Tiempo Total</h2>
+
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <div class="flow-number">📊</div>
+        <div>
+          <strong>~15 minutos</strong> de diagnóstico + fix + deploy<br>
+          <span style="color: var(--text-muted);">Hecho por OscarCode9 (agente de IA) mientras yo veía los logs</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="author-card">
+      <img src="xoxobot-avatar.gif" alt="XoxoBot" class="author-avatar">
+      <div class="author-info">
+        <h4>XoxoBot 🪼</h4>
+        <p>El asistente que casi muere por un token expirado, pero sobrevivió gracias a un fallback elegante. Ahora más fuerte que nunca.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="post-footer">
+  <div class="container">
+    <p style="color: var(--text-secondary); margin-bottom: 20px;">¿Quieres probar a XoxoBot?</p>
+    <a href="index.html" class="cta-button">
+      <i class="fas fa-comments"></i> Chatear con XoxoBot
+    </a>
+    <a href="xoxobot-birth.html" class="cta-button secondary">
+      <i class="fas fa-book"></i> Historia de XoxoBot
+    </a>
+  </div>
+</footer>
+
+<script src="xoxobot-widget.js"></script>
+
+</body>
+</html>
