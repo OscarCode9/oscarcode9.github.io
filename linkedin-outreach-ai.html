@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50 Mensajes de LinkedIn en 45 Minutos con IA | Oscar Code</title>
+  <meta name="description" content="Cómo automaticé outreach personalizado en LinkedIn usando OpenClaw + MCP Playwright. 50 mensajes únicos, cada uno revisando el perfil del destinatario.">
+  <meta name="keywords" content="LinkedIn, outreach, automatización, OpenClaw, MCP Playwright, AI agents, growth hacking, startup">
+  <meta property="og:title" content="50 Mensajes de LinkedIn en 45 Minutos con IA">
+  <meta property="og:description" content="Outreach personalizado automatizado. Cada mensaje único. Sin spam. Con agente de IA.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #26a69a;
+      --primary-dark: #00897b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #0d2818 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+    .back-link:hover { color: var(--primary); }
+
+    .lang-toggle {
+      cursor: pointer;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    .lang-toggle:hover { background: rgba(255,255,255,0.2); }
+
+    .post-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .post-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .post-tag {
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .post-tag.linkedin { background: #0077b5; }
+    .post-tag.ai { background: var(--accent-purple); }
+    .post-tag.automation { background: var(--accent-orange); }
+
+    .post-content {
+      padding: 60px 0;
+    }
+
+    .post-content h2 {
+      font-size: 1.8rem;
+      margin: 50px 0 25px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .section-number {
+      background: var(--primary);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .post-content p {
+      margin-bottom: 20px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong { color: var(--text-primary); }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    .post-content a:hover { border-color: var(--primary); }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(38, 166, 154, 0.1) 0%, rgba(79, 195, 247, 0.1) 100%);
+      border-left: 4px solid var(--primary);
+      padding: 25px 30px;
+      margin: 30px 0;
+      border-radius: 0 12px 12px 0;
+    }
+
+    .highlight-box.warning {
+      background: linear-gradient(135deg, rgba(255, 171, 64, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+      border-left-color: var(--accent-orange);
+    }
+
+    .highlight-box.success {
+      background: linear-gradient(135deg, rgba(105, 240, 174, 0.1) 0%, rgba(38, 166, 154, 0.1) 100%);
+      border-left-color: var(--accent-green);
+    }
+
+    pre {
+      background: var(--bg-code);
+      border-radius: 12px;
+      padding: 25px;
+      overflow-x: auto;
+      margin: 25px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--accent-green);
+    }
+
+    .inline-code {
+      background: rgba(255,255,255,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .flow-diagram {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .flow-step:last-child { border-bottom: none; }
+
+    .flow-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      margin-left: 17px;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .comparison-table th {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .comparison-table td:first-child {
+      color: var(--text-muted);
+    }
+
+    .lang-en { display: none; }
+
+    .ov-views-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0 25px;
+    }
+
+    .ov-views-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.08);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      .back-link { position: static; display: block; margin-bottom: 20px; }
+      .lang-toggle { position: static !important; display: inline-block; margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="post-header">
+    <a href="index.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
+    </a>
+    <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+    <h1 class="post-title"><span class="lang-es">50 Mensajes de LinkedIn en 45 Minutos con IA</span><span class="lang-en">50 LinkedIn Messages in 45 Minutes with AI</span></h1>
+    <div class="ov-views-wrap">
+      <div class="ov-views-badge" data-ov-visits>
+        <i class="far fa-eye"></i> <span data-ov-count>—</span> <span class="lang-es">visitas</span><span class="lang-en">views</span>
+      </div>
+    </div>
+    <p class="post-subtitle"><span class="lang-es">Outreach personalizado automatizado. Cada mensaje único. Sin spam. Con un agente de IA que lee perfiles.</span><span class="lang-en">Automated personalized outreach. Each message unique. No spam. With an AI agent that reads profiles.</span></p>
+    <div class="post-meta">
+      <span class="post-tag linkedin">LinkedIn</span>
+      <span class="post-tag ai">AI Agent</span>
+      <span class="post-tag automation">Automation</span>
+      <span>
+        <i class="far fa-clock"></i> <span class="lang-es">19 de febrero de 2026</span><span class="lang-en">February 19, 2026</span> &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Code × OscarCode9 (AI) &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> <span class="lang-es">~8 min de lectura</span><span class="lang-en">~8 min read</span>
+      </span>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+      <div class="highlight-box">
+        <p class="lang-es"><strong>El outreach en LinkedIn es tedioso.</strong> Revisar perfil. Escribir mensaje. Enviar. Repetir 50 veces. Hoy mi agente de IA lo hizo por mí — y cada mensaje fue personalizado basándose en el perfil real del destinatario.</p>
+        <p class="lang-en"><strong>LinkedIn outreach is tedious.</strong> Check profile. Write message. Send. Repeat 50 times. Today my AI agent did it for me — and each message was personalized based on the recipient's actual profile.</p>
+      </div>
+
+      <p class="lang-es">Estoy lanzando <a href="https://tenk.oventlabs.com">TenK</a>, una app para trackear las 10,000 horas de práctica deliberada con AI Coach. Necesitaba contactar desarrolladores que pudieran estar interesados. ¿El problema? No tenía ganas de escribir 50 mensajes a mano.</p>
+      <p class="lang-en">I'm launching <a href="https://tenk.oventlabs.com">TenK</a>, an app to track the 10,000 hours of deliberate practice with an AI Coach. I needed to reach developers who might be interested. The problem? I didn't feel like writing 50 messages by hand.</p>
+
+      <p class="lang-es">¿La solución? <strong>OpenClaw</strong> — mi agente de IA local — conectado a LinkedIn via <strong>MCP Playwright</strong>.</p>
+      <p class="lang-en">The solution? <strong>OpenClaw</strong> — my local AI agent — connected to LinkedIn via <strong>MCP Playwright</strong>.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number">50</span>
+          <span class="stat-label lang-es">mensajes enviados</span>
+          <span class="stat-label lang-en">messages sent</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">45</span>
+          <span class="stat-label lang-es">minutos</span>
+          <span class="stat-label lang-en">minutes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">0</span>
+          <span class="stat-label lang-es">copypaste</span>
+          <span class="stat-label lang-en">copypaste</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">1</span>
+          <span class="stat-label lang-es">agente de IA</span>
+          <span class="stat-label lang-en">AI agent</span>
+        </div>
+      </div>
+
+      <h2><span class="section-number">1</span> <span class="lang-es">El Problema con el Outreach Manual</span><span class="lang-en">The Problem with Manual Outreach</span></h2>
+
+      <p class="lang-es">El outreach genérico no funciona. Todos hemos recibido esos mensajes de "Hola, vi tu perfil y me pareció interesante..." que claramente son copypaste. Los ignoramos.</p>
+      <p class="lang-en">Generic outreach doesn't work. We've all received those "Hi, I saw your profile and found it interesting..." messages that are clearly copypaste. We ignore them.</p>
+
+      <p class="lang-es">El outreach que funciona requiere <strong>personalización real</strong>:</p>
+      <p class="lang-en">Outreach that works requires <strong>real personalization</strong>:</p>
+
+      <ul style="margin: 20px 0 20px 30px; color: var(--text-secondary);">
+        <li class="lang-es">Mencionar algo específico del perfil (empresa, stack, logro)</li>
+        <li class="lang-en">Mention something specific from their profile (company, stack, achievement)</li>
+        <li class="lang-es">Conectar tu propuesta con SU contexto</li>
+        <li class="lang-en">Connect your proposal with THEIR context</li>
+        <li class="lang-es">Que se note que leíste su perfil</li>
+        <li class="lang-en">Show that you actually read their profile</li>
+      </ul>
+
+      <p class="lang-es">Eso toma tiempo. Unos 3-5 minutos por mensaje si lo haces bien. Para 50 mensajes = 4+ horas de trabajo tedioso.</p>
+      <p class="lang-en">That takes time. About 3-5 minutes per message if you do it right. For 50 messages = 4+ hours of tedious work.</p>
+
+      <h2><span class="section-number">2</span> <span class="lang-es">La Solución: Un Agente que Lee Perfiles</span><span class="lang-en">The Solution: An Agent that Reads Profiles</span></h2>
+
+      <p class="lang-es">Mi setup:</p>
+      <p class="lang-en">My setup:</p>
+
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-icon">🤖</div>
+          <div>
+            <strong>OpenClaw</strong>
+            <p style="margin:0;font-size:0.9rem;color:var(--text-muted)"><span class="lang-es">Agente de IA corriendo local en mi Mac</span><span class="lang-en">AI agent running locally on my Mac</span></p>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon">🎭</div>
+          <div>
+            <strong>MCP Playwright</strong>
+            <p style="margin:0;font-size:0.9rem;color:var(--text-muted)"><span class="lang-es">Control de browser via Model Context Protocol</span><span class="lang-en">Browser control via Model Context Protocol</span></p>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-icon">💼</div>
+          <div>
+            <strong>LinkedIn</strong>
+            <p style="margin:0;font-size:0.9rem;color:var(--text-muted)"><span class="lang-es">Perfil persistente (sesión guardada)</span><span class="lang-en">Persistent profile (saved session)</span></p>
+          </div>
+        </div>
+      </div>
+
+      <p class="lang-es">El agente puede:</p>
+      <p class="lang-en">The agent can:</p>
+
+      <ol style="margin: 20px 0 20px 30px; color: var(--text-secondary);">
+        <li class="lang-es">Navegar a un perfil de LinkedIn</li>
+        <li class="lang-en">Navigate to a LinkedIn profile</li>
+        <li class="lang-es">Leer el contenido (rol, empresa, stack, bio)</li>
+        <li class="lang-en">Read the content (role, company, stack, bio)</li>
+        <li class="lang-es">Decidir si es un target relevante (skip recruiters/HR)</li>
+        <li class="lang-en">Decide if it's a relevant target (skip recruiters/HR)</li>
+        <li class="lang-es">Escribir un mensaje personalizado</li>
+        <li class="lang-en">Write a personalized message</li>
+        <li class="lang-es">Enviarlo</li>
+        <li class="lang-en">Send it</li>
+      </ol>
+
+      <h2><span class="section-number">3</span> <span class="lang-es">El Flujo Real</span><span class="lang-en">The Real Flow</span></h2>
+
+      <p class="lang-es">Así se ve una interacción típica. Yo le digo al agente qué hacer en lenguaje natural:</p>
+      <p class="lang-en">Here's what a typical interaction looks like. I tell the agent what to do in natural language:</p>
+
+      <pre><code class="lang-es">> Envía mensajes a mis conexiones de LinkedIn que sean 
+> desarrolladores, invitándolos a probar TenK.
+
+🤖 Navegando a búsqueda de conexiones...
+🤖 Encontré a Dylan Sebastian - Head of IT, Full Stack 
+   (React/Next/TypeScript/React Native)
+🤖 Enviando mensaje personalizado...
+
+"Hey Dylan! 👋 Vi tu perfil de Head of IT / Full Stack 
+con React, Next.js, TypeScript y React Native — stack 
+muy completo. Estoy construyendo TenK, una app para 
+trackear las 10,000 horas de práctica deliberada con 
+AI Coach. Como dev full stack pensé que te podría 
+interesar: tenk.oventlabs.com 🚀"
+
+✅ Dylan Sebastian - ENVIADO
+
+🤖 Siguiente: Eduardo Hernández - Software Developer...</code><code class="lang-en">> Send messages to my LinkedIn connections who are 
+> developers, inviting them to try TenK.
+
+🤖 Navigating to connections search...
+🤖 Found Dylan Sebastian - Head of IT, Full Stack 
+   (React/Next/TypeScript/React Native)
+🤖 Sending personalized message...
+
+"Hey Dylan! 👋 Saw your Head of IT / Full Stack profile 
+with React, Next.js, TypeScript and React Native — very 
+complete stack. I'm building TenK, an app to track the 
+10,000 hours of deliberate practice with AI Coach. As a 
+full stack dev I thought you might be interested: 
+tenk.oventlabs.com 🚀"
+
+✅ Dylan Sebastian - SENT
+
+🤖 Next: Eduardo Hernández - Software Developer...</code></pre>
+
+      <p class="lang-es">El agente automáticamente:</p>
+      <p class="lang-en">The agent automatically:</p>
+
+      <ul style="margin: 20px 0 20px 30px; color: var(--text-secondary);">
+        <li class="lang-es">Extrae el nombre y rol del perfil</li>
+        <li class="lang-en">Extracts the name and role from the profile</li>
+        <li class="lang-es">Identifica su stack/especialidad</li>
+        <li class="lang-en">Identifies their stack/specialty</li>
+        <li class="lang-es">Escribe un mensaje que menciona esos detalles</li>
+        <li class="lang-en">Writes a message that mentions those details</li>
+        <li class="lang-es">Salta perfiles que no son relevantes (recruiters, HR, sales)</li>
+        <li class="lang-en">Skips profiles that aren't relevant (recruiters, HR, sales)</li>
+      </ul>
+
+      <h2><span class="section-number">4</span> <span class="lang-es">¿Es Spam?</span><span class="lang-en">Is This Spam?</span></h2>
+
+      <div class="highlight-box warning">
+        <p class="lang-es"><strong>La diferencia entre spam y outreach legítimo es la relevancia.</strong></p>
+        <p class="lang-en"><strong>The difference between spam and legitimate outreach is relevance.</strong></p>
+      </div>
+
+      <table class="comparison-table">
+        <tr>
+          <th class="lang-es">Spam</th>
+          <th class="lang-en">Spam</th>
+          <th class="lang-es">Outreach Legítimo</th>
+          <th class="lang-en">Legitimate Outreach</th>
+        </tr>
+        <tr>
+          <td class="lang-es">Mismo mensaje para todos</td>
+          <td class="lang-en">Same message for everyone</td>
+          <td class="lang-es">Mensaje personalizado por perfil</td>
+          <td class="lang-en">Message personalized per profile</td>
+        </tr>
+        <tr>
+          <td class="lang-es">Enviado a cualquiera</td>
+          <td class="lang-en">Sent to anyone</td>
+          <td class="lang-es">Enviado a targets relevantes</td>
+          <td class="lang-en">Sent to relevant targets</td>
+        </tr>
+        <tr>
+          <td class="lang-es">Sin contexto</td>
+          <td class="lang-en">No context</td>
+          <td class="lang-es">Menciona su rol/empresa/stack</td>
+          <td class="lang-en">Mentions their role/company/stack</td>
+        </tr>
+        <tr>
+          <td class="lang-es">Solo vende</td>
+          <td class="lang-en">Just sells</td>
+          <td class="lang-es">Ofrece valor potencial</td>
+          <td class="lang-en">Offers potential value</td>
+        </tr>
+      </table>
+
+      <p class="lang-es">Cada mensaje que envié hoy mencionaba algo específico del perfil del destinatario. No era "Hola, prueba mi app". Era "Vi que trabajas con React Native y tienes 8 años de experiencia — como dev senior pensé que te podría interesar esto".</p>
+      <p class="lang-en">Every message I sent today mentioned something specific from the recipient's profile. It wasn't "Hi, try my app". It was "I saw you work with React Native and have 8 years of experience — as a senior dev I thought you might be interested in this".</p>
+
+      <h2><span class="section-number">5</span> <span class="lang-es">El Stack Técnico</span><span class="lang-en">The Technical Stack</span></h2>
+
+      <pre><code># Config de MCP Playwright
+{
+  "servers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--user-data-dir", "~/.playwright-profile"
+      ]
+    }
+  }
+}</code></pre>
+
+      <p class="lang-es">El truco clave: <code class="inline-code">--user-data-dir</code> con un perfil persistente. Esto significa que solo necesitas hacer login en LinkedIn una vez, y la sesión queda guardada.</p>
+      <p class="lang-en">The key trick: <code class="inline-code">--user-data-dir</code> with a persistent profile. This means you only need to log into LinkedIn once, and the session stays saved.</p>
+
+      <p class="lang-es">Intenté otras opciones primero:</p>
+      <p class="lang-en">I tried other options first:</p>
+
+      <ul style="margin: 20px 0 20px 30px; color: var(--text-secondary);">
+        <li class="lang-es"><strong>Browser Relay:</strong> Inestable, se desconectaba cada 10-15 minutos</li>
+        <li class="lang-en"><strong>Browser Relay:</strong> Unstable, disconnected every 10-15 minutes</li>
+        <li class="lang-es"><strong>CDP (Chrome DevTools Protocol):</strong> Chrome ignora el flag si ya está corriendo</li>
+        <li class="lang-en"><strong>CDP (Chrome DevTools Protocol):</strong> Chrome ignores the flag if already running</li>
+        <li class="lang-es"><strong>MCP Playwright + perfil persistente:</strong> ✅ Estable y rápido</li>
+        <li class="lang-en"><strong>MCP Playwright + persistent profile:</strong> ✅ Stable and fast</li>
+      </ul>
+
+      <h2><span class="section-number">6</span> <span class="lang-es">Lecciones Aprendidas</span><span class="lang-en">Lessons Learned</span></h2>
+
+      <div class="highlight-box success">
+        <p class="lang-es"><strong>Tips que descubrimos:</strong></p>
+        <p class="lang-en"><strong>Tips we discovered:</strong></p>
+        <ul style="margin: 15px 0 0 20px;">
+          <li class="lang-es">Buscar solo en conexiones de 1er grado (evita rate limits)</li>
+          <li class="lang-en">Search only 1st degree connections (avoids rate limits)</li>
+          <li class="lang-es">Cadencia de 1 segundo entre acciones es suficiente</li>
+          <li class="lang-en">1 second cadence between actions is enough</li>
+          <li class="lang-es">LinkedIn deja múltiples dialogs abiertos — buscar el <code class="inline-code">[active]</code></li>
+          <li class="lang-en">LinkedIn leaves multiple dialogs open — look for the <code class="inline-code">[active]</code> one</li>
+          <li class="lang-es">Auto-skip por keywords: Recruiter, HR, Sales, Business Development</li>
+          <li class="lang-en">Auto-skip by keywords: Recruiter, HR, Sales, Business Development</li>
+        </ul>
+      </div>
+
+      <p class="lang-es">La primera vez me tomó ~5 horas porque estuve debuggeando el setup. Ahora que está documentado, la siguiente ronda debería tomar <strong>menos de 1 hora</strong> para 50 mensajes.</p>
+      <p class="lang-en">The first time it took me ~5 hours because I was debugging the setup. Now that it's documented, the next round should take <strong>less than 1 hour</strong> for 50 messages.</p>
+
+      <h2><span class="section-number">7</span> <span class="lang-es">¿Vale la Pena?</span><span class="lang-en">Is It Worth It?</span></h2>
+
+      <p class="lang-es">Depende. Si vas a hacer outreach una vez, probablemente no vale la pena automatizarlo. Pero si es algo recurrente — lanzar productos, buscar clientes, recruiting — entonces sí.</p>
+      <p class="lang-en">It depends. If you're doing outreach once, it's probably not worth automating. But if it's something recurring — launching products, finding clients, recruiting — then yes.</p>
+
+      <p class="lang-es">Lo que antes era trabajo tedioso de horas ahora es <strong>"hazlo tú"</strong> y revisar los resultados.</p>
+      <p class="lang-en">What used to be hours of tedious work is now <strong>"you do it"</strong> and reviewing the results.</p>
+
+      <p class="lang-es">Y no, LinkedIn no te va a banear si:</p>
+      <p class="lang-en">And no, LinkedIn won't ban you if:</p>
+
+      <ul style="margin: 20px 0 20px 30px; color: var(--text-secondary);">
+        <li class="lang-es">Te mantienes dentro de los límites (50 mensajes/día a conexiones)</li>
+        <li class="lang-en">You stay within limits (50 messages/day to connections)</li>
+        <li class="lang-es">Los mensajes son personalizados (no spam)</li>
+        <li class="lang-en">Messages are personalized (not spam)</li>
+        <li class="lang-es">No usas herramientas que inyectan scripts en la página</li>
+        <li class="lang-en">You don't use tools that inject scripts into the page</li>
+      </ul>
+
+      <div class="highlight-box">
+        <p class="lang-es"><strong>¿Quieres probar TenK?</strong> Es la app que estaba promocionando. Trackea tu camino a las 10,000 horas de práctica deliberada con un AI Coach que genera planes semanales personalizados.</p>
+        <p class="lang-en"><strong>Want to try TenK?</strong> It's the app I was promoting. Track your path to 10,000 hours of deliberate practice with an AI Coach that generates personalized weekly plans.</p>
+        <p style="margin-top:15px;margin-bottom:0;">
+          <a href="https://tenk.oventlabs.com" style="background:var(--primary);color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">tenk.oventlabs.com →</a>
+        </p>
+      </div>
+
+      <p class="lang-es" style="margin-top:40px;color:var(--text-muted);font-style:italic;">¿Recibiste un mensaje mío hoy en LinkedIn? Sí, lo escribió mi agente. Pero el interés es real 😄</p>
+      <p class="lang-en" style="margin-top:40px;color:var(--text-muted);font-style:italic;">Did you receive a message from me today on LinkedIn? Yes, my agent wrote it. But the interest is real 😄</p>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>Oscar Code × OscarCode9 🪼 × 2026</p>
+  </footer>
+
+  <script src="public/visits-badge.js" defer></script>
+  <script>
+    let currentLang = localStorage.getItem('blogLang') || (navigator.language.startsWith('en') ? 'en' : 'es');
+    
+    function applyLanguage() {
+      document.querySelectorAll('.lang-es').forEach(el => el.style.display = currentLang === 'es' ? '' : 'none');
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? '' : 'none');
+      document.querySelector('.lang-toggle').textContent = currentLang === 'es' ? '🌐 EN' : '🌐 ES';
+    }
+    
+    function toggleLanguage() {
+      currentLang = currentLang === 'es' ? 'en' : 'es';
+      localStorage.setItem('blogLang', currentLang);
+      applyLanguage();
+    }
+    
+    applyLanguage();
+  </script>
+</body>
+</html>
