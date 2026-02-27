@@ -12,13 +12,23 @@
   }
 
   async function hit(path) {
-    const res = await fetch(HIT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path })
-    });
-    if (!res.ok) throw new Error("HIT_FAILED");
-    return await res.json();
+    console.log("[visits] POST hit:", path);
+    try {
+      const res = await fetch(HIT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path }),
+        credentials: "omit"
+      });
+      console.log("[visits] Response status:", res.status);
+      if (!res.ok) throw new Error("HIT_FAILED:" + res.status);
+      const data = await res.json();
+      console.log("[visits] Response data:", data);
+      return data;
+    } catch (err) {
+      console.error("[visits] Hit error:", err);
+      throw err;
+    }
   }
 
   async function get(path) {
