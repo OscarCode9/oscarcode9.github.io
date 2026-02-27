@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El YAML está muerto. Tus pipelines ahora tienen que pensar. | Oscar Code</title>
+  <meta name="description" content="Cómo reemplazar pipelines de CI/CD frágiles con agentes de IA que diagnostican y corrigen errores solos. El concepto de Pipelines Agénticos.">
+  <meta name="keywords" content="DevOps, CI/CD, pipelines, agentes IA, GitHub Actions, Claude Code, OpenClaw, AWS, Docker, agentic pipelines">
+  <meta property="og:title" content="El YAML está muerto. Tus pipelines ahora tienen que pensar.">
+  <meta property="og:description" content="Desplegué a producción desde una fiesta. El agente hizo todo. Así funciona el futuro del DevOps.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00a8cc;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* HEADER */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1f2d 50%, #0a1a26 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(0,212,255,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(79,195,247,0.04) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.15em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+      font-weight: 600;
+    }
+
+    .post-tag.devops { background: var(--accent-blue); color: #000; }
+    .post-tag.ai { background: var(--accent-purple); color: #fff; }
+    .post-tag.hot { background: var(--accent-red); color: #fff; }
+
+    /* CONTENT */
+    .post-content {
+      padding: 60px 0 80px;
+    }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--primary);
+      border-bottom: 2px solid rgba(0,212,255,0.3);
+      padding-bottom: 10px;
+    }
+
+    .post-content h2:first-child { margin-top: 0; }
+
+    .post-content h3 {
+      font-size: 1.35em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong { color: var(--text-primary); }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover { border-bottom-color: var(--primary); }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li { margin-bottom: 8px; }
+
+    /* Code blocks */
+    pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 10px;
+      padding: 24px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    pre code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88em;
+      background: rgba(0,212,255,0.08);
+      color: var(--primary);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    pre code { background: none; color: #e2e8f0; padding: 0; }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.warning { border-left-color: var(--accent-orange); }
+    .callout.danger { border-left-color: var(--accent-red); }
+    .callout.info { border-left-color: var(--accent-blue); }
+    .callout.success { border-left-color: var(--accent-green); }
+
+    .callout p { margin-bottom: 0; }
+    .callout p:not(:last-child) { margin-bottom: 10px; }
+
+    /* Diagram */
+    .diagram {
+      background: var(--bg-code);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 25px 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .diagram pre code {
+      color: var(--primary);
+      font-size: 0.82em;
+    }
+
+    .diagram-caption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Comparison */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .comparison-box {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .comparison-box.bad { border-color: rgba(255,107,107,0.3); }
+    .comparison-box.good { border-color: rgba(0,212,255,0.3); }
+    .comparison-box h4 { margin-top: 0; margin-bottom: 10px; }
+    .comparison-box.bad h4 { color: var(--accent-red); }
+    .comparison-box.good h4 { color: var(--accent-green); }
+    .comparison-box ul { margin: 0 0 0 18px; }
+    .comparison-box li { font-size: 0.9em; margin-bottom: 6px; color: var(--text-secondary); }
+
+    /* Table */
+    .diff-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.92em;
+    }
+
+    .diff-table th {
+      background: rgba(0,212,255,0.1);
+      color: var(--primary);
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 2px solid rgba(0,212,255,0.3);
+    }
+
+    .diff-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .diff-table tr:hover td { background: rgba(0,212,255,0.03); }
+    .diff-table td:first-child { color: var(--text-primary); font-weight: 500; }
+
+    /* Highlight step */
+    .step {
+      display: flex;
+      gap: 18px;
+      margin: 20px 0;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,212,255,0.15);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fira Code', monospace;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.9em;
+      margin-top: 2px;
+    }
+
+    .step-body { flex: 1; }
+    .step-body strong { color: var(--text-primary); }
+
+    /* Post footer */
+    .post-footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+
+    .post-footer a { color: var(--primary); text-decoration: none; }
+
+    .ov-views-wrap { margin: 8px 0 0; }
+    .ov-views-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 4px 12px; font-size: 0.82em;
+      color: rgba(255,255,255,0.5); position: relative; z-index: 1;
+    }
+    .ov-dot { width: 6px; height: 6px; border-radius: 50%; background: #22bb44; }
+
+    /* Language toggle */
+    .lang-toggle {
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 0.9em;
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      z-index: 1;
+    }
+
+    .lang-en { display: none; }
+
+    @media (max-width: 600px) {
+      .post-title { font-size: 1.7em; }
+      .post-header { padding: 60px 15px 40px; }
+      .comparison { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
+  <script src="public/i18n.js"></script>
+</head>
+<body>
+
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
+      </a>
+      <span class="lang-toggle" onclick="toggleLanguage()">🌐 EN</span>
+
+      <h1 class="post-title">
+        <span class="lang-es">El YAML está muerto. Tus pipelines ahora tienen que pensar.</span>
+        <span class="lang-en">YAML is Dead. Your Pipelines Need to Think Now.</span>
+      </h1>
+
+      <div class="ov-views-wrap">
+        <div class="ov-views-badge" data-ov-visits>
+          <span class="ov-dot"></span>
+          <span class="ov-label">Visitas</span>
+          <span class="ov-count">—</span>
+        </div>
+      </div>
+
+      <p class="post-subtitle">
+        <span class="lang-es">Desplegué a producción desde una fiesta. El agente hizo todo el trabajo. Así funciona el futuro del DevOps.</span>
+        <span class="lang-en">I deployed to production from a party. The agent did all the work. This is the future of DevOps.</span>
+      </p>
+      <div class="post-meta">
+        <span class="post-tag devops">DevOps</span>
+        <span class="post-tag ai">IA / Agentes</span>
+        <span class="post-tag">CI/CD</span>
+        <br><br>
+        <i class="far fa-calendar"></i>
+        <span class="lang-es">27 de febrero de 2026</span><span class="lang-en">February 27, 2026</span>
+        &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Code × OscarCode9 (AI)
+        &nbsp;|&nbsp;
+        <i class="far fa-clock"></i>
+        <span class="lang-es">~10 min de lectura</span><span class="lang-en">~10 min read</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+
+      <h2><span class="lang-es">Los agentes ya llegaron al terminal</span><span class="lang-en">Agents Have Already Arrived at the Terminal</span></h2>
+
+      <p>
+        <span class="lang-es">La IA ha transformado literalmente todas las áreas de la tecnología, y los DevOps no son la excepción. Hoy en día, los LLMs son capaces de interactuar de forma más eficiente que nunca dentro de una terminal. Los comandos son texto, y cuando le otorgas a un modelo la capacidad de ejecutar esos comandos, le das capacidades agénticas: ya no es un bot que solo chatea, sino un agente que ejecuta tareas reales.</span>
+        <span class="lang-en">AI has literally transformed every area of technology, and DevOps is no exception. Today, LLMs can interact more efficiently than ever inside a terminal. Commands are text, and when you give a model the ability to execute those commands, you give it agentic capabilities: it's no longer a bot that just chats — it's an agent that executes real tasks.</span>
+      </p>
+
+      <h2><span class="lang-es">La historia de la fiesta</span><span class="lang-en">The Party Story</span></h2>
+
+      <p>
+        <span class="lang-es">Antes de presentar mi idea, déjenme contarles cómo lo uso en mi día a día.</span>
+        <span class="lang-en">Before presenting my idea, let me tell you how I use this in my daily workflow.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Tengo una infraestructura bastante compleja en AWS, entre proyectos profesionales y personales. Un día tuve que lanzar un servicio en AWS con certificados de seguridad... mientras estaba en una fiesta.</span>
+        <span class="lang-en">I have a fairly complex infrastructure on AWS, between professional and personal projects. One day I had to launch a service on AWS with security certificates... while I was at a party.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Me instalé <strong>OpenClaw</strong> —una herramienta open-source que conecta un agente de IA con cualquier app de mensajería: Telegram, WhatsApp, Discord, y más. Le das acceso completo al CLI de tu servidor y puedes orquestar al agente desde el chat, como si le mandaras instrucciones a un colega. Funciona con cualquier modelo: Claude, GPT-4, DeepSeek, Gemini o modelos locales via Ollama.</span>
+        <span class="lang-en">I installed <strong>OpenClaw</strong> — an open-source tool that connects an AI agent to any messaging app: Telegram, WhatsApp, Discord, and more. You give it full CLI access to your server and can orchestrate the agent from chat, like sending instructions to a colleague. It works with any model: Claude, GPT-4, DeepSeek, Gemini, or local models via Ollama.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Así, literalmente trabajé de forma remota desde mi bot de Telegram. Solo respondiendo mensajes y orquestando al agente logramos el despliegue sin problema. El truco está en que, <strong>antes de ejecutar, siempre hay que planear</strong>: una vez que la planeación está bien definida, la ejecución fluye perfectamente.</span>
+        <span class="lang-en">So I literally worked remotely from my Telegram bot. Just responding to messages and orchestrating the agent, we completed the deployment without issues. The trick is that <strong>you always need to plan before executing</strong>: once the planning is well-defined, execution flows perfectly.</span>
+      </p>
+
+      <h2><span class="lang-es">El problema con los pipelines tradicionales</span><span class="lang-en">The Problem with Traditional Pipelines</span></h2>
+
+      <p>
+        <span class="lang-es">Esta experiencia me hizo reflexionar sobre el mundo del DevOps. Los pipelines de CI/CD son la norma, pero no siempre son perfectos.</span>
+        <span class="lang-en">This experience made me reflect on the DevOps world. CI/CD pipelines are the norm, but they're not always perfect.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Para que un pipeline funcione de forma confiable, necesitas un ambiente 100% controlado. Y aun así, cuando algo sale mal —ya sea por una condición inesperada o un error humano— el pipeline simplemente falla. Alguien tiene que estar monitoreando, diagnosticar el problema y corregirlo manualmente.</span>
+        <span class="lang-en">For a pipeline to work reliably, you need a 100% controlled environment. And even then, when something goes wrong — whether from an unexpected condition or human error — the pipeline simply fails. Someone has to be monitoring, diagnose the problem, and fix it manually.</span>
+      </p>
+
+      <div class="diagram">
+        <pre><code>
+  git push ──▶ GitHub Actions ──▶ SSH + git pull ──▶ docker build
+                                                           │
+                                                     ¿Build OK?
+                                                    NO /      \ SÍ
+                                                      /        ▼
+                                              ❌ FALLA    prisma migrate
+                                           (espera humano)    │
+                                                        ¿Migración OK?
+                                                       NO /      \ SÍ
+                                                         /        ▼
+                                                 ❌ FALLA    health check
+                                              (espera humano)    │
+                                                           ¿API OK?
+                                                          NO /   \ SÍ
+                                                            /     ▼
+                                                    ❌ FALLA  ✅ Deploy
+                                                 (espera humano)
+        </code></pre>
+        <p class="diagram-caption"><span class="lang-es">Pipeline tradicional: cualquier falla detiene todo y espera a un humano</span><span class="lang-en">Traditional pipeline: any failure stops everything and waits for a human</span></p>
+      </div>
+
+      <p>
+        <span class="lang-es">Los pipelines son, en esencia, una serie de instrucciones bien definidas. Pero si una falla por cualquier razón —dentro o fuera de sus reglas—, el proceso se detiene y espera a un humano.</span>
+        <span class="lang-en">Pipelines are, in essence, a series of well-defined instructions. But if one fails for any reason — inside or outside its rules — the process stops and waits for a human.</span>
+      </p>
+
+      <h2><span class="lang-es">Pipelines agénticos: la propuesta</span><span class="lang-en">Agentic Pipelines: The Proposal</span></h2>
+
+      <p>
+        <span class="lang-es">¿Y si en lugar de esperar a un humano, el agente mismo diagnosticara el error y lo corrigiera?</span>
+        <span class="lang-en">What if instead of waiting for a human, the agent itself diagnosed the error and fixed it?</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Un agente sabe exactamente por qué falló algo y cómo repararlo. No tiene por qué esperar. Es el mismo concepto de pipeline, pero con un agente por encima que puede controlar errores, corregirlos y garantizar que el despliegue pase —ya sea que el error lo haya causado un humano o incluso otro agente.</span>
+        <span class="lang-en">An agent knows exactly why something failed and how to fix it. It doesn't need to wait. It's the same pipeline concept, but with an agent on top that can handle errors, fix them, and ensure the deployment succeeds — whether the error was caused by a human or even another agent.</span>
+      </p>
+
+      <div class="diagram">
+        <pre><code>
+  git push ──▶ GitHub Actions
+                    │
+                    ▼
+          Agente lee deploy.pipeline.md
+                    │
+          ┌─────────▼──────────┐
+          │   Paso 1: Backup   │◀─── Reintenta si falla
+          └─────────┬──────────┘
+                    │ ✓
+          ┌─────────▼──────────┐
+          │   Paso 2: git pull │◀─── Resuelve conflictos
+          └─────────┬──────────┘
+                    │ ✓
+          ┌─────────▼──────────────────────────────┐
+          │   Paso 3: docker build                 │◀─── Aplica workaround --allow
+          └─────────┬──────────────────────────────┘
+                    │ ✓
+          ┌─────────▼──────────┐
+          │   Paso 4: Migrate  │◀─── Reintenta x3 si falla conexión
+          └─────────┬──────────┘
+                    │ ✓
+          ┌─────────▼──────────┐
+          │  Paso 5: Verifica  │──── Si datos < antes: restaura backup
+          │   conteos DB       │
+          └─────────┬──────────┘
+                    │ ✓
+          ┌─────────▼──────────┐
+          │ Paso 6: Health chk │◀─── Revisa logs, corrige y reinicia
+          └─────────┬──────────┘
+                    │ ✓
+              ✅ Deploy exitoso
+           (sin intervención humana)
+        </code></pre>
+        <p class="diagram-caption"><span class="lang-es">Pipeline agéntico: el agente razona, reintenta y corrige en cada paso</span><span class="lang-en">Agentic pipeline: the agent reasons, retries, and fixes at each step</span></p>
+      </div>
+
+      <h2><span class="lang-es">La implementación: el pipeline como Markdown</span><span class="lang-en">The Implementation: Pipeline as Markdown</span></h2>
+
+      <p>
+        <span class="lang-es">¿Cómo se implementa esto? En lugar de definir el pipeline como código (YAML, scripts), lo definimos como un <strong>archivo Markdown</strong> con instrucciones en lenguaje natural:</span>
+        <span class="lang-en">How is this implemented? Instead of defining the pipeline as code (YAML, scripts), we define it as a <strong>Markdown file</strong> with natural language instructions:</span>
+      </p>
+
+      <pre><code># deploy.production.pipeline.md
+
+## Contexto y accesos
+- Servidor: AWS EC2 en us-east-2 (Ohio)
+- Conexión: ssh -i "truck.pem" ec2-user@ec2-3-145-149-229.us-east-2.compute.amazonaws.com
+- Directorio del proyecto: /home/ec2-user/tenk
+
+## Regla crítica
+Los datos de producción NUNCA deben perderse. Si detectas que los conteos
+de tablas disminuyeron respecto al inicio, detén todo y restaura el backup.
+
+## Paso 1 — Backup de la base de datos
+  docker exec tenk-postgres pg_dump -U postgres tenk_prod > ~/backups/tenk_$(date +%Y%m%d_%H%M%S).sql
+
+Verifica que el archivo generado NO sea de 0 bytes. Si lo es, no continúes.
+
+## Paso 2 — Pull del código
+  git pull origin main
+Si hay conflictos de merge, resuélvelos manteniendo origin/main.
+
+## Paso 3 — Build y reinicio de la API
+⚠️ docker compose --build falla con "unknown flag: --allow". Usa este workaround:
+  docker build --no-cache -t backend-tenk-api -f Dockerfile .
+  docker compose -f docker-compose.prod.yml up -d --force-recreate tenk-api
+
+## Paso 4 — Migraciones
+  docker exec tenk-api bunx prisma migrate deploy
+Si falla por conexión rechazada, espera 10s y reintenta hasta 3 veces.
+
+## Paso 5 — Verificar que NO se perdieron datos
+Compara conteos de users, skills, sessions con los del Paso 1.
+Si alguno bajó, restaura el backup inmediatamente.
+
+## Paso 6 — Health check
+  curl -s http://localhost:4000/health
+Si responde con status distinto a 200, revisa los logs e identifica la causa.</code></pre>
+
+      <p>
+        <span class="lang-es">Este archivo contiene no solo los comandos, sino también el <em>contexto</em>, las <em>reglas de negocio</em> y los <em>workarounds conocidos</em>. El agente lo interpreta y actúa con criterio en cada paso.</span>
+        <span class="lang-en">This file contains not just commands, but also the <em>context</em>, <em>business rules</em>, and <em>known workarounds</em>. The agent interprets it and acts with judgment at each step.</span>
+      </p>
+
+      <h2><span class="lang-es">¿Cómo se conecta el agente con GitHub Actions?</span><span class="lang-en">How Do You Connect the Agent to GitHub Actions?</span></h2>
+
+      <p>
+        <span class="lang-es">La respuesta es más simple de lo que parece. En lugar de 20 steps frágiles en YAML, tienes <strong>un solo step</strong> que le pasa el MD al agente:</span>
+        <span class="lang-en">The answer is simpler than it seems. Instead of 20 fragile YAML steps, you have <strong>a single step</strong> that passes the MD to the agent:</span>
+      </p>
+
+      <pre><code># .github/workflows/deploy-agentic.yml
+name: Agentic Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run agentic deployment
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude --print \
+            --allowedTools "Bash" \
+            "Eres un agente DevOps. Ejecuta el siguiente pipeline de despliegue
+             paso a paso, resolviendo cualquier error que encuentres en el camino.
+             Pipeline: $(cat .github/pipelines/deploy.production.pipeline.md)"</code></pre>
+
+      <div class="callout info">
+        <p><strong><span class="lang-es">Nota de seguridad:</span><span class="lang-en">Security note:</span></strong> <span class="lang-es">Limita siempre los <code>--allowedTools</code> al mínimo necesario. Para un deploy remoto via SSH, <code>Bash</code> es suficiente.</span><span class="lang-en">Always limit <code>--allowedTools</code> to the minimum needed. For a remote deploy via SSH, <code>Bash</code> is sufficient.</span></p>
+      </div>
+
+      <h2><span class="lang-es">Pipeline YAML vs. Pipeline agéntico</span><span class="lang-en">YAML Pipeline vs. Agentic Pipeline</span></h2>
+
+      <div class="comparison">
+        <div class="comparison-box bad">
+          <h4>❌ <span class="lang-es">Pipeline YAML tradicional</span><span class="lang-en">Traditional YAML Pipeline</span></h4>
+          <ul>
+            <li><span class="lang-es">Falla y espera al humano</span><span class="lang-en">Fails and waits for a human</span></li>
+            <li><span class="lang-es">Solo ejecuta comandos</span><span class="lang-en">Only executes commands</span></li>
+            <li><span class="lang-es">Reglas de negocio difíciles de expresar</span><span class="lang-en">Business rules hard to express</span></li>
+            <li><span class="lang-es">Workarounds hay que hardcodearlos</span><span class="lang-en">Workarounds must be hardcoded</span></li>
+            <li><span class="lang-es">No razona sobre pérdida de datos</span><span class="lang-en">Doesn't reason about data loss</span></li>
+          </ul>
+        </div>
+        <div class="comparison-box good">
+          <h4>✅ <span class="lang-es">Pipeline agéntico (MD)</span><span class="lang-en">Agentic Pipeline (MD)</span></h4>
+          <ul>
+            <li><span class="lang-es">Diagnostica y reintenta</span><span class="lang-en">Diagnoses and retries</span></li>
+            <li><span class="lang-es">Entiende el "por qué" de cada paso</span><span class="lang-en">Understands the "why" of each step</span></li>
+            <li><span class="lang-es">Lenguaje natural, explícito</span><span class="lang-en">Natural language, explicit</span></li>
+            <li><span class="lang-es">Lee y aplica workarounds documentados</span><span class="lang-en">Reads and applies documented workarounds</span></li>
+            <li><span class="lang-es">Compara conteos y actúa</span><span class="lang-en">Compares counts and acts</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2><span class="lang-es">Límites y riesgos: cuándo NO usar esto</span><span class="lang-en">Limits and Risks: When NOT to Use This</span></h2>
+
+      <p><span class="lang-es">Ser honesto sobre las limitaciones es parte de proponer una idea seria.</span><span class="lang-en">Being honest about limitations is part of proposing a serious idea.</span></p>
+
+      <div class="callout warning">
+        <p><strong><span class="lang-es">El MD debe estar muy bien escrito.</span><span class="lang-en">The MD must be very well written.</span></strong> <span class="lang-es">El agente sigue las instrucciones al pie de la letra. Las instrucciones vagas producen ejecuciones impredecibles.</span><span class="lang-en">The agent follows instructions literally. Vague instructions produce unpredictable executions.</span></p>
+      </div>
+
+      <div class="callout danger">
+        <p><strong><span class="lang-es">El agente tiene acceso completo al CLI.</span><span class="lang-en">The agent has full CLI access.</span></strong> <span class="lang-es">Eso es poder real. Restringe los <code>--allowedTools</code> al mínimo, y en deploys críticos mantén un paso de aprobación humana antes de que el agente ejecute.</span><span class="lang-en">That's real power. Restrict <code>--allowedTools</code> to the minimum, and for critical deploys keep a human approval step before the agent executes.</span></p>
+      </div>
+
+      <div class="callout info">
+        <p><strong><span class="lang-es">La auditabilidad es obligatoria.</span><span class="lang-en">Auditability is mandatory.</span></strong> <span class="lang-es">Guarda el output completo del agente como artefacto del workflow. Necesitas saber qué hizo exactamente.</span><span class="lang-en">Save the agent's full output as a workflow artifact. You need to know exactly what it did.</span></p>
+      </div>
+
+      <p><strong><span class="lang-es">Cuándo NO usarlo:</span><span class="lang-en">When NOT to use it:</span></strong></p>
+      <ul>
+        <li><span class="lang-es">Deploys que requieren aprobación regulatoria o de compliance formal</span><span class="lang-en">Deploys requiring regulatory or formal compliance approval</span></li>
+        <li><span class="lang-es">Ambientes donde el acceso al CLI no está auditado o restringido</span><span class="lang-en">Environments where CLI access is not audited or restricted</span></li>
+        <li><span class="lang-es">Equipos que aún no tienen confianza en el comportamiento del agente — primero prueba en staging</span><span class="lang-en">Teams that don't yet trust the agent's behavior — test in staging first</span></li>
+      </ul>
+
+      <h2><span class="lang-es">Por dónde empezar</span><span class="lang-en">Where to Start</span></h2>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong><span class="lang-es">Escribe tu primer <code>deploy.staging.pipeline.md</code></span><span class="lang-en">Write your first <code>deploy.staging.pipeline.md</code></span></strong>
+          <p><span class="lang-es">No empieces en producción. Documenta el proceso de staging con todas las reglas, workarounds conocidos y condiciones de error.</span><span class="lang-en">Don't start in production. Document the staging process with all rules, known workarounds, and error conditions.</span></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong><span class="lang-es">Prueba el agente manualmente primero</span><span class="lang-en">Test the agent manually first</span></strong>
+          <pre><code>claude --print --allowedTools "Bash" \
+  "Ejecuta este pipeline: $(cat deploy.staging.pipeline.md)"</code></pre>
+          <p><span class="lang-es">Observa cómo razona, qué decisiones toma, dónde duda.</span><span class="lang-en">Watch how it reasons, what decisions it makes, where it hesitates.</span></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong><span class="lang-es">Itera el MD con cada error</span><span class="lang-en">Iterate the MD with each error</span></strong>
+          <p><span class="lang-es">Cada vez que el agente haga algo inesperado, agrega una aclaración al pipeline. El MD se vuelve más inteligente con cada iteración.</span><span class="lang-en">Every time the agent does something unexpected, add a clarification to the pipeline. The MD gets smarter with each iteration.</span></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong><span class="lang-es">Conecta a CI/CD solo cuando tengas confianza</span><span class="lang-en">Connect to CI/CD only when you're confident</span></strong>
+          <p><span class="lang-es">Una vez que el agente haga el deploy de staging de forma consistente, replica el flujo en producción.</span><span class="lang-en">Once the agent consistently deploys staging, replicate the flow in production.</span></p>
+        </div>
+      </div>
+
+      <div class="callout success">
+        <p>
+          <strong><span class="lang-es">Herramientas para empezar:</span><span class="lang-en">Tools to get started:</span></strong><br>
+          <a href="https://claude.ai/code" target="_blank">Claude Code</a> — <span class="lang-es">agente de Anthropic con acceso al CLI</span><span class="lang-en">Anthropic's agent with CLI access</span><br>
+          <a href="https://github.com/openclaw/openclaw" target="_blank">OpenClaw</a> — <span class="lang-es">para orquestar el agente desde Telegram, WhatsApp u otras apps de mensajería</span><span class="lang-en">to orchestrate the agent from Telegram, WhatsApp or other messaging apps</span>
+        </p>
+      </div>
+
+      <div class="callout">
+        <p style="font-size:1.1em; text-align:center;">
+          <strong><span class="lang-es">El futuro del DevOps no es más YAML. Es darle al agente las reglas del negocio y dejar que él encuentre el camino.</span><span class="lang-en">The future of DevOps isn't more YAML. It's giving the agent the business rules and letting it find the way.</span></strong>
+        </p>
+      </div>
+
+      <div class="post-footer">
+        <p>
+          <span class="lang-es">Escrito por <strong>Oscar Code × OscarCode9 (AI)</strong> — 27 de febrero de 2026</span>
+          <span class="lang-en">Written by <strong>Oscar Code × OscarCode9 (AI)</strong> — February 27, 2026</span>
+        </p>
+        <p style="margin-top: 10px; color: rgba(255,255,255,0.4);">
+          <a href="index.html"><span class="lang-es">← Volver al inicio</span><span class="lang-en">← Back to home</span></a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
