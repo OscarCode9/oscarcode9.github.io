@@ -437,8 +437,14 @@
       </p>
 
       <p>
-        <span class="lang-es">Así, literalmente trabajé de forma remota desde mi bot de Telegram. Solo respondiendo mensajes y orquestando al agente logramos el despliegue sin problema. El truco está en que, <strong>antes de ejecutar, siempre hay que planear</strong>: una vez que la planeación está bien definida, la ejecución fluye perfectamente.</span>
-        <span class="lang-en">So I literally worked remotely from my Telegram bot. Just responding to messages and orchestrating the agent, we completed the deployment without issues. The trick is that <strong>you always need to plan before executing</strong>: once the planning is well-defined, execution flows perfectly.</span>
+        <span class="lang-es">El mensaje que le mandé al agente desde Telegram fue simplemente:</span>
+        <span class="lang-en">The message I sent to the agent from Telegram was simply:</span></p>
+
+      <pre><code>deploy producción</code></pre>
+
+      <p>
+        <span class="lang-es">Eso es todo. No tuve que explicar nada más porque <strong>el MD ya tenía todo el plan</strong>: los accesos, los pasos, los workarounds conocidos, las reglas de negocio. El agente lo leyó y ejecutó todo solo. Cuando algo falló, lo diagnosticó y lo corrigió sin preguntarme nada.</span>
+        <span class="lang-en">That's it. I didn't have to explain anything else because <strong>the MD already had the full plan</strong>: the credentials, the steps, the known workarounds, the business rules. The agent read it and executed everything on its own. When something failed, it diagnosed and fixed it without asking me anything.</span>
       </p>
 
       <h2><span class="lang-es">El problema con los pipelines tradicionales</span><span class="lang-en">The Problem with Traditional Pipelines</span></h2>
