@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KERN — El lenguaje de programación diseñado para los LLMs | Oscar Code</title>
+  <meta name="description" content="Los LLMs consumen tokens. Los tokens cuestan dinero. ¿Y si el lenguaje en sí fuera más eficiente? KERN: un lenguaje compacto que transpila a Python, diseñado para que los agentes piensen más barato.">
+  <meta name="keywords" content="KERN, LLM, token efficiency, programming language, Python, transpiler, SimPy, Token Sugar, agentic AI, code generation">
+  <meta property="og:title" content="KERN — El lenguaje de programación diseñado para los LLMs">
+  <meta property="og:description" content="Los tokens cuestan. El código verboso no es gratis. KERN propone un lenguaje compacto que transpila a Python para que los agentes generen más con menos.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00a8cc;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+      --accent-gold: #ffd54f;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* HEADER */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1a2e 50%, #0a0f1a 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,213,79,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(0,212,255,0.05) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .kern-logo {
+      font-family: 'Fira Code', monospace;
+      font-size: 3.5em;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-orange) 50%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+    }
+
+    .post-title {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.1em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+      font-weight: 600;
+    }
+
+    .post-tag.research { background: rgba(255,213,79,0.15); color: var(--accent-gold); border: 1px solid rgba(255,213,79,0.3); }
+    .post-tag.pl { background: rgba(179,136,255,0.15); color: var(--accent-purple); border: 1px solid rgba(179,136,255,0.3); }
+    .post-tag.idea { background: rgba(105,240,174,0.15); color: var(--accent-green); border: 1px solid rgba(105,240,174,0.3); }
+
+    /* CONTENT */
+    .post-content {
+      padding: 60px 0 80px;
+    }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--accent-gold);
+      border-bottom: 2px solid rgba(255,213,79,0.2);
+      padding-bottom: 10px;
+    }
+
+    .post-content h2:first-child { margin-top: 0; }
+
+    .post-content h3 {
+      font-size: 1.3em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong { color: var(--text-primary); }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover { border-bottom-color: var(--primary); }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li { margin-bottom: 8px; }
+
+    /* Code blocks */
+    pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(255,213,79,0.1);
+      border-radius: 10px;
+      padding: 24px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    pre code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88em;
+      background: rgba(255,213,79,0.08);
+      color: var(--accent-gold);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    pre code { background: none; color: #e2e8f0; padding: 0; }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 4px solid var(--accent-gold);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.info { border-left-color: var(--accent-blue); }
+    .callout.insight { border-left-color: var(--accent-purple); }
+    .callout.warning { border-left-color: var(--accent-orange); }
+    .callout.gap { border-left-color: var(--accent-red); }
+
+    .callout p { margin-bottom: 0; }
+    .callout p:not(:last-child) { margin-bottom: 10px; }
+
+    /* Prior art table */
+    .diff-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.88em;
+    }
+
+    .diff-table th {
+      background: rgba(255,213,79,0.08);
+      color: var(--accent-gold);
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 2px solid rgba(255,213,79,0.2);
+    }
+
+    .diff-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .diff-table tr:hover td { background: rgba(255,213,79,0.02); }
+    .diff-table td:first-child { color: var(--text-primary); font-weight: 500; }
+
+    /* Syntax comparison */
+    .syntax-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 25px 0;
+    }
+
+    .syntax-box {
+      background: var(--bg-code);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .syntax-box.python { border-color: rgba(79,195,247,0.2); }
+    .syntax-box.kern { border-color: rgba(255,213,79,0.3); }
+
+    .syntax-label {
+      font-size: 0.75em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .syntax-box.python .syntax-label { color: var(--accent-blue); }
+    .syntax-box.kern .syntax-label { color: var(--accent-gold); }
+
+    .syntax-box pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .token-count {
+      margin-top: 10px;
+      font-size: 0.78em;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .token-count span { color: var(--accent-green); font-weight: 600; }
+
+    /* Post footer */
+    .post-footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+
+    .post-footer a { color: var(--primary); text-decoration: none; }
+
+    .ov-views-wrap { margin: 8px 0 0; }
+    .ov-views-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 4px 12px; font-size: 0.82em;
+      color: rgba(255,255,255,0.5); position: relative; z-index: 1;
+    }
+    .ov-dot { width: 6px; height: 6px; border-radius: 50%; background: #22bb44; }
+
+    .lang-toggle {
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 0.9em;
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      z-index: 1;
+    }
+
+    .lang-en { display: none; }
+
+    /* Big quote */
+    .big-quote {
+      font-size: 1.4em;
+      font-style: italic;
+      color: var(--text-secondary);
+      border-left: 4px solid var(--accent-gold);
+      padding: 20px 30px;
+      margin: 40px 0;
+      background: var(--bg-card);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .big-quote footer {
+      margin-top: 12px;
+      font-size: 0.7em;
+      color: var(--text-muted);
+      font-style: normal;
+    }
+
+    /* Kern badge */
+    .kern-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(255,213,79,0.15), rgba(255,171,64,0.1));
+      border: 1px solid rgba(255,213,79,0.3);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9em;
+      color: var(--accent-gold);
+    }
+
+    @media (max-width: 600px) {
+      .kern-logo { font-size: 2.5em; }
+      .post-title { font-size: 1.4em; }
+      .post-header { padding: 60px 15px 40px; }
+      .syntax-compare { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
+  <script src="public/i18n.js"></script>
+</head>
+<body>
+
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
+      </a>
+      <span class="lang-toggle" onclick="toggleLanguage()">🌐 EN</span>
+
+      <div class="kern-logo">KERN</div>
+
+      <h1 class="post-title">
+        <span class="lang-es">Un lenguaje de programación diseñado para los LLMs</span>
+        <span class="lang-en">A Programming Language Designed for LLMs</span>
+      </h1>
+
+      <div class="ov-views-wrap">
+        <div class="ov-views-badge" data-ov-visits>
+          <span class="ov-dot"></span>
+          <span class="ov-label">Visitas</span>
+          <span class="ov-count">—</span>
+        </div>
+      </div>
+
+      <p class="post-subtitle">
+        <span class="lang-es">Los tokens cuestan dinero. El código verboso no es gratis. ¿Y si el lenguaje en sí fuera más compacto, sin sacrificar precisión?</span>
+        <span class="lang-en">Tokens cost money. Verbose code isn't free. What if the language itself were more compact, without sacrificing precision?</span>
+      </p>
+      <div class="post-meta">
+        <span class="post-tag research">Research</span>
+        <span class="post-tag pl">Lang · PL</span>
+        <span class="post-tag idea">Idea</span>
+        <br><br>
+        <i class="far fa-calendar"></i>
+        <span class="lang-es">28 de febrero de 2026</span><span class="lang-en">February 28, 2026</span>
+        &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Hdz
+        &nbsp;|&nbsp;
+        <i class="far fa-clock"></i>
+        <span class="lang-es">~8 min de lectura</span><span class="lang-en">~8 min read</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+
+      <h2>
+        <span class="lang-es">El problema que nadie nombra</span>
+        <span class="lang-en">The Problem Nobody Names</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Cuando un LLM genera código, no piensa en bytes. Piensa en <strong>tokens</strong>. Y cada token tiene un precio: en dinero, en latencia, y en límite de contexto.</span>
+        <span class="lang-en">When an LLM generates code, it doesn't think in bytes. It thinks in <strong>tokens</strong>. And every token has a price: in money, in latency, and in context window limits.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Python es hermoso para los humanos. Para un modelo, es verboso. Cada <code>def</code>, cada <code>return</code>, cada <code>self</code>, cada dos puntos al final de un <code>for</code> — son tokens que no aportan semántica adicional más allá de lo que el modelo ya infiere del contexto.</span>
+        <span class="lang-en">Python is beautiful for humans. For a model, it's verbose. Every <code>def</code>, every <code>return</code>, every <code>self</code>, every colon at the end of a <code>for</code> — they're tokens that add no extra semantics beyond what the model already infers from context.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Y esto importa más hoy que nunca. En 2026, el código no lo escribe un humano una vez. Lo lee un agente, lo razona, lo edita, lo escribe de vuelta, lo ejecuta, lee el output, y repite. <strong>El mismo código pasa por el contexto decenas de veces por tarea.</strong></span>
+        <span class="lang-en">And this matters more today than ever. In 2026, code isn't written once by a human. An agent reads it, reasons about it, edits it, writes it back, executes it, reads the output, and repeats. <strong>The same code passes through the context dozens of times per task.</strong></span>
+      </p>
+
+      <p>
+        <span class="lang-es">Una reducción del 25% en verbosidad no es un ahorro del 25% en costo. Es un ahorro compuesto en cada vuelta del loop agéntico.</span>
+        <span class="lang-en">A 25% reduction in verbosity isn't a 25% cost saving. It's a compounded saving across every turn of the agentic loop.</span>
+      </p>
+
+      <div class="callout">
+        <p>
+          <span class="lang-es"><strong>Kern</strong> es una propuesta de lenguaje de programación compacto que transpila a Python — y de vuelta a Python — pensado específicamente para este escenario: código generado, leído y editado por modelos de lenguaje, no por humanos.</span>
+          <span class="lang-en"><strong>Kern</strong> is a proposed compact programming language that transpiles to Python — and back — designed specifically for this scenario: code generated, read, and edited by language models, not by humans.</span>
+        </p>
+      </div>
+
+      <h2>
+        <span class="lang-es">Quién ya intentó resolverlo</span>
+        <span class="lang-en">Who Already Tried to Solve This</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Esta no es una pregunta nueva. Antes de hablar de Kern, hay que reconocer el trabajo previo — porque diferenciarse del arte existente es parte del rigor.</span>
+        <span class="lang-en">This isn't a new question. Before talking about Kern, we need to acknowledge the prior work — because differentiating from the existing art is part of the rigor.</span>
+      </p>
+
+      <h3>SimPy — ISSTA 2024</h3>
+
+      <p>
+        <span class="lang-es">El trabajo más cercano a esta idea. SimPy define un subconjunto simplificado de Python — AST-compatible — con keywords abreviadas y sintaxis más compacta. Reporta reducciones de ~20-30% en tokens contra Python estándar, evaluado en HumanEval.</span>
+        <span class="lang-en">The closest work to this idea. SimPy defines a simplified, AST-compatible subset of Python — with abbreviated keywords and more compact syntax. It reports ~20-30% token reductions versus standard Python, evaluated on HumanEval.</span>
+      </p>
+
+      <p>
+        <span class="lang-es"><strong>Lo que no resuelve:</strong> Para que un LLM genere SimPy de forma confiable, necesitas fine-tuning. Los modelos base defaulean a Python. Y no hay implementación de producción — sigue siendo un artefacto de investigación.</span>
+        <span class="lang-en"><strong>What it doesn't solve:</strong> For an LLM to reliably generate SimPy, you need fine-tuning. Base models default to Python. And there's no production implementation — it remains a research artifact.</span>
+      </p>
+
+      <h3>Token Sugar — Diciembre 2025</h3>
+
+      <p>
+        <span class="lang-es">Un enfoque filosóficamente diferente, publicado apenas en diciembre pasado. En lugar de definir un lenguaje nuevo, Token Sugar propone una capa de "azúcar sintáctico" sobre Python: abreviaciones estructuradas que expanden de vuelta a Python estándar.</span>
+        <span class="lang-en">A philosophically different approach, published just this past December. Instead of defining a new language, Token Sugar proposes a layer of "syntactic sugar" on top of Python: structured abbreviations that expand back to standard Python.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">La idea clave: los LLMs ya conocen Python profundamente. Mejor enseñarles un sistema de abreviaciones consistente que un lenguaje nuevo. Con pocos ejemplos en el prompt, el modelo aprende a usarlas — no se necesita fine-tuning. Ahorro estimado: ~15-25%.</span>
+        <span class="lang-en">The key insight: LLMs already know Python deeply. Better to teach them a consistent abbreviation system than a new language. With few-shot examples in the prompt, the model learns to use them — no fine-tuning needed. Estimated savings: ~15-25%.</span>
+      </p>
+
+      <p>
+        <span class="lang-es"><strong>Lo que no resuelve:</strong> Las reglas de Sugar deben definirse y mantenerse manualmente. Nuevos patrones no se comprimen automáticamente. Y ninguno de los dos proyectos — ni SimPy ni Token Sugar — fue diseñado teniendo en cuenta el tokenizador real.</span>
+        <span class="lang-en"><strong>What it doesn't solve:</strong> Sugar rules must be manually defined and maintained. Novel patterns aren't automatically compressed. And neither project — SimPy nor Token Sugar — was designed with the actual tokenizer in mind.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">Lo que ya sabemos sobre lenguajes y tokens</span>
+        <span class="lang-en">What We Already Know About Languages and Tokens</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Martin Alderson publicó un análisis comparando lenguajes de programación por eficiencia de tokens con tokenizadores modernos de LLMs. El hallazgo más contraintuitivo: algunos lenguajes que parecen cortos en caracteres (como C con aritmética de punteros) son <em>ineficientes</em> en tokens, porque símbolos como <code>-></code>, <code>*</code>, <code>&amp;</code> se fragmentan en el vocabulario BPE.</span>
+        <span class="lang-en">Martin Alderson published an analysis comparing programming languages by token efficiency with modern LLM tokenizers. The most counterintuitive finding: some languages that look short in characters (like C with pointer arithmetic) are <em>inefficient</em> in tokens, because symbols like <code>-></code>, <code>*</code>, <code>&amp;</code> fragment in the BPE vocabulary.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Python está en un punto medio ventajoso: sus keywords más comunes (<code>def</code>, <code>return</code>, <code>import</code>, <code>for</code>) suelen ser tokens unitarios en cl100k_base. Pero su sintaxis aún carga overhead innecesario para el LLM.</span>
+        <span class="lang-en">Python sits at an advantageous middle ground: its most common keywords (<code>def</code>, <code>return</code>, <code>import</code>, <code>for</code>) tend to be single tokens in cl100k_base. But its syntax still carries unnecessary overhead for the LLM.</span>
+      </p>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Proyecto</span><span class="lang-en">Project</span></th>
+            <th><span class="lang-es">Enfoque</span><span class="lang-en">Approach</span></th>
+            <th><span class="lang-es">Ahorro tokens</span><span class="lang-en">Token savings</span></th>
+            <th><span class="lang-es">Round-trip</span><span class="lang-en">Round-trip</span></th>
+            <th><span class="lang-es">LLM nativo</span><span class="lang-en">LLM-native</span></th>
+            <th><span class="lang-es">Producción</span><span class="lang-en">Production</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SimPy</td>
+            <td><span class="lang-es">Lenguaje nuevo mínimo</span><span class="lang-en">New minimal language</span></td>
+            <td>~20-30%</td>
+            <td><span class="lang-es">Parcial</span><span class="lang-en">Partial</span></td>
+            <td><span class="lang-es">Fine-tuning requerido</span><span class="lang-en">Fine-tuning required</span></td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Token Sugar</td>
+            <td><span class="lang-es">Macros sobre Python</span><span class="lang-en">Macros on Python</span></td>
+            <td>~15-25%</td>
+            <td>Sí</td>
+            <td><span class="lang-es">Few-shot</span><span class="lang-en">Few-shot</span></td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>LLMLingua</td>
+            <td><span class="lang-es">Compresión de prompts</span><span class="lang-en">Prompt compression</span></td>
+            <td>50-75%</td>
+            <td>No</td>
+            <td>Sí</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td style="color: var(--accent-gold);">KERN</td>
+            <td><span class="lang-es">DSL que transpila a Python</span><span class="lang-en">DSL that transpiles to Python</span></td>
+            <td><span class="lang-es">Objetivo: 25-40%</span><span class="lang-en">Target: 25-40%</span></td>
+            <td><span class="lang-es">Garantizado</span><span class="lang-en">Guaranteed</span></td>
+            <td><span class="lang-es">Few-shot + tokenizer-aware</span><span class="lang-en">Few-shot + tokenizer-aware</span></td>
+            <td><span class="lang-es">Objetivo</span><span class="lang-en">Target</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>
+        <span class="lang-es">Qué propone Kern</span>
+        <span class="lang-en">What Kern Proposes</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Kern no es un lenguaje nuevo que hay que aprender desde cero. Es una <strong>representación compacta de Python</strong> — con gramática formal, determinista y reversible.</span>
+        <span class="lang-en">Kern isn't a new language you need to learn from scratch. It's a <strong>compact representation of Python</strong> — with a formal, deterministic, and reversible grammar.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Cualquier programa Python tiene exactamente una representación Kern. Cualquier programa Kern tiene exactamente un programa Python equivalente. El compilador inverso garantiza fidelidad semántica total a nivel de AST.</span>
+        <span class="lang-en">Any Python program has exactly one Kern representation. Any Kern program has exactly one equivalent Python program. The inverse compiler guarantees total semantic fidelity at the AST level.</span>
+      </p>
+
+      <div class="syntax-compare">
+        <div class="syntax-box python">
+          <div class="syntax-label">Python</div>
+          <pre><code>def add(a, b):
+    return a + b
+
+result = [x**2 for x in range(10)
+          if x % 2 == 0]
+
+class Node:
+    def __init__(self, val):
+        self.val = val</code></pre>
+          <div class="token-count">~40 tokens</div>
+        </div>
+        <div class="syntax-box kern">
+          <div class="syntax-label">KERN</div>
+          <pre><code>fn add(a,b)=a+b
+
+result=[x**2 fr x in rng(10) if x%2==0]
+
+cls Node:
+  fn __init__(s,val):s.val=val</code></pre>
+          <div class="token-count"><span>~28 tokens</span> · −30%</div>
+        </div>
+      </div>
+
+      <p>
+        <span class="lang-es">La sintaxis no es aleatoria. Cada decisión se valida contra el tokenizador real — <code>cl100k_base</code> de OpenAI, <code>o200k_base</code> de GPT-4o — para asegurar que el ahorro ocurre en tokens, no solo en caracteres. Es la pieza que SimPy y Token Sugar no hicieron.</span>
+        <span class="lang-en">The syntax isn't arbitrary. Every decision is validated against the actual tokenizer — OpenAI's <code>cl100k_base</code>, GPT-4o's <code>o200k_base</code> — to ensure savings happen in tokens, not just characters. That's the piece SimPy and Token Sugar didn't do.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">Por qué transpila a Python y no es un lenguaje standalone</span>
+        <span class="lang-en">Why It Transpiles to Python Instead of Being Standalone</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Aquí está la decisión de arquitectura más importante: <strong>Kern no es un lenguaje independiente</strong>. Todo programa Kern compila a Python válido. Esto no es una limitación — es la estrategia.</span>
+        <span class="lang-en">Here's the most important architectural decision: <strong>Kern is not a standalone language</strong>. Every Kern program compiles to valid Python. This isn't a limitation — it's the strategy.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Un lenguaje nuevo tiene el problema del arranque en frío: los LLMs no lo conocen, no hay librerías, no hay linters, no hay nada. Transpilando a Python, Kern hereda todo el ecosistema Python — pytest, mypy, black, pip — sin modificarlo.</span>
+        <span class="lang-en">A new language has the cold-start problem: LLMs don't know it, there are no libraries, no linters, nothing. By transpiling to Python, Kern inherits the entire Python ecosystem — pytest, mypy, black, pip — without modifying it.</span>
+      </p>
+
+      <div class="callout insight">
+        <p>
+          <span class="lang-es">El flujo agéntico con Kern: el agente recibe código en Kern (compacto, menos tokens), razona y edita en Kern, el transpilador convierte a Python para ejecución, el output vuelve al agente en Kern. Cada vuelta del loop cuesta menos.</span>
+          <span class="lang-en">The agentic flow with Kern: the agent receives code in Kern (compact, fewer tokens), reasons and edits in Kern, the transpiler converts to Python for execution, output returns to the agent in Kern. Each loop turn costs less.</span>
+        </p>
+      </div>
+
+      <h2>
+        <span class="lang-es">Por qué ahora</span>
+        <span class="lang-en">Why Now</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">SimPy es de 2024. Token Sugar salió en diciembre de 2025. El campo existe pero no tiene una implementación de producción, no tiene round-trip garantizado, y ninguno fue diseñado pensando en los loops agénticos modernos — Cursor, Claude Code, Devin, Copilot Workspace.</span>
+        <span class="lang-en">SimPy is from 2024. Token Sugar came out in December 2025. The field exists but has no production implementation, no guaranteed round-trip, and neither was designed with modern agentic loops in mind — Cursor, Claude Code, Devin, Copilot Workspace.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Y hay algo más: las ventanas de contexto crecieron (128K → 1M tokens en algunos modelos), pero el costo sigue siendo lineal con los tokens. Más contexto disponible no significa tokens gratuitos. En entornos agénticos de alta frecuencia, la eficiencia de tokens es la diferencia entre un sistema rentable y uno que quema presupuesto.</span>
+        <span class="lang-en">And there's something else: context windows grew (128K → 1M tokens in some models), but cost remains linear with tokens. More context available doesn't mean free tokens. In high-frequency agentic environments, token efficiency is the difference between a profitable system and one that burns budget.</span>
+      </p>
+
+      <div class="big-quote">
+        <span class="lang-es">No diseñamos lenguajes para LLMs. Diseñamos lenguajes para humanos, y luego esperamos que los LLMs los adopten. Kern invierte esa premisa.</span>
+        <span class="lang-en">We don't design languages for LLMs. We design languages for humans, then expect LLMs to adopt them. Kern inverts that premise.</span>
+        <footer>— Oscar Hdz, Kern 2026</footer>
+      </div>
+
+      <h2>
+        <span class="lang-es">Estado actual</span>
+        <span class="lang-en">Current Status</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Kern está en fase de diseño. Esta entrada es la primera publicación de la idea — el arXiv informal, la bandera clavada.</span>
+        <span class="lang-en">Kern is in design phase. This post is the first publication of the idea — the informal arXiv, the flag planted.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Las siguientes etapas son: definir la gramática completa validada contra tokenizadores reales, construir el transpilador Python → Kern y el compilador inverso Kern → Python con garantías de round-trip, benchmarkear contra HumanEval y MBPP, y eventualmente publicar en un venue de cs.PL o cs.LG.</span>
+        <span class="lang-en">The next stages are: define the complete grammar validated against real tokenizers, build the Python → Kern transpiler and the Kern → Python inverse compiler with round-trip guarantees, benchmark against HumanEval and MBPP, and eventually publish in a cs.PL or cs.LG venue.</span>
+      </p>
+
+      <div class="callout info">
+        <p>
+          <span class="lang-es"><strong>Arte previo a leer:</strong> <a href="https://arxiv.org/abs/2404.16333" target="_blank">SimPy (ISSTA 2024)</a> · <a href="https://arxiv.org/abs/2512.08266" target="_blank">Token Sugar (2025)</a> · <a href="https://martinalderson.com/posts/which-programming-languages-are-most-token-efficient/" target="_blank">Token Efficiency Languages</a></span>
+          <span class="lang-en"><strong>Prior art to read:</strong> <a href="https://arxiv.org/abs/2404.16333" target="_blank">SimPy (ISSTA 2024)</a> · <a href="https://arxiv.org/abs/2512.08266" target="_blank">Token Sugar (2025)</a> · <a href="https://martinalderson.com/posts/which-programming-languages-are-most-token-efficient/" target="_blank">Token Efficiency Languages</a></span>
+        </p>
+      </div>
+
+      <div class="callout warning">
+        <p>
+          <span class="lang-es">Si estás trabajando en algo relacionado o quieres discutir la gramática, búscame. Este es el tipo de problema que vale la pena atacar en comunidad.</span>
+          <span class="lang-en">If you're working on something related or want to discuss the grammar, reach out. This is the kind of problem worth attacking together.</span>
+        </p>
+      </div>
+
+      <div class="post-footer">
+        <p>
+          <span class="lang-es">Escrito por <strong>Oscar Hdz</strong> — 28 de febrero de 2026</span>
+          <span class="lang-en">Written by <strong>Oscar Hdz</strong> — February 28, 2026</span>
+        </p>
+        <p style="margin-top: 10px; color: rgba(255,255,255,0.4);">
+          <a href="index.html"><span class="lang-es">← Volver al inicio</span><span class="lang-en">← Back to home</span></a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
