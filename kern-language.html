@@ -647,6 +647,101 @@ cls Node:
       </div>
 
       <h2>
+        <span class="lang-es">El loop que se alimenta a sí mismo</span>
+        <span class="lang-en">The Loop That Feeds Itself</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Hay una pieza de la propuesta que va más allá de la eficiencia de tokens. Es la parte que hace que Kern sea diferente en un sentido más profundo: <strong>el lenguaje genera su propio modelo</strong>.</span>
+        <span class="lang-en">There's one piece of this proposal that goes beyond token efficiency. It's what makes Kern different in a deeper sense: <strong>the language generates its own model</strong>.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">La mayoría de los lenguajes de programación especializados tienen el problema del arranque frío: antes de que un LLM pueda generarlos, necesitas miles de ejemplos escritos a mano. Y escribir ejemplos a mano no escala.</span>
+        <span class="lang-en">Most specialized programming languages have the cold-start problem: before an LLM can generate them, you need thousands of hand-written examples. And hand-writing examples doesn't scale.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Kern no tiene ese problema. El transpilador convierte cualquier programa Python a Kern de forma automática, determinista y sin intervención humana. Eso significa que <strong>cualquier repositorio de código Python del mundo es, automáticamente, datos de entrenamiento Kern</strong>. GitHub, HumanEval, MBPP, StarCoderData — millones de ejemplos disponibles desde el día uno, sin anotar un solo par a mano.</span>
+        <span class="lang-en">Kern doesn't have that problem. The transpiler converts any Python program to Kern automatically, deterministically, and without human intervention. That means <strong>any Python codebase in the world is automatically Kern training data</strong>. GitHub, HumanEval, MBPP, StarCoderData — millions of examples available from day one, without hand-labeling a single pair.</span>
+      </p>
+
+      <div class="callout insight">
+        <p>
+          <span class="lang-es"><strong>La asimetría clave:</strong> para crear datos de entrenamiento en Kern no necesitas expertos en Kern. Solo necesitas el transpilador. Y el transpilador existe desde antes que el modelo.</span>
+          <span class="lang-en"><strong>The key asymmetry:</strong> to create Kern training data you don't need Kern experts. You only need the transpiler. And the transpiler exists before the model does.</span>
+        </p>
+      </div>
+
+      <h3>
+        <span class="lang-es">El loop de bootstrap</span>
+        <span class="lang-en">The Bootstrap Loop</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Pero la parte interesante viene después. Una vez que el modelo aprende a generar Kern de forma nativa, empieza a producir código Kern a partir de enunciados en lenguaje natural. Ese código puede:</span>
+        <span class="lang-en">But the interesting part comes after. Once the model learns to generate Kern natively, it starts producing Kern code from natural language specs. That code can:</span>
+      </p>
+
+      <ul>
+        <li><span class="lang-es">Transpilarse a Python y ejecutarse con los tests existentes para verificar corrección</span><span class="lang-en">Be transpiled to Python and run against existing tests to verify correctness</span></li>
+        <li><span class="lang-es">Los ejemplos que pasen los tests se añaden al dataset de entrenamiento</span><span class="lang-en">Examples that pass the tests get added to the training dataset</span></li>
+        <li><span class="lang-es">El modelo se re-entrena (o se hace fine-tuning incremental) con esos nuevos ejemplos</span><span class="lang-en">The model is retrained (or incrementally fine-tuned) with those new examples</span></li>
+        <li><span class="lang-es">El modelo mejorado genera Kern más correcto y más compacto en la siguiente iteración</span><span class="lang-en">The improved model generates more correct and more compact Kern in the next iteration</span></li>
+      </ul>
+
+      <pre><code>  Python (GitHub, HumanEval, MBPP)
+          |
+          v  transpilador automático
+  Dataset Kern (millones de pares Python ↔ Kern)
+          |
+          v  fine-tuning con QLoRA
+  LLM que genera Kern nativo
+          |
+          v  genera código desde enunciados
+  Kern code nuevo
+          |
+          v  compilador inverso + test runner
+  ¿Pasa los tests?
+     /         \
+   Sí           No
+    |            |
+    v          descarte
+  nuevo dato
+  al dataset
+    |
+    v
+  re-entrena  →  (loop)
+</code></pre>
+
+      <p>
+        <span class="lang-es">El resultado es un sistema donde el lenguaje y el modelo co-evolucionan. No es un proceso manual — es un pipeline automático. Cada iteración del loop produce un modelo más capaz de generar código correcto en Kern, que a su vez produce más datos de entrenamiento válidos, que mejoran el siguiente modelo.</span>
+        <span class="lang-en">The result is a system where the language and the model co-evolve. This isn't a manual process — it's an automated pipeline. Each loop iteration produces a model more capable of generating correct Kern code, which in turn produces more valid training data, which improves the next model.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">Por qué Kern puede hacer esto y otros lenguajes no</span>
+        <span class="lang-en">Why Kern Can Do This and Others Can't</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">La condición necesaria para que este loop funcione es que el lenguaje sea <strong>verificable</strong>. Todo programa Kern puede convertirse a Python y ejecutarse. No necesitas un intérprete Kern nuevo, no necesitas librerías especiales — el ecosistema Python entero sirve como verificador.</span>
+        <span class="lang-en">The necessary condition for this loop to work is that the language be <strong>verifiable</strong>. Every Kern program can be converted to Python and executed. You don't need a new Kern interpreter, no special libraries — the entire Python ecosystem serves as the verifier.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Y hay algo más: la transpilación es <strong>determinista</strong>. El mismo Python siempre produce el mismo Kern. Eso significa que los datos de entrenamiento no tienen ruido — no hay dos formas "igual de correctas" de representar el mismo programa. El modelo aprende una sola forma canónica, lo que hace el aprendizaje más estable y el output más predecible.</span>
+        <span class="lang-en">And there's something else: the transpilation is <strong>deterministic</strong>. The same Python always produces the same Kern. That means training data has no noise — there are no two "equally correct" ways to represent the same program. The model learns one canonical form, making learning more stable and output more predictable.</span>
+      </p>
+
+      <div class="callout">
+        <p>
+          <span class="lang-es"><strong>La premisa del paper:</strong> si un LLM fine-tuned en Kern logra un Pass@1 comparable al del modelo base en Python — usando menos tokens por generación — entonces existe evidencia de que un lenguaje más compacto puede sustituir a Python en contextos agénticos sin pérdida de capacidad. Eso es lo que hay que demostrar.</span>
+          <span class="lang-en"><strong>The paper premise:</strong> if a Kern fine-tuned LLM achieves Pass@1 comparable to the Python base model — using fewer tokens per generation — then there's evidence that a more compact language can substitute Python in agentic contexts without capability loss. That's what needs to be demonstrated.</span>
+        </p>
+      </div>
+
+      <h2>
         <span class="lang-es">Estado actual</span>
         <span class="lang-en">Current Status</span>
       </h2>
