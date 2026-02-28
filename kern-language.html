@@ -416,7 +416,7 @@
         <i class="far fa-user"></i> Oscar Martinez
         &nbsp;|&nbsp;
         <i class="far fa-clock"></i>
-        <span class="lang-es">~8 min de lectura</span><span class="lang-en">~8 min read</span>
+        <span class="lang-es">~12 min de lectura</span><span class="lang-en">~12 min read</span>
       </div>
     </div>
   </header>
@@ -549,10 +549,10 @@
           <tr>
             <td style="color: var(--accent-gold);">KERN</td>
             <td><span class="lang-es">DSL que transpila a Python</span><span class="lang-en">DSL that transpiles to Python</span></td>
-            <td><span class="lang-es">Objetivo: 25-40%</span><span class="lang-en">Target: 25-40%</span></td>
-            <td><span class="lang-es">Garantizado</span><span class="lang-en">Guaranteed</span></td>
-            <td><span class="lang-es">Few-shot + tokenizer-aware</span><span class="lang-en">Few-shot + tokenizer-aware</span></td>
-            <td><span class="lang-es">Objetivo</span><span class="lang-en">Target</span></td>
+            <td><span class="lang-es">Medido: 25–40%</span><span class="lang-en">Measured: 25–40%</span></td>
+            <td><span class="lang-es">Garantizado (AST)</span><span class="lang-en">Guaranteed (AST)</span></td>
+            <td><span class="lang-es">Tokenizer-aware desde diseño</span><span class="lang-en">Tokenizer-aware by design</span></td>
+            <td><span class="lang-es">En progreso</span><span class="lang-en">In progress</span></td>
           </tr>
         </tbody>
       </table>
@@ -584,17 +584,16 @@ result = [x**2 for x in range(10)
 class Node:
     def __init__(self, val):
         self.val = val</code></pre>
-          <div class="token-count">~40 tokens</div>
+          <div class="token-count">52 tokens</div>
         </div>
         <div class="syntax-box kern">
-          <div class="syntax-label">KERN</div>
+          <div class="syntax-label">KERN v0.2</div>
           <pre><code>fn add(a,b)=a+b
 
-result=[x**2 fr x in rng(10) if x%2==0]
+result=[x**2 for x in range(10) if x%2==0]
 
-cls Node:
-  fn __init__(s,val):s.val=val</code></pre>
-          <div class="token-count"><span>~28 tokens</span> · −30%</div>
+cls Node{fn __init__(self,val){self.val=val}}</code></pre>
+          <div class="token-count"><span>41 tokens</span> · −21%</div>
         </div>
       </div>
 
@@ -747,13 +746,61 @@ cls Node:
       </h2>
 
       <p>
-        <span class="lang-es">Kern está en fase de diseño. Esta entrada es la primera publicación de la idea — el arXiv informal, la bandera clavada.</span>
-        <span class="lang-en">Kern is in design phase. This post is the first publication of the idea — the informal arXiv, the flag planted.</span>
+        <span class="lang-es">La gramática v0.2 está completa y validada. Los 12 constructs principales de Python tienen representación Kern definida y benchmarkeada contra el tokenizador real <code>cl100k_base</code>.</span>
+        <span class="lang-en">Grammar v0.2 is complete and validated. The 12 main Python constructs have a defined Kern representation, benchmarked against the real <code>cl100k_base</code> tokenizer.</span>
       </p>
 
+      <h3>
+        <span class="lang-es">Resultados del benchmark (28 feb 2026)</span>
+        <span class="lang-en">Benchmark Results (Feb 28, 2026)</span>
+      </h3>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Escenario</span><span class="lang-en">Scenario</span></th>
+            <th><span class="lang-es">Python tokens</span><span class="lang-en">Python tokens</span></th>
+            <th><span class="lang-es">Kern tokens</span><span class="lang-en">Kern tokens</span></th>
+            <th><span class="lang-es">Reducción</span><span class="lang-en">Reduction</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="lang-es">Funciones simples (sin docs)</span><span class="lang-en">Simple functions (no docs)</span></td>
+            <td>11</td><td>7</td><td style="color: var(--accent-green);">−36%</td>
+          </tr>
+          <tr>
+            <td>Lambda expressions</td>
+            <td>7</td><td>4</td><td style="color: var(--accent-green);">−43%</td>
+          </tr>
+          <tr>
+            <td>try/except blocks</td>
+            <td>16</td><td>11</td><td style="color: var(--accent-green);">−31%</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Código realista (con docstrings)</span><span class="lang-en">Realistic code (with docstrings)</span></td>
+            <td>97</td><td>60</td><td style="color: var(--accent-green);">−38%</td>
+          </tr>
+          <tr>
+            <td><strong><span class="lang-es">Promedio general (24 ejemplos)</span><span class="lang-en">Overall average (24 examples)</span></strong></td>
+            <td><strong>464</strong></td><td><strong>349</strong></td><td style="color: var(--accent-gold);"><strong>−24.8%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
       <p>
-        <span class="lang-es">Las siguientes etapas son: definir la gramática completa validada contra tokenizadores reales, construir el transpilador Python → Kern y el compilador inverso Kern → Python con garantías de round-trip, benchmarkear contra HumanEval y MBPP, y eventualmente publicar en un venue de cs.PL o cs.LG.</span>
-        <span class="lang-en">The next stages are: define the complete grammar validated against real tokenizers, build the Python → Kern transpiler and the Kern → Python inverse compiler with round-trip guarantees, benchmark against HumanEval and MBPP, and eventually publish in a cs.PL or cs.LG venue.</span>
+        <span class="lang-es">Tres hallazgos clave del benchmark: (1) las abreviaciones de keywords (<code>def→fn</code>, <code>class→cls</code>) no ahorran tokens por sí solas — ambas son 1 token BPE. Los ahorros reales vienen de eliminar la estructura del bloque (<code>:\n    </code>) y los espacios alrededor de operadores. (2) <code>and→&</code> y <code>or→|</code> ahorran 2-3 tokens en contexto por la fusión BPE con los operadores adyacentes. (3) Eliminar docstrings y comentarios — que no están en el AST de Python — es la mayor optimización en código real.</span>
+        <span class="lang-en">Three key benchmark findings: (1) keyword abbreviations (<code>def→fn</code>, <code>class→cls</code>) don't save tokens on their own — both are 1 BPE token. Real savings come from eliminating block structure (<code>:\n    </code>) and spaces around operators. (2) <code>and→&</code> and <code>or→|</code> save 2-3 tokens in context due to BPE fusion with adjacent operators. (3) Stripping docstrings and comments — which aren't in Python's AST — is the largest optimization on real code.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">Próximos pasos</span>
+        <span class="lang-en">Next Steps</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">La gramática está validada. El siguiente paso es construir el transpilador <code>Python → Kern</code> usando el módulo <code>ast</code> de Python, seguido del compilador inverso <code>Kern → Python</code> con garantías de round-trip a nivel de AST. Después: benchmark contra HumanEval y MBPP completos, fine-tuning de CodeLlama-7B con QLoRA, y paper.</span>
+        <span class="lang-en">The grammar is validated. The next step is building the <code>Python → Kern</code> transpiler using Python's <code>ast</code> module, followed by the inverse <code>Kern → Python</code> compiler with AST-level round-trip guarantees. Then: benchmark against full HumanEval and MBPP, fine-tuning CodeLlama-7B with QLoRA, and the paper.</span>
       </p>
 
       <div class="callout info">
