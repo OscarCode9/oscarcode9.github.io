@@ -411,7 +411,7 @@
         <span class="post-tag idea">Idea</span>
         <br><br>
         <i class="far fa-calendar"></i>
-        <span class="lang-es">28 de febrero de 2026</span><span class="lang-en">February 28, 2026</span>
+        <span class="lang-es">3 de marzo de 2026</span><span class="lang-en">March 3, 2026</span>
         &nbsp;|&nbsp;
         <i class="far fa-user"></i> Oscar Martinez
         &nbsp;|&nbsp;
@@ -746,13 +746,20 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </h2>
 
       <p>
-        <span class="lang-es">La gramática v0.2 está completa y validada. Los 12 constructs principales de Python tienen representación Kern definida y benchmarkeada contra el tokenizador real <code>cl100k_base</code>.</span>
-        <span class="lang-en">Grammar v0.2 is complete and validated. The 12 main Python constructs have a defined Kern representation, benchmarked against the real <code>cl100k_base</code> tokenizer.</span>
+        <span class="lang-es">La gramática v0.2 está completa y validada, pero eso ya no es lo más importante. Desde el 3 de marzo de 2026, Kern ya tiene pipeline completo <code>Python → Kern → Python</code> funcionando sobre benchmarks reales.</span>
+        <span class="lang-en">Grammar v0.2 is complete and validated, but that's no longer the main point. As of March 3, 2026, Kern already has a full <code>Python → Kern → Python</code> pipeline running on real benchmarks.</span>
       </p>
 
+      <div class="callout info">
+        <p>
+          <span class="lang-es"><strong>Actualización de implementación:</strong> transpilador y compilador inverso ya están construidos, con round-trip y validación funcional completos en HumanEval.</span>
+          <span class="lang-en"><strong>Implementation update:</strong> both the transpiler and inverse compiler are now built, with complete round-trip and functional validation on HumanEval.</span>
+        </p>
+      </div>
+
       <h3>
-        <span class="lang-es">Resultados del benchmark (28 feb 2026)</span>
-        <span class="lang-en">Benchmark Results (Feb 28, 2026)</span>
+        <span class="lang-es">Resultados de benchmark (3 mar 2026)</span>
+        <span class="lang-en">Benchmark Results (Mar 3, 2026)</span>
       </h3>
 
       <table class="diff-table">
@@ -766,31 +773,57 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
         </thead>
         <tbody>
           <tr>
-            <td><span class="lang-es">Funciones simples (sin docs)</span><span class="lang-en">Simple functions (no docs)</span></td>
-            <td>11</td><td>7</td><td style="color: var(--accent-green);">−36%</td>
+            <td><span class="lang-es">Gramática v0.2 (24 ejemplos sintéticos)</span><span class="lang-en">Grammar v0.2 (24 synthetic samples)</span></td>
+            <td>464</td><td>349</td><td style="color: var(--accent-green);">−24.8%</td>
           </tr>
           <tr>
-            <td>Lambda expressions</td>
-            <td>7</td><td>4</td><td style="color: var(--accent-green);">−43%</td>
+            <td><span class="lang-es">HumanEval completo (164 prompts + soluciones canónicas)</span><span class="lang-en">Full HumanEval (164 prompts + canonical solutions)</span></td>
+            <td>30368</td><td>8873</td><td style="color: var(--accent-gold);"><strong>−70.8%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span class="lang-es">Correctitud del pipeline (3 mar 2026)</span>
+        <span class="lang-en">Pipeline Correctness (Mar 3, 2026)</span>
+      </h3>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Métrica</span><span class="lang-en">Metric</span></th>
+            <th><span class="lang-es">Resultado</span><span class="lang-en">Result</span></th>
+            <th><span class="lang-es">Objetivo</span><span class="lang-en">Target</span></th>
+            <th><span class="lang-es">Estado</span><span class="lang-en">Status</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="lang-es">Transpilación Python → Kern</span><span class="lang-en">Python → Kern transpilation</span></td>
+            <td>164/164</td><td>100%</td><td style="color: var(--accent-green);">PASS</td>
           </tr>
           <tr>
-            <td>try/except blocks</td>
-            <td>16</td><td>11</td><td style="color: var(--accent-green);">−31%</td>
+            <td><span class="lang-es">Compilación Kern → Python</span><span class="lang-en">Kern → Python compilation</span></td>
+            <td>164/164</td><td>100%</td><td style="color: var(--accent-green);">PASS</td>
           </tr>
           <tr>
-            <td><span class="lang-es">Código realista (con docstrings)</span><span class="lang-en">Realistic code (with docstrings)</span></td>
-            <td>97</td><td>60</td><td style="color: var(--accent-green);">−38%</td>
+            <td><span class="lang-es">Parseo Python de salida</span><span class="lang-en">Output Python parseability</span></td>
+            <td>164/164</td><td>100%</td><td style="color: var(--accent-green);">PASS</td>
           </tr>
           <tr>
-            <td><strong><span class="lang-es">Promedio general (24 ejemplos)</span><span class="lang-en">Overall average (24 examples)</span></strong></td>
-            <td><strong>464</strong></td><td><strong>349</strong></td><td style="color: var(--accent-gold);"><strong>−24.8%</strong></td>
+            <td><span class="lang-es">Equivalencia AST (normalizada)</span><span class="lang-en">AST equivalence (normalized)</span></td>
+            <td>164/164</td><td>&ge; 90%</td><td style="color: var(--accent-green);">PASS</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Validación funcional HumanEval <code>check(entry_point)</code></span><span class="lang-en">HumanEval functional validation <code>check(entry_point)</code></span></td>
+            <td>164/164</td><td>&ge; 90%</td><td style="color: var(--accent-green);"><strong>PASS</strong></td>
           </tr>
         </tbody>
       </table>
 
       <p>
-        <span class="lang-es">Tres hallazgos clave del benchmark: (1) las abreviaciones de keywords (<code>def→fn</code>, <code>class→cls</code>) no ahorran tokens por sí solas — ambas son 1 token BPE. Los ahorros reales vienen de eliminar la estructura del bloque (<code>:\n    </code>) y los espacios alrededor de operadores. (2) <code>and→&</code> y <code>or→|</code> ahorran 2-3 tokens en contexto por la fusión BPE con los operadores adyacentes. (3) Eliminar docstrings y comentarios — que no están en el AST de Python — es la mayor optimización en código real.</span>
-        <span class="lang-en">Three key benchmark findings: (1) keyword abbreviations (<code>def→fn</code>, <code>class→cls</code>) don't save tokens on their own — both are 1 BPE token. Real savings come from eliminating block structure (<code>:\n    </code>) and spaces around operators. (2) <code>and→&</code> and <code>or→|</code> save 2-3 tokens in context due to BPE fusion with adjacent operators. (3) Stripping docstrings and comments — which aren't in Python's AST — is the largest optimization on real code.</span>
+        <span class="lang-es">Conclusión de esta fase: Kern ya no es solo una propuesta de gramática. Es un pipeline ejecutable y verificable end-to-end. El punto crítico ahora no es “si compila”, sino cuánto se sostiene la ventaja de tokens en datasets más amplios (MBPP, repos reales) y en múltiples tokenizadores.</span>
+        <span class="lang-en">Phase conclusion: Kern is no longer just a grammar proposal. It is now an executable and verifiable end-to-end pipeline. The critical question is no longer “does it compile,” but how well token savings hold across broader datasets (MBPP, real repositories) and multiple tokenizers.</span>
       </p>
 
       <h3>
@@ -799,8 +832,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </h3>
 
       <p>
-        <span class="lang-es">La gramática está validada. El siguiente paso es construir el transpilador <code>Python → Kern</code> usando el módulo <code>ast</code> de Python, seguido del compilador inverso <code>Kern → Python</code> con garantías de round-trip a nivel de AST. Después: benchmark contra HumanEval y MBPP completos, fine-tuning de CodeLlama-7B con QLoRA, y paper.</span>
-        <span class="lang-en">The grammar is validated. The next step is building the <code>Python → Kern</code> transpiler using Python's <code>ast</code> module, followed by the inverse <code>Kern → Python</code> compiler with AST-level round-trip guarantees. Then: benchmark against full HumanEval and MBPP, fine-tuning CodeLlama-7B with QLoRA, and the paper.</span>
+        <span class="lang-es">Siguiente fase: benchmark masivo de reducción de tokens en HumanEval + MBPP + muestra de repos reales, comparando <code>cl100k_base</code>, tokenizer de LLaMA y CodeGen. Después, entrenamiento/fine-tuning para medir si un modelo que genera Kern mantiene Pass@1 comparable con menor costo de tokens por solución.</span>
+        <span class="lang-en">Next phase: large-scale token reduction benchmark on HumanEval + MBPP + a sample of real repositories, comparing <code>cl100k_base</code>, LLaMA tokenizer, and CodeGen. After that, training/fine-tuning to test whether a model that generates Kern can keep comparable Pass@1 with lower token cost per solution.</span>
       </p>
 
       <div class="callout info">
@@ -819,8 +852,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
 
       <div class="post-footer">
         <p>
-          <span class="lang-es">Escrito por <strong>Oscar Martinez</strong> — 28 de febrero de 2026</span>
-          <span class="lang-en">Written by <strong>Oscar Martinez</strong> — February 28, 2026</span>
+          <span class="lang-es">Escrito por <strong>Oscar Martinez</strong> — Actualizado el 3 de marzo de 2026</span>
+          <span class="lang-en">Written by <strong>Oscar Martinez</strong> — Updated on March 3, 2026</span>
         </p>
         <p style="margin-top: 10px; color: rgba(255,255,255,0.4);">
           <a href="index.html"><span class="lang-es">← Volver al inicio</span><span class="lang-en">← Back to home</span></a>
