@@ -758,8 +758,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </div>
 
       <h3>
-        <span class="lang-es">Resultados de benchmark (3 mar 2026)</span>
-        <span class="lang-en">Benchmark Results (Mar 3, 2026)</span>
+        <span class="lang-es">Resultados de benchmark (3 mar 2026, actualizado)</span>
+        <span class="lang-en">Benchmark Results (Mar 3, 2026, updated)</span>
       </h3>
 
       <table class="diff-table">
@@ -777,8 +777,58 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
             <td>464</td><td>349</td><td style="color: var(--accent-green);">−24.8%</td>
           </tr>
           <tr>
-            <td><span class="lang-es">HumanEval completo (164 prompts + soluciones canónicas)</span><span class="lang-en">Full HumanEval (164 prompts + canonical solutions)</span></td>
+            <td><span class="lang-es">HumanEval completo (164) · cl100k_base</span><span class="lang-en">Full HumanEval (164) · cl100k_base</span></td>
             <td>30368</td><td>8873</td><td style="color: var(--accent-gold);"><strong>−70.8%</strong></td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">MBPP train (374) · cl100k_base</span><span class="lang-en">MBPP train (374) · cl100k_base</span></td>
+            <td>21202</td><td>16786</td><td style="color: var(--accent-green);">−20.8%</td>
+          </tr>
+          <tr>
+            <td><strong><span class="lang-es">HumanEval + MBPP train (538) · cl100k_base</span><span class="lang-en">HumanEval + MBPP train (538) · cl100k_base</span></strong></td>
+            <td><strong>51570</strong></td><td><strong>25659</strong></td><td style="color: var(--accent-gold);"><strong>−50.2%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span class="lang-es">Benchmark multi-tokenizer (538 casos válidos)</span>
+        <span class="lang-en">Multi-tokenizer Benchmark (538 valid cases)</span>
+      </h3>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Tokenizer</span><span class="lang-en">Tokenizer</span></th>
+            <th><span class="lang-es">HumanEval</span><span class="lang-en">HumanEval</span></th>
+            <th><span class="lang-es">MBPP train</span><span class="lang-en">MBPP train</span></th>
+            <th><span class="lang-es">Global (538)</span><span class="lang-en">Global (538)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>cl100k_base</code></td>
+            <td style="color: var(--accent-green);">−70.78%</td>
+            <td style="color: var(--accent-green);">−20.83%</td>
+            <td style="color: var(--accent-gold);"><strong>−50.24%</strong></td>
+          </tr>
+          <tr>
+            <td><code>o200k_base</code></td>
+            <td style="color: var(--accent-green);">−70.58%</td>
+            <td style="color: var(--accent-green);">−20.31%</td>
+            <td style="color: var(--accent-gold);"><strong>−49.87%</strong></td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">LLaMA tokenizer (TinyLlama proxy)</span><span class="lang-en">LLaMA tokenizer (TinyLlama proxy)</span></td>
+            <td style="color: var(--accent-green);">−69.77%</td>
+            <td style="color: var(--accent-green);">−24.57%</td>
+            <td style="color: var(--accent-gold);"><strong>−50.09%</strong></td>
+          </tr>
+          <tr>
+            <td><code>codegen_350m_mono</code></td>
+            <td style="color: var(--accent-green);">−67.13%</td>
+            <td style="color: var(--accent-green);">−23.31%</td>
+            <td style="color: var(--accent-gold);"><strong>−47.48%</strong></td>
           </tr>
         </tbody>
       </table>
@@ -822,8 +872,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </table>
 
       <p>
-        <span class="lang-es">Conclusión de esta fase: Kern ya no es solo una propuesta de gramática. Es un pipeline ejecutable y verificable end-to-end. El punto crítico ahora no es “si compila”, sino cuánto se sostiene la ventaja de tokens en datasets más amplios (MBPP, repos reales) y en múltiples tokenizadores.</span>
-        <span class="lang-en">Phase conclusion: Kern is no longer just a grammar proposal. It is now an executable and verifiable end-to-end pipeline. The critical question is no longer “does it compile,” but how well token savings hold across broader datasets (MBPP, real repositories) and multiple tokenizers.</span>
+        <span class="lang-es">Conclusión de esta fase: el pipeline ya está cerrado y validado. En 538 casos reales (HumanEval + MBPP train), Kern mantiene reducción de tokens cercana al 50% en promedio global y sin romper compilación ni correctitud funcional en HumanEval.</span>
+        <span class="lang-en">Phase conclusion: the pipeline is now closed and validated. Across 538 real cases (HumanEval + MBPP train), Kern sustains close to 50% global token reduction without breaking compilation or HumanEval functional correctness.</span>
       </p>
 
       <h3>
@@ -832,8 +882,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </h3>
 
       <p>
-        <span class="lang-es">Siguiente fase: benchmark masivo de reducción de tokens en HumanEval + MBPP + muestra de repos reales, comparando <code>cl100k_base</code>, tokenizer de LLaMA y CodeGen. Después, entrenamiento/fine-tuning para medir si un modelo que genera Kern mantiene Pass@1 comparable con menor costo de tokens por solución.</span>
-        <span class="lang-en">Next phase: large-scale token reduction benchmark on HumanEval + MBPP + a sample of real repositories, comparing <code>cl100k_base</code>, LLaMA tokenizer, and CodeGen. After that, training/fine-tuning to test whether a model that generates Kern can keep comparable Pass@1 with lower token cost per solution.</span>
+        <span class="lang-es">Siguiente fase: ampliar benchmark a MBPP completo + muestra de repos reales (StarCoderData), y pasar al entrenamiento/fine-tuning para validar la hipótesis central del paper: Pass@1 comparable con menor costo de tokens por solución.</span>
+        <span class="lang-en">Next phase: extend the benchmark to full MBPP + a sample of real repositories (StarCoderData), then move into training/fine-tuning to validate the paper's core hypothesis: comparable Pass@1 with lower token cost per solution.</span>
       </p>
 
       <div class="callout info">
