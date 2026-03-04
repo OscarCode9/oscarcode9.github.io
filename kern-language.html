@@ -549,7 +549,7 @@
           <tr>
             <td style="color: var(--accent-gold);">KERN</td>
             <td><span class="lang-es">DSL que transpila a Python</span><span class="lang-en">DSL that transpiles to Python</span></td>
-            <td><span class="lang-es">Medido: 25–40%</span><span class="lang-en">Measured: 25–40%</span></td>
+            <td><span class="lang-es">Medido: ~50% global (hasta 70.8% en HumanEval)</span><span class="lang-en">Measured: ~50% global (up to 70.8% on HumanEval)</span></td>
             <td><span class="lang-es">Garantizado (AST)</span><span class="lang-en">Guaranteed (AST)</span></td>
             <td><span class="lang-es">Tokenizer-aware desde diseño</span><span class="lang-en">Tokenizer-aware by design</span></td>
             <td><span class="lang-es">En progreso</span><span class="lang-en">In progress</span></td>
@@ -874,6 +874,11 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       <p>
         <span class="lang-es">Conclusión de esta fase: el pipeline ya está cerrado y validado. En 538 casos reales (HumanEval + MBPP train), Kern mantiene reducción de tokens cercana al 50% en promedio global y sin romper compilación ni correctitud funcional en HumanEval.</span>
         <span class="lang-en">Phase conclusion: the pipeline is now closed and validated. Across 538 real cases (HumanEval + MBPP train), Kern sustains close to 50% global token reduction without breaking compilation or HumanEval functional correctness.</span>
+      </p>
+
+      <p>
+        <span class="lang-es"><strong>Afirmación del benchmark actual:</strong> en todos los datasets y tokenizers evaluados, Kern supera a SimPy y Token Sugar en robustez (parse/correctitud) y eficiencia de tokens dentro del mismo protocolo de evaluación.</span>
+        <span class="lang-en"><strong>Current benchmark claim:</strong> across all evaluated datasets and tokenizers, Kern outperforms SimPy and Token Sugar on robustness (parse/correctness) and token efficiency under the same evaluation protocol.</span>
       </p>
 
       <h3>
