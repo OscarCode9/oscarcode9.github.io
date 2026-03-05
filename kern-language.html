@@ -411,12 +411,12 @@
         <span class="post-tag idea">Idea</span>
         <br><br>
         <i class="far fa-calendar"></i>
-        <span class="lang-es">3 de marzo de 2026</span><span class="lang-en">March 3, 2026</span>
+        <span class="lang-es">Publicado: 3 de marzo de 2026 · Actualizado: 5 de marzo de 2026</span><span class="lang-en">Published: March 3, 2026 · Updated: March 5, 2026</span>
         &nbsp;|&nbsp;
         <i class="far fa-user"></i> Oscar Martinez
         &nbsp;|&nbsp;
         <i class="far fa-clock"></i>
-        <span class="lang-es">~12 min de lectura</span><span class="lang-en">~12 min read</span>
+        <span class="lang-es">~13 min de lectura</span><span class="lang-en">~13 min read</span>
       </div>
     </div>
   </header>
@@ -882,13 +882,65 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </p>
 
       <h3>
+        <span class="lang-es">Update de dataset para fine-tuning (5 mar 2026)</span>
+        <span class="lang-en">Fine-Tuning Dataset Update (Mar 5, 2026)</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Ya está construido el primer corpus grande para entrenamiento de modelo: <code>20,000</code> pares Python → Kern generados automáticamente desde CodeSearchNet (Python), con pipeline de validación activo (<code>Python → Kern → Python</code> + <code>ast.parse</code>).</span>
+        <span class="lang-en">The first large model-training corpus is now ready: <code>20,000</code> Python → Kern pairs automatically generated from CodeSearchNet (Python), with active validation pipeline (<code>Python → Kern → Python</code> + <code>ast.parse</code>).</span>
+      </p>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Métrica</span><span class="lang-en">Metric</span></th>
+            <th><span class="lang-es">Resultado</span><span class="lang-en">Result</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="lang-es">Dataset origen</span><span class="lang-en">Source dataset</span></td>
+            <td><code>code_search_net/python</code></td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Registros escaneados</span><span class="lang-en">Rows scanned</span></td>
+            <td>21,825</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Ejemplos aceptados</span><span class="lang-en">Accepted examples</span></td>
+            <td><strong>20,000</strong></td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Keep rate</span><span class="lang-en">Keep rate</span></td>
+            <td>91.64%</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Split train/valid</span><span class="lang-en">Train/valid split</span></td>
+            <td>19,000 / 1,000</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Formato de salida</span><span class="lang-en">Output format</span></td>
+            <td><span class="lang-es">pares JSONL + chat JSONL para Qwen SFT</span><span class="lang-en">pairs JSONL + chat JSONL for Qwen SFT</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <p>
+          <span class="lang-es"><strong>Implementado:</strong> script de generación a gran escala <code>prepare_finetune_dataset_csn.py</code>. Salida base en <code>data/finetune_csn20k/</code> dentro del repo Kern.</span>
+          <span class="lang-en"><strong>Implemented:</strong> large-scale dataset builder script <code>prepare_finetune_dataset_csn.py</code>. Base output lives in <code>data/finetune_csn20k/</code> inside the Kern repo.</span>
+        </p>
+      </div>
+
+      <h3>
         <span class="lang-es">Próximos pasos</span>
         <span class="lang-en">Next Steps</span>
       </h3>
 
       <p>
-        <span class="lang-es">Siguiente fase: ampliar benchmark a MBPP completo + muestra de repos reales (StarCoderData), y pasar al entrenamiento/fine-tuning para validar la hipótesis central del paper: Pass@1 comparable con menor costo de tokens por solución.</span>
-        <span class="lang-en">Next phase: extend the benchmark to full MBPP + a sample of real repositories (StarCoderData), then move into training/fine-tuning to validate the paper's core hypothesis: comparable Pass@1 with lower token cost per solution.</span>
+        <span class="lang-es">Siguiente fase inmediata: arrancar fine-tuning con QLoRA sobre el corpus de 20k y evaluar Pass@1 + costo por solución contra baseline Python. En paralelo, ampliar cobertura con tareas inversas (Kern → Python) para reforzar lectura/edición nativa de Kern.</span>
+        <span class="lang-en">Immediate next phase: start QLoRA fine-tuning on the 20k corpus and evaluate Pass@1 + cost per solution against a Python baseline. In parallel, expand coverage with inverse tasks (Kern → Python) to strengthen native Kern reading/editing.</span>
       </p>
 
       <div class="callout info">
@@ -907,8 +959,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
 
       <div class="post-footer">
         <p>
-          <span class="lang-es">Escrito por <strong>Oscar Martinez</strong> — Actualizado el 3 de marzo de 2026</span>
-          <span class="lang-en">Written by <strong>Oscar Martinez</strong> — Updated on March 3, 2026</span>
+          <span class="lang-es">Escrito por <strong>Oscar Martinez</strong> — Actualizado el 5 de marzo de 2026</span>
+          <span class="lang-en">Written by <strong>Oscar Martinez</strong> — Updated on March 5, 2026</span>
         </p>
         <p style="margin-top: 10px; color: rgba(255,255,255,0.4);">
           <a href="index.html"><span class="lang-es">← Volver al inicio</span><span class="lang-en">← Back to home</span></a>
