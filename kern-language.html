@@ -939,8 +939,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </h3>
 
       <p>
-        <span class="lang-es">El primer run de entrenamiento ya está en ejecución en Colab GPU T4. Por límite de memoria de VRAM en T4, el arranque se hizo con <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (no con 9B) para validar pipeline end-to-end y estabilidad del stack de entrenamiento.</span>
-        <span class="lang-en">The first training run is now executing on Colab T4 GPU. Due to T4 VRAM limits, startup uses <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (not 9B) to validate the full end-to-end pipeline and training stack stability.</span>
+        <span class="lang-es">El primer run de entrenamiento ya <strong>terminó correctamente</strong> en Colab GPU T4. Por límite de VRAM de T4, se usó <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (no 9B) para validar pipeline end-to-end + estabilidad real de entrenamiento.</span>
+        <span class="lang-en">The first training run has now <strong>completed successfully</strong> on Colab T4 GPU. Due to T4 VRAM limits, it used <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (not 9B) to validate full end-to-end pipeline + real training stability.</span>
       </p>
 
       <table class="diff-table">
@@ -965,14 +965,29 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
           </tr>
           <tr>
             <td><span class="lang-es">Progreso</span><span class="lang-en">Progress</span></td>
-            <td>Entrenamiento iniciado (313 steps en la corrida de validación de pipeline)</td>
+            <td><span class="lang-es">Run completado: 313/313 steps, 1 época (~1h29m)</span><span class="lang-en">Run completed: 313/313 steps, 1 epoch (~1h29m)</span></td>
           </tr>
           <tr>
             <td><span class="lang-es">Bloqueo técnico resuelto</span><span class="lang-en">Resolved technical blocker</span></td>
             <td><span class="lang-es">Compatibilidad TRL + precisión mixta en T4 (evitado crash bf16)</span><span class="lang-en">TRL compatibility + mixed precision on T4 (bf16 crash avoided)</span></td>
           </tr>
+          <tr>
+            <td><span class="lang-es">Artefacto final</span><span class="lang-en">Final artifact</span></td>
+            <td><code>outputs/qwen-kern-qlora-t4/final_adapter</code></td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Publicado</span><span class="lang-en">Published</span></td>
+            <td><a href="https://huggingface.co/Oscarcode99/kern-qwen25-3b-lora-t4-run1" target="_blank">Oscarcode99/kern-qwen25-3b-lora-t4-run1</a></td>
+          </tr>
         </tbody>
       </table>
+
+      <div class="callout info">
+        <p>
+          <span class="lang-es"><strong>Telemetría del run #1:</strong> <code>train_loss=5.313</code>, <code>eval_loss=8.483</code>, <code>train_runtime=5338s</code>. Este run valida la infraestructura; la siguiente métrica crítica es <strong>Pass@1</strong> contra baseline Python.</span>
+          <span class="lang-en"><strong>Run #1 telemetry:</strong> <code>train_loss=5.313</code>, <code>eval_loss=8.483</code>, <code>train_runtime=5338s</code>. This run validates infrastructure; the next critical metric is <strong>Pass@1</strong> against Python baseline.</span>
+        </p>
+      </div>
 
       <h3>
         <span class="lang-es">Próximos pasos</span>
@@ -980,8 +995,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </h3>
 
       <p>
-        <span class="lang-es">Siguiente fase inmediata: cerrar este primer run, escalar de subset a corpus completo (20k), y reportar Pass@1 + costo por solución contra baseline Python. En paralelo, ampliar cobertura con tareas inversas (Kern → Python) para reforzar lectura/edición nativa de Kern.</span>
-        <span class="lang-en">Immediate next phase: finish this first run, scale from subset to the full 20k corpus, and report Pass@1 + cost per solution versus a Python baseline. In parallel, expand coverage with inverse tasks (Kern → Python) to strengthen native Kern reading/editing.</span>
+        <span class="lang-es">Siguiente fase inmediata: evaluar Pass@1 + round-trip/compilación del adapter entrenado, luego escalar de subset a corpus completo (20k) y comparar costo por solución contra baseline Python. En paralelo, ampliar cobertura con tareas inversas (Kern → Python) para reforzar lectura/edición nativa de Kern.</span>
+        <span class="lang-en">Immediate next phase: evaluate Pass@1 + round-trip/compile behavior of the trained adapter, then scale from subset to the full 20k corpus and compare cost per solution versus a Python baseline. In parallel, expand coverage with inverse tasks (Kern → Python) to strengthen native Kern reading/editing.</span>
       </p>
 
       <div class="callout info">
