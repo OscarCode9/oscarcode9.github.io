@@ -934,13 +934,54 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </div>
 
       <h3>
+        <span class="lang-es">Update de entrenamiento QLoRA en Colab T4 (5 mar 2026)</span>
+        <span class="lang-en">QLoRA Training Update on Colab T4 (Mar 5, 2026)</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">El primer run de entrenamiento ya está en ejecución en Colab GPU T4. Por límite de memoria de VRAM en T4, el arranque se hizo con <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (no con 9B) para validar pipeline end-to-end y estabilidad del stack de entrenamiento.</span>
+        <span class="lang-en">The first training run is now executing on Colab T4 GPU. Due to T4 VRAM limits, startup uses <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (not 9B) to validate the full end-to-end pipeline and training stack stability.</span>
+      </p>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Métrica</span><span class="lang-en">Metric</span></th>
+            <th><span class="lang-es">Estado actual</span><span class="lang-en">Current status</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="lang-es">Hardware</span><span class="lang-en">Hardware</span></td>
+            <td>Google Colab T4 (15GB VRAM)</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Modelo base de arranque</span><span class="lang-en">Bootstrap base model</span></td>
+            <td><code>Qwen/Qwen2.5-Coder-3B-Instruct</code></td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Dataset usado en run inicial</span><span class="lang-en">Dataset used in initial run</span></td>
+            <td>5,000 train / 500 valid (subset de <code>finetune_csn20k_v2</code>)</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Progreso</span><span class="lang-en">Progress</span></td>
+            <td>Entrenamiento iniciado (313 steps en la corrida de validación de pipeline)</td>
+          </tr>
+          <tr>
+            <td><span class="lang-es">Bloqueo técnico resuelto</span><span class="lang-en">Resolved technical blocker</span></td>
+            <td><span class="lang-es">Compatibilidad TRL + precisión mixta en T4 (evitado crash bf16)</span><span class="lang-en">TRL compatibility + mixed precision on T4 (bf16 crash avoided)</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
         <span class="lang-es">Próximos pasos</span>
         <span class="lang-en">Next Steps</span>
       </h3>
 
       <p>
-        <span class="lang-es">Siguiente fase inmediata: arrancar fine-tuning con QLoRA sobre el corpus de 20k y evaluar Pass@1 + costo por solución contra baseline Python. En paralelo, ampliar cobertura con tareas inversas (Kern → Python) para reforzar lectura/edición nativa de Kern.</span>
-        <span class="lang-en">Immediate next phase: start QLoRA fine-tuning on the 20k corpus and evaluate Pass@1 + cost per solution against a Python baseline. In parallel, expand coverage with inverse tasks (Kern → Python) to strengthen native Kern reading/editing.</span>
+        <span class="lang-es">Siguiente fase inmediata: cerrar este primer run, escalar de subset a corpus completo (20k), y reportar Pass@1 + costo por solución contra baseline Python. En paralelo, ampliar cobertura con tareas inversas (Kern → Python) para reforzar lectura/edición nativa de Kern.</span>
+        <span class="lang-en">Immediate next phase: finish this first run, scale from subset to the full 20k corpus, and report Pass@1 + cost per solution versus a Python baseline. In parallel, expand coverage with inverse tasks (Kern → Python) to strengthen native Kern reading/editing.</span>
       </p>
 
       <div class="callout info">
