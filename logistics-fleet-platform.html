@@ -693,7 +693,7 @@
         </div>
         <div class="module-card">
           <h4>📋 <span class="lang-es">Servicios y Viajes</span><span class="lang-en">Services & Trips</span></h4>
-          <p><span class="lang-es">Solicitudes de servicio, asignación automática por proximidad GPS, viajes con segmentos y cálculo de distancias.</span><span class="lang-en">Service requests, automatic GPS-proximity assignment, trips with segments and distance calculation.</span></p>
+          <p><span class="lang-es">Solicitudes de servicio, asignación de operadores y unidades, viajes con segmentos y cálculo de distancias en tiempo real.</span><span class="lang-en">Service requests, operator and unit assignment, trips with segments and real-time distance calculation.</span></p>
         </div>
         <div class="module-card">
           <h4>🧾 <span class="lang-es">Facturación CFDI 4.0</span><span class="lang-en">CFDI 4.0 Invoicing</span></h4>
@@ -738,18 +738,18 @@
       </p>
 
       <h3>
-        <span class="lang-es">Asignación automática por proximidad</span>
-        <span class="lang-en">Automatic proximity-based assignment</span>
+        <span class="lang-es">Gestión inteligente de viajes</span>
+        <span class="lang-en">Smart trip management</span>
       </h3>
 
       <p>
-        <span class="lang-es">Cuando entra una solicitud de servicio, el sistema busca el operador disponible más cercano. Suena simple, pero hay que considerar: estado del operador, estado del tractor, documentos vigentes, tipo de remolque necesario y distancia real (no línea recta — Google Distance Matrix).</span>
-        <span class="lang-en">When a service request comes in, the system finds the nearest available operator. Sounds simple, but you need to consider: operator status, truck status, valid documents, required trailer type, and real distance (not straight line — Google Distance Matrix).</span>
+        <span class="lang-es">Cada solicitud de servicio se convierte en un viaje con segmentos automáticos. El sistema calcula distancias reales entre puntos (Google Distance Matrix), registra tiempos de cada etapa y permite al supervisor asignar operador y unidad considerando disponibilidad, documentos vigentes y tipo de remolque requerido.</span>
+        <span class="lang-en">Each service request becomes a trip with automatic segments. The system calculates real distances between points (Google Distance Matrix), records timing for each stage, and lets the supervisor assign operator and unit based on availability, valid documents, and required trailer type.</span>
       </p>
 
       <p>
-        <span class="lang-es">El algoritmo pondera todo eso y devuelve los mejores candidatos. El supervisor confirma con un clic. Lo que antes tomaba una hora de llamadas ahora toma 30 segundos.</span>
-        <span class="lang-en">The algorithm weighs all of that and returns the best candidates. The supervisor confirms with one click. What used to take an hour of phone calls now takes 30 seconds.</span>
+        <span class="lang-es">El dashboard muestra en tiempo real el estado de cada viaje: pendiente, en progreso, completado. Los eventos se registran con timestamps y coordenadas GPS. Lo que antes era un caos de llamadas ahora es un flujo visual claro.</span>
+        <span class="lang-en">The dashboard shows each trip's status in real time: pending, in progress, completed. Events are logged with timestamps and GPS coordinates. What used to be chaos of phone calls is now a clear visual workflow.</span>
       </p>
 
       <h3>
