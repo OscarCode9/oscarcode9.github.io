@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construyendo un Sistema de Gestión de Flotas desde Cero | Oscar Code</title>
+  <meta name="description" content="297 commits, 320K líneas de código, 7.5 meses. Cómo construí una plataforma enterprise de logística con Node.js, React, Flutter, Prisma, Socket.IO y AWS — desde la primera línea hasta producción.">
+  <meta name="keywords" content="logistics software, fleet management, Node.js, React, Flutter, Prisma, Socket.IO, GPS tracking, real-time, AWS, Docker, full stack, enterprise">
+  <meta property="og:title" content="Construyendo un Sistema de Gestión de Flotas desde Cero">
+  <meta property="og:description" content="297 commits, 320K líneas de código, 7.5 meses. La historia completa de construir un sistema enterprise de logística.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00a8cc;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-code: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.5);
+      --accent-blue: #4fc3f7;
+      --accent-purple: #b388ff;
+      --accent-orange: #ffab40;
+      --accent-red: #ff6b6b;
+      --accent-green: #69f0ae;
+      --accent-gold: #ffd54f;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* HEADER */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1a2e 50%, #0a0f1a 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(0,212,255,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(16,185,129,0.05) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-icon {
+      font-size: 3.5em;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-title {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.1em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+      font-weight: 600;
+    }
+
+    .post-tag.logistics { background: rgba(0,212,255,0.15); color: var(--primary); border: 1px solid rgba(0,212,255,0.3); }
+    .post-tag.fullstack { background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
+    .post-tag.enterprise { background: rgba(179,136,255,0.15); color: var(--accent-purple); border: 1px solid rgba(179,136,255,0.3); }
+
+    .lang-toggle {
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 0.9em;
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      z-index: 1;
+    }
+
+    .lang-en { display: none; }
+
+    /* CONTENT */
+    .post-content {
+      padding: 60px 0 80px;
+    }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--primary);
+      border-bottom: 2px solid rgba(0,212,255,0.2);
+      padding-bottom: 10px;
+    }
+
+    .post-content h2:first-child { margin-top: 0; }
+
+    .post-content h3 {
+      font-size: 1.3em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong { color: var(--text-primary); }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover { border-bottom-color: var(--primary); }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li { margin-bottom: 8px; }
+
+    pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(0,212,255,0.1);
+      border-radius: 10px;
+      padding: 24px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    pre code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88em;
+      background: rgba(0,212,255,0.08);
+      color: var(--primary);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    pre code { background: none; color: #e2e8f0; padding: 0; }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.insight { border-left-color: var(--accent-purple); }
+    .callout.warning { border-left-color: var(--accent-orange); }
+    .callout.success { border-left-color: var(--accent-green); }
+
+    .callout p { margin-bottom: 0; }
+    .callout p:not(:last-child) { margin-bottom: 10px; }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 30px 0;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(0,212,255,0.3);
+      transform: translateY(-3px);
+    }
+
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* Tech Stack Pills */
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .tech-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: all 0.3s;
+    }
+
+    .tech-pill:hover {
+      border-color: var(--primary);
+      color: var(--text-primary);
+    }
+
+    .tech-pill i { font-size: 1.3rem; }
+
+    /* Module cards */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 25px 0;
+    }
+
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .module-card:hover {
+      border-color: rgba(0,212,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .module-card h4 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .module-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* Architecture Diagram */
+    .arch-diagram {
+      background: var(--bg-code);
+      border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 25px 0;
+      overflow-x: auto;
+    }
+
+    .arch-diagram pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Timeline */
+    .dev-timeline {
+      position: relative;
+      margin: 30px 0;
+      padding-left: 30px;
+    }
+
+    .dev-timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(0,212,255,0.2);
+    }
+
+    .timeline-entry {
+      position: relative;
+      padding-bottom: 25px;
+    }
+
+    .timeline-entry:last-child { padding-bottom: 0; }
+
+    .timeline-entry::before {
+      content: '';
+      position: absolute;
+      left: -34px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .timeline-entry .month {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .timeline-entry .desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Big quote */
+    .big-quote {
+      font-size: 1.3em;
+      font-style: italic;
+      color: var(--text-secondary);
+      border-left: 4px solid var(--primary);
+      padding: 20px 30px;
+      margin: 40px 0;
+      background: var(--bg-card);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .big-quote footer {
+      margin-top: 12px;
+      font-size: 0.65em;
+      color: var(--text-muted);
+      font-style: normal;
+    }
+
+    /* Table */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.88em;
+    }
+
+    .info-table th {
+      background: rgba(0,212,255,0.08);
+      color: var(--primary);
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 2px solid rgba(0,212,255,0.2);
+    }
+
+    .info-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .info-table tr:hover td { background: rgba(0,212,255,0.02); }
+
+    /* Devicon colors */
+    .devicon-nodejs-plain { color: #68a063 !important; }
+    .devicon-react-original { color: #61dafb !important; }
+    .devicon-typescript-plain { color: #3178c6 !important; }
+    .devicon-flutter-plain { color: #02569b !important; }
+    .devicon-docker-plain { color: #2496ed !important; }
+    .devicon-mysql-plain { color: #4479a1 !important; }
+    .devicon-amazonwebservices-plain-wordmark { color: #ff9900 !important; }
+    .devicon-prisma-original { color: #2d3748 !important; }
+    .devicon-socketio-original { color: #ffffff !important; }
+    .devicon-firebase-plain { color: #ffca28 !important; }
+    .devicon-express-original { color: #ffffff !important; }
+    .devicon-redux-original { color: #764abc !important; }
+    .devicon-materialui-plain { color: #0081cb !important; }
+
+    /* Post footer */
+    .post-footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+
+    .post-footer a { color: var(--primary); text-decoration: none; }
+
+    .ov-views-wrap { margin: 8px 0 0; }
+    .ov-views-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 4px 12px; font-size: 0.82em;
+      color: rgba(255,255,255,0.5); position: relative; z-index: 1;
+    }
+    .ov-dot { width: 6px; height: 6px; border-radius: 50%; background: #22bb44; }
+
+    @media (max-width: 600px) {
+      .post-icon { font-size: 2.5em; }
+      .post-title { font-size: 1.4em; }
+      .post-header { padding: 60px 15px 40px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .module-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
+  <script src="public/i18n.js"></script>
+</head>
+<body>
+
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
+      </a>
+      <span class="lang-toggle" onclick="toggleLanguage()">🌐 EN</span>
+
+      <div class="post-icon">🚛</div>
+
+      <h1 class="post-title">
+        <span class="lang-es">Construyendo un Sistema de Gestión de Flotas desde Cero</span>
+        <span class="lang-en">Building a Fleet Management System from Scratch</span>
+      </h1>
+
+      <div class="ov-views-wrap">
+        <div class="ov-views-badge" data-ov-visits>
+          <span class="ov-dot"></span>
+          <span class="ov-label">Visitas</span>
+          <span class="ov-count">—</span>
+        </div>
+      </div>
+
+      <p class="post-subtitle">
+        <span class="lang-es">297 commits, 320K líneas de código, 7.5 meses. La historia real de construir software enterprise de logística — desde la primera línea hasta producción.</span>
+        <span class="lang-en">297 commits, 320K lines of code, 7.5 months. The real story of building enterprise logistics software — from the first line to production.</span>
+      </p>
+      <div class="post-meta">
+        <span class="post-tag logistics">Logistics</span>
+        <span class="post-tag fullstack">Full Stack</span>
+        <span class="post-tag enterprise">Enterprise</span>
+        <br><br>
+        <i class="far fa-calendar"></i>
+        <span class="lang-es">7 de marzo de 2026</span><span class="lang-en">March 7, 2026</span>
+        &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Martinez
+        &nbsp;|&nbsp;
+        <i class="far fa-clock"></i>
+        <span class="lang-es">~12 min de lectura</span><span class="lang-en">~12 min read</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+
+      <h2>
+        <span class="lang-es">Los números</span>
+        <span class="lang-en">The Numbers</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Antes de contar la historia, los datos duros. Porque en ingeniería, medir es lo primero.</span>
+        <span class="lang-en">Before telling the story, the hard data. Because in engineering, measuring comes first.</span>
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="number">297</span>
+          <span class="label">Commits</span>
+        </div>
+        <div class="stat-card">
+          <span class="number">320K</span>
+          <span class="label"><span class="lang-es">Líneas de código</span><span class="lang-en">Lines of code</span></span>
+        </div>
+        <div class="stat-card">
+          <span class="number">700+</span>
+          <span class="label"><span class="lang-es">Archivos</span><span class="lang-en">Files</span></span>
+        </div>
+        <div class="stat-card">
+          <span class="number">7.5</span>
+          <span class="label"><span class="lang-es">Meses</span><span class="lang-en">Months</span></span>
+        </div>
+        <div class="stat-card">
+          <span class="number">15+</span>
+          <span class="label">APIs RESTful</span>
+        </div>
+        <div class="stat-card">
+          <span class="number">30+</span>
+          <span class="label"><span class="lang-es">Modelos de datos</span><span class="lang-en">Data models</span></span>
+        </div>
+      </div>
+
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Capa</span><span class="lang-en">Layer</span></th>
+            <th><span class="lang-es">Líneas</span><span class="lang-en">Lines</span></th>
+            <th><span class="lang-es">Archivos</span><span class="lang-en">Files</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Backend (API)</td><td>83,245</td><td>143</td></tr>
+          <tr><td>Frontend (Web)</td><td>156,864</td><td>401</td></tr>
+          <tr><td><span class="lang-es">App Móvil (Flutter)</span><span class="lang-en">Mobile App (Flutter)</span></td><td>43,517</td><td>155</td></tr>
+          <tr><td>Scripts & Utils</td><td>24,005</td><td>—</td></tr>
+          <tr><td>AI Agent</td><td>8,455</td><td>—</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>~320,000</strong></td><td><strong>700+</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h2>
+        <span class="lang-es">El problema</span>
+        <span class="lang-en">The Problem</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Una empresa de transporte con +50 tractores de patio, remolques, operadores y clientes — manejando todo con hojas de Excel, mensajes de WhatsApp y llamadas telefónicas. Las asignaciones de servicio tardaban horas. Nadie sabía dónde estaba cada unidad. Los documentos vencidos se descubrían cuando ya era multa. La facturación era manual.</span>
+        <span class="lang-en">A trucking company with 50+ yard trucks, trailers, operators and clients — managing everything with Excel sheets, WhatsApp messages and phone calls. Service assignments took hours. Nobody knew where each unit was. Expired documents were discovered when they were already fines. Invoicing was manual.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">El reto: <strong>construir un sistema completo que digitalizara toda la operación</strong> — desde la solicitud de servicio hasta la factura electrónica, pasando por tracking GPS en tiempo real, gestión documental y mantenimiento preventivo.</span>
+        <span class="lang-en">The challenge: <strong>build a complete system that digitizes the entire operation</strong> — from the service request to the electronic invoice, including real-time GPS tracking, document management and preventive maintenance.</span>
+      </p>
+
+      <div class="big-quote">
+        <span class="lang-es">El software de logística no perdona errores. Cada minuto que un camión está parado es dinero. Cada documento vencido es una multa. Cada asignación tardía es un cliente perdido.</span>
+        <span class="lang-en">Logistics software doesn't forgive mistakes. Every minute a truck is idle is money. Every expired document is a fine. Every late assignment is a lost client.</span>
+      </div>
+
+      <h2>
+        <span class="lang-es">El stack</span>
+        <span class="lang-en">The Stack</span>
+      </h2>
+
+      <div class="tech-pills">
+        <span class="tech-pill"><i class="devicon-nodejs-plain"></i> Node.js</span>
+        <span class="tech-pill"><i class="devicon-typescript-plain"></i> TypeScript</span>
+        <span class="tech-pill"><i class="devicon-express-original"></i> Express</span>
+        <span class="tech-pill"><i class="devicon-prisma-original"></i> Prisma ORM</span>
+        <span class="tech-pill"><i class="devicon-mysql-plain"></i> MySQL 8</span>
+        <span class="tech-pill"><i class="devicon-react-original"></i> React</span>
+        <span class="tech-pill"><i class="devicon-redux-original"></i> Redux</span>
+        <span class="tech-pill"><i class="devicon-materialui-plain"></i> Material-UI</span>
+        <span class="tech-pill"><i class="devicon-flutter-plain"></i> Flutter</span>
+        <span class="tech-pill"><i class="devicon-socketio-original"></i> Socket.IO</span>
+        <span class="tech-pill"><i class="devicon-firebase-plain"></i> Firebase</span>
+        <span class="tech-pill"><i class="devicon-docker-plain"></i> Docker</span>
+        <span class="tech-pill"><i class="devicon-amazonwebservices-plain-wordmark"></i> AWS (EC2 + S3)</span>
+      </div>
+
+      <p>
+        <span class="lang-es">La decisión fue clara desde el principio: <strong>TypeScript en todo</strong>. Backend, frontend y tipos compartidos. Un solo lenguaje para reducir context switching. Prisma como ORM porque las migraciones son declarativas y el type safety es real — si el modelo cambia, el compilador te lo dice antes de que el usuario lo descubra.</span>
+        <span class="lang-en">The decision was clear from the start: <strong>TypeScript everywhere</strong>. Backend, frontend and shared types. One language to reduce context switching. Prisma as ORM because migrations are declarative and type safety is real — if the model changes, the compiler tells you before the user discovers it.</span>
+      </p>
+
+      <h2>
+        <span class="lang-es">La arquitectura</span>
+        <span class="lang-en">The Architecture</span>
+      </h2>
+
+      <div class="arch-diagram">
+<pre><code>
+  ┌─────────────┐   ┌──────────────┐   ┌──────────────────┐
+  │  Flutter App │   │  React + MUI │   │  External APIs   │
+  │  (Operators) │   │  (Admin/Sup) │   │  (GPS, PAC, S3)  │
+  └──────┬──────┘   └──────┬───────┘   └────────┬─────────┘
+         │                 │                     │
+         └────────┬────────┘                     │
+                  ▼                              │
+  ┌───────────────────────────────────────────────────────┐
+  │              Express.js API (Port 6060)                │
+  │  ┌──────────┐ ┌────────────┐ ┌─────────────────────┐  │
+  │  │ REST API │ │ Socket.IO  │ │  Background Jobs    │  │
+  │  │ 15+ CRUD │ │ Real-time  │ │  Cron / Expiration  │  │
+  │  └──────────┘ └────────────┘ └─────────────────────┘  │
+  │                                                        │
+  │  ┌──────────────────────────────────────────────────┐  │
+  │  │  Prisma ORM  →  30+ Models  →  MySQL 8.0        │  │
+  │  └──────────────────────────────────────────────────┘  │
+  └────────────────────────────────────────────────────────┘
+                  │                    │
+        ┌────────┘                    └────────┐
+        ▼                                      ▼
+  ┌──────────┐                          ┌──────────────┐
+  │  AWS S3  │                          │  Firebase    │
+  │  Docs    │                          │  Push Notif  │
+  └──────────┘                          └──────────────┘
+</code></pre>
+      </div>
+
+      <p>
+        <span class="lang-es">Tres capas limpias: <strong>Routes → Controllers → Services</strong>. Prisma como singleton centralizado. WebSockets para tracking en tiempo real. Firebase para push notifications a la app móvil. S3 para documentos con URLs prefirmadas.</span>
+        <span class="lang-en">Three clean layers: <strong>Routes → Controllers → Services</strong>. Prisma as a centralized singleton. WebSockets for real-time tracking. Firebase for push notifications to the mobile app. S3 for documents with presigned URLs.</span>
+      </p>
+
+      <h2>
+        <span class="lang-es">Los módulos</span>
+        <span class="lang-en">The Modules</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">No fue un MVP bonito. Fue un sistema enterprise completo. Estos son los módulos en producción:</span>
+        <span class="lang-en">It wasn't a pretty MVP. It was a complete enterprise system. These are the production modules:</span>
+      </p>
+
+      <div class="module-grid">
+        <div class="module-card">
+          <h4>🚛 <span class="lang-es">Gestión de Flota</span><span class="lang-en">Fleet Management</span></h4>
+          <p><span class="lang-es">Tractores, remolques, dollies. Estados, asignaciones, documentación. Integración GPS dual (Samsara + Teli).</span><span class="lang-en">Trucks, trailers, dollies. States, assignments, documentation. Dual GPS integration (Samsara + Teli).</span></p>
+        </div>
+        <div class="module-card">
+          <h4>👷 <span class="lang-es">Operadores</span><span class="lang-en">Operators</span></h4>
+          <p><span class="lang-es">Perfiles, documentos (licencias, permisos, médicos), estados de disponibilidad, tracking continuo desde la app.</span><span class="lang-en">Profiles, documents (licenses, permits, medical), availability states, continuous tracking from the app.</span></p>
+        </div>
+        <div class="module-card">
+          <h4>📋 <span class="lang-es">Servicios y Viajes</span><span class="lang-en">Services & Trips</span></h4>
+          <p><span class="lang-es">Solicitudes de servicio, asignación automática por proximidad GPS, viajes con segmentos y cálculo de distancias.</span><span class="lang-en">Service requests, automatic GPS-proximity assignment, trips with segments and distance calculation.</span></p>
+        </div>
+        <div class="module-card">
+          <h4>🧾 <span class="lang-es">Facturación CFDI 4.0</span><span class="lang-en">CFDI 4.0 Invoicing</span></h4>
+          <p><span class="lang-es">Facturas electrónicas, Carta Porte 2.0, timbrado con PAC, PDFs, series y folios automáticos.</span><span class="lang-en">Electronic invoices, Carta Porte 2.0, PAC stamping, PDFs, automatic series and folios.</span></p>
+        </div>
+        <div class="module-card">
+          <h4>📄 <span class="lang-es">Gestión Documental</span><span class="lang-en">Document Management</span></h4>
+          <p><span class="lang-es">Documentos de operadores, unidades y empresas en S3. Alertas de vencimiento automáticas (30, 15, 7 días).</span><span class="lang-en">Operator, vehicle and company documents on S3. Automatic expiration alerts (30, 15, 7 days).</span></p>
+        </div>
+        <div class="module-card">
+          <h4>🔧 <span class="lang-es">Mantenimiento</span><span class="lang-en">Maintenance</span></h4>
+          <p><span class="lang-es">Preventivo y correctivo. Catálogo de piezas. Control de diesel y gastos operativos por unidad.</span><span class="lang-en">Preventive and corrective. Parts catalog. Diesel tracking and operative expenses per unit.</span></p>
+        </div>
+        <div class="module-card">
+          <h4>💰 <span class="lang-es">Cotizaciones</span><span class="lang-en">Quotations</span></h4>
+          <p><span class="lang-es">Manuales y automatizadas con GlobalMap. Enlaces compartibles, PDFs, conversión a servicio.</span><span class="lang-en">Manual and automated with GlobalMap. Shareable links, PDFs, conversion to service.</span></p>
+        </div>
+        <div class="module-card">
+          <h4>📊 <span class="lang-es">Reportes Financieros</span><span class="lang-en">Financial Reports</span></h4>
+          <p><span class="lang-es">Estado de cuenta por cliente, reporte de facturación, control de cobranza con días de vencimiento.</span><span class="lang-en">Account statements per client, billing reports, collections tracking with overdue days.</span></p>
+        </div>
+      </div>
+
+      <h2>
+        <span class="lang-es">Las decisiones difíciles</span>
+        <span class="lang-en">The Hard Decisions</span>
+      </h2>
+
+      <h3>
+        <span class="lang-es">Tracking GPS en tiempo real</span>
+        <span class="lang-en">Real-time GPS tracking</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Necesitábamos saber la ubicación de cada tractor en tiempo real. No es trivial. Hay dos proveedores GPS (Samsara y Teli), cada uno con su API distinta. Los operadores también reportan ubicación desde la app Flutter cada 30 segundos.</span>
+        <span class="lang-en">We needed to know each truck's location in real time. It's not trivial. There are two GPS providers (Samsara and Teli), each with a different API. Operators also report location from the Flutter app every 30 seconds.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">La solución: <strong>Socket.IO con múltiples namespaces</strong>. Un namespace para tracking de servicios, otro para tracking continuo de operadores. El frontend renderiza todo en un mapa en tiempo real. Cuando un supervisor abre el dashboard, ve cada unidad moviéndose — sin recargar la página.</span>
+        <span class="lang-en">The solution: <strong>Socket.IO with multiple namespaces</strong>. One namespace for service tracking, another for continuous operator tracking. The frontend renders everything on a real-time map. When a supervisor opens the dashboard, they see each unit moving — without reloading the page.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">Asignación automática por proximidad</span>
+        <span class="lang-en">Automatic proximity-based assignment</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Cuando entra una solicitud de servicio, el sistema busca el operador disponible más cercano. Suena simple, pero hay que considerar: estado del operador, estado del tractor, documentos vigentes, tipo de remolque necesario y distancia real (no línea recta — Google Distance Matrix).</span>
+        <span class="lang-en">When a service request comes in, the system finds the nearest available operator. Sounds simple, but you need to consider: operator status, truck status, valid documents, required trailer type, and real distance (not straight line — Google Distance Matrix).</span>
+      </p>
+
+      <p>
+        <span class="lang-es">El algoritmo pondera todo eso y devuelve los mejores candidatos. El supervisor confirma con un clic. Lo que antes tomaba una hora de llamadas ahora toma 30 segundos.</span>
+        <span class="lang-en">The algorithm weighs all of that and returns the best candidates. The supervisor confirms with one click. What used to take an hour of phone calls now takes 30 seconds.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">Facturación electrónica CFDI 4.0 + Carta Porte</span>
+        <span class="lang-en">CFDI 4.0 Electronic Invoicing + Carta Porte</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Si nunca has implementado facturación electrónica mexicana, imagina esto: un XML con estructura definida por el SAT, que debe firmarse digitalmente, enviarse a un PAC (Proveedor Autorizado de Certificación) para timbrado, y si es transporte necesitas el complemento Carta Porte 2.0 con datos del vehículo, operador, mercancía, origen, destino y permisos.</span>
+        <span class="lang-en">If you've never implemented Mexican electronic invoicing, picture this: an XML with SAT-defined structure, digitally signed, sent to a PAC (Authorized Certification Provider) for stamping, and for transportation you need the Carta Porte 2.0 complement with vehicle, operator, merchandise, origin, destination and permit data.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">El servicio de facturación tiene <strong>2,400 líneas</strong>. Es el archivo más grande del proyecto. Cada campo tiene reglas del SAT que hay que cumplir al pie de la letra. Un espacio de más en un RFC y el timbrado falla.</span>
+        <span class="lang-en">The invoicing service has <strong>2,400 lines</strong>. It's the largest file in the project. Every field has SAT rules that must be followed to the letter. One extra space in an RFC and the stamping fails.</span>
+      </p>
+
+      <div class="callout warning">
+        <p>
+          <span class="lang-es"><strong>Lección aprendida:</strong> la facturación electrónica no es un feature — es un proyecto dentro del proyecto. Empezamos a implementarla pensando que serían 2 semanas. Fueron 6. Cada caso edge del SAT es un bug esperando aparecer.</span>
+          <span class="lang-en"><strong>Lesson learned:</strong> electronic invoicing isn't a feature — it's a project within the project. We started thinking it would take 2 weeks. It took 6. Every SAT edge case is a bug waiting to appear.</span>
+        </p>
+      </div>
+
+      <h2>
+        <span class="lang-es">La evolución — 7.5 meses en commits</span>
+        <span class="lang-en">The Evolution — 7.5 Months in Commits</span>
+      </h2>
+
+      <div class="dev-timeline">
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Jul 2025 — El arranque</span><span class="lang-en">Jul 2025 — The Launch</span></div>
+          <div class="desc"><span class="lang-es">Primer commit. Setup de Docker, Prisma, Express. Modelos base: usuarios, empresas, tractores. Auth con JWT. <strong>4 commits.</strong></span><span class="lang-en">First commit. Docker, Prisma, Express setup. Base models: users, companies, trucks. JWT auth. <strong>4 commits.</strong></span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Ago 2025 — CRUD e infraestructura</span><span class="lang-en">Aug 2025 — CRUD & Infrastructure</span></div>
+          <div class="desc"><span class="lang-es">CRUDs completos. Sistema de documentos con S3. Remolques. Ubicaciones. <strong>16 commits.</strong></span><span class="lang-en">Complete CRUDs. Document system with S3. Trailers. Locations. <strong>16 commits.</strong></span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Sep 2025 — Frontend toma forma</span><span class="lang-en">Sep 2025 — Frontend Takes Shape</span></div>
+          <div class="desc"><span class="lang-es">React + MUI. Dashboard principal. Tablas con filtros. Operadores y unidades en el mapa. <strong>31 commits.</strong></span><span class="lang-en">React + MUI. Main dashboard. Tables with filters. Operators and units on the map. <strong>31 commits.</strong></span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Oct 2025 — Servicios y viajes</span><span class="lang-en">Oct 2025 — Services & Trips</span></div>
+          <div class="desc"><span class="lang-es">Sistema de solicitudes. Algoritmo de asignación. Viajes con segmentos automáticos. Socket.IO para tracking. <strong>34 commits.</strong></span><span class="lang-en">Request system. Assignment algorithm. Trips with automatic segments. Socket.IO for tracking. <strong>34 commits.</strong></span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Nov 2025 — App móvil + GPS</span><span class="lang-en">Nov 2025 — Mobile App + GPS</span></div>
+          <div class="desc"><span class="lang-es">Flutter app para operadores. Integración Samsara y Teli. Tracking continuo. Push notifications con Firebase. <strong>40 commits.</strong></span><span class="lang-en">Flutter app for operators. Samsara and Teli integration. Continuous tracking. Push notifications with Firebase. <strong>40 commits.</strong></span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Dic 2025 — Mantenimiento + catálogos</span><span class="lang-en">Dec 2025 — Maintenance + Catalogs</span></div>
+          <div class="desc"><span class="lang-es">Módulo de mantenimiento preventivo/correctivo. Catálogo de piezas. Control de diesel. Reportes de incidentes. <strong>38 commits.</strong></span><span class="lang-en">Preventive/corrective maintenance module. Parts catalog. Diesel tracking. Incident reports. <strong>38 commits.</strong></span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Ene 2026 — Facturación electrónica</span><span class="lang-en">Jan 2026 — Electronic Invoicing</span></div>
+          <div class="desc"><span class="lang-es">CFDI 4.0 desde cero. Carta Porte 2.0. Integración con PAC. Cotizaciones automatizadas. <strong>54 commits</strong> — el mes más intenso.</span><span class="lang-en">CFDI 4.0 from scratch. Carta Porte 2.0. PAC integration. Automated quotations. <strong>54 commits</strong> — the most intense month.</span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Feb 2026 — Reportes + polish</span><span class="lang-en">Feb 2026 — Reports + Polish</span></div>
+          <div class="desc"><span class="lang-es">Estados de cuenta. Reportes de cobranza. Gastos operativos. Edición inline estilo Excel. GDPR/LFPDPPP. <strong>55 commits.</strong></span><span class="lang-en">Account statements. Collections reports. Operative expenses. Inline Excel-style editing. GDPR/LFPDPPP. <strong>55 commits.</strong></span></div>
+        </div>
+        <div class="timeline-entry">
+          <div class="month"><span class="lang-es">Mar 2026 — Producción 🚀</span><span class="lang-en">Mar 2026 — Production 🚀</span></div>
+          <div class="desc"><span class="lang-es">Deploy final. La empresa opera en producción con facturación real. El sistema está vivo.</span><span class="lang-en">Final deploy. The company operates in production with real invoicing. The system is alive.</span></div>
+        </div>
+      </div>
+
+      <h2>
+        <span class="lang-es">Lo que aprendí</span>
+        <span class="lang-en">What I Learned</span>
+      </h2>
+
+      <h3>
+        <span class="lang-es">1. Prisma es brutal para productividad</span>
+        <span class="lang-en">1. Prisma is brutal for productivity</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Con 30+ modelos interrelacionados, tener un ORM que genera tipos TypeScript automáticamente fue la diferencia entre moverme rápido y ahogarme en errores. <code>prisma.$transaction()</code> para operaciones atómicas. <code>include</code> anidados para queries complejas. El schema como fuente de verdad.</span>
+        <span class="lang-en">With 30+ interrelated models, having an ORM that auto-generates TypeScript types was the difference between moving fast and drowning in errors. <code>prisma.$transaction()</code> for atomic operations. Nested <code>include</code> for complex queries. The schema as the source of truth.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">2. Socket.IO + React = magia para dashboards de logística</span>
+        <span class="lang-en">2. Socket.IO + React = magic for logistics dashboards</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Ver camiones moviéndose en un mapa en tiempo real es lo que hace que el cliente diga "esto sí funciona". No es técnicamente difícil — es un <code>useEffect</code> que escucha eventos y actualiza el estado. Pero el impacto de negocio es enorme.</span>
+        <span class="lang-en">Watching trucks move on a map in real time is what makes the client say "this actually works." It's not technically hard — it's a <code>useEffect</code> that listens to events and updates state. But the business impact is enormous.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">3. Los documentos vencidos son el problema #1 en logística</span>
+        <span class="lang-en">3. Expired documents are the #1 problem in logistics</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Antes de este proyecto no sabía cuántos tipos de documentos necesita un tractor para operar legalmente en México. Licencia federal, verificación vehicular, seguro, tarjeta de circulación, permiso SCT... y cada uno vence. Un cron job que revisa vencimientos y dispara alertas automáticas a 30, 15 y 7 días ahorró miles de pesos en multas.</span>
+        <span class="lang-en">Before this project I didn't know how many document types a truck needs to legally operate in Mexico. Federal license, vehicle inspection, insurance, registration, SCT permit... and each one expires. A cron job that checks expirations and fires automatic alerts at 30, 15 and 7 days saved thousands in fines.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">4. AI como copiloto, no como piloto</span>
+        <span class="lang-en">4. AI as copilot, not pilot</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Usé <strong>GitHub Copilot y Claude</strong> extensivamente durante el desarrollo. Para servicios CRUD repetitivos: increíble. Para lógica de negocio compleja como el algoritmo de asignación o la facturación: necesitas entender cada línea. La IA acelera, pero el criterio de ingeniería no es delegable.</span>
+        <span class="lang-en">I used <strong>GitHub Copilot and Claude</strong> extensively during development. For repetitive CRUD services: incredible. For complex business logic like the assignment algorithm or invoicing: you need to understand every line. AI accelerates, but engineering judgment isn't delegable.</span>
+      </p>
+
+      <div class="callout success">
+        <p>
+          <span class="lang-es"><strong>El dato más honesto:</strong> los tests son el punto débil. 763 líneas de tests vs 320K de código. En un proyecto real con un solo desarrollador y deadline agresivo, los tests son lo primero que se sacrifica. No estoy orgulloso, pero es la realidad.</span>
+          <span class="lang-en"><strong>The most honest metric:</strong> tests are the weak spot. 763 lines of tests vs 320K of code. In a real project with one developer and an aggressive deadline, tests are the first thing sacrificed. I'm not proud, but it's reality.</span>
+        </p>
+      </div>
+
+      <h2>
+        <span class="lang-es">El servidor</span>
+        <span class="lang-en">The Server</span>
+      </h2>
+
+      <p>
+        <span class="lang-es">Todo corre en una instancia EC2 <code>m7i-flex.large</code> (2 vCPU, 8 GB RAM). Docker Compose con 4 contenedores: API, Frontend (nginx), MySQL 8.0 y Prisma Studio. Backups automáticos a S3 con cleanup de locales cada 7 días.</span>
+        <span class="lang-en">Everything runs on an EC2 <code>m7i-flex.large</code> instance (2 vCPU, 8 GB RAM). Docker Compose with 4 containers: API, Frontend (nginx), MySQL 8.0 and Prisma Studio. Automatic backups to S3 with local cleanup every 7 days.</span>
+      </p>
+
+      <p>
+        <span class="lang-es">Con la carga actual: 3.1 GB de RAM usados, 1.1 GB de swap. Funciona, pero ya estamos cerca del límite. El siguiente paso es migrar a una instancia con 16 GB cuando entren más clientes.</span>
+        <span class="lang-en">With current load: 3.1 GB RAM used, 1.1 GB swap. It works, but we're close to the limit. Next step is migrating to a 16 GB instance when more clients come on board.</span>
+      </p>
+
+      <h2>
+        <span class="lang-es">Lo que viene</span>
+        <span class="lang-en">What's Next</span>
+      </h2>
+
+      <ul>
+        <li><span class="lang-es"><strong>Dashboard de métricas avanzadas</strong> — KPIs de operación, utilización de flota, rentabilidad por ruta</span><span class="lang-en"><strong>Advanced metrics dashboard</strong> — operational KPIs, fleet utilization, profitability per route</span></li>
+        <li><span class="lang-es"><strong>Cobertura de tests</strong> — la deuda técnica más grande. Tests de integración para los endpoints críticos</span><span class="lang-en"><strong>Test coverage</strong> — the biggest technical debt. Integration tests for critical endpoints</span></li>
+        <li><span class="lang-es"><strong>Multi-tenant</strong> — adaptar el sistema para que más empresas lo usen con instancias separadas</span><span class="lang-en"><strong>Multi-tenant</strong> — adapt the system for more companies with separate instances</span></li>
+        <li><span class="lang-es"><strong>AI Agent para consultas</strong> — un agente de IA que responda preguntas sobre viajes, facturas y operación usando lenguaje natural</span><span class="lang-en"><strong>AI Agent for queries</strong> — an AI agent that answers questions about trips, invoices and operations using natural language</span></li>
+      </ul>
+
+      <div class="big-quote">
+        <span class="lang-es">320,000 líneas de código no te hacen un buen ingeniero. Pero construir algo que funciona en producción, que resuelve problemas reales y que una empresa usa todos los días — eso sí.</span>
+        <span class="lang-en">320,000 lines of code don't make you a good engineer. But building something that works in production, that solves real problems and that a company uses every day — that does.</span>
+      </div>
+
+      <div class="post-footer">
+        <p>
+          <span class="lang-es">Escrito por <strong>Oscar Martinez</strong> — 7 de marzo de 2026</span>
+          <span class="lang-en">Written by <strong>Oscar Martinez</strong> — March 7, 2026</span>
+        </p>
+        <p style="margin-top: 10px; color: rgba(255,255,255,0.4);">
+          <a href="index.html"><span class="lang-es">← Volver al inicio</span><span class="lang-en">← Back to home</span></a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
