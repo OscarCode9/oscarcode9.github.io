@@ -1,11 +1,11 @@
 {
   "posts" : [
     {
-      "title":"Samantha OS: memoria real, modo programador y fallback inteligente",
+      "title":"Samantha OS: qué es y cómo funciona sobre elementary-claw",
        "urlImg":"/post/samantha-os-preview.png",
-       "description":"Cómo estamos construyendo Samantha sobre elementary OS: Wingpanel nativo, memoria persistente real, modo programador y fallback de GitHub a ChatGPT/Codex probado dentro de una VM ARM64.",
+       "description":"Una vista general de Samantha OS: qué es, cómo se relaciona con elementary-claw y por qué estamos construyendo una asistente nativa para elementary OS con memoria, tools y apps reales.",
        "date":"29-04-2026",
-       "tags": ["samantha-os", "elementary-os", "openclaw", "ai-agents", "memory"],
+       "tags": ["samantha-os", "elementary-os", "elementary-claw", "openclaw", "desktop-ai"],
        "author":"Oscar Martínez",
        "url":"/samantha-os-memory-developer-mode"
     },

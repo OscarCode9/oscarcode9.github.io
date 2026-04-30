@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Samantha OS: memoria real, modo programador y fallback inteligente | Oscar Code</title>
-  <meta name="description" content="Cómo estamos construyendo Samantha OS sobre elementary OS: memoria persistente real, modo programador, fallback de GitHub a ChatGPT/Codex y pruebas dentro de una VM ARM64.">
-  <meta name="keywords" content="Samantha OS, elementary OS, OpenClaw, AI agents, Codex, GitHub Copilot, memory, developer mode, wingpanel">
-  <meta property="og:title" content="Samantha OS: memoria real, modo programador y fallback inteligente">
-  <meta property="og:description" content="Wingpanel, memoria persistente, tools del sistema y una VM de elementary OS para probar todo de verdad.">
+  <title>Samantha OS: qué es y cómo funciona sobre elementary-claw | Oscar Code</title>
+  <meta name="description" content="Una vista general de Samantha OS: qué es, cómo se relaciona con elementary-claw y por qué estamos construyendo una asistente nativa para elementary OS con memoria, tools y apps reales.">
+  <meta name="keywords" content="Samantha OS, elementary OS, elementary-claw, OpenClaw, AI agents, desktop assistant, wingpanel">
+  <meta property="og:title" content="Samantha OS: qué es y cómo funciona sobre elementary-claw">
+  <meta property="og:description" content="Producto, runtime local y experiencia nativa: así encajan Samantha OS y elementary-claw dentro de elementary OS.">
   <meta property="og:type" content="article">
   <meta property="og:image" content="https://oscarcode9.github.io/post/samantha-os-preview.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -364,8 +364,8 @@
         <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
       <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:0;right:0;">🌐 EN</span>
-      <h1 class="post-title"><span class="lang-es">Samantha OS: memoria real, modo programador y fallback inteligente</span><span class="lang-en">Samantha OS: real memory, developer mode, and smart fallbacks</span></h1>
-      <p class="post-subtitle"><span class="lang-es">Estamos convirtiendo a Samantha en una asistente nativa para elementary OS: vive en Wingpanel, abre apps reales, recuerda contexto entre sesiones y se recupera cuando GitHub falla.</span><span class="lang-en">We're turning Samantha into a native assistant for elementary OS: it lives in Wingpanel, opens real apps, remembers context across sessions, and recovers when GitHub fails.</span></p>
+      <h1 class="post-title"><span class="lang-es">Samantha OS: qué es y cómo funciona sobre elementary-claw</span><span class="lang-en">Samantha OS: what it is and how it runs on elementary-claw</span></h1>
+      <p class="post-subtitle"><span class="lang-es">Samantha OS es una asistente nativa para elementary OS. <code>elementary-claw</code> es el runtime local que conecta Wingpanel con modelos, memoria, tools y apps reales.</span><span class="lang-en">Samantha OS is a native assistant for elementary OS. <code>elementary-claw</code> is the local runtime that connects Wingpanel with models, memory, tools, and real apps.</span></p>
       <div class="ov-views-wrap">
         <div class="ov-views-badge" data-ov-visits>
           <span class="ov-dot"></span>
@@ -376,9 +376,9 @@
       <div class="post-meta" style="margin-top:20px;">
         <span class="post-tag">Samantha OS</span>
         <span class="post-tag">elementary OS</span>
-        <span class="post-tag">OpenClaw</span>
+        <span class="post-tag">elementary-claw</span>
         <span class="post-tag">AI Agents</span>
-        <span><span class="lang-es">29 de abril de 2026 · ~8 min de lectura</span><span class="lang-en">April 29, 2026 · ~8 min read</span></span>
+        <span><span class="lang-es">29 de abril de 2026 · ~6 min de lectura</span><span class="lang-en">April 29, 2026 · ~6 min read</span></span>
       </div>
     </div>
   </header>
@@ -386,162 +386,160 @@
   <main class="post-content">
     <div class="container">
       <div class="callout">
-        <p class="lang-es"><strong>La meta no es hacer otro chat flotante.</strong> La meta es que Samantha se sienta como una capability del sistema operativo: una asistente que entiende tu máquina, usa herramientas reales y conserva memoria útil entre conversaciones.</p>
-        <p class="lang-en"><strong>The goal isn't to build another floating chat widget.</strong> The goal is for Samantha to feel like an operating system capability: an assistant that understands your machine, uses real tools, and keeps useful memory across conversations.</p>
+        <p class="lang-es"><strong>No estamos construyendo otro chatbot con skin de escritorio.</strong> La apuesta es que Samantha se sienta como una capability del sistema operativo: cercana al usuario, conectada al sistema y útil fuera de una pestaña del navegador.</p>
+        <p class="lang-en"><strong>We're not building another chatbot with a desktop skin.</strong> The bet is for Samantha to feel like an operating system capability: close to the user, connected to the system, and useful beyond a browser tab.</p>
       </div>
 
-      <p class="lang-es">Estas últimas sesiones han sido justo eso: bajar el concepto a algo que corre de verdad en <strong>elementary OS</strong>, con una UI en el panel superior, un runtime local, tools del sistema y una VM ARM64 para probar cada fix antes de decir “ya quedó”.</p>
-      <p class="lang-en">That's exactly what these latest sessions have been about: turning the concept into something that actually runs on <strong>elementary OS</strong>, with a top-panel UI, a local runtime, system tools, and an ARM64 VM to test every fix before claiming “it's done”.</p>
+      <p class="lang-es">Si alguien me pregunta qué es <strong>Samantha OS</strong>, la respuesta corta es: una asistente integrada a <strong>elementary OS</strong> que puede conversar, operar el sistema y recordar contexto útil. La respuesta larga es que Samantha OS es la experiencia completa, mientras <code>elementary-claw</code> es el motor local que orquesta todo por debajo.</p>
+      <p class="lang-en">If someone asks me what <strong>Samantha OS</strong> is, the short answer is: an assistant integrated into <strong>elementary OS</strong> that can converse, operate the system, and remember useful context. The longer answer is that Samantha OS is the full experience, while <code>elementary-claw</code> is the local engine orchestrating everything underneath.</p>
+
+      <p class="lang-es">En lugar de abrir una web app aparte, Samantha vive en el panel del sistema, trabaja con rutas reales, usa aplicaciones nativas y puede cambiar de provider sin que toda la experiencia se vea rota. Eso es lo que hace distinto al proyecto.</p>
+      <p class="lang-en">Instead of opening a separate web app, Samantha lives in the system panel, works with real paths, uses native applications, and can switch providers without making the whole experience feel broken. That's what makes the project different.</p>
 
       <figure class="hero-shot">
         <img src="post/samantha-os-preview.png" alt="Samantha OS corriendo en elementary OS dentro de Wingpanel" loading="lazy">
-        <figcaption><span class="lang-es">Samantha corriendo dentro de Wingpanel en elementary OS. No es un mockup: es la build que estuvimos depurando dentro de la VM.</span><span class="lang-en">Samantha running inside Wingpanel on elementary OS. Not a mockup: this is the build we were debugging inside the VM.</span></figcaption>
+        <figcaption><span class="lang-es">Samantha corriendo dentro de Wingpanel en elementary OS. La idea no es “poner ChatGPT en Linux”, sino construir una experiencia nativa de asistente para el escritorio.</span><span class="lang-en">Samantha running inside Wingpanel on elementary OS. The point is not to “put ChatGPT on Linux,” but to build a native assistant experience for the desktop.</span></figcaption>
       </figure>
 
-      <h2><i class="fas fa-layer-group" style="color: var(--primary);"></i> <span class="lang-es">1. Qué estamos construyendo realmente</span><span class="lang-en">1. What we're actually building</span></h2>
+      <h2><i class="fas fa-layer-group" style="color: var(--primary);"></i> <span class="lang-es">1. Qué es Samantha OS</span><span class="lang-en">1. What Samantha OS is</span></h2>
 
-      <p class="lang-es">Samantha no vive en una pestaña del navegador. Vive en el panel del sistema, como un indicador nativo de elementary. La UI que ves se compila como <code>libsam.so</code>, un plugin de Wingpanel, mientras que la inteligencia y el enrutamiento de providers viven en un gateway local llamado <code>elementary-claw</code>.</p>
-      <p class="lang-en">Samantha doesn't live in a browser tab. It lives in the system panel, as a native elementary indicator. The UI you see is compiled as <code>libsam.so</code>, a Wingpanel plugin, while intelligence and provider routing live in a local gateway called <code>elementary-claw</code>.</p>
+      <p class="lang-es">Samantha OS es una asistente de escritorio pensada para sentirse nativa dentro de elementary. No intenta reemplazar al sistema operativo: intenta convertirse en una capa útil sobre él, como si hablar con tu máquina fuera una capacidad normal del escritorio.</p>
+      <p class="lang-en">Samantha OS is a desktop assistant designed to feel native inside elementary. It doesn't try to replace the operating system: it tries to become a useful layer on top of it, as if talking to your machine were a normal desktop capability.</p>
+
+      <p class="lang-es">La interfaz visible corre en Wingpanel y se integra con el lenguaje visual del sistema. Pero lo importante no es solo dónde aparece, sino lo que puede hacer desde ahí: entender contexto, abrir aplicaciones, leer o escribir archivos dentro de sus límites y mantener continuidad entre sesiones.</p>
+      <p class="lang-en">The visible interface runs in Wingpanel and integrates with the system's visual language. But what matters isn't just where it appears, it's what it can do from there: understand context, open applications, read or write files within its boundaries, and keep continuity across sessions.</p>
 
       <div class="grid">
         <div class="card">
-          <h4><span class="lang-es">UI nativa</span><span class="lang-en">Native UI</span></h4>
-          <p class="lang-es">Wingpanel + Vala + GTK. El chat se siente como parte del escritorio, no como un overlay genérico.</p>
-          <p class="lang-en">Wingpanel + Vala + GTK. The chat feels like part of the desktop, not a generic overlay.</p>
+          <h4><span class="lang-es">Experiencia nativa</span><span class="lang-en">Native experience</span></h4>
+          <p class="lang-es">Wingpanel + Vala + GTK. Samantha aparece donde vive el sistema, no como una ventana prestada.</p>
+          <p class="lang-en">Wingpanel + Vala + GTK. Samantha appears where the system lives, not as a borrowed window.</p>
         </div>
         <div class="card">
-          <h4><span class="lang-es">Gateway local</span><span class="lang-en">Local gateway</span></h4>
-          <p class="lang-es">Un servicio HTTP local que maneja providers, sesiones, memoria, tools y flujos de autenticación.</p>
-          <p class="lang-en">A local HTTP service that handles providers, sessions, memory, tools, and auth flows.</p>
+          <h4><span class="lang-es">Runtime local</span><span class="lang-en">Local runtime</span></h4>
+          <p class="lang-es"><code>elementary-claw</code> coordina providers, sesiones, memoria, tools y respuestas del asistente.</p>
+          <p class="lang-en"><code>elementary-claw</code> coordinates providers, sessions, memory, tools, and assistant responses.</p>
         </div>
         <div class="card">
-          <h4><span class="lang-es">Providers intercambiables</span><span class="lang-en">Swappable providers</span></h4>
-          <p class="lang-es">GitHub Copilot, OpenAI por API key y ahora también ChatGPT/Codex por suscripción.</p>
-          <p class="lang-en">GitHub Copilot, OpenAI via API key, and now also ChatGPT/Codex via subscription.</p>
+          <h4><span class="lang-es">Capacidades reales</span><span class="lang-en">Real capabilities</span></h4>
+          <p class="lang-es">Abrir Terminal, Files, navegador o editor, además de operar sobre contexto y memoria útiles.</p>
+          <p class="lang-en">Open Terminal, Files, browser, or editor, while also operating on useful context and memory.</p>
         </div>
         <div class="card">
-          <h4><span class="lang-es">Tools del sistema</span><span class="lang-en">System tools</span></h4>
-          <p class="lang-es">Abrir Terminal, Files, editor, navegador, leer archivos, escribir memoria y operar el entorno real.</p>
-          <p class="lang-en">Open Terminal, Files, editor, browser, read files, write memory, and operate the real environment.</p>
+          <h4><span class="lang-es">Providers flexibles</span><span class="lang-en">Flexible providers</span></h4>
+          <p class="lang-es">Samantha no depende de un solo proveedor; puede cambiar de backend sin romper la experiencia del usuario.</p>
+          <p class="lang-en">Samantha doesn't depend on a single provider; it can switch backends without breaking the user experience.</p>
         </div>
       </div>
 
-      <h2><i class="fas fa-brain" style="color: var(--accent-blue);"></i> <span class="lang-es">2. Cómo funciona su memoria</span><span class="lang-en">2. How its memory works</span></h2>
+      <h2><i class="fas fa-brain" style="color: var(--accent-blue);"></i> <span class="lang-es">2. Qué es elementary-claw y dónde entra</span><span class="lang-en">2. What elementary-claw is and where it fits</span></h2>
 
-      <p class="lang-es">La memoria de Samantha no es “magia del modelo”. Es un sistema explícito de archivos dentro del workspace de OpenClaw. Hay dos niveles:</p>
-      <p class="lang-en">Samantha's memory isn't “model magic”. It's an explicit file-based system inside the OpenClaw workspace. There are two levels:</p>
+      <p class="lang-es"><code>elementary-claw</code> es la pieza que conecta la interfaz de Samantha con el resto del sistema. No es el nombre “bonito” del producto; es el runtime local que recibe mensajes, resuelve qué modelo usar, prepara contexto, llama tools y devuelve una respuesta o una acción.</p>
+      <p class="lang-en"><code>elementary-claw</code> is the piece that connects Samantha's interface to the rest of the system. It's not the user-facing product name; it's the local runtime that receives messages, decides which model to use, prepares context, calls tools, and returns either a response or an action.</p>
 
-      <div class="paths">
-        <h4><span class="lang-es">Rutas de memoria</span><span class="lang-en">Memory paths</span></h4>
-        <pre><code>~/.openclaw/workspace/
-├── MEMORY.md
-└── memory/
-    ├── 2026-04-29.md
-    └── 2026-04-28.md</code></pre>
-        <p class="mini-note lang-es"><code>MEMORY.md</code> guarda hechos curados y duraderos. Los archivos diarios en <code>memory/YYYY-MM-DD.md</code> guardan contexto reciente y notas operativas.</p>
-        <p class="mini-note lang-en"><code>MEMORY.md</code> stores curated long-term facts. Daily files in <code>memory/YYYY-MM-DD.md</code> store recent context and operational notes.</p>
-      </div>
+      <pre><code>Wingpanel UI (libsam.so)
+        ↓
+elementary-claw
+        ↓
+models + memory + tools + desktop apps</code></pre>
+
+      <p class="lang-es">Esa separación es importante porque aclara la arquitectura del proyecto: <strong>Samantha OS es la experiencia</strong> y <strong>elementary-claw es la infraestructura</strong>. Una vive en el panel y en la UX; la otra vive en el enrutamiento, las sesiones, la memoria y la integración con el escritorio.</p>
+      <p class="lang-en">That separation matters because it clarifies the project's architecture: <strong>Samantha OS is the experience</strong> and <strong>elementary-claw is the infrastructure</strong>. One lives in the panel and the UX; the other lives in routing, sessions, memory, and desktop integration.</p>
 
       <div class="flow">
         <div class="flow-step">
           <div class="num">1</div>
-          <h4><span class="lang-es">Guardar</span><span class="lang-en">Save</span></h4>
-          <p class="lang-es">Cuando el usuario pide “recuerda esto”, Samantha usa <code>write_file</code> para escribir el dato en el workspace.</p>
-          <p class="lang-en">When the user asks “remember this”, Samantha uses <code>write_file</code> to write the fact into the workspace.</p>
+          <h4><span class="lang-es">Entrada</span><span class="lang-en">Input</span></h4>
+          <p class="lang-es">El usuario habla con Samantha desde el panel de elementary OS, como parte natural del escritorio.</p>
+          <p class="lang-en">The user talks to Samantha from the elementary OS panel, as a natural part of the desktop.</p>
         </div>
         <div class="flow-step">
           <div class="num">2</div>
-          <h4><span class="lang-es">Inyectar</span><span class="lang-en">Inject</span></h4>
-          <p class="lang-es">En cada nueva sesión, el gateway lee <code>MEMORY.md</code> y las notas recientes y las mete al system prompt.</p>
-          <p class="lang-en">On every new session, the gateway reads <code>MEMORY.md</code> and recent notes and injects them into the system prompt.</p>
+          <h4><span class="lang-es">Orquestación</span><span class="lang-en">Orchestration</span></h4>
+          <p class="lang-es"><code>elementary-claw</code> decide provider, contexto, memoria y tools según lo que el usuario pidió.</p>
+          <p class="lang-en"><code>elementary-claw</code> decides on provider, context, memory, and tools based on what the user asked for.</p>
         </div>
         <div class="flow-step">
           <div class="num">3</div>
-          <h4><span class="lang-es">Recordar</span><span class="lang-en">Recall</span></h4>
-          <p class="lang-es">Después Samantha puede responder desde otra sesión porque ese contexto ya viaja con el runtime.</p>
-          <p class="lang-en">Samantha can then answer from another session because that context now travels with the runtime.</p>
+          <h4><span class="lang-es">Respuesta o acción</span><span class="lang-en">Response or action</span></h4>
+          <p class="lang-es">Samantha responde en lenguaje natural o ejecuta una acción del sistema sin sacar al usuario del flujo.</p>
+          <p class="lang-en">Samantha replies in natural language or performs a system action without pulling the user out of the flow.</p>
         </div>
       </div>
 
-      <p class="lang-es">Lo interesante es que en la VM encontramos un bug muy real: Samantha decía “ya lo guardé”, pero lo estaba escribiendo en <code>/home/oscarcode91/MEMORY.md</code> en vez de <code>~/.openclaw/workspace/MEMORY.md</code>. O sea, la idea de memoria funcionaba, pero el root de las tools estaba mal.</p>
-      <p class="lang-en">The interesting part is that in the VM we found a very real bug: Samantha said “I've saved it”, but it was writing to <code>/home/oscarcode91/MEMORY.md</code> instead of <code>~/.openclaw/workspace/MEMORY.md</code>. In other words, the memory idea worked, but the tool root was wrong.</p>
-
-      <pre><code>if workdir == "" {
-    workdir = firstNonEmpty(app.paths.WorkspaceDir, app.paths.HomeDir)
-}</code></pre>
-
       <div class="checkpoint">
-        <h4><span class="lang-es">Resultado después del fix</span><span class="lang-en">Result after the fix</span></h4>
-        <p class="lang-es">Probamos en la VM una sesión que guardó “mi animal favorito para pruebas es el axolote coral”, verificamos que se escribió en <code>~/.openclaw/workspace/MEMORY.md</code>, y luego abrimos otra sesión distinta donde Samantha respondió correctamente <code>axolote coral</code>.</p>
-        <p class="lang-en">We tested a VM session that saved “my favorite test animal is the coral axolotl”, verified it was written to <code>~/.openclaw/workspace/MEMORY.md</code>, and then opened a different session where Samantha correctly answered <code>coral axolotl</code>.</p>
+        <h4><span class="lang-es">La idea clave</span><span class="lang-en">The key idea</span></h4>
+        <p class="lang-es">Cuando alguien dice “explícame qué es Samantha OS”, la mejor respuesta ya no es listar features sueltas. Es explicar esta relación: producto arriba, runtime abajo, y el escritorio real como entorno de trabajo.</p>
+        <p class="lang-en">When someone says “explain what Samantha OS is,” the best answer is no longer a list of isolated features. It's this relationship: product on top, runtime below, and the real desktop as the working environment.</p>
       </div>
 
-      <div class="checkpoint warning">
-        <h4><span class="lang-es">Importante: no todo se guarda</span><span class="lang-en">Important: not everything gets saved</span></h4>
-        <p class="lang-es">Cuando intentamos guardar una “clave” de prueba, Samantha la rechazó por seguridad. Eso está bien. La memoria sirve para preferencias, contexto y hechos útiles; no para secretos.</p>
-        <p class="lang-en">When we tried to save a test “key”, Samantha rejected it for safety reasons. That's good. Memory is for preferences, context, and useful facts; not for secrets.</p>
-      </div>
+      <h2><i class="fas fa-terminal" style="color: var(--accent-green);"></i> <span class="lang-es">3. Qué puede hacer Samantha</span><span class="lang-en">3. What Samantha can do</span></h2>
 
-      <h2><i class="fas fa-terminal" style="color: var(--accent-green);"></i> <span class="lang-es">3. Modo programador: abrir el entorno real</span><span class="lang-en">3. Developer mode: opening the real environment</span></h2>
-
-      <p class="lang-es">Otra capability clave fue enseñarle a Samantha a entrar en “modo programador”. La idea es simple: si le dices que active ese modo en una carpeta, debe abrir el navegador en <code>localhost:3000</code>, Terminal, el editor nativo de elementary y Files, ya posicionados en la ruta correcta.</p>
-      <p class="lang-en">Another key capability was teaching Samantha to enter “developer mode”. The idea is simple: if you ask it to activate that mode in a folder, it should open the browser on <code>localhost:3000</code>, Terminal, the native elementary editor, and Files, all already positioned in the right path.</p>
-
-      <pre><code>“Activa el modo programador en /home/oscarcode91/elementary-claw-vm
-y abre localhost 3000”</code></pre>
-
-      <p class="lang-es">En la VM lo validamos de punta a punta. Samantha terminó abriendo <code>epiphany</code>, <code>io.elementary.terminal</code>, <code>io.elementary.code</code> y <code>io.elementary.files</code>. Lo importante aquí es que no estamos fingiendo tool calling: estamos usando herramientas para mover el sistema de verdad.</p>
-      <p class="lang-en">We validated it end-to-end in the VM. Samantha ended up opening <code>epiphany</code>, <code>io.elementary.terminal</code>, <code>io.elementary.code</code>, and <code>io.elementary.files</code>. What's important here is that we're not faking tool calling: we're using tools to move the real system.</p>
-
-      <div class="checkpoint">
-        <h4><span class="lang-es">Detalle bonito de elementary</span><span class="lang-en">A nice elementary detail</span></h4>
-        <p class="lang-es">Al principio el fallback buscaba <code>code</code> o <code>codium</code>, pero en la VM el editor correcto era <code>io.elementary.code</code>. Ese tipo de detalles son justo los que solo aparecen cuando pruebas dentro del sistema real.</p>
-        <p class="lang-en">At first the fallback looked for <code>code</code> or <code>codium</code>, but in the VM the correct editor was <code>io.elementary.code</code>. That's exactly the kind of detail that only appears when you test inside the real system.</p>
-      </div>
-
-      <h2><i class="fas fa-shuffle" style="color: var(--accent-gold);"></i> <span class="lang-es">4. Cuando GitHub falla, Samantha no debería verse rota</span><span class="lang-en">4. When GitHub fails, Samantha shouldn't look broken</span></h2>
-
-      <p class="lang-es">Uno de los problemas más molestos fue este mensaje crudo de GitHub Copilot: “Sorry, you've exceeded your 5 hour session limits…”. Eso no se le debe enseñar al usuario final como si fuera la UX oficial del asistente.</p>
-      <p class="lang-en">One of the most annoying problems was GitHub Copilot's raw message: “Sorry, you've exceeded your 5 hour session limits…”. That should not be shown to the end user as if it were the assistant's official UX.</p>
-
-      <p class="lang-es">La solución fue interceptar ese fallo en el gateway, clasificarlo y hacer que el panel ofrezca un flujo alternativo. Primero intentamos con API key, pero el flujo correcto para el producto terminó siendo <strong>suscripción ChatGPT/Codex como opción principal</strong> y API key como fallback secundario.</p>
-      <p class="lang-en">The solution was to intercept that failure in the gateway, classify it, and make the panel offer an alternative flow. We first tried an API key flow, but the right product choice ended up being <strong>ChatGPT/Codex subscription as the primary option</strong> and API key as a secondary fallback.</p>
+      <p class="lang-es">La promesa de Samantha no es responder texto bonito. Es poder combinar lenguaje con acciones concretas dentro del sistema. Eso incluye conversación, contexto, memoria y operaciones reales sobre el escritorio.</p>
+      <p class="lang-en">Samantha's promise isn't to produce nice text. It's to combine language with concrete actions inside the system. That includes conversation, context, memory, and real operations on the desktop.</p>
 
       <div class="grid">
         <div class="card">
-          <h4><span class="lang-es">Antes</span><span class="lang-en">Before</span></h4>
-          <p class="lang-es">Texto crudo de GitHub, poca claridad y sensación de “algo se rompió”.</p>
-          <p class="lang-en">Raw GitHub text, low clarity, and the feeling that “something broke”.</p>
+          <h4><span class="lang-es">Conversar desde el panel</span><span class="lang-en">Talk from the panel</span></h4>
+          <p class="lang-es">La interacción empieza donde ya vives: arriba, dentro del sistema, sin abrir otra app web.</p>
+          <p class="lang-en">Interaction starts where you already live: up top, inside the system, without opening another web app.</p>
         </div>
         <div class="card">
-          <h4><span class="lang-es">Después</span><span class="lang-en">After</span></h4>
-          <p class="lang-es">Tarjeta de conexión a ChatGPT/Codex, cambio de provider y reintento del mismo prompt.</p>
-          <p class="lang-en">A ChatGPT/Codex connect card, provider switch, and a retry of the same prompt.</p>
+          <h4><span class="lang-es">Abrir el entorno real</span><span class="lang-en">Open the real environment</span></h4>
+          <p class="lang-es">Puede lanzar Terminal, Files, el editor o el navegador y posicionarse en la ruta o URL correcta.</p>
+          <p class="lang-en">It can launch Terminal, Files, the editor, or the browser and land on the right path or URL.</p>
+        </div>
+        <div class="card">
+          <h4><span class="lang-es">Recordar contexto útil</span><span class="lang-en">Remember useful context</span></h4>
+          <p class="lang-es">La memoria no depende de “magia del modelo”; forma parte del runtime y puede persistir entre sesiones.</p>
+          <p class="lang-en">Memory doesn't depend on “model magic”; it's part of the runtime and can persist across sessions.</p>
+        </div>
+        <div class="card">
+          <h4><span class="lang-es">Recuperarse de fallos</span><span class="lang-en">Recover from failures</span></h4>
+          <p class="lang-es">Si un provider falla o cambia el flujo de autenticación, Samantha puede reconducir la experiencia.</p>
+          <p class="lang-en">If a provider fails or the auth flow changes, Samantha can redirect the experience gracefully.</p>
         </div>
       </div>
 
-      <h2><i class="fas fa-vial" style="color: var(--primary);"></i> <span class="lang-es">5. La VM importa más de lo que parece</span><span class="lang-en">5. The VM matters more than it seems</span></h2>
+      <h2><i class="fas fa-shuffle" style="color: var(--accent-gold);"></i> <span class="lang-es">4. Por qué hacerlo sobre elementary OS</span><span class="lang-en">4. Why build it on top of elementary OS</span></h2>
 
-      <p class="lang-es">Muchas cosas “se ven bien” en local hasta que las corres en una VM ARM64 con elementary OS de verdad. Ahí fue donde vimos si Wingpanel cargaba el plugin correcto, si el servicio levantaba, si el editor nativo existía, y si la memoria estaba cayendo en el path correcto.</p>
-      <p class="lang-en">A lot of things “look good” locally until you run them inside a real ARM64 elementary OS VM. That's where we saw whether Wingpanel loaded the correct plugin, whether the service booted, whether the native editor existed, and whether memory landed in the correct path.</p>
+      <p class="lang-es">elementary OS tiene algo valioso para este experimento: una superficie limpia, coherente y suficientemente controlada para que la integración se sienta de producto y no de hack improvisado. Wingpanel, las apps nativas y el flujo del escritorio ayudan a que Samantha tenga un lugar natural.</p>
+      <p class="lang-en">elementary OS gives this experiment something valuable: a clean, coherent, and controlled enough surface for the integration to feel like a product instead of an improvised hack. Wingpanel, native apps, and the desktop flow give Samantha a natural place to live.</p>
+
+      <p class="lang-es">También obliga a tomarse en serio los detalles del sistema: nombres reales de apps, permisos, rutas, comportamiento del panel y diferencias entre una demo local y una máquina que corre el entorno completo. Justo por eso el proyecto se beneficia tanto de probarse dentro de una VM real de elementary OS.</p>
+      <p class="lang-en">It also forces us to take system details seriously: real app names, permissions, paths, panel behavior, and the difference between a local demo and a machine running the full environment. That's exactly why the project benefits so much from being tested inside a real elementary OS VM.</p>
+
+      <div class="checkpoint warning">
+        <h4><span class="lang-es">Por qué la VM sigue importando</span><span class="lang-en">Why the VM still matters</span></h4>
+        <p class="lang-es">Un asistente de escritorio no se valida solo con mocks. Hay que verlo correr con el panel real, las apps reales y los errores reales del sistema operativo.</p>
+        <p class="lang-en">A desktop assistant can't be validated with mocks alone. You need to see it run with the real panel, real apps, and real operating-system errors.</p>
+      </div>
 
       <div class="checkpoint danger">
-        <h4><span class="lang-es">Lección clave</span><span class="lang-en">Key lesson</span></h4>
-        <p class="lang-es">Un agente de escritorio no se valida solo con tests unitarios. Necesita pruebas dentro del sistema operativo porque la mitad de los bugs viven en la fricción entre UI, procesos, rutas, permisos y apps instaladas.</p>
-        <p class="lang-en">A desktop agent can't be validated with unit tests alone. It needs OS-level testing because half the bugs live in the friction between UI, processes, paths, permissions, and installed apps.</p>
+        <h4><span class="lang-es">Lección del producto</span><span class="lang-en">Product lesson</span></h4>
+        <p class="lang-es">Si Samantha quiere sentirse nativa, no basta con que “responda bien”. Tiene que ubicarse bien en el sistema, fallar con elegancia y ayudar de verdad en tareas del escritorio.</p>
+        <p class="lang-en">If Samantha wants to feel native, it's not enough for it to “answer well.” It has to fit the system well, fail gracefully, and genuinely help with desktop tasks.</p>
       </div>
+
+      <h2><i class="fas fa-vial" style="color: var(--primary);"></i> <span class="lang-es">5. En qué estado está hoy</span><span class="lang-en">5. Where it stands today</span></h2>
+
+      <p class="lang-es">Hoy Samantha ya tiene una forma reconocible: panel nativo, runtime local, memoria persistente, tools del sistema y pruebas dentro de una VM de elementary OS. Todavía está evolucionando, pero ya no se siente como una idea abstracta.</p>
+      <p class="lang-en">Today Samantha already has a recognizable shape: native panel, local runtime, persistent memory, system tools, and testing inside an elementary OS VM. It's still evolving, but it no longer feels like an abstract idea.</p>
+
+      <p class="lang-es">Lo más valioso es que la arquitectura ya cuenta una historia clara: la UI vive en Samantha OS, la orquestación vive en <code>elementary-claw</code>, y el objetivo no es impresionar con una demo sino construir una asistente que encaje de verdad con el escritorio.</p>
+      <p class="lang-en">What's most valuable is that the architecture now tells a clear story: the UI lives in Samantha OS, orchestration lives in <code>elementary-claw</code>, and the goal isn't to impress with a demo but to build an assistant that truly fits the desktop.</p>
 
       <h2><i class="fas fa-seedling" style="color: var(--accent-green);"></i> <span class="lang-es">6. Qué sigue</span><span class="lang-en">6. What's next</span></h2>
 
-      <p class="lang-es">Lo que más me gusta de Samantha es que ya dejó de sentirse como “demo de agente”. Ahora empieza a sentirse como una <strong>capa de sistema</strong>: una asistente que sabe dónde vive su memoria, que puede abrir tu entorno de trabajo y que ofrece recuperación elegante cuando un provider se cae.</p>
-      <p class="lang-en">What I like most about Samantha is that it no longer feels like an “agent demo”. It's starting to feel like a <strong>system layer</strong>: an assistant that knows where its memory lives, can open your work environment, and offers graceful recovery when a provider goes down.</p>
+      <p class="lang-es">Lo que sigue es pulir la UX, ampliar herramientas, fortalecer autenticación y seguir cerrando la distancia entre “asistente de IA” y “feature del sistema operativo”. Esa es la dirección correcta para Samantha.</p>
+      <p class="lang-en">What's next is polishing the UX, expanding tools, strengthening authentication, and continuing to close the gap between “AI assistant” and “operating system feature.” That's the right direction for Samantha.</p>
 
-      <p class="lang-es">Todavía falta pulir UX, expandir tools y endurecer los flows de autenticación. Pero ya cruzamos la parte más difícil: demostrar en una VM real que Samantha puede recordar, actuar y recuperarse sin hacerse pasar por algo que no es.</p>
-      <p class="lang-en">There's still UX to polish, tools to expand, and auth flows to harden. But we already crossed the hardest part: proving in a real VM that Samantha can remember, act, and recover without pretending to be something it's not.</p>
+      <p class="lang-es">En otras palabras: este post ya no es solo una lista de fixes. Es la definición del proyecto. Samantha OS es la experiencia; <code>elementary-claw</code> es el motor; elementary OS es el hogar donde todo eso tiene sentido.</p>
+      <p class="lang-en">In other words: this post is no longer just a list of fixes. It's the definition of the project. Samantha OS is the experience; <code>elementary-claw</code> is the engine; elementary OS is the home where all of that makes sense.</p>
 
       <div class="post-footer">
-        <p class="lang-es">Si te interesa este tipo de software, aquí está la apuesta: menos chatbots encapsulados, más asistentes nativos con memoria, tools y criterio de producto.</p>
-        <p class="lang-en">If you're into this kind of software, here's the bet: fewer boxed chatbots, more native assistants with memory, tools, and product judgment.</p>
+        <p class="lang-es">Si te interesa este tipo de software, aquí está la apuesta: menos chatbots encapsulados y más asistentes nativos que entienden el sistema donde viven.</p>
+        <p class="lang-en">If you're into this kind of software, here's the bet: fewer boxed chatbots and more native assistants that understand the system they live in.</p>
       </div>
     </div>
   </main>
