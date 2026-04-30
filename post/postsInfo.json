@@ -1,6 +1,15 @@
 {
   "posts" : [
     {
+      "title":"Samantha OS: memoria real, modo programador y fallback inteligente",
+       "urlImg":"/post/samantha-os-preview.png",
+       "description":"Cómo estamos construyendo Samantha sobre elementary OS: Wingpanel nativo, memoria persistente real, modo programador y fallback de GitHub a ChatGPT/Codex probado dentro de una VM ARM64.",
+       "date":"29-04-2026",
+       "tags": ["samantha-os", "elementary-os", "openclaw", "ai-agents", "memory"],
+       "author":"Oscar Martínez",
+       "url":"/samantha-os-memory-developer-mode"
+    },
+    {
       "title":"GitHub Copilot Pro Casi Gratis",
        "urlImg":"https://res.cloudinary.com/ddnlc2jur/image/upload/q_40/v1531684410/github-contributions.jpg",
        "description":"Método económico paso a paso para usar GitHub Copilot Pro por ~$20 MXN al mes. Incluye advertencias sobre violación de ToS y los riesgos involucrados.",
