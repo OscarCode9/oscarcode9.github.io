@@ -3,9 +3,9 @@
  * Usage: <script src="https://oscarcode9.github.io/xoxobot-widget.js"></script>
  */
 (function() {
-  const API_URL = "https://agents.oventlabs.com/api/chat";
-  const DEVICE_START_URL = "https://agents.oventlabs.com/api/copilot/device/start";
-  const DEVICE_POLL_URL = "https://agents.oventlabs.com/api/copilot/device/poll";
+  const API_URL = "https://agents.oventlabs.net/api/chat";
+  const DEVICE_START_URL = "https://agents.oventlabs.net/api/copilot/device/start";
+  const DEVICE_POLL_URL = "https://agents.oventlabs.net/api/copilot/device/poll";
 
   const clientIdKey = "xoxo_client_id";
   let clientId = localStorage.getItem(clientIdKey);

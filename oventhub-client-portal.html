@@ -371,15 +371,15 @@
       <!-- ============ 2. LA ARQUITECTURA ============ -->
       <div class="section">
         <h2 class="section-title">🏗️ <span class="lang-es">La Arquitectura</span><span class="lang-en">The Architecture</span></h2>
-        <p class="lang-es">Decisión clave: <strong>no construir un backend separado</strong>. OventHub vive dentro del mismo Next.js 15 que ya servía la landing de <code>agents.oventlabs.com</code>. API routes, Prisma, auth — todo en el mismo deploy.</p>
-        <p class="lang-en">Key decision: <strong>don't build a separate backend</strong>. OventHub lives inside the same Next.js 15 app that already served the <code>agents.oventlabs.com</code> landing. API routes, Prisma, auth — all in a single deploy.</p>
+        <p class="lang-es">Decisión clave: <strong>no construir un backend separado</strong>. OventHub vive dentro del mismo Next.js 15 que ya servía la landing de <code>agents.oventlabs.net</code>. API routes, Prisma, auth — todo en el mismo deploy.</p>
+        <p class="lang-en">Key decision: <strong>don't build a separate backend</strong>. OventHub lives inside the same Next.js 15 app that already served the <code>agents.oventlabs.net</code> landing. API routes, Prisma, auth — all in a single deploy.</p>
 
         <p class="lang-es">¿Por qué? Un solo deploy, infraestructura compartida, <strong>cero costo extra</strong>.</p>
         <p class="lang-en">Why? Single deploy, shared infra, <strong>zero extra cost</strong>.</p>
 
         <div class="terminal">
           <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span> architecture</div>
-          <pre><code>Client → agents.oventlabs.com → Nginx → Docker (Next.js :3001)
+          <pre><code>Client → agents.oventlabs.net → Nginx → Docker (Next.js :3001)
                                               ↓
                                     Prisma → PostgreSQL
                                               ↓

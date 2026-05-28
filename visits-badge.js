@@ -1,5 +1,5 @@
 (() => {
-  const API_BASE = "https://agents.oventlabs.com";
+  const API_BASE = "https://agents.oventlabs.net";
   const HIT_URL = API_BASE + "/api/visits/hit";
   const GET_URL = API_BASE + "/api/visits";
 
