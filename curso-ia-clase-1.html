@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curso de Inteligencia Artificial: Clase 1 | Oscar Code</title>
+  <meta name="description" content="Primera clase del curso de inteligencia artificial para aprender a usar IA sin ser desarrollador: roles, contexto, tareas, formato y un demo practico.">
+  <meta name="keywords" content="inteligencia artificial, curso IA, prompts, ChatGPT, productividad, tutorial, Oscar Code">
+  <meta property="og:title" content="Curso de Inteligencia Artificial: Clase 1">
+  <meta property="og:description" content="Aprende a estructurar mejores prompts con rol, contexto, tarea y formato.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://img.youtube.com/vi/aZ3TpnqjpAE/maxresdefault.jpg">
+  <meta property="og:url" content="https://oscarcode9.github.io/curso-ia-clase-1.html">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #00a8cc;
+      --accent-green: #10b981;
+      --accent-yellow: #ffd54f;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --bg-soft: #171717;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.76);
+      --text-muted: rgba(255,255,255,0.54);
+      --border: rgba(255,255,255,0.10);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #080808 0%, #111 52%, #080808 100%);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .post-header {
+      padding: 84px 20px 58px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background:
+        linear-gradient(135deg, rgba(0,212,255,0.08), transparent 38%),
+        linear-gradient(225deg, rgba(16,185,129,0.08), transparent 34%),
+        #0a0a0a;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 28px;
+      transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent-green);
+      transform: translateX(-4px);
+    }
+
+    .post-title {
+      font-size: clamp(2.1rem, 5vw, 3rem);
+      line-height: 1.12;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--primary) 55%, var(--accent-green) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .post-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      max-width: 760px;
+      margin: 0 auto 24px;
+    }
+
+    .post-meta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .post-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(0,212,255,0.12);
+      border: 1px solid rgba(0,212,255,0.30);
+      color: #8eeaff;
+      font-size: 0.82rem;
+    }
+
+    .post-content {
+      padding: 54px 0 76px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-primary);
+      font-size: 1.7rem;
+      margin: 48px 0 18px;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,212,255,0.30);
+    }
+
+    a:hover {
+      color: var(--accent-green);
+      border-bottom-color: rgba(16,185,129,0.45);
+    }
+
+    .video-shell {
+      margin: 0 0 38px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.34);
+    }
+
+    .video-frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      background: #000;
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-caption {
+      padding: 16px 18px 18px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 26px 0 34px;
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .summary-card h3 {
+      color: var(--accent-yellow);
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .summary-card p {
+      font-size: 0.98rem;
+      margin-bottom: 0;
+    }
+
+    .callout {
+      padding: 24px 26px;
+      margin: 30px 0;
+      border-radius: 16px;
+      border: 1px solid rgba(16,185,129,0.28);
+      background: rgba(16,185,129,0.08);
+    }
+
+    .callout strong {
+      color: #8de2b3;
+    }
+
+    .post-footer {
+      margin-top: 54px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .lang-en { display: none; }
+
+    @media (max-width: 720px) {
+      .post-header { padding: 64px 18px 44px; }
+      .post-content { padding: 38px 0 58px; }
+      .summary-grid { grid-template-columns: 1fr; }
+      h2 { align-items: flex-start; font-size: 1.42rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html#blog" class="back-link"><i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span></a>
+      <h1 class="post-title"><span class="lang-es">Curso de Inteligencia Artificial: Clase 1</span><span class="lang-en">Artificial Intelligence Course: Class 1</span></h1>
+      <p class="post-subtitle"><span class="lang-es">Una introduccion practica para aprender a usar IA sin ser desarrollador: rol, contexto, tarea, formato y un demo real.</span><span class="lang-en">A practical introduction to using AI without being a developer: role, context, task, format, and a real demo.</span></p>
+      <div class="post-meta">
+        <span class="post-tag"><i class="fas fa-video"></i> Video</span>
+        <span>03 Jun 2026</span>
+        <span>8 min read</span>
+        <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/curso-ia-clase-1.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">-</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="post-content">
+    <div class="container">
+      <section class="video-shell" aria-label="Video de YouTube">
+        <div class="video-frame">
+          <iframe
+            src="https://www.youtube.com/embed/aZ3TpnqjpAE"
+            title="Curso de Inteligencia Artificial: Clase 1"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="video-caption">
+          <span class="lang-es">Primera clase del curso: como estructurar prompts mas utiles para obtener mejores respuestas de una IA.</span>
+          <span class="lang-en">First class of the course: how to structure better prompts to get better answers from AI.</span>
+        </div>
+      </section>
+
+      <p class="lang-es">En esta primera clase aterrizamos una idea sencilla: la calidad de la respuesta de una IA depende muchisimo de la claridad con la que le explicas quien debe ser, que informacion tiene, que quieres lograr y en que formato esperas el resultado.</p>
+      <p class="lang-en">In this first class we land a simple idea: the quality of an AI response depends heavily on how clearly you explain who it should be, what information it has, what you want to achieve, and what format you expect.</p>
+
+      <div class="callout">
+        <p class="lang-es"><strong>Objetivo:</strong> aprender una estructura base para mejorar prompts y usarla en un demo donde la IA genera un documento practico a partir de contexto real.</p>
+        <p class="lang-en"><strong>Goal:</strong> learn a base structure for better prompts and use it in a demo where AI generates a practical document from real context.</p>
+      </div>
+
+      <h2><i class="fas fa-layer-group" style="color: var(--primary);"></i> <span class="lang-es">La estructura del prompt</span><span class="lang-en">The prompt structure</span></h2>
+      <p class="lang-es">La clase propone cuatro piezas para construir mejores instrucciones. No es una formula rigida, pero si un mapa util para no pedirle cosas vagas al modelo.</p>
+      <p class="lang-en">The class proposes four pieces for building better instructions. It is not a rigid formula, but it is a useful map to avoid vague requests.</p>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h3>Rol</h3>
+          <p class="lang-es">Define como debe comportarse la IA: especialista tecnico, reclutador, administrador, financiero, mentor o el perfil que necesites.</p>
+          <p class="lang-en">Define how the AI should behave: technical specialist, recruiter, administrator, finance expert, mentor, or whichever profile you need.</p>
+        </div>
+        <div class="summary-card">
+          <h3>Contexto</h3>
+          <p class="lang-es">Incluye informacion real: documentos, CV, datos, imagenes o detalles del problema para que la respuesta no sea generica.</p>
+          <p class="lang-en">Include real information: documents, resume, data, images, or problem details so the response is not generic.</p>
+        </div>
+        <div class="summary-card">
+          <h3>Tarea</h3>
+          <p class="lang-es">Explica el resultado concreto que quieres obtener. Mientras mas claro sea el objetivo, mejor puede ejecutar el modelo.</p>
+          <p class="lang-en">Explain the concrete result you want. The clearer the objective, the better the model can execute.</p>
+        </div>
+        <div class="summary-card">
+          <h3>Formato</h3>
+          <p class="lang-es">Pide la salida final: PDF, documento, tabla, pagina web, checklist, imagen, Markdown o cualquier formato util para tu flujo.</p>
+          <p class="lang-en">Ask for the final output: PDF, document, table, web page, checklist, image, Markdown, or any useful format for your workflow.</p>
+        </div>
+      </div>
+
+      <h2><i class="fas fa-wand-magic-sparkles" style="color: var(--accent-green);"></i> <span class="lang-es">Demo de la clase</span><span class="lang-en">Class demo</span></h2>
+      <p class="lang-es">En el demo se usa contexto personal, como un CV, para pedirle a la IA que actue como especialista y genere material de practica para una entrevista tecnica. La diferencia importante es que el modelo no trabaja desde cero: trabaja con informacion concreta.</p>
+      <p class="lang-en">In the demo, personal context such as a resume is used to ask AI to act as a specialist and generate practice material for a technical interview. The important difference is that the model is not working from zero: it is working with concrete information.</p>
+
+      <p class="lang-es">Tambien se explica por que las respuestas gratuitas o sin suficiente contexto suelen sentirse genericas, y como mejorar esa salida dando mejores instrucciones, mejores documentos base y formatos mas especificos.</p>
+      <p class="lang-en">The class also explains why free or low-context responses often feel generic, and how to improve the output with better instructions, better source documents, and more specific formats.</p>
+
+      <h2><i class="fas fa-list-check" style="color: var(--accent-yellow);"></i> <span class="lang-es">Idea para practicar</span><span class="lang-en">Practice idea</span></h2>
+      <p class="lang-es">Despues de ver el video, intenta escribir un prompt con estas cuatro partes: asigna un rol, pega contexto real, describe la tarea y pide un formato especifico. El salto de calidad se nota rapido.</p>
+      <p class="lang-en">After watching the video, try writing a prompt with these four parts: assign a role, paste real context, describe the task, and request a specific format. The quality jump becomes visible quickly.</p>
+
+      <div class="post-footer">
+        <p class="lang-es">Esta entrada abre la serie de videos del curso. La idea es ir publicando las clases aqui para que el material quede ordenado y facil de consultar.</p>
+        <p class="lang-en">This post opens the course video series. The idea is to publish the classes here so the material stays organized and easy to revisit.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="visits-badge.js"></script>
+</body>
+</html>
