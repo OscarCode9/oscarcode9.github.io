@@ -220,6 +220,25 @@
     #xoxo-footer a { color: #6366f1; text-decoration: none; }
     #xoxo-footer a:hover { text-decoration: underline; }
 
+    /* === Thinking === */
+    .xoxo-thinking {
+      font-size: 12px; color: #7c83a8; font-style: italic;
+      padding: 8px 12px; margin-bottom: 6px;
+      background: rgba(99,102,241,0.05);
+      border-left: 2px solid rgba(99,102,241,0.25);
+      border-radius: 4px;
+      max-height: 120px; overflow-y: auto;
+      scrollbar-width: thin; scrollbar-color: rgba(99,102,241,0.15) transparent;
+      line-height: 1.5;
+    }
+    .xoxo-thinking-label {
+      font-size: 10px; color: #6366f1; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 4px; cursor: pointer; user-select: none;
+    }
+    .xoxo-thinking-label:hover { color: #a5b4fc; }
+    .xoxo-thinking.collapsed { max-height: 0; padding: 0; overflow: hidden; margin: 0; border: none; }
+
     /* === Mobile === */
     @media (max-width: 480px) {
       #xoxo-window {
@@ -363,14 +382,35 @@
         var reader = res.body.getReader();
         var decoder = new TextDecoder();
         var botText = "";
+        var thinkText = "";
         var msgDiv = addMessage("assistant", "");
         var bubbleEl = msgDiv.querySelector(".xoxo-msg-bubble");
 
+        // Create thinking container inside bubble
+        var thinkWrap = document.createElement("div");
+        thinkWrap.style.display = "none";
+        var thinkLabel = document.createElement("div");
+        thinkLabel.className = "xoxo-thinking-label";
+        thinkLabel.textContent = "💭 Pensando...";
+        var thinkBox = document.createElement("div");
+        thinkBox.className = "xoxo-thinking";
+        thinkWrap.appendChild(thinkLabel);
+        thinkWrap.appendChild(thinkBox);
+        bubbleEl.parentNode.insertBefore(thinkWrap, bubbleEl);
+
+        // Toggle collapse on click
+        thinkLabel.addEventListener("click", function() {
+          thinkBox.classList.toggle("collapsed");
+          thinkLabel.textContent = thinkBox.classList.contains("collapsed") ? "💭 Pensamiento (mostrar)" : "💭 Pensando...";
+        });
+
+        var sseBuffer = "";
         while (true) {
           var result = await reader.read();
           if (result.done) break;
-          var chunk = decoder.decode(result.value);
-          var chunkLines = chunk.split("\n");
+          sseBuffer += decoder.decode(result.value, { stream: true });
+          var chunkLines = sseBuffer.split("\n");
+          sseBuffer = chunkLines.pop() || "";
           for (var i = 0; i < chunkLines.length; i++) {
             var line = chunkLines[i];
             if (line.indexOf("data: ") === 0) {
@@ -378,9 +418,21 @@
               if (data === "[DONE]") break;
               try {
                 var parsed = JSON.parse(data);
-                var delta = (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) || parsed.content || "";
-                botText += delta;
-                bubbleEl.innerHTML = formatText(botText);
+                // Handle thinking tokens
+                if (parsed.thinking) {
+                  thinkText += parsed.thinking;
+                  thinkWrap.style.display = "block";
+                  thinkBox.textContent = thinkText;
+                  thinkBox.scrollTop = thinkBox.scrollHeight;
+                }
+                // Handle content tokens
+                if (parsed.content) {
+                  if (thinkText && thinkLabel.textContent === "💭 Pensando...") {
+                    thinkLabel.textContent = "💭 Pensamiento (ocultar)";
+                  }
+                  botText += parsed.content;
+                  bubbleEl.innerHTML = formatText(botText);
+                }
                 messagesEl.scrollTop = messagesEl.scrollHeight;
               } catch(e) {}
             }
