@@ -118,7 +118,8 @@
     #xoxo-messages::-webkit-scrollbar-track { background: transparent; }
     #xoxo-messages::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.2); border-radius: 4px; }
 
-    .xoxo-msg { display: flex; gap: 10px; max-width: 88%; animation: xoxo-fade 0.4s cubic-bezier(0.16,1,0.3,1); }
+    .xoxo-msg { display: flex; gap: 10px; max-width: 88%; animation: xoxo-fade 0.4s cubic-bezier(0.16,1,0.3,1); min-width: 0; }
+    .xoxo-msg > div { min-width: 0; }
     .xoxo-msg.bot { align-self: flex-start; }
     .xoxo-msg.user { align-self: flex-end; flex-direction: row-reverse; }
     .xoxo-msg-avatar {
@@ -128,6 +129,7 @@
     .xoxo-msg-bubble {
       padding: 12px 16px; font-size: 13.5px; line-height: 1.6;
       word-wrap: break-word; position: relative;
+      word-break: break-word; overflow-wrap: break-word; min-width: 0;
     }
     .xoxo-msg.bot .xoxo-msg-bubble {
       background: rgba(99,102,241,0.1);
@@ -294,12 +296,23 @@
     return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }
 
+  function cleanMessageContent(content) {
+    if (!content) return "";
+    let clean = content.replace(/\[TOOL:[\s\S]*?\][\s\S]*?\[\/TOOL\]/g, "");
+    const openTagIndex = clean.indexOf("[TOOL:");
+    if (openTagIndex !== -1) {
+      clean = clean.substring(0, openTagIndex);
+    }
+    return clean.trim();
+  }
+
   function addMessage(role, text) {
     const div = document.createElement("div");
     div.className = "xoxo-msg " + (role === "assistant" ? "bot" : "user");
     const time = '<div class="xoxo-msg-time">' + timeStr() + '</div>';
     if (role === "assistant") {
-      div.innerHTML = '<img class="xoxo-msg-avatar" src="' + AVATAR_URL + '" alt="X"><div><div class="xoxo-msg-bubble">' + formatText(text) + '</div>' + time + '</div>';
+      const clean = cleanMessageContent(text);
+      div.innerHTML = '<img class="xoxo-msg-avatar" src="' + AVATAR_URL + '" alt="X"><div><div class="xoxo-msg-bubble" style="' + (clean ? 'display:block' : 'display:none') + '">' + formatText(clean) + '</div>' + time + '</div>';
     } else {
       div.innerHTML = '<div><div class="xoxo-msg-bubble">' + formatText(text) + '</div>' + time + '</div>';
     }
@@ -431,7 +444,13 @@
                     thinkLabel.textContent = "💭 Pensamiento (ocultar)";
                   }
                   botText += parsed.content;
-                  bubbleEl.innerHTML = formatText(botText);
+                  var clean = cleanMessageContent(botText);
+                  if (clean) {
+                    bubbleEl.style.display = "block";
+                    bubbleEl.innerHTML = formatText(clean);
+                  } else {
+                    bubbleEl.style.display = "none";
+                  }
                 }
                 messagesEl.scrollTop = messagesEl.scrollHeight;
               } catch(e) {}
