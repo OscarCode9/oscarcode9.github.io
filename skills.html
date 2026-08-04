@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <script src="public/i18n.js"></script>
 
   <style>
     :root {
@@ -54,14 +55,20 @@
     .brand-logo {
       font-family: 'Fira Code', monospace !important;
       font-weight: 600;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      font-size: 1.3rem;
     }
 
     nav ul li a {
       color: var(--text-secondary) !important;
       font-weight: 500;
-      font-size: 0.9rem;
-      text-transform: none;
+      transition: color 0.3s;
     }
+
+    nav ul li a:hover { color: var(--primary) !important; background: transparent !important; }
 
     nav ul li a.active {
       color: var(--primary) !important;
@@ -339,11 +346,12 @@
         <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
           <li><a href="skills.html" class="active">Skills</a></li>
-          <li><a href="index.html#experience">Experiencia</a></li>
-          <li><a href="index.html#about">Sobre Mí</a></li>
+          <li><a href="index.html#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
+          <li><a href="index.html#about"><span class="lang-es">Sobre Mí</span><span class="lang-en">About Me</span></a></li>
           <li><a href="index.html#blog">Blog</a></li>
-          <li><a href="index.html#portfolio">Portafolio</a></li>
-          <li><a href="index.html#contact">Contacto</a></li>
+          <li><a href="index.html#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
+          <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
         </ul>
       </div>
     </div>
@@ -351,18 +359,19 @@
 
   <ul class="sidenav" id="mobile-nav">
     <li><a href="skills.html" class="active">Skills</a></li>
-    <li><a href="index.html#experience">Experiencia</a></li>
-    <li><a href="index.html#about">Sobre Mí</a></li>
+    <li><a href="index.html#experience"><span class="lang-es">Experiencia</span><span class="lang-en">Experience</span></a></li>
+    <li><a href="index.html#about"><span class="lang-es">Sobre Mí</span><span class="lang-en">About Me</span></a></li>
     <li><a href="index.html#blog">Blog</a></li>
-    <li><a href="index.html#portfolio">Portafolio</a></li>
-    <li><a href="index.html#contact">Contacto</a></li>
+    <li><a href="index.html#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
+    <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+    <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
   </ul>
 
   <section class="hero">
     <div class="container">
-      <h1>Skills Library</h1>
-      <p>Skills de IA para tus agentes — empaquetadas, sanitizadas (sin credenciales) y listas para instalar en cualquier herramienta que soporte skills.</p>
-      <span class="badge" id="badge-count">Cargando biblioteca…</span>
+      <h1><span class="lang-es">Skills Library</span><span class="lang-en">Skills Library</span></h1>
+      <p><span class="lang-es">Una recopilación de todas las skills que he creado y usado a lo largo de mi trabajo con agentes de IA — empaquetadas, sanitizadas y listas para instalar en cualquier herramienta. Mi regalo para la comunidad.</span><span class="lang-en">A collection of every skill I've built and used throughout my work with AI agents — packaged, sanitized and ready to install in any tool. My gift to the community.</span></p>
+      <span class="badge" id="badge-count"><span class="lang-es">Cargando biblioteca…</span><span class="lang-en">Loading library…</span></span>
     </div>
   </section>
 
@@ -374,7 +383,7 @@
     <div id="grid-content">
       <div class="loading">
         <div class="spinner"></div>
-        Cargando skills…
+        <span class="lang-es">Cargando skills…</span><span class="lang-en">Loading skills…</span>
       </div>
     </div>
   </div>
@@ -382,13 +391,13 @@
   <div id="skill-modal" class="modal">
     <div class="modal-content" id="modal-content"></div>
     <div class="modal-footer" style="background: var(--bg-card); border-top: 1px solid var(--border); padding: 12px 24px;">
-      <a href="#!" class="modal-close" style="color: var(--text-secondary); margin-right: 12px;">Cerrar</a>
+      <a href="#!" class="modal-close" style="color: var(--text-secondary); margin-right: 12px;"><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></a>
     </div>
   </div>
 
   <footer>
     <div class="container">
-      &copy; <span id="year"></span> OscarCode9 · Skills Library
+      &copy; <span id="year"></span> OscarCode9 · <span class="lang-es">Skills Library</span><span class="lang-en">Skills Library</span>
     </div>
   </footer>
 
@@ -402,21 +411,71 @@
       'https://oscarcode9-skills.s3.us-east-2.amazonaws.com/index.json'
     ];
 
-    const AREA_LABELS = {
-      'frontend-ui-ux': 'Frontend / UI / UX',
-      'backend-nodejs': 'Backend / Node',
-      'databases': 'Bases de datos',
-      'devops-deploy': 'DevOps / Deploy',
-      'testing-qa': 'Testing / QA',
-      'documentos-reportes': 'Documentos / Reportes',
-      'email-comunicaciones': 'Email',
-      'ai-agentes-tools': 'AI / Agentes',
-      'movil-flutter': 'Móvil / Flutter',
-      'proyectos-especificos': 'Proyectos'
+    const I18N = {
+      es: {
+        all: 'Todas',
+        archivos: 'archivos',
+        sanitizado: 'sanitizado',
+        cerrar: 'Cerrar',
+        descargar: 'Descargar',
+        instalar: 'Instalación: descarga el zip, descomprime y mueve la carpeta a ~/.agents/skills/ (global) o a .agents/skills/ de tu proyecto. Lista en: skills.sh / cualquier agente compatible.',
+        noHay: 'No hay skills en esta área.',
+        error: 'No se pudo cargar la biblioteca. Intenta más tarde.',
+        errorConexion: 'Error de conexión',
+        cargando: 'Cargando skills…',
+        actualizado: 'actualizado',
+        skills: 'skills',
+        areas: {
+          'frontend-ui-ux': 'Frontend / UI / UX',
+          'backend-nodejs': 'Backend / Node',
+          'databases': 'Bases de datos',
+          'devops-deploy': 'DevOps / Deploy',
+          'testing-qa': 'Testing / QA',
+          'documentos-reportes': 'Documentos / Reportes',
+          'email-comunicaciones': 'Email',
+          'ai-agentes-tools': 'AI / Agentes',
+          'movil-flutter': 'Móvil / Flutter',
+          'proyectos-especificos': 'Proyectos'
+        }
+      },
+      en: {
+        all: 'All',
+        archivos: 'files',
+        sanitizado: 'sanitized',
+        cerrar: 'Close',
+        descargar: 'Download',
+        instalar: 'Install: download the zip, unzip and move the folder to ~/.agents/skills/ (global) or .agents/skills/ in your project. Works with: skills.sh / any compatible agent.',
+        noHay: 'No skills in this area.',
+        error: 'Could not load the library. Try again later.',
+        errorConexion: 'Connection error',
+        cargando: 'Loading skills…',
+        actualizado: 'updated',
+        skills: 'skills',
+        areas: {
+          'frontend-ui-ux': 'Frontend / UI / UX',
+          'backend-nodejs': 'Backend / Node',
+          'databases': 'Databases',
+          'devops-deploy': 'DevOps / Deploy',
+          'testing-qa': 'Testing / QA',
+          'documentos-reportes': 'Docs / Reports',
+          'email-comunicaciones': 'Email',
+          'ai-agentes-tools': 'AI / Agents',
+          'movil-flutter': 'Mobile / Flutter',
+          'proyectos-especificos': 'Projects'
+        }
+      }
     };
 
+    function lang() {
+      return document.documentElement.lang === 'en' ? 'en' : 'es';
+    }
+
+    function t(key) {
+      return I18N[lang()][key];
+    }
+
     function areaLabel(area) {
-      return AREA_LABELS[area] || area;
+      return I18N[lang()].areas[area] || area;
     }
 
     function initials(name) {
@@ -440,10 +499,9 @@
 
     function renderFilters() {
       const areas = ['all', ...new Set(ALL_SKILLS.map(s => s.area))];
-      const labels = { 'all': 'Todas' };
       const el = document.getElementById('filters');
       el.innerHTML = areas.map(a =>
-        `<button class="filter-chip ${ACTIVE_FILTER === a ? 'active' : ''}" data-area="${a}">${labels[a] || areaLabel(a)}</button>`
+        `<button class="filter-chip ${ACTIVE_FILTER === a ? 'active' : ''}" data-area="${a}">${a === 'all' ? t('all') : areaLabel(a)}</button>`
       ).join('');
       el.querySelectorAll('.filter-chip').forEach(chip => {
         chip.addEventListener('click', () => {
@@ -461,7 +519,7 @@
         : ALL_SKILLS.filter(s => s.area === ACTIVE_FILTER);
 
       if (!skills.length) {
-        grid.innerHTML = '<div class="error-box">No hay skills en esta área.</div>';
+        grid.innerHTML = `<div class="error-box">${t('noHay')}</div>`;
         return;
       }
 
@@ -476,7 +534,7 @@
             <p>${escapeHtml(s.description)}</p>
             <div class="card-meta">
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">archive</i> ${s.sizeHuman}</span>
-              <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">description</i> ${s.fileCount} archivos</span>
+              <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">description</i> ${s.fileCount} ${t('archivos')}</span>
             </div>
           </div>
         </div>
@@ -500,16 +558,16 @@
         <p class="desc">${escapeHtml(skill.description)}</p>
         <div class="meta-row">
           <span>📦 ${skill.sizeHuman}</span>
-          <span>📄 ${skill.fileCount} archivos</span>
-          <span>🔒 sanitizado</span>
+          <span>📄 ${skill.fileCount} ${t('archivos')}</span>
+          <span>🔒 ${t('sanitizado')}</span>
         </div>
         <div class="readme">${renderReadme(skill.readme)}</div>
         <div class="install-hint">
-          Instalación: descarga el zip, descomprime y mueve la carpeta a <b>~/.agents/skills/</b> (global) o a <b>.agents/skills/</b> de tu proyecto. Lista en: <b>skills.sh</b> / cualquier agente compatible.
+          ${t('instalar')}
         </div>
         <div style="margin-top: 18px;">
           <a href="${skill.downloadUrl}" download class="btn-download">
-            <i class="material-icons" style="font-size:1.1rem;">download</i> Descargar ${escapeHtml(skill.name)}
+            <i class="material-icons" style="font-size:1.1rem;">download</i> ${t('descargar')} ${escapeHtml(skill.name)}
           </a>
         </div>
       `;
@@ -526,7 +584,7 @@
           const data = await res.json();
           if (!data.skills || !data.skills.length) continue;
           ALL_SKILLS = data.skills;
-          badge.textContent = `${data.count} skills · actualizado ${new Date(data.updatedAt).toLocaleDateString('es-MX')}`;
+          badge.textContent = `${data.count} ${t('skills')} · ${t('actualizado')} ${new Date(data.updatedAt).toLocaleDateString(lang() === 'en' ? 'en-US' : 'es-MX')}`;
           renderFilters();
           renderGrid();
           return;
@@ -534,8 +592,8 @@
           console.warn('API falló, probando siguiente:', url, e);
         }
       }
-      grid.innerHTML = '<div class="error-box">No se pudo cargar la biblioteca. Intenta más tarde.</div>';
-      badge.textContent = 'Error de conexión';
+      grid.innerHTML = `<div class="error-box">${t('error')}</div>`;
+      badge.textContent = t('errorConexion');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -543,6 +601,15 @@
       M.AutoInit();
       loadSkills();
     });
+
+    const originalToggle = window.toggleLanguage;
+    if (originalToggle) {
+      window.toggleLanguage = function () {
+        originalToggle();
+        renderFilters();
+        renderGrid();
+      };
+    }
   </script>
 </body>
 
