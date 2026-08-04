@@ -135,6 +135,29 @@
 
     .grid { padding-bottom: 60px; }
 
+    .area-section { margin-bottom: 36px; }
+
+    .area-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .area-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gradient-1);
+      flex-shrink: 0;
+    }
+
     .skill-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -528,7 +551,12 @@
         return;
       }
 
-      grid.innerHTML = '<div class="row">' + skills.map(s => `
+      const byArea = {};
+      skills.forEach(s => {
+        (byArea[s.area] = byArea[s.area] || []).push(s);
+      });
+
+      const card = s => `
         <div class="col s12 m6 l4">
           <div class="skill-card" data-slug="${s.slug}">
             <div class="card-top">
@@ -542,11 +570,17 @@
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">description</i> ${s.fileCount} ${t('archivos')}</span>
             </div>
           </div>
-        </div>
-      `).join('') + '</div>';
+        </div>`;
 
-      grid.querySelectorAll('.skill-card').forEach(card => {
-        card.addEventListener('click', () => openModal(card.dataset.slug));
+      grid.innerHTML = Object.keys(byArea).map(area => `
+        <div class="area-section">
+          <h2 class="area-title"><span class="area-dot"></span>${areaLabel(area)}</h2>
+          <div class="row">${byArea[area].map(card).join('')}</div>
+        </div>
+      `).join('');
+
+      grid.querySelectorAll('.skill-card').forEach(c => {
+        c.addEventListener('click', () => openModal(c.dataset.slug));
       });
     }
 
