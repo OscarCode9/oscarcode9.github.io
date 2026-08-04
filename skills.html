@@ -478,6 +478,11 @@
       return I18N[lang()].areas[area] || area;
     }
 
+    function skillText(skill, field) {
+      const localized = skill[`${field}_${lang()}`];
+      return localized || skill[field] || '';
+    }
+
     function initials(name) {
       return name.split(/[-_]/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
     }
@@ -530,8 +535,8 @@
               <div class="icon">${initials(s.name)}</div>
               <span class="area-tag">${areaLabel(s.area)}</span>
             </div>
-            <h3>${escapeHtml(s.name)}</h3>
-            <p>${escapeHtml(s.description)}</p>
+            <h3>${escapeHtml(skillText(s, 'name'))}</h3>
+            <p>${escapeHtml(skillText(s, 'description'))}</p>
             <div class="card-meta">
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">archive</i> ${s.sizeHuman}</span>
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">description</i> ${s.fileCount} ${t('archivos')}</span>
@@ -552,10 +557,10 @@
       const modal = document.getElementById('skill-modal');
       document.getElementById('modal-content').innerHTML = `
         <div class="modal-header">
-          <h3>${escapeHtml(skill.name)}</h3>
+          <h3>${escapeHtml(skillText(skill, 'name'))}</h3>
           <span class="area-tag">${areaLabel(skill.area)}</span>
         </div>
-        <p class="desc">${escapeHtml(skill.description)}</p>
+        <p class="desc">${escapeHtml(skillText(skill, 'description'))}</p>
         <div class="meta-row">
           <span>📦 ${skill.sizeHuman}</span>
           <span>📄 ${skill.fileCount} ${t('archivos')}</span>
