@@ -238,6 +238,84 @@
       box-shadow: 0 4px 18px var(--primary-glow);
     }
 
+    /* SIDEBAR */
+    .skills-sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      bottom: 0;
+      width: 220px;
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(16px);
+      border-right: 1px solid var(--border);
+      padding: 22px 14px;
+      overflow-y: auto;
+      z-index: 900;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .sidebar-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      padding: 0 10px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 10px;
+      border-radius: 9px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      margin-bottom: 2px;
+      border: 1px solid transparent;
+    }
+
+    .sidebar-item:hover { background: rgba(255, 255, 255, 0.04); color: var(--text-primary); }
+
+    .sidebar-item .count {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1px 7px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+
+    .sidebar-item.active {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-color: rgba(0, 212, 255, 0.3);
+      font-weight: 600;
+    }
+
+    .sidebar-item.active .count {
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--primary);
+    }
+
+    .with-sidebar { margin-left: 220px; }
+
+    .content-area { padding: 0 24px; }
+
+    @media (max-width: 992px) {
+      .skills-sidebar { display: none; }
+      .with-sidebar { margin-left: 0; }
+      .content-area { padding: 0; }
+    }
+
     /* RESULT COUNT */
     .result-count {
       font-size: 0.8rem;
@@ -634,7 +712,10 @@
     <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
   </ul>
 
-  <section class="hero">
+  <aside class="skills-sidebar" id="skills-sidebar" aria-label="Categorías"></aside>
+
+  <div class="with-sidebar">
+    <section class="hero">
     <div class="container">
       <h1>Skills Library</h1>
       <p><span class="lang-es">Una recopilación de todas las skills que he creado y usado a lo largo de mi trabajo con agentes de IA — empaquetadas, sanitizadas y listas para instalar en cualquier herramienta. Mi regalo para la comunidad.</span><span class="lang-en">A collection of every skill I've built and used throughout my work with AI agents — packaged, sanitized and ready to install in any tool. My gift to the community.</span></p>
@@ -667,6 +748,7 @@
       </div>
     </div>
   </div>
+  </div><!-- /with-sidebar -->
 
   <div id="skill-modal" class="modal">
     <div class="modal-content" id="modal-content"></div>
@@ -720,6 +802,7 @@
         areas: 'áreas',
         destacadas: 'destacadas',
         verDetalle: 'Ver detalle',
+        sidebarTitle: 'Categorías',
         noResultadosTitulo: 'Sin resultados'
       },
       en: {
@@ -745,6 +828,7 @@
         areas: 'areas',
         destacadas: 'featured',
         verDetalle: 'View details',
+        sidebarTitle: 'Categories',
         noResultadosTitulo: 'No results'
       }
     };
@@ -798,6 +882,62 @@
         );
       }
       return skills;
+    }
+
+    function renderSidebar() {
+      const sidebar = document.getElementById('skills-sidebar');
+      if (!sidebar) return;
+      const areas = ['all', ...new Set(ALL_SKILLS.map(s => s.area))];
+      const countFor = a => a === 'all' ? ALL_SKILLS.length : ALL_SKILLS.filter(s => s.area === a).length;
+      sidebar.innerHTML = `
+        <div class="sidebar-title">${ACTIVE_FILTER === 'all' ? t('sidebarTitle') : t('sidebarTitle')}</div>
+        ${areas.map(a => `
+          <a class="sidebar-item ${ACTIVE_FILTER === a ? 'active' : ''}" data-area="${a}" href="#!">
+            <span>${a === 'all' ? t('all') : areaLabel(a)}</span>
+            <span class="count">${countFor(a)}</span>
+          </a>`).join('')}
+      `;
+      sidebar.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', e => {
+          e.preventDefault();
+          const area = item.dataset.area;
+          if (ACTIVE_FILTER === 'all') {
+            if (area === 'all') return;
+            ACTIVE_FILTER = area;
+            renderFilters();
+            renderGrid();
+          } else if (ACTIVE_FILTER === area) {
+            ACTIVE_FILTER = 'all';
+            renderFilters();
+            renderGrid();
+          } else {
+            ACTIVE_FILTER = area;
+            renderFilters();
+            renderGrid();
+          }
+        });
+      });
+    }
+
+    let scrollSpyObserver = null;
+
+    function setupScrollSpy() {
+      if (scrollSpyObserver) scrollSpyObserver.disconnect();
+      const sections = document.querySelectorAll('.area-section');
+      if (!sections.length) return;
+      scrollSpyObserver = new IntersectionObserver(entries => {
+        const visible = entries.filter(e => e.isIntersecting);
+        if (!visible.length) return;
+        const current = visible
+          .map(e => ({ el: e.target, ratio: e.intersectionRatio }))
+          .sort((a, b) => b.ratio - a.ratio)[0].el;
+        const area = current.getAttribute('data-spy-area');
+        if (!area) return;
+        document.querySelectorAll('.sidebar-item').forEach(i => {
+          i.classList.toggle('active', i.dataset.area === area);
+        });
+      }, { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.25, 0.5] });
+      sections.forEach(sec => scrollSpyObserver.observe(sec));
     }
 
     function renderFilters() {
@@ -868,7 +1008,7 @@
 
       let idx = 0;
       grid.innerHTML = Object.keys(byArea).map(area => `
-        <div class="area-section">
+        <div class="area-section" data-spy-area="${area}">
           <h2 class="area-title"><span class="area-dot"></span>${areaLabel(area)} <span style="font-size:0.8rem;color:var(--text-muted);font-weight:400;">(${byArea[area].length})</span></h2>
           <div class="row">${byArea[area].map(c => card(c, idx++)).join('')}</div>
         </div>
@@ -883,6 +1023,8 @@
       });
 
       loadSkillStats();
+      renderSidebar();
+      setupScrollSpy();
     }
 
     function openModal(slug) {
