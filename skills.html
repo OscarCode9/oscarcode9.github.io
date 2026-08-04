@@ -105,6 +105,22 @@
       background: var(--bg-card);
     }
 
+    /* Contador de visitas: mismo lenguaje que el resto del sitio, pero con los
+       tokens de esta página para que empate con el badge de la biblioteca. */
+    .ov-views-wrap { display: inline-block; margin-top: 16px; margin-left: 8px; }
+    .ov-views-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+    }
+    .ov-dot { width: 6px; height: 6px; border-radius: 50%; background: #22bb44; }
+    .ov-views-badge.is-loading { opacity: .6; }
+    .ov-views-badge.is-error .ov-dot { background: var(--text-secondary); }
+
     .filters {
       padding: 8px 0 24px;
       display: flex;
@@ -174,6 +190,34 @@
       transform: translateY(-4px);
       border-color: var(--primary);
       box-shadow: 0 8px 30px var(--primary-glow);
+    }
+
+    .skill-card.featured {
+      position: relative;
+      border: 1px solid transparent;
+      background:
+        linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+        var(--gradient-1) border-box;
+      box-shadow: 0 0 18px rgba(0, 212, 255, 0.12), 0 0 4px rgba(124, 58, 237, 0.18);
+    }
+
+    .skill-card.featured:hover {
+      box-shadow: 0 10px 34px var(--primary-glow), 0 0 22px rgba(124, 58, 237, 0.28);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--gradient-1);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 212, 255, 0.35);
     }
 
     .skill-card .card-top {
@@ -395,6 +439,13 @@
       <h1><span class="lang-es">Skills Library</span><span class="lang-en">Skills Library</span></h1>
       <p><span class="lang-es">Una recopilación de todas las skills que he creado y usado a lo largo de mi trabajo con agentes de IA — empaquetadas, sanitizadas y listas para instalar en cualquier herramienta. Mi regalo para la comunidad.</span><span class="lang-en">A collection of every skill I've built and used throughout my work with AI agents — packaged, sanitized and ready to install in any tool. My gift to the community.</span></p>
       <span class="badge" id="badge-count"><span class="lang-es">Cargando biblioteca…</span><span class="lang-en">Loading library…</span></span>
+      <span class="ov-views-wrap">
+        <span class="ov-views-badge" data-ov-visits data-ov-path="/skills.html">
+          <span class="ov-dot"></span>
+          <span class="ov-label"><span class="lang-es">Visitas</span><span class="lang-en">Views</span></span>
+          <span class="ov-count">—</span>
+        </span>
+      </span>
     </div>
   </section>
 
@@ -425,6 +476,7 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="visits-badge.js" defer></script>
   <script>
     let ALL_SKILLS = [];
     let ACTIVE_FILTER = 'all';
@@ -434,10 +486,54 @@
       'https://oscarcode9-skills.s3.us-east-2.amazonaws.com/index.json'
     ];
 
+    // Métricas por skill. Viven en el mismo backend que los contadores de
+    // visitas del sitio; se deja en una constante para poder migrarlas sin
+    // tocar el resto del archivo.
+    const METRICS_BASE = 'https://agents.oventlabs.net/api/skills';
+    let SKILL_STATS = {};
+
+    /** Contadores de todas las skills en una sola llamada. Nunca bloquea la UI. */
+    async function loadSkillStats() {
+      try {
+        const res = await fetch(`${METRICS_BASE}/stats`);
+        if (!res.ok) return;
+        const data = await res.json();
+        SKILL_STATS = data?.stats || {};
+      } catch (e) {
+        console.warn('[skills] stats no disponibles:', e);
+      }
+    }
+
+    /**
+     * Registra vista o descarga.
+     *
+     * Se dispara y se olvida: si el contador falla, la descarga y el modal
+     * siguen funcionando. Nunca se hace await antes de abrir o descargar.
+     */
+    function trackSkill(metric, slug) {
+      if (!slug) return;
+      const prev = SKILL_STATS[slug] || { views: 0, downloads: 0 };
+      SKILL_STATS[slug] = {
+        views: prev.views + (metric === 'view' ? 1 : 0),
+        downloads: prev.downloads + (metric === 'download' ? 1 : 0),
+      };
+      fetch(`${METRICS_BASE}/${metric}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug }),
+        credentials: 'omit',
+        keepalive: true,
+      }).catch(() => {});
+    }
+
+    const fmtCount = n => Number(n || 0).toLocaleString(lang() === 'en' ? 'en-US' : 'es-MX');
+
     const I18N = {
       es: {
         all: 'Todas',
         archivos: 'archivos',
+        vistas: 'vistas',
+        descargas: 'descargas',
         sanitizado: 'sanitizado',
         cerrar: 'Cerrar',
         descargar: 'Descargar',
@@ -448,6 +544,7 @@
         cargando: 'Cargando skills…',
         actualizado: 'actualizado',
         skills: 'skills',
+        destacada: 'Destacada',
         areas: {
           'frontend-ui-ux': 'Frontend / UI / UX',
           'backend-nodejs': 'Backend / Node',
@@ -466,6 +563,8 @@
       en: {
         all: 'All',
         archivos: 'files',
+        vistas: 'views',
+        descargas: 'downloads',
         sanitizado: 'sanitized',
         cerrar: 'Close',
         descargar: 'Download',
@@ -476,6 +575,7 @@
         cargando: 'Loading skills…',
         actualizado: 'updated',
         skills: 'skills',
+        destacada: 'Featured',
         areas: {
           'frontend-ui-ux': 'Frontend / UI / UX',
           'backend-nodejs': 'Backend / Node',
@@ -562,7 +662,8 @@
 
       const card = s => `
         <div class="col s12 m6 l4">
-          <div class="skill-card" data-slug="${s.slug}">
+          <div class="skill-card ${s.featured ? 'featured' : ''}" data-slug="${s.slug}">
+            ${s.featured ? `<span class="featured-badge">${t('destacada')}</span>` : ''}
             <div class="card-top">
               <div class="icon">${initials(s.name)}</div>
               <span class="area-tag">${areaLabel(s.area)}</span>
@@ -592,6 +693,7 @@
       const skill = ALL_SKILLS.find(s => s.slug === slug);
       if (!skill) return;
 
+      trackSkill('view', slug);
       const modal = document.getElementById('skill-modal');
       document.getElementById('modal-content').innerHTML = `
         <div class="modal-header">
@@ -609,17 +711,42 @@
           ${t('instalar')}
         </div>
         <div style="margin-top: 18px;">
-          <a href="${skill.downloadUrl}" download class="btn-download">
+          <a href="${skill.downloadUrl}" download class="btn-download" data-slug="${skill.slug}">
             <i class="material-icons" style="font-size:1.1rem;">download</i> ${t('descargar')} ${escapeHtml(skill.name)}
           </a>
         </div>
       `;
+
+      // El conteo va aparte del href: no se intercepta la descarga para no
+      // arriesgar que un fallo del contador impida bajar el ZIP.
+      const dl = document.querySelector('#modal-content .btn-download');
+      if (dl) {
+        dl.addEventListener('click', () => {
+          trackSkill('download', dl.dataset.slug);
+          refreshStatBadges();
+        }, { once: true });
+      }
+
       M.Modal.getInstance(modal).open();
+      refreshStatBadges();
+    }
+
+    /** Repinta los contadores ya visibles sin volver a renderizar el grid. */
+    function refreshStatBadges() {
+      document.querySelectorAll('.stat-views').forEach(el => {
+        el.textContent = fmtCount((SKILL_STATS[el.dataset.slug] || {}).views);
+      });
+      document.querySelectorAll('.stat-downloads').forEach(el => {
+        el.textContent = fmtCount((SKILL_STATS[el.dataset.slug] || {}).downloads);
+      });
     }
 
     async function loadSkills() {
       const grid = document.getElementById('grid-content');
       const badge = document.getElementById('badge-count');
+      // Los contadores se piden en paralelo al índice: si tardan o fallan, el
+      // grid se pinta igual y las cifras arrancan en cero.
+      await loadSkillStats();
       for (const url of API_URLS) {
         try {
           const res = await fetch(url);
