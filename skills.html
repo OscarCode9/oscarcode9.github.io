@@ -530,16 +530,27 @@
       border-radius: 10px;
     }
 
-    .modal-footer {
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
+    .modal .modal-footer {
+      background: var(--bg-card) !important;
+      border-top: 1px solid var(--border) !important;
       padding: 14px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
+      border-radius: 0 0 var(--radius) var(--radius) !important;
+      height: auto !important;
     }
+
+    .modal .modal-close {
+      color: var(--text-secondary) !important;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .modal .modal-close:hover { color: var(--primary) !important; }
 
     .btn-download {
       background: var(--gradient-1);
@@ -660,7 +671,7 @@
   <div id="skill-modal" class="modal">
     <div class="modal-content" id="modal-content"></div>
     <div class="modal-footer">
-      <a href="#!" class="modal-close" style="color: var(--text-secondary);"><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></a>
+      <a href="#!" class="modal-close"><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></a>
       <a href="#" id="modal-download" download class="btn-download">
         <i class="material-icons" style="font-size:1.1rem;">download</i> <span id="modal-download-label"></span>
       </a>
