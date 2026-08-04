@@ -203,41 +203,6 @@
       margin-top: 2px;
     }
 
-    /* FILTROS */
-    .filters {
-      padding: 10px 0 26px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .filter-chip {
-      min-height: 44px;
-      padding: 0 20px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
-    .filter-chip:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-    .filter-chip.active {
-      background: var(--gradient-1);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 4px 18px var(--primary-glow);
-    }
-
     /* SIDEBAR */
     .skills-sidebar {
       position: fixed;
@@ -734,10 +699,6 @@
     </div>
   </section>
 
-  <div class="container">
-    <div class="filters" id="filters"></div>
-  </div>
-
   <div class="container grid">
     <div id="result-count" class="result-count" style="display:none;"></div>
     <div id="grid-content">
@@ -904,15 +865,12 @@
           if (ACTIVE_FILTER === 'all') {
             if (area === 'all') return;
             ACTIVE_FILTER = area;
-            renderFilters();
             renderGrid();
           } else if (ACTIVE_FILTER === area) {
             ACTIVE_FILTER = 'all';
-            renderFilters();
             renderGrid();
           } else {
             ACTIVE_FILTER = area;
-            renderFilters();
             renderGrid();
           }
         });
@@ -938,21 +896,6 @@
         });
       }, { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.25, 0.5] });
       sections.forEach(sec => scrollSpyObserver.observe(sec));
-    }
-
-    function renderFilters() {
-      const areas = ['all', ...new Set(ALL_SKILLS.map(s => s.area))];
-      const el = document.getElementById('filters');
-      el.innerHTML = areas.map(a =>
-        `<button class="filter-chip ${ACTIVE_FILTER === a ? 'active' : ''}" data-area="${a}">${a === 'all' ? t('all') : areaLabel(a)}</button>`
-      ).join('');
-      el.querySelectorAll('.filter-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          ACTIVE_FILTER = chip.dataset.area;
-          renderFilters();
-          renderGrid();
-        });
-      });
     }
 
     function renderGrid() {
@@ -1065,7 +1008,6 @@
       SEARCH_QUERY = '';
       document.getElementById('search-input').value = '';
       updateSearchClear();
-      renderFilters();
       renderGrid();
     }
 
@@ -1136,7 +1078,6 @@
           const data = await res.json();
           if (!data.skills || !data.skills.length) continue;
           ALL_SKILLS = data.skills;
-          renderFilters();
           renderGrid();
           return;
         } catch (e) {
@@ -1176,7 +1117,6 @@
         originalToggle();
         const input = document.getElementById('search-input');
         input.placeholder = t('buscador');
-        renderFilters();
         renderGrid();
       };
     }
