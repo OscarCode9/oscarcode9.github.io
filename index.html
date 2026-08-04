@@ -1218,7 +1218,7 @@
       <div class="hero-image">
         <div class="hero-image-wrapper">
           <div class="hero-image-glow"></div>
-          <video id="xoxo-video" class="hero-video" src="./xoxo-mascot-mirror.webm" muted playsinline preload="auto" disablepictureinpicture></video>
+          <video id="xoxo-video" class="hero-video" src="./xoxo-mascot-mirror.webm" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
         </div>
       </div>
     </div>
@@ -2282,7 +2282,13 @@
       let introFinished = false;
       let introCenterActive = false;      // el reposo del centro sigue siendo el segundo 3
       let permanentCenterReached = false; // ya se alcanzó el segundo 7 alguna vez
-      let isTransitioning = false;
+
+      // Quien pidió menos movimiento en su sistema no ve la animación:
+      // la mascota cambia de pose con un salto seco, sin reproducción.
+      const reduceMotionQuery = typeof window.matchMedia === 'function'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : null;
+      const prefersReducedMotion = () => !!(reduceMotionQuery && reduceMotionQuery.matches);
 
       let animationFrameId = null;
       let transitionId = 0;
@@ -2348,7 +2354,6 @@
         }
 
         video.pause();
-        isTransitioning = false;
       }
 
       // ---- Reproducción nativa -------------------------------------
@@ -2513,7 +2518,6 @@
       function runTransitionTo(targetTime) {
         cancelCurrentTransition();
         const localTransitionId = ++transitionId;
-        isTransitioning = true;
         markProgress();
 
         // Del centro inicial (segundo 3) hacia abajo: recorrer la línea
@@ -2524,6 +2528,15 @@
         if (targetTime === TIME.BOTTOM && logicalTime() < TIME.TOP - EPSILON) {
           video.currentTime = TIME.CENTER;
           markProgress();
+        }
+
+        // Movimiento reducido: se coloca la pose y ya, sin animar.
+        if (prefersReducedMotion()) {
+          video.pause();
+          video.currentTime = targetTime;
+          markProgress();
+          stablePosition = positionForTime(targetTime);
+          return Promise.resolve();
         }
 
         const currentTime = logicalTime();
@@ -2542,7 +2555,6 @@
 
         return move.then(function (ok) {
           if (localTransitionId !== transitionId) return; // ya hay otra transición
-          isTransitioning = false;
           if (!ok) { requestGestureUnlock(); return; }
 
           markProgress();
@@ -2574,7 +2586,18 @@
 
         cancelCurrentTransition();
         const localTransitionId = ++transitionId;
-        isTransitioning = true;
+
+        // Movimiento reducido: nada de reproducir 0→3, se coloca la pose.
+        if (prefersReducedMotion()) {
+          introStarted = true;
+          introFinished = true;
+          introCenterActive = true;
+          video.pause();
+          video.currentTime = TIME.INTRO_CENTER;
+          stablePosition = POSITION.INTRO_CENTER;
+          if (targetZone !== POSITION.CENTER) moveToZone(targetZone);
+          return;
+        }
 
         if (!introStarted) {
           introStarted = true;
@@ -2583,7 +2606,6 @@
 
         playForwardTo(TIME.INTRO_CENTER, localTransitionId).then(function (ok) {
           if (localTransitionId !== transitionId) return;
-          isTransitioning = false;
 
           if (!ok) { requestGestureUnlock(); return; } // autoplay bloqueado
 
