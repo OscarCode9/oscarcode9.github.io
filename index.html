@@ -393,6 +393,17 @@
     .tech-chip:hover { border-color: var(--primary); color: var(--primary); }
     .tech-chip i { font-size: 0.95rem; }
 
+    .tech-chip.ai-chip {
+      background: var(--gradient-1);
+      border-color: transparent;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 18px var(--primary-glow);
+    }
+
+    .tech-chip.ai-chip:hover { color: #fff; transform: translateY(-2px); }
+    .tech-chip.ai-chip i { color: #fff; }
+
     /* SECTIONS */
     .section { padding: 100px 0; }
 
@@ -1189,6 +1200,10 @@
         </div>
 
         <div class="hero-tech">
+          <span class="tech-chip ai-chip"><i class="fas fa-robot"></i> AI Engineer</span>
+          <span class="tech-chip"><i class="fas fa-plug"></i> MCP</span>
+          <span class="tech-chip"><i class="fas fa-puzzle-piece"></i> Skills</span>
+          <span class="tech-chip"><i class="fas fa-database"></i> RAG</span>
           <span class="tech-chip"><i class="devicon-bun-plain colored"></i> Bun</span>
           <span class="tech-chip"><i class="devicon-openai-plain colored"></i> OpenAI</span>
           <span class="tech-chip"><i class="devicon-react-original colored"></i> React</span>
