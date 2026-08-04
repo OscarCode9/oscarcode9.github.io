@@ -95,9 +95,64 @@
 
     .hero-content {
       text-align: left;
-      max-width: 650px;
+      max-width: 680px;
       flex: 1;
     }
+
+    .hero-topline {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 5px 14px;
+      border-radius: 999px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+      animation: pulse-dot 2s ease infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+
+    .hero-visits {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.75rem;
+      font-family: 'Fira Code', monospace;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: 999px;
+      cursor: default;
+      transition: border-color 0.25s;
+    }
+
+    .hero-visits:hover { border-color: var(--primary); }
+    .hero-visits i { color: var(--primary); font-size: 0.8rem; }
+    .hero-visits .ov-count { color: var(--text-primary); font-weight: 600; }
 
     .hero-image {
       flex-shrink: 0;
@@ -182,10 +237,18 @@
     }
 
     .hero-title {
-      font-size: 3rem;
-      font-weight: 700;
+      font-size: clamp(2.6rem, 5.5vw, 3.8rem);
+      font-weight: 800;
       margin-top: -5px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .hero-title .highlight {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .typing-text {
@@ -214,9 +277,9 @@
     }
 
     .hero-description {
-      font-size: 1.1rem;
+      font-size: 1.08rem;
       color: var(--text-secondary);
-      max-width: 600px;
+      max-width: 620px;
       margin: 0 0 30px;
       line-height: 1.8;
     }
@@ -224,32 +287,50 @@
     .hero-stats {
       display: flex;
       justify-content: flex-start;
-      gap: 50px;
+      gap: 18px;
       margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 26px;
+      min-width: 130px;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 26px var(--primary-glow);
     }
 
     .stat-number {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
       color: var(--primary);
       display: block;
+      line-height: 1.1;
+      font-family: 'Fira Code', monospace;
     }
 
-    .stat-label { font-size: 0.85rem; color: var(--text-muted); }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); }
 
     .btn-primary {
       background: var(--gradient-1);
       border: none;
-      border-radius: 8px;
-      padding: 14px 28px;
+      border-radius: 999px;
+      padding: 14px 30px;
       font-weight: 600;
       color: #fff;
       cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.25s, box-shadow 0.3s;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
     }
 
     .btn-primary:hover {
@@ -261,21 +342,22 @@
     .btn-secondary {
       background: transparent;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 28px;
+      border-radius: 999px;
+      padding: 14px 30px;
       font-weight: 600;
       color: var(--text-primary);
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.25s;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
     }
 
     .btn-secondary:hover {
       border-color: var(--primary);
       color: var(--primary);
+      background: var(--primary-glow);
     }
 
     .hero-buttons {
@@ -283,7 +365,33 @@
       justify-content: flex-start;
       gap: 15px;
       flex-wrap: wrap;
+      margin-bottom: 26px;
     }
+
+    /* TECH CHIPS */
+    .hero-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .tech-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      transition: border-color 0.25s, color 0.25s;
+    }
+
+    .tech-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .tech-chip i { font-size: 0.95rem; }
 
     /* SECTIONS */
     .section { padding: 100px 0; }
@@ -1043,21 +1151,18 @@
   <section class="hero">
     <div class="container">
       <div class="hero-content">
+        <div class="hero-topline">
+          <span class="status-pill"><span class="status-dot"></span><span class="lang-es">Disponible para proyectos</span><span class="lang-en">Available for projects</span></span>
+          <span class="hero-visits" data-ov-visits data-ov-path="/"><i class="fas fa-eye"></i><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span>
+        </div>
         <p class="hero-role"><span id="typing-role" class="typing-text"></span></p>
-        <h1 class="hero-title"><span class="lang-es">Hey, soy Oscar</span><span class="lang-en">Hey, I'm Oscar</span></h1>
+        <h1 class="hero-title"><span class="lang-es">Hey, soy <span class="highlight">Oscar</span></span><span class="lang-en">Hey, I'm <span class="highlight">Oscar</span></span></h1>
         <p class="hero-description">
           <span class="lang-es">Llevo +10 años rompiendo y arreglando código. Me gusta crear apps que funcionen bien 
           y no exploten en producción (la mayoría de las veces ). Backend, frontend, lo que sea.</span>
           <span class="lang-en">10+ years breaking and fixing code. I like building apps that work well 
           and don't blow up in production (most of the time ). Backend, frontend, whatever it takes.</span>
         </p>
-        <div class="ov-views-wrap">
-          <div class="ov-views-badge" data-ov-visits data-ov-path="/">
-            <span class="ov-dot"></span>
-            <span class="ov-label">Visitas</span>
-            <span class="ov-count">—</span>
-          </div>
-        </div>
 
         <div class="hero-stats">
           <div class="stat-item">
@@ -1081,6 +1186,15 @@
           <a href="#contact" class="btn-secondary">
             <i class="fas fa-comment"></i> <span class="lang-es">Hablemos</span><span class="lang-en">Let's talk</span>
           </a>
+        </div>
+
+        <div class="hero-tech">
+          <span class="tech-chip"><i class="devicon-react-original colored"></i> React</span>
+          <span class="tech-chip"><i class="devicon-nodejs-plain colored"></i> Node.js</span>
+          <span class="tech-chip"><i class="devicon-typescript-plain colored"></i> TypeScript</span>
+          <span class="tech-chip"><i class="devicon-amazonwebservices-plain-wordmark colored"></i> AWS</span>
+          <span class="tech-chip"><i class="devicon-flutter-plain colored"></i> Flutter</span>
+          <span class="tech-chip"><i class="devicon-docker-plain colored"></i> Docker</span>
         </div>
       </div>
 
