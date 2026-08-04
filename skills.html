@@ -7,7 +7,7 @@
   <title>Skills Library | OscarCode9</title>
   <meta name="description" content="Biblioteca de skills de IA — empaquetadas, sanitizadas y listas para descargar.">
 
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -19,6 +19,7 @@
       --primary: #00d4ff;
       --primary-glow: rgba(0, 212, 255, 0.15);
       --accent: #7c3aed;
+      --accent-glow: rgba(124, 58, 237, 0.2);
       --success: #10b981;
       --bg-dark: #0a0a0f;
       --bg-card: #12121a;
@@ -27,6 +28,7 @@
       --text-muted: #64748b;
       --border: rgba(255, 255, 255, 0.08);
       --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+      --radius: 14px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,6 +43,7 @@
       flex-direction: column;
     }
 
+    /* NAVBAR — igual al principal */
     nav {
       background: rgba(10, 10, 15, 0.9) !important;
       backdrop-filter: blur(20px);
@@ -70,85 +73,180 @@
 
     nav ul li a:hover { color: var(--primary) !important; background: transparent !important; }
 
-    nav ul li a.active {
-      color: var(--primary) !important;
-      font-weight: 600;
-    }
+    nav ul li a.active { color: var(--primary) !important; font-weight: 600; }
 
     .sidenav { background: var(--bg-card) !important; }
     .sidenav li a { color: var(--text-primary) !important; }
 
+    /* HERO — exaggerated minimalism: título grande + search como CTA */
     .hero {
-      padding: 140px 0 40px;
+      padding: 150px 0 36px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 720px;
+      height: 360px;
+      background: radial-gradient(ellipse, var(--primary-glow), transparent 65%);
+      pointer-events: none;
     }
 
     .hero h1 {
       font-family: 'Fira Code', monospace;
-      font-size: 2.4rem;
       font-weight: 600;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      letter-spacing: -0.04em;
       background: var(--gradient-1);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
     }
 
-    .hero p { color: var(--text-secondary); max-width: 640px; margin: 12px auto 0; }
+    .hero p {
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin: 0 auto;
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+    }
 
-    .hero .badge {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 6px 14px;
+    /* SEARCH BAR — la CTA del marketplace */
+    .search-wrap {
+      max-width: 560px;
+      margin: 26px auto 0;
+      position: relative;
+    }
+
+    .search-wrap .material-icons {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 54px;
+      padding: 0 52px 0 50px;
+      background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 999px;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
 
-    /* Contador de visitas: mismo lenguaje que el resto del sitio, pero con los
-       tokens de esta página para que empate con el badge de la biblioteca. */
-    .ov-views-wrap { display: inline-block; margin-top: 16px; margin-left: 8px; }
-    .ov-views-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      background: var(--bg-card);
-    }
-    .ov-dot { width: 6px; height: 6px; border-radius: 50%; background: #22bb44; }
-    .ov-views-badge.is-loading { opacity: .6; }
-    .ov-views-badge.is-error .ov-dot { background: var(--text-secondary); }
+    .search-input::placeholder { color: var(--text-muted); }
 
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow), 0 0 24px rgba(0, 212, 255, 0.15);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .search-clear:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.06); }
+    .search-clear.visible { display: flex; }
+
+    /* STATS */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: clamp(20px, 5vw, 56px);
+      margin-top: 26px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat { text-align: center; }
+
+    .hero-stat .num {
+      font-family: 'Fira Code', monospace;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .hero-stat .label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* FILTROS */
     .filters {
-      padding: 8px 0 24px;
+      padding: 10px 0 26px;
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
       justify-content: center;
     }
 
     .filter-chip {
-      padding: 7px 16px;
+      min-height: 44px;
+      padding: 0 20px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: var(--bg-card);
       color: var(--text-secondary);
       cursor: pointer;
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 500;
       transition: all 0.2s;
       font-family: 'Inter', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
     }
 
     .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-chip:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
     .filter-chip.active {
       background: var(--gradient-1);
       color: #fff;
       border-color: transparent;
+      box-shadow: 0 4px 18px var(--primary-glow);
     }
 
+    /* RESULT COUNT */
+    .result-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 16px;
+      padding-left: 4px;
+    }
+
+    /* GRID + SECCIONES */
     .grid { padding-bottom: 60px; }
 
     .area-section { margin-bottom: 36px; }
@@ -174,22 +272,35 @@
       flex-shrink: 0;
     }
 
+    /* CARDS */
     .skill-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: var(--radius);
       padding: 20px;
       cursor: pointer;
-      transition: all 0.25s;
+      transition: transform 0.2s, border-color 0.25s, box-shadow 0.25s;
       height: 100%;
       display: flex;
       flex-direction: column;
+      will-change: transform;
+      animation: card-in 0.4s ease both;
+    }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .skill-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px) scale(1.015);
       border-color: var(--primary);
-      box-shadow: 0 8px 30px var(--primary-glow);
+      box-shadow: 0 10px 34px var(--primary-glow);
+    }
+
+    .skill-card:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 3px;
     }
 
     .skill-card.featured {
@@ -202,14 +313,14 @@
     }
 
     .skill-card.featured:hover {
-      box-shadow: 0 10px 34px var(--primary-glow), 0 0 22px rgba(124, 58, 237, 0.28);
+      box-shadow: 0 10px 34px var(--primary-glow), 0 0 22px rgba(124, 58, 237, 0.3);
     }
 
     .featured-badge {
       position: absolute;
       top: 10px;
       right: 10px;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 700;
       letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -218,6 +329,7 @@
       background: var(--gradient-1);
       color: #fff;
       box-shadow: 0 2px 10px rgba(0, 212, 255, 0.35);
+      z-index: 2;
     }
 
     .skill-card .card-top {
@@ -230,7 +342,7 @@
     .skill-card .icon {
       width: 42px;
       height: 42px;
-      border-radius: 10px;
+      border-radius: 11px;
       background: var(--gradient-1);
       display: flex;
       align-items: center;
@@ -271,20 +383,95 @@
     .skill-card .card-meta {
       margin-top: 12px;
       display: flex;
-      gap: 14px;
+      justify-content: space-between;
+      align-items: center;
       font-size: 0.72rem;
       color: var(--text-muted);
       font-family: 'Fira Code', monospace;
     }
 
-    .modal-content h3 { font-family: 'Fira Code', monospace; }
+    .card-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-family: 'Inter', sans-serif;
+      transition: color 0.2s;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+    }
 
+    .skill-card:hover .card-download {
+      color: var(--primary);
+      border-color: rgba(0, 212, 255, 0.3);
+      background: rgba(0, 212, 255, 0.06);
+    }
+
+    .card-download .material-icons { font-size: 0.95rem; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-secondary);
+    }
+
+    .empty-state .material-icons { font-size: 2.6rem; color: var(--text-muted); margin-bottom: 12px; }
+    .empty-state h3 { font-size: 1.15rem; margin-bottom: 8px; color: var(--text-primary); }
+    .empty-state button {
+      margin-top: 18px;
+      min-height: 44px;
+      padding: 0 22px;
+      border: 1px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .empty-state button:hover { background: var(--primary-glow); }
+
+    /* SKELETON LOADING */
+    .skeleton {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      height: 100%;
+    }
+
+    .skeleton-line {
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s ease infinite;
+      margin-bottom: 12px;
+    }
+
+    .skeleton-line.w-30 { width: 30%; }
+    .skeleton-line.w-60 { width: 60%; }
+    .skeleton-line.w-90 { width: 90%; }
+
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* MODAL */
     .modal {
       background: var(--bg-card) !important;
-      max-width: 860px !important;
+      max-width: 880px !important;
       max-height: 88% !important;
-      border-radius: 14px !important;
+      border-radius: var(--radius) !important;
       border: 1px solid var(--border);
+      overflow: hidden;
     }
 
     .modal .modal-header {
@@ -292,6 +479,7 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 6px;
+      flex-wrap: wrap;
     }
 
     .modal .area-tag {
@@ -311,7 +499,7 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 16px;
-      max-height: 340px;
+      max-height: 300px;
       overflow-y: auto;
       font-size: 0.83rem;
       color: var(--text-secondary);
@@ -340,6 +528,17 @@
       border-radius: 10px;
     }
 
+    .modal-footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .btn-download {
       background: var(--gradient-1);
       color: #fff;
@@ -352,11 +551,13 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s;
+      transition: transform 0.2s, box-shadow 0.25s;
       font-family: 'Inter', sans-serif;
+      text-decoration: none;
     }
 
     .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow); }
+    .btn-download:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
     .install-hint {
       margin-top: 14px;
@@ -380,26 +581,12 @@
 
     .loading { text-align: center; padding: 60px 0; color: var(--text-muted); }
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      margin: 0 auto 16px;
-      border: 3px solid var(--border);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .error-box {
-      text-align: center;
-      padding: 40px;
-      color: #f87171;
-      border: 1px solid rgba(248, 113, 113, 0.3);
-      border-radius: 12px;
-      background: rgba(248, 113, 113, 0.05);
-      margin: 20px 0;
+    /* REDUCED MOTION */
+    @media (prefers-reduced-motion: reduce) {
+      .skill-card { animation: none; }
+      .skill-card:hover { transform: none; }
+      .skeleton-line { animation: none; }
+      .btn-download:hover { transform: none; }
     }
   </style>
 </head>
@@ -436,16 +623,20 @@
 
   <section class="hero">
     <div class="container">
-      <h1><span class="lang-es">Skills Library</span><span class="lang-en">Skills Library</span></h1>
+      <h1>Skills Library</h1>
       <p><span class="lang-es">Una recopilación de todas las skills que he creado y usado a lo largo de mi trabajo con agentes de IA — empaquetadas, sanitizadas y listas para instalar en cualquier herramienta. Mi regalo para la comunidad.</span><span class="lang-en">A collection of every skill I've built and used throughout my work with AI agents — packaged, sanitized and ready to install in any tool. My gift to the community.</span></p>
-      <span class="badge" id="badge-count"><span class="lang-es">Cargando biblioteca…</span><span class="lang-en">Loading library…</span></span>
-      <span class="ov-views-wrap">
-        <span class="ov-views-badge" data-ov-visits data-ov-path="/skills.html">
-          <span class="ov-dot"></span>
-          <span class="ov-label"><span class="lang-es">Visitas</span><span class="lang-en">Views</span></span>
-          <span class="ov-count">—</span>
-        </span>
-      </span>
+      <div class="search-wrap">
+        <i class="material-icons">search</i>
+        <input type="search" id="search-input" class="search-input"
+          placeholder="¿Qué skill buscas?" data-placeholder-en="Search skills…"
+          aria-label="Buscar skills">
+        <button class="search-clear" id="search-clear" aria-label="Limpiar búsqueda"><i class="material-icons">close</i></button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num" id="stat-count">–</div><div class="label lang-es">skills</div><div class="label lang-en">skills</div></div>
+        <div class="hero-stat"><div class="num" id="stat-areas">–</div><div class="label lang-es">áreas</div><div class="label lang-en">areas</div></div>
+        <div class="hero-stat"><div class="num" id="stat-featured">–</div><div class="label lang-es">destacadas</div><div class="label lang-en">featured</div></div>
+      </div>
     </div>
   </section>
 
@@ -454,18 +645,23 @@
   </div>
 
   <div class="container grid">
+    <div id="result-count" class="result-count" style="display:none;"></div>
     <div id="grid-content">
-      <div class="loading">
-        <div class="spinner"></div>
-        <span class="lang-es">Cargando skills…</span><span class="lang-en">Loading skills…</span>
+      <div class="row">
+        <div class="col s12 m6 l4"><div class="skeleton"><div class="skeleton-line w-30"></div><div class="skeleton-line w-60"></div><div class="skeleton-line w-90"></div><div class="skeleton-line w-60"></div></div></div>
+        <div class="col s12 m6 l4"><div class="skeleton"><div class="skeleton-line w-30"></div><div class="skeleton-line w-60"></div><div class="skeleton-line w-90"></div><div class="skeleton-line w-60"></div></div></div>
+        <div class="col s12 m6 l4"><div class="skeleton"><div class="skeleton-line w-30"></div><div class="skeleton-line w-60"></div><div class="skeleton-line w-90"></div><div class="skeleton-line w-60"></div></div></div>
       </div>
     </div>
   </div>
 
   <div id="skill-modal" class="modal">
     <div class="modal-content" id="modal-content"></div>
-    <div class="modal-footer" style="background: var(--bg-card); border-top: 1px solid var(--border); padding: 12px 24px;">
-      <a href="#!" class="modal-close" style="color: var(--text-secondary); margin-right: 12px;"><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></a>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close" style="color: var(--text-secondary);"><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></a>
+      <a href="#" id="modal-download" download class="btn-download">
+        <i class="material-icons" style="font-size:1.1rem;">download</i> <span id="modal-download-label"></span>
+      </a>
     </div>
   </div>
 
@@ -476,120 +672,66 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="visits-badge.js" defer></script>
   <script>
     let ALL_SKILLS = [];
     let ACTIVE_FILTER = 'all';
+    let SEARCH_QUERY = '';
 
     const API_URLS = [
       'https://vida.oventlabs.net/api/skills',
       'https://oscarcode9-skills.s3.us-east-2.amazonaws.com/index.json'
     ];
 
-    // Métricas por skill. Viven en el mismo backend que los contadores de
-    // visitas del sitio; se deja en una constante para poder migrarlas sin
-    // tocar el resto del archivo.
-    const METRICS_BASE = 'https://agents.oventlabs.net/api/skills';
-    let SKILL_STATS = {};
-
-    /** Contadores de todas las skills en una sola llamada. Nunca bloquea la UI. */
-    async function loadSkillStats() {
-      try {
-        const res = await fetch(`${METRICS_BASE}/stats`);
-        if (!res.ok) return;
-        const data = await res.json();
-        SKILL_STATS = data?.stats || {};
-      } catch (e) {
-        console.warn('[skills] stats no disponibles:', e);
-      }
-    }
-
-    /**
-     * Registra vista o descarga.
-     *
-     * Se dispara y se olvida: si el contador falla, la descarga y el modal
-     * siguen funcionando. Nunca se hace await antes de abrir o descargar.
-     */
-    function trackSkill(metric, slug) {
-      if (!slug) return;
-      const prev = SKILL_STATS[slug] || { views: 0, downloads: 0 };
-      SKILL_STATS[slug] = {
-        views: prev.views + (metric === 'view' ? 1 : 0),
-        downloads: prev.downloads + (metric === 'download' ? 1 : 0),
-      };
-      fetch(`${METRICS_BASE}/${metric}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug }),
-        credentials: 'omit',
-        keepalive: true,
-      }).catch(() => {});
-    }
-
-    const fmtCount = n => Number(n || 0).toLocaleString(lang() === 'en' ? 'en-US' : 'es-MX');
-
     const I18N = {
       es: {
         all: 'Todas',
         archivos: 'archivos',
-        vistas: 'vistas',
-        descargas: 'descargas',
         sanitizado: 'sanitizado',
         cerrar: 'Cerrar',
         descargar: 'Descargar',
         instalar: 'Instalación: descarga el zip, descomprime y mueve la carpeta a ~/.agents/skills/ (global) o a .agents/skills/ de tu proyecto. Lista en: skills.sh / cualquier agente compatible.',
         noHay: 'No hay skills en esta área.',
+        sinResultados: 'No encontramos skills para',
+        limpiar: 'Limpiar búsqueda y filtros',
+        sugerencia: 'Prueba con otro término o revisa todas las áreas.',
         error: 'No se pudo cargar la biblioteca. Intenta más tarde.',
         errorConexion: 'Error de conexión',
         cargando: 'Cargando skills…',
         actualizado: 'actualizado',
         skills: 'skills',
         destacada: 'Destacada',
-        areas: {
-          'frontend-ui-ux': 'Frontend / UI / UX',
-          'backend-nodejs': 'Backend / Node',
-          'databases': 'Bases de datos',
-          'devops-deploy': 'DevOps / Deploy',
-          'testing-qa': 'Testing / QA',
-          'documentos-reportes': 'Documentos / Reportes',
-          'email-comunicaciones': 'Email',
-          'ai-agentes-tools': 'AI / Agentes',
-          'movil-flutter': 'Móvil / Flutter',
-          'proyectos-especificos': 'Proyectos',
-          'media-contenido': 'Media / Contenido',
-          'legal-contratos': 'Legal / Contratos'
-        }
+        buscador: 'Buscar por nombre o descripción…',
+        resultados: 'resultados',
+        descargarDirecto: 'Descargar',
+        areas: 'áreas',
+        destacadas: 'destacadas',
+        verDetalle: 'Ver detalle',
+        noResultadosTitulo: 'Sin resultados'
       },
       en: {
         all: 'All',
         archivos: 'files',
-        vistas: 'views',
-        descargas: 'downloads',
         sanitizado: 'sanitized',
         cerrar: 'Close',
         descargar: 'Download',
         instalar: 'Install: download the zip, unzip and move the folder to ~/.agents/skills/ (global) or .agents/skills/ in your project. Works with: skills.sh / any compatible agent.',
         noHay: 'No skills in this area.',
+        sinResultados: 'No skills found for',
+        limpiar: 'Clear search and filters',
+        sugerencia: 'Try a different term or browse all areas.',
         error: 'Could not load the library. Try again later.',
         errorConexion: 'Connection error',
         cargando: 'Loading skills…',
         actualizado: 'updated',
         skills: 'skills',
         destacada: 'Featured',
-        areas: {
-          'frontend-ui-ux': 'Frontend / UI / UX',
-          'backend-nodejs': 'Backend / Node',
-          'databases': 'Databases',
-          'devops-deploy': 'DevOps / Deploy',
-          'testing-qa': 'Testing / QA',
-          'documentos-reportes': 'Docs / Reports',
-          'email-comunicaciones': 'Email',
-          'ai-agentes-tools': 'AI / Agents',
-          'movil-flutter': 'Mobile / Flutter',
-          'proyectos-especificos': 'Projects',
-          'media-contenido': 'Media / Content',
-          'legal-contratos': 'Legal / Contracts'
-        }
+        buscador: 'Search by name or description…',
+        resultados: 'results',
+        descargarDirecto: 'Download',
+        areas: 'areas',
+        destacadas: 'featured',
+        verDetalle: 'View details',
+        noResultadosTitulo: 'No results'
       }
     };
 
@@ -629,6 +771,21 @@
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
     }
 
+    function filteredSkills() {
+      let skills = ACTIVE_FILTER === 'all'
+        ? ALL_SKILLS
+        : ALL_SKILLS.filter(s => s.area === ACTIVE_FILTER);
+      if (SEARCH_QUERY) {
+        const q = SEARCH_QUERY.toLowerCase();
+        skills = skills.filter(s =>
+          s.slug.toLowerCase().includes(q) ||
+          skillText(s, 'name').toLowerCase().includes(q) ||
+          skillText(s, 'description').toLowerCase().includes(q)
+        );
+      }
+      return skills;
+    }
+
     function renderFilters() {
       const areas = ['all', ...new Set(ALL_SKILLS.map(s => s.area))];
       const el = document.getElementById('filters');
@@ -646,23 +803,38 @@
 
     function renderGrid() {
       const grid = document.getElementById('grid-content');
-      const skills = ACTIVE_FILTER === 'all'
-        ? ALL_SKILLS
-        : ALL_SKILLS.filter(s => s.area === ACTIVE_FILTER);
+      const count = document.getElementById('result-count');
+      const skills = filteredSkills();
+
+      const featuredCount = ALL_SKILLS.filter(s => s.featured).length;
+      document.getElementById('stat-count').textContent = ALL_SKILLS.length;
+      document.getElementById('stat-areas').textContent = new Set(ALL_SKILLS.map(s => s.area)).size;
+      document.getElementById('stat-featured').textContent = featuredCount;
 
       if (!skills.length) {
-        grid.innerHTML = `<div class="error-box">${t('noHay')}</div>`;
+        count.style.display = 'none';
+        grid.innerHTML = `
+          <div class="empty-state">
+            <i class="material-icons">search_off</i>
+            <h3>${t('noResultadosTitulo')}</h3>
+            <p>${SEARCH_QUERY ? `${t('sinResultados')} "<b>${escapeHtml(SEARCH_QUERY)}</b>"` : t('noHay')}</p>
+            <p style="margin-top:6px;font-size:0.85rem;">${t('sugerencia')}</p>
+            <button onclick="clearAllFilters()">${t('limpiar')}</button>
+          </div>`;
         return;
       }
+
+      count.style.display = 'block';
+      count.textContent = `${skills.length} ${t('resultados')}`;
 
       const byArea = {};
       skills.forEach(s => {
         (byArea[s.area] = byArea[s.area] || []).push(s);
       });
 
-      const card = s => `
+      const card = (s, idx) => `
         <div class="col s12 m6 l4">
-          <div class="skill-card ${s.featured ? 'featured' : ''}" data-slug="${s.slug}">
+          <div class="skill-card ${s.featured ? 'featured' : ''}" data-slug="${s.slug}" tabindex="0" style="animation-delay:${Math.min(idx * 40, 320)}ms" role="button" aria-label="${t('verDetalle')}: ${escapeHtml(skillText(s, 'name'))}">
             ${s.featured ? `<span class="featured-badge">${t('destacada')}</span>` : ''}
             <div class="card-top">
               <div class="icon">${initials(s.name)}</div>
@@ -672,22 +844,25 @@
             <p>${escapeHtml(skillText(s, 'description'))}</p>
             <div class="card-meta">
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">archive</i> ${s.sizeHuman}</span>
-              <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">description</i> ${s.fileCount} ${t('archivos')}</span>
-              <span title="${t('vistas')}"><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">visibility</i> <span class="stat-views" data-slug="${s.slug}">${fmtCount((SKILL_STATS[s.slug] || {}).views)}</span></span>
-              <span title="${t('descargas')}"><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">download</i> <span class="stat-downloads" data-slug="${s.slug}">${fmtCount((SKILL_STATS[s.slug] || {}).downloads)}</span></span>
+              <span class="card-download"><i class="material-icons">download</i> ${t('descargarDirecto')}</span>
             </div>
           </div>
         </div>`;
 
+      let idx = 0;
       grid.innerHTML = Object.keys(byArea).map(area => `
         <div class="area-section">
-          <h2 class="area-title"><span class="area-dot"></span>${areaLabel(area)}</h2>
-          <div class="row">${byArea[area].map(card).join('')}</div>
+          <h2 class="area-title"><span class="area-dot"></span>${areaLabel(area)} <span style="font-size:0.8rem;color:var(--text-muted);font-weight:400;">(${byArea[area].length})</span></h2>
+          <div class="row">${byArea[area].map(c => card(c, idx++)).join('')}</div>
         </div>
       `).join('');
 
       grid.querySelectorAll('.skill-card').forEach(c => {
-        c.addEventListener('click', () => openModal(c.dataset.slug));
+        const open = () => openModal(c.dataset.slug);
+        c.addEventListener('click', open);
+        c.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+        });
       });
     }
 
@@ -695,12 +870,12 @@
       const skill = ALL_SKILLS.find(s => s.slug === slug);
       if (!skill) return;
 
-      trackSkill('view', slug);
       const modal = document.getElementById('skill-modal');
       document.getElementById('modal-content').innerHTML = `
         <div class="modal-header">
-          <h3>${escapeHtml(skillText(skill, 'name'))}</h3>
+          <h3 style="font-family:'Fira Code',monospace;">${escapeHtml(skillText(skill, 'name'))}</h3>
           <span class="area-tag">${areaLabel(skill.area)}</span>
+          ${skill.featured ? `<span class="featured-badge" style="position:static;">${t('destacada')}</span>` : ''}
         </div>
         <p class="desc">${escapeHtml(skillText(skill, 'description'))}</p>
         <div class="meta-row">
@@ -712,43 +887,31 @@
         <div class="install-hint">
           ${t('instalar')}
         </div>
-        <div style="margin-top: 18px;">
-          <a href="${skill.downloadUrl}" download class="btn-download" data-slug="${skill.slug}">
-            <i class="material-icons" style="font-size:1.1rem;">download</i> ${t('descargar')} ${escapeHtml(skill.name)}
-          </a>
-        </div>
       `;
-
-      // El conteo va aparte del href: no se intercepta la descarga para no
-      // arriesgar que un fallo del contador impida bajar el ZIP.
-      const dl = document.querySelector('#modal-content .btn-download');
-      if (dl) {
-        dl.addEventListener('click', () => {
-          trackSkill('download', dl.dataset.slug);
-          refreshStatBadges();
-        }, { once: true });
-      }
-
+      const btn = document.getElementById('modal-download');
+      btn.href = skill.downloadUrl;
+      btn.download = `${skill.slug}.zip`;
+      document.getElementById('modal-download-label').textContent = `${t('descargar')} ${escapeHtml(skillText(skill, 'name'))}`;
       M.Modal.getInstance(modal).open();
-      refreshStatBadges();
     }
 
-    /** Repinta los contadores ya visibles sin volver a renderizar el grid. */
-    function refreshStatBadges() {
-      document.querySelectorAll('.stat-views').forEach(el => {
-        el.textContent = fmtCount((SKILL_STATS[el.dataset.slug] || {}).views);
-      });
-      document.querySelectorAll('.stat-downloads').forEach(el => {
-        el.textContent = fmtCount((SKILL_STATS[el.dataset.slug] || {}).downloads);
-      });
+    function clearAllFilters() {
+      ACTIVE_FILTER = 'all';
+      SEARCH_QUERY = '';
+      document.getElementById('search-input').value = '';
+      updateSearchClear();
+      renderFilters();
+      renderGrid();
+    }
+
+    function updateSearchClear() {
+      const clear = document.getElementById('search-clear');
+      if (SEARCH_QUERY) clear.classList.add('visible');
+      else clear.classList.remove('visible');
     }
 
     async function loadSkills() {
       const grid = document.getElementById('grid-content');
-      const badge = document.getElementById('badge-count');
-      // Los contadores se piden en paralelo al índice: si tardan o fallan, el
-      // grid se pinta igual y las cifras arrancan en cero.
-      await loadSkillStats();
       for (const url of API_URLS) {
         try {
           const res = await fetch(url);
@@ -756,7 +919,6 @@
           const data = await res.json();
           if (!data.skills || !data.skills.length) continue;
           ALL_SKILLS = data.skills;
-          badge.textContent = `${data.count} ${t('skills')} · ${t('actualizado')} ${new Date(data.updatedAt).toLocaleDateString(lang() === 'en' ? 'en-US' : 'es-MX')}`;
           renderFilters();
           renderGrid();
           return;
@@ -764,13 +926,26 @@
           console.warn('API falló, probando siguiente:', url, e);
         }
       }
-      grid.innerHTML = `<div class="error-box">${t('error')}</div>`;
-      badge.textContent = t('errorConexion');
+      grid.innerHTML = `<div class="empty-state"><h3>${t('error')}</h3></div>`;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('year').textContent = new Date().getFullYear();
       M.AutoInit();
+
+      const input = document.getElementById('search-input');
+      input.placeholder = t('buscador');
+      let debounceTimer;
+      input.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          SEARCH_QUERY = input.value.trim();
+          updateSearchClear();
+          renderGrid();
+        }, 150);
+      });
+      document.getElementById('search-clear').addEventListener('click', clearAllFilters);
+
       loadSkills();
     });
 
@@ -778,6 +953,8 @@
     if (originalToggle) {
       window.toggleLanguage = function () {
         originalToggle();
+        const input = document.getElementById('search-input');
+        input.placeholder = t('buscador');
         renderFilters();
         renderGrid();
       };
