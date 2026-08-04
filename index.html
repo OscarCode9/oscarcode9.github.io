@@ -160,17 +160,24 @@
 
     .hero-image-wrapper {
       position: relative;
-      width: 280px;
-      height: 280px;
+      /* crece con el ancho de pantalla; el hueco disponible junto al
+         texto (680px) dentro del container de 1280px es ~540px */
+      width: clamp(280px, 34vw, 460px);
+      height: clamp(280px, 34vw, 460px);
     }
 
-    .hero-image-wrapper img {
+    .hero-image-wrapper img,
+    .hero-image-wrapper video {
       width: 100%;
       height: 100%;
       object-fit: contain;
       border-radius: 0;
       border: none;
       box-shadow: none;
+    }
+
+    .hero-video {
+      mix-blend-mode: screen;
       filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
     }
 
@@ -1095,7 +1102,7 @@
       .hero .container { flex-direction: column; text-align: left; }
       .hero-content { text-align: left; max-width: 100%; order: 2; margin-top: -20px; }
       .hero-image { order: 1; margin-bottom: 0; }
-      .hero-image-wrapper { width: 180px; height: 180px; }
+      .hero-image-wrapper { width: 240px; height: 240px; }
       .hero-mascot { width: 100px; margin-bottom: 10px; }
       .hero-title { font-size: 2.2rem; }
       .hero-stats { gap: 25px; }
@@ -1117,7 +1124,7 @@
       .btn-secondary { margin-left: 0; margin-top: 10px; }
       .blog-item { flex-direction: column; align-items: flex-start; gap: 15px; }
       .blog-item-arrow { display: none; }
-      .hero-image-wrapper { width: 140px; height: 140px; }
+      .hero-image-wrapper { width: 200px; height: 200px; }
       .hero-mascot { width: 90px; margin-bottom: 8px; }
     }
   </style>
@@ -1211,7 +1218,7 @@
       <div class="hero-image">
         <div class="hero-image-wrapper">
           <div class="hero-image-glow"></div>
-          <img src="xoxo-mascot.gif" alt="XoxoBot Mascot">
+          <video id="xoxo-video" class="hero-video" src="./xoxo-mascot-mirror.webm" muted playsinline preload="auto" disablepictureinpicture></video>
         </div>
       </div>
     </div>
@@ -2196,6 +2203,500 @@
       // Iniciar el efecto
       typeEffect();
     });
+
+    /* ============================================================
+       Xoxo mascot — mirada interactiva controlada por el puntero
+       ------------------------------------------------------------
+       Video: xoxo-mascot-mirror.webm · 336 frames · 14 s · 24 fps
+
+         frames 0..239   → animación normal (los 10 s originales)
+         frames 240..335 → el tramo 6 s–10 s YA INVERTIDO (espejo)
+
+       El espejo existe porque retroceder con seeks se ve a tirones:
+       el video tiene solo 2 keyframes, así que cada seek hacia atrás
+       obliga a decodificar desde el keyframe anterior, con latencia
+       distinta cada vez. Reproduciendo el tramo espejo hacia adelante,
+       el movimiento en reversa lo pinta el compositor del navegador
+       igual de fluido que la ida.
+
+       Equivalencia:  frame espejo = 479 − frame normal
+       (el 479 sale de 240 + 239: el espejo arranca en el frame 240 y
+       su primer cuadro es el 239 del original)
+
+       Tiempos LÓGICOS (los que usa toda la máquina de estados):
+         intro-center : 3                  (solo durante la intro)
+         top          : 6
+         center       : 7                  (centro permanente)
+         bottom       : 239/24 = 9.958333  (último frame real)
+
+       Flujo: 0→3 (intro) · 3→6 · 6→7 · 7↔6 · 7↔bottom
+       Siempre se recorre la línea de tiempo, nunca se salta:
+       de 6 a bottom se pasa por 7; de bottom a 6 se vuelve por 7.
+       ============================================================ */
+    (function () {
+      const video = document.getElementById('xoxo-video');
+      if (!video) return;
+
+      // Contenedor donde se detecta el movimiento vertical del puntero.
+      // Se usa el hero completo (misma área que reaccionaba antes);
+      // cambiar este selector es lo único necesario para acotarlo.
+      const container = document.querySelector('.hero') || video.parentElement;
+      if (!container) return;
+
+      const FPS = 24;
+      const FRAME_DURATION = 1 / FPS;
+      const EPSILON = FRAME_DURATION / 2;
+
+      const TIME = {
+        START: 0,
+        INTRO_CENTER: 3,
+        TOP: 6,
+        CENTER: 7,
+        BOTTOM: 239 / FPS // 9.958333… → frame 239
+      };
+
+      // Tramo espejo (reversa nativa)
+      const FORWARD_FRAMES = 240;                      // 0..239 = normal
+      const MIRROR_PIVOT = 479;                        // espejo = 479 − normal
+      const MIRROR_FROM = 144 / FPS;                   // el espejo cubre de 6 s en adelante
+      const MIRROR_SPLIT = (FORWARD_FRAMES - 0.5) / FPS; // frontera: 9.979 s
+
+      const POSITION = {
+        INTRO_CENTER: 'intro-center',
+        TOP: 'top',
+        CENTER: 'center',
+        BOTTOM: 'bottom'
+      };
+
+      const ZONE_TOP_LIMIT = 0.33;
+      const ZONE_BOTTOM_LIMIT = 0.66;
+      const HYSTERESIS = 0.03;       // zona muerta en los límites
+
+      // ---- Estado -------------------------------------------------
+      let targetZone = POSITION.CENTER;
+      let stablePosition = POSITION.INTRO_CENTER;
+
+      let initialized = false;
+      let ready = false;
+      let introStarted = false;
+      let introFinished = false;
+      let introCenterActive = false;      // el reposo del centro sigue siendo el segundo 3
+      let permanentCenterReached = false; // ya se alcanzó el segundo 7 alguna vez
+      let isTransitioning = false;
+
+      let animationFrameId = null;
+      let transitionId = 0;
+      let waitingForGesture = false;
+      let cachedRect = null;
+
+      // ---- Utilidades --------------------------------------------
+      function isAtTime(currentTime, targetTime) {
+        return Math.abs(currentTime - targetTime) <= EPSILON;
+      }
+
+      // ¿El video está parado dentro del tramo espejo?
+      function inMirror() {
+        return video.currentTime > MIRROR_SPLIT;
+      }
+
+      // Posición en la línea de tiempo ORIGINAL, sin importar en qué
+      // tramo esté puesto el video. Todo lo demás razona con esto.
+      function logicalTime() {
+        return inMirror() ? (MIRROR_PIVOT / FPS) - video.currentTime : video.currentTime;
+      }
+
+      // El mismo cuadro, pero en el tramo espejo.
+      function mirrorTimeFor(time) {
+        return (MIRROR_PIVOT / FPS) - time;
+      }
+
+      // El centro permanente queda fijado en cuanto la reproducción
+      // alcanza (o rebasa) el segundo 7 por primera vez.
+      function markProgress() {
+        if (!permanentCenterReached && logicalTime() >= TIME.CENTER - EPSILON) {
+          permanentCenterReached = true;
+        }
+      }
+
+      // El segundo 3 solo es reposo válido mientras no se haya salido
+      // del centro tras la intro; en cuanto el puntero va a arriba o
+      // abajo, el centro pasa a ser definitivamente el segundo 7.
+      function timeForZone(zone) {
+        if (zone === POSITION.TOP) return TIME.TOP;
+        if (zone === POSITION.BOTTOM) return TIME.BOTTOM;
+        return (introCenterActive && !permanentCenterReached)
+          ? TIME.INTRO_CENTER
+          : TIME.CENTER;
+      }
+
+      function positionForTime(time) {
+        if (isAtTime(time, TIME.TOP)) return POSITION.TOP;
+        if (isAtTime(time, TIME.CENTER)) return POSITION.CENTER;
+        if (isAtTime(time, TIME.BOTTOM)) return POSITION.BOTTOM;
+        if (isAtTime(time, TIME.INTRO_CENTER)) return POSITION.INTRO_CENTER;
+        return stablePosition;
+      }
+
+      // ---- Cancelación segura -------------------------------------
+      // Solo puede existir una transición activa a la vez.
+      function cancelCurrentTransition() {
+        transitionId += 1;
+
+        if (animationFrameId !== null) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+
+        video.pause();
+        isTransitioning = false;
+      }
+
+      // ---- Reproducción nativa -------------------------------------
+      // Reproduce de verdad (play()) hasta un tiempo REAL del archivo,
+      // sirve tanto para el tramo normal como para el espejo.
+      // Devuelve false solo si el navegador bloqueó play().
+      function playNativeTo(targetTime, localTransitionId) {
+        if (video.currentTime >= targetTime - EPSILON) {
+          video.pause();
+          video.currentTime = targetTime;
+          return Promise.resolve(true);
+        }
+
+        const playPromise = video.play();
+        const started = playPromise && typeof playPromise.then === 'function'
+          ? playPromise.then(function () { return true; }, function (error) {
+              console.warn('[xoxo] El navegador bloqueó la reproducción:', error);
+              return false;
+            })
+          : Promise.resolve(true);
+
+        return started.then(function (ok) {
+          if (localTransitionId !== transitionId) return true; // transición reemplazada
+          if (!ok) return false;
+
+          return new Promise(function (resolve) {
+            function checkTime() {
+              if (localTransitionId !== transitionId) {
+                resolve(true);
+                return;
+              }
+
+              markProgress();
+
+              if (video.currentTime >= targetTime - EPSILON || video.ended) {
+                video.pause();
+                video.currentTime = targetTime;
+                animationFrameId = null;
+                resolve(true);
+                return;
+              }
+
+              animationFrameId = requestAnimationFrame(checkTime);
+            }
+
+            animationFrameId = requestAnimationFrame(checkTime);
+          });
+        });
+      }
+
+      // Hacia adelante en tiempo lógico. Si el video quedó parado en el
+      // tramo espejo, primero vuelve al cuadro equivalente del tramo
+      // normal: es el mismo frame, así que el salto no se ve.
+      function playForwardTo(targetTime, localTransitionId) {
+        if (inMirror()) video.currentTime = logicalTime();
+        return playNativeTo(targetTime, localTransitionId);
+      }
+
+      // Hacia atrás = reproducir hacia adelante el tramo espejo.
+      function playReverseTo(targetTime, localTransitionId) {
+        const from = logicalTime();
+
+        // El espejo solo cubre de 6 s en adelante; fuera de ahí se
+        // recurre al retroceso por seeks (no debería ocurrir nunca).
+        if (from < MIRROR_FROM - EPSILON || targetTime < MIRROR_FROM - EPSILON) {
+          return scrubReverseTo(targetTime, localTransitionId);
+        }
+
+        if (!inMirror()) video.currentTime = mirrorTimeFor(from);
+        return playNativeTo(mirrorTimeFor(targetTime), localTransitionId);
+      }
+
+      // ---- Retroceso por seeks (respaldo) --------------------------
+      // Solo se usa si se pide retroceder fuera del tramo espejo.
+      // playbackRate negativo no es fiable en ningún navegador, y restar
+      // currentTime en cada requestAnimationFrame pide más seeks de los
+      // que el decodificador alcanza a pintar: el navegador los fusiona
+      // y solo se ve el último frame. Por eso va FRAME A FRAME, cada uno
+      // esperando su "seeked" (= ya está pintado).
+      function scrubReverseTo(targetTime, localTransitionId) {
+        video.pause();
+
+        return new Promise(function (resolve) {
+          const targetFrame = Math.round(targetTime * FPS);
+          let frame = Math.floor(video.currentTime * FPS + 1e-6);
+          let seekPending = false;
+          let seekStartedAt = 0;
+          // Cadencia ENTERA: un frame de video cada N refrescos de
+          // pantalla. Apuntar a 41.7 ms sueltos cae entre dos refrescos
+          // y los frames salen alternando 33/50 ms — eso es lo que se
+          // ve como tironeo. El refresco se mide en vivo: a 60 Hz sale
+          // 1 frame cada 3 refrescos, a 120 Hz cada 5 (24 fps exactos).
+          let refreshMs = 0;
+          let previousTimestamp = 0;
+          let ticks = 0;
+
+          function detach() {
+            video.removeEventListener('seeked', onSeeked);
+            animationFrameId = null;
+          }
+
+          function onSeeked() { seekPending = false; }
+
+          function step(timestamp) {
+            if (localTransitionId !== transitionId) { // transición reemplazada
+              detach();
+              resolve(true);
+              return;
+            }
+
+            // Medición del refresco real de la pantalla (promedio suave,
+            // ignorando saltos raros por hipos del navegador).
+            if (previousTimestamp) {
+              const delta = timestamp - previousTimestamp;
+              if (delta > 4 && delta < 100) {
+                refreshMs = refreshMs ? refreshMs * 0.8 + delta * 0.2 : delta;
+              }
+            }
+            previousTimestamp = timestamp;
+
+            // Si el seek se atora (formato lento, pestaña ocupada) se
+            // continúa igualmente pasados 300 ms: mejor perder un frame
+            // que dejar la animación colgada.
+            if (seekPending && timestamp - seekStartedAt > 300) seekPending = false;
+            if (seekPending) {
+              animationFrameId = requestAnimationFrame(step);
+              return;
+            }
+
+            const ticksPerFrame = Math.max(1, Math.round(
+              (FRAME_DURATION * 1000) / (refreshMs || 16.7)
+            ));
+
+            ticks += 1;
+            if (ticks < ticksPerFrame) {
+              animationFrameId = requestAnimationFrame(step);
+              return;
+            }
+            ticks = 0;
+
+            if (frame <= targetFrame) {
+              detach();
+              video.pause();
+              video.currentTime = targetTime;
+              resolve(true);
+              return;
+            }
+
+            frame -= 1;
+            seekPending = true;
+            seekStartedAt = timestamp;
+            video.currentTime = frame / FPS;
+            animationFrameId = requestAnimationFrame(step);
+          }
+
+          video.addEventListener('seeked', onSeeked);
+          animationFrameId = requestAnimationFrame(step);
+        });
+      }
+
+      // ---- Control central de navegación ---------------------------
+      function runTransitionTo(targetTime) {
+        cancelCurrentTransition();
+        const localTransitionId = ++transitionId;
+        isTransitioning = true;
+        markProgress();
+
+        // Del centro inicial (segundo 3) hacia abajo: recorrer la línea
+        // de tiempo mostraría primero el frame 144, o sea la mirada
+        // HACIA ARRIBA, antes de bajar. Como el 3 y el 7 son el mismo
+        // gesto de centro, se salta al 7 con un único seek —invisible—
+        // y desde ahí sí se baja normal: 7 → 9.958.
+        if (targetTime === TIME.BOTTOM && logicalTime() < TIME.TOP - EPSILON) {
+          video.currentTime = TIME.CENTER;
+          markProgress();
+        }
+
+        const currentTime = logicalTime();
+        let move;
+
+        if (isAtTime(currentTime, targetTime)) {
+          video.pause();
+          // se queda en el tramo en el que ya estaba: mismo frame
+          video.currentTime = inMirror() ? mirrorTimeFor(targetTime) : targetTime;
+          move = Promise.resolve(true);
+        } else if (currentTime < targetTime) {
+          move = playForwardTo(targetTime, localTransitionId);
+        } else {
+          move = playReverseTo(targetTime, localTransitionId);
+        }
+
+        return move.then(function (ok) {
+          if (localTransitionId !== transitionId) return; // ya hay otra transición
+          isTransitioning = false;
+          if (!ok) { requestGestureUnlock(); return; }
+
+          markProgress();
+          stablePosition = positionForTime(logicalTime());
+
+          // La última posición del puntero siempre manda: si la zona
+          // cambió (o el centro pasó a ser permanente) se continúa.
+          const desired = timeForZone(targetZone);
+          if (!isAtTime(logicalTime(), desired)) runTransitionTo(desired);
+        });
+      }
+
+      function moveToZone(zone) {
+        targetZone = zone;
+        if (zone !== POSITION.CENTER) introCenterActive = false;
+        if (!ready) return;
+        if (!introFinished) {
+          // La intro es dueña de la línea de tiempo; al terminar se
+          // aplica automáticamente la última zona solicitada.
+          if (!introStarted) startIntro();
+          return;
+        }
+        runTransitionTo(timeForZone(zone));
+      }
+
+      // ---- Introducción (una sola vez): 0 → 3 ----------------------
+      function startIntro() {
+        if (!ready || introFinished) return;
+
+        cancelCurrentTransition();
+        const localTransitionId = ++transitionId;
+        isTransitioning = true;
+
+        if (!introStarted) {
+          introStarted = true;
+          try { video.currentTime = TIME.START; } catch (error) { /* seek no disponible aún */ }
+        }
+
+        playForwardTo(TIME.INTRO_CENTER, localTransitionId).then(function (ok) {
+          if (localTransitionId !== transitionId) return;
+          isTransitioning = false;
+
+          if (!ok) { requestGestureUnlock(); return; } // autoplay bloqueado
+
+          introFinished = true;
+          introCenterActive = true;
+          stablePosition = POSITION.INTRO_CENTER;
+
+          if (targetZone !== POSITION.CENTER) moveToZone(targetZone);
+        });
+      }
+
+      // ---- Autoplay bloqueado: reintentar con el primer gesto -------
+      function requestGestureUnlock() {
+        if (waitingForGesture) return;
+        waitingForGesture = true;
+
+        function onGesture() {
+          document.removeEventListener('pointerdown', onGesture);
+          document.removeEventListener('pointermove', onGesture);
+          document.removeEventListener('touchstart', onGesture);
+          document.removeEventListener('keydown', onGesture);
+          waitingForGesture = false;
+
+          if (!introFinished) startIntro();
+          else moveToZone(targetZone);
+        }
+
+        document.addEventListener('pointerdown', onGesture, { passive: true });
+        document.addEventListener('pointermove', onGesture, { passive: true });
+        document.addEventListener('touchstart', onGesture, { passive: true });
+        document.addEventListener('keydown', onGesture);
+      }
+
+      // ---- Zonas verticales (0-33 / 33-66 / 66-100) ----------------
+      function getPointerZone(clientY, rect, current) {
+        if (!rect || !rect.height) return current;
+        const ratio = (clientY - rect.top) / rect.height;
+        if (!Number.isFinite(ratio)) return current;
+
+        // Histéresis: la zona actual "empuja" su frontera para que el
+        // puntero cerca del 33% o del 66% no dispare cambios rápidos.
+        const upper = current === POSITION.TOP
+          ? ZONE_TOP_LIMIT + HYSTERESIS
+          : ZONE_TOP_LIMIT - HYSTERESIS;
+        const lower = current === POSITION.BOTTOM
+          ? ZONE_BOTTOM_LIMIT - HYSTERESIS
+          : ZONE_BOTTOM_LIMIT + HYSTERESIS;
+
+        if (ratio < upper) return POSITION.TOP;
+        if (ratio > lower) return POSITION.BOTTOM;
+        return POSITION.CENTER;
+      }
+
+      function getRect() {
+        if (!cachedRect) cachedRect = container.getBoundingClientRect();
+        return cachedRect;
+      }
+
+      function invalidateRect() { cachedRect = null; }
+
+      // El listener solo clasifica la zona y delega: nada de lógica
+      // de reproducción aquí, ni escrituras en el DOM ni logs.
+      function handlePointerMove(event) {
+        const nextZone = getPointerZone(event.clientY, getRect(), targetZone);
+        if (nextZone === targetZone) return;
+        moveToZone(nextZone);
+      }
+
+      container.addEventListener('pointermove', handlePointerMove, { passive: true });
+      window.addEventListener('scroll', invalidateRect, { passive: true });
+      window.addEventListener('resize', invalidateRect, { passive: true });
+
+      // pointerleave: no se hace nada a propósito — se conserva la
+      // última posición solicitada, sin reinicios ni transiciones.
+
+      // Si la pestaña se oculta se pausa todo (evita que el video
+      // avance sin requestAnimationFrame); al volver se retoma desde
+      // el tiempo actual, sin saltos.
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          cancelCurrentTransition();
+          return;
+        }
+        if (!ready) return;
+        if (!introFinished) startIntro();
+        else moveToZone(targetZone);
+      });
+
+      // Seguro por si la reproducción llega al final real del archivo
+      // (14 s, último cuadro del espejo = la mirada arriba): se vuelve
+      // a ese frame válido, nunca a negro ni al inicio.
+      video.addEventListener('ended', function () {
+        video.pause();
+        const lastTime = mirrorTimeFor(TIME.TOP); // 335/24 = 13.958…
+        if (video.currentTime > lastTime) video.currentTime = lastTime;
+      });
+
+      // ---- Inicialización -----------------------------------------
+      function initializeVideo() {
+        if (initialized) return;
+        if (!Number.isFinite(video.duration) || video.duration <= 0) return;
+
+        initialized = true;
+        ready = true;
+        video.loop = false;
+        video.pause();
+        try { video.currentTime = TIME.START; } catch (error) { /* ignore */ }
+        startIntro();
+      }
+
+      video.addEventListener('loadedmetadata', initializeVideo);
+      if (video.readyState >= 1) initializeVideo();
+    })();
   </script>
 <script src="xoxobot-widget.js"></script>
 </body>
