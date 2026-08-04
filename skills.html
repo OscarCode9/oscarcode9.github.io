@@ -672,7 +672,7 @@
     <div class="modal-content" id="modal-content"></div>
     <div class="modal-footer">
       <a href="#!" class="modal-close"><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></a>
-      <a href="#" id="modal-download" download class="btn-download">
+      <a href="#" id="modal-download" download class="btn-download" onclick="trackModalDownload(event)">
         <i class="material-icons" style="font-size:1.1rem;">download</i> <span id="modal-download-label"></span>
       </a>
     </div>
@@ -859,7 +859,7 @@
             <div class="card-meta">
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">archive</i> ${s.sizeHuman}</span>
               <span style="display:inline-flex;align-items:center;gap:8px;">
-                <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/skills/${s.slug}" style="font-size:0.72rem;display:inline-flex;align-items:center;gap:4px;"><span class="ov-dot"></span><span class="ov-count">-</span></span>
+                <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-viewonly data-ov-path="/skills/${s.slug}" style="font-size:0.72rem;display:inline-flex;align-items:center;gap:4px;"><i class="fas fa-eye" style="font-size:0.68rem;"></i><span class="ov-count">-</span></span>
                 <span class="card-download"><i class="material-icons">download</i> ${t('descargarDirecto')}</span>
               </span>
             </div>
@@ -882,10 +882,11 @@
         });
       });
 
-      loadSkillVisits();
+      loadSkillStats();
     }
 
     function openModal(slug) {
+      window.currentSkillSlug = slug;
       const skill = ALL_SKILLS.find(s => s.slug === slug);
       if (!skill) return;
 
@@ -901,7 +902,8 @@
           <span><i class="fas fa-archive" style="margin-right:4px;"></i>${skill.sizeHuman}</span>
           <span><i class="fas fa-file-lines" style="margin-right:4px;"></i>${skill.fileCount} ${t('archivos')}</span>
           <span><i class="fas fa-lock" style="margin-right:4px;"></i>${t('sanitizado')}</span>
-          <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/skills/${skill.slug}" style="font-size:0.75rem;display:inline-flex;align-items:center;gap:4px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">-</span></span>
+          <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-viewonly data-ov-path="/skills/${skill.slug}" style="font-size:0.75rem;display:inline-flex;align-items:center;gap:4px;"><i class="fas fa-eye" style="font-size:0.7rem;"></i><span class="ov-count">-</span></span>
+          <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-dlonly data-ov-path="/skills/${skill.slug}" style="font-size:0.75rem;display:inline-flex;align-items:center;gap:4px;"><i class="fas fa-download" style="font-size:0.7rem;"></i><span class="ov-count">-</span></span>
         </div>
         <div class="readme">${renderReadme(skill.readme)}</div>
         <div class="install-hint">
@@ -913,7 +915,7 @@
       btn.download = `${skill.slug}.zip`;
       document.getElementById('modal-download-label').textContent = `${t('descargar')} ${escapeHtml(skillText(skill, 'name'))}`;
       M.Modal.getInstance(modal).open();
-      registerVisit(skill.slug);
+      registerSkillView(skill.slug);
     }
 
     function clearAllFilters() {
@@ -925,41 +927,56 @@
       renderGrid();
     }
 
-    const VISITS_API = 'https://agents.oventlabs.net';
+    const SKILLS_API = 'https://agents.oventlabs.net/api/skills';
 
-    function visitsPath(slug) {
-      return '/skills/' + slug;
+    function slugFromPath(path) {
+      return String(path || '').split('/').filter(Boolean).pop() || '';
     }
 
-    async function loadSkillVisits() {
-      const badges = document.querySelectorAll('[data-ov-visits]');
-      const paths = new Set([...badges].map(b => b.getAttribute('data-ov-path')));
-      for (const path of paths) {
-        try {
-          const res = await fetch(`${VISITS_API}/api/visits?path=${encodeURIComponent(path)}`);
-          if (!res.ok) continue;
-          const data = await res.json();
-          badges.forEach(b => {
-            if (b.getAttribute('data-ov-path') === path) {
-              const el = b.querySelector('.ov-count');
-              if (el) el.textContent = (data.count ?? 0).toLocaleString('es-MX');
-            }
-          });
-        } catch (e) { /* silencioso */ }
-      }
-    }
-
-    async function registerVisit(slug) {
-      const path = visitsPath(slug);
+    async function loadSkillStats() {
+      const badges = document.querySelectorAll('[data-ov-path^="/skills/"]');
+      if (!badges.length) return;
       try {
-        await fetch(`${VISITS_API}/api/visits/hit`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ path }),
-          credentials: 'omit'
+        const res = await fetch(`${SKILLS_API}/stats`, { headers: { 'Content-Type': 'application/json' } });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.stats) return;
+        badges.forEach(b => {
+          const slug = slugFromPath(b.getAttribute('data-ov-path'));
+          const stat = data.stats[slug];
+          if (!stat) return;
+          const el = b.querySelector('.ov-count');
+          if (el && b.hasAttribute('data-ov-viewonly')) {
+            el.textContent = (stat.views ?? 0).toLocaleString('es-MX');
+          } else if (el && b.hasAttribute('data-ov-dlonly')) {
+            el.textContent = (stat.downloads ?? 0).toLocaleString('es-MX');
+          } else if (el) {
+            el.textContent = (stat.views ?? 0).toLocaleString('es-MX');
+          }
         });
       } catch (e) { /* silencioso */ }
-      loadSkillVisits();
+    }
+
+    async function registerSkillView(slug) {
+      try {
+        await fetch(`${SKILLS_API}/view`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug })
+        });
+      } catch (e) { /* silencioso */ }
+      loadSkillStats();
+    }
+
+    async function registerSkillDownload(slug) {
+      try {
+        await fetch(`${SKILLS_API}/download`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug })
+        });
+      } catch (e) { /* silencioso */ }
+      loadSkillStats();
     }
 
     function updateSearchClear() {
@@ -1006,6 +1023,10 @@
 
       loadSkills();
     });
+
+    function trackModalDownload(e) {
+      if (window.currentSkillSlug) registerSkillDownload(window.currentSkillSlug);
+    }
 
     const originalToggle = window.toggleLanguage;
     if (originalToggle) {
