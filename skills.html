@@ -615,6 +615,41 @@
     .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow); }
     .btn-download:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
+    .btn-share {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-share:hover {
+      color: var(--primary);
+      border-color: rgba(0, 212, 255, 0.4);
+      background: rgba(0, 212, 255, 0.06);
+    }
+
+    .btn-share:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .btn-share.copied { color: var(--success); border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08); }
+    .btn-share .material-icons { font-size: 1.05rem; }
+
+    .modal-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .toast { border-radius: 10px !important; font-family: 'Inter', sans-serif; }
+
     .install-hint {
       margin-top: 14px;
       font-size: 0.8rem;
@@ -719,9 +754,14 @@
     <div class="modal-content" id="modal-content"></div>
     <div class="modal-footer">
       <a href="#!" class="modal-close"><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></a>
-      <a href="#" id="modal-download" download class="btn-download" onclick="trackModalDownload(event)">
-        <i class="material-icons" style="font-size:1.1rem;">download</i> <span id="modal-download-label"></span>
-      </a>
+      <div class="modal-footer-actions">
+        <button type="button" id="modal-share" class="btn-share" onclick="shareCurrentSkill()">
+          <i class="material-icons">link</i> <span id="modal-share-label"></span>
+        </button>
+        <a href="#" id="modal-download" download class="btn-download" onclick="trackModalDownload(event)">
+          <i class="material-icons" style="font-size:1.1rem;">download</i> <span id="modal-download-label"></span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -736,6 +776,7 @@
     let ALL_SKILLS = [];
     let ACTIVE_FILTER = 'all';
     let SEARCH_QUERY = '';
+    let LOADED_API = '';
 
     const API_URLS = [
       'https://vida.oventlabs.net/api/skills',
@@ -767,7 +808,11 @@
         destacadas: 'destacadas',
         verDetalle: 'Ver detalle',
         sidebarTitle: 'Categorías',
-        noResultadosTitulo: 'Sin resultados'
+        noResultadosTitulo: 'Sin resultados',
+        compartir: 'Compartir',
+        linkCopiado: 'Link copiado al portapapeles',
+        linkError: 'No se pudo copiar el link',
+        compartirTitulo: 'Skill de OscarCode9'
       },
       en: {
         all: 'All',
@@ -793,7 +838,11 @@
         destacadas: 'featured',
         verDetalle: 'View details',
         sidebarTitle: 'Categories',
-        noResultadosTitulo: 'No results'
+        noResultadosTitulo: 'No results',
+        compartir: 'Share',
+        linkCopiado: 'Link copied to clipboard',
+        linkError: 'Could not copy the link',
+        compartirTitulo: 'OscarCode9 Skill'
       }
     };
 
@@ -973,12 +1022,7 @@
       setupScrollSpy();
     }
 
-    function openModal(slug) {
-      window.currentSkillSlug = slug;
-      const skill = ALL_SKILLS.find(s => s.slug === slug);
-      if (!skill) return;
-
-      const modal = document.getElementById('skill-modal');
+    function renderModalContent(skill) {
       document.getElementById('modal-content').innerHTML = `
         <div class="modal-header">
           <h3 style="font-family:'Fira Code',monospace;">${escapeHtml(skillText(skill, 'name'))}</h3>
@@ -993,7 +1037,7 @@
           <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-viewonly data-ov-path="/skills/${skill.slug}" style="font-size:0.75rem;display:inline-flex;align-items:center;gap:4px;"><i class="fas fa-eye" style="font-size:0.7rem;"></i><span class="ov-count">-</span></span>
           <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-dlonly data-ov-path="/skills/${skill.slug}" style="font-size:0.75rem;display:inline-flex;align-items:center;gap:4px;"><i class="fas fa-download" style="font-size:0.7rem;"></i><span class="ov-count">-</span></span>
         </div>
-        <div class="readme">${renderReadme(skill.readme)}</div>
+        ${skill.readme ? `<div class="readme">${renderReadme(skill.readme)}</div>` : ''}
         <div class="install-hint">
           ${t('instalar')}
         </div>
@@ -1002,8 +1046,116 @@
       btn.href = skill.downloadUrl;
       btn.download = `${skill.slug}.zip`;
       document.getElementById('modal-download-label').textContent = `${t('descargar')} ${escapeHtml(skillText(skill, 'name'))}`;
-      M.Modal.getInstance(modal).open();
+      const shareBtn = document.getElementById('modal-share');
+      shareBtn.classList.remove('copied');
+      shareBtn.querySelector('.material-icons').textContent = 'link';
+      document.getElementById('modal-share-label').textContent = t('compartir');
+      loadSkillStats();
+    }
+
+    function openModal(slug) {
+      const skill = ALL_SKILLS.find(s => s.slug === slug);
+      if (!skill) return;
+      window.currentSkillSlug = slug;
+      renderModalContent(skill);
+      ensureReadme(skill);
+      M.Modal.getInstance(document.getElementById('skill-modal')).open();
+      syncUrlToSkill(skill);
       registerSkillView(skill.slug);
+    }
+
+    /* ---------- Deep link: skills.html?skill=<slug> ---------- */
+
+    const BASE_TITLE = document.title;
+
+    function skillUrl(slug) {
+      const url = new URL(window.location.href);
+      url.hash = '';
+      url.search = '';
+      url.searchParams.set('skill', slug);
+      return url.toString();
+    }
+
+    function slugFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = params.get('skill');
+      if (fromQuery) return fromQuery.trim();
+      const hash = decodeURIComponent(window.location.hash.replace(/^#/, '')).trim();
+      if (!hash || hash === '!') return '';
+      return hash.replace(/^skill=/, '');
+    }
+
+    function syncUrlToSkill(skill) {
+      history.replaceState({ skill: skill.slug }, '', skillUrl(skill.slug));
+      document.title = `${skillText(skill, 'name')} | ${BASE_TITLE}`;
+    }
+
+    function clearSkillUrl() {
+      const url = new URL(window.location.href);
+      url.search = '';
+      url.hash = '';
+      history.replaceState({}, '', url.toString());
+      document.title = BASE_TITLE;
+    }
+
+    function openSkillFromUrl() {
+      const slug = slugFromUrl();
+      if (!slug) return;
+      const skill = ALL_SKILLS.find(s => s.slug === slug);
+      if (!skill) { clearSkillUrl(); return; }
+      openModal(skill.slug);
+      const card = document.querySelector(`.skill-card[data-slug="${CSS.escape(skill.slug)}"]`);
+      if (card) card.scrollIntoView({ block: 'center', behavior: 'auto' });
+    }
+
+    async function shareCurrentSkill() {
+      const slug = window.currentSkillSlug;
+      if (!slug) return;
+      const skill = ALL_SKILLS.find(s => s.slug === slug);
+      const url = skillUrl(slug);
+      const btn = document.getElementById('modal-share');
+
+      // navigator.share solo en móvil: en escritorio abre un diálogo nativo que bloquea la página
+      const isTouchDevice = window.matchMedia('(pointer: coarse)').matches && window.innerWidth <= 992;
+
+      if (isTouchDevice && navigator.share) {
+        try {
+          await navigator.share({
+            title: skill ? `${skillText(skill, 'name')} — ${t('compartirTitulo')}` : t('compartirTitulo'),
+            text: skill ? skillText(skill, 'description') : '',
+            url
+          });
+          return;
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+        }
+      }
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = url;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        btn.classList.add('copied');
+        btn.querySelector('.material-icons').textContent = 'check';
+        document.getElementById('modal-share-label').textContent = t('linkCopiado');
+        M.toast({ html: t('linkCopiado'), classes: 'toast', displayLength: 2200 });
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.querySelector('.material-icons').textContent = 'link';
+          document.getElementById('modal-share-label').textContent = t('compartir');
+        }, 2200);
+      } catch (e) {
+        M.toast({ html: t('linkError'), classes: 'toast', displayLength: 2600 });
+      }
     }
 
     function clearAllFilters() {
@@ -1072,6 +1224,21 @@
       else clear.classList.remove('visible');
     }
 
+    // El índice de la API viene sin `readme` (pesa mucho); se pide por skill al abrir el modal.
+    async function ensureReadme(skill) {
+      if (skill.readme || skill._readmeTried) return;
+      if (!LOADED_API || !LOADED_API.endsWith('/api/skills')) return;
+      skill._readmeTried = true;
+      try {
+        const res = await fetch(`${LOADED_API}/${encodeURIComponent(skill.slug)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || !data.readme) return;
+        skill.readme = data.readme;
+        if (window.currentSkillSlug === skill.slug) renderModalContent(skill);
+      } catch (e) { /* silencioso */ }
+    }
+
     async function loadSkills() {
       const grid = document.getElementById('grid-content');
       for (const url of API_URLS) {
@@ -1081,7 +1248,9 @@
           const data = await res.json();
           if (!data.skills || !data.skills.length) continue;
           ALL_SKILLS = data.skills;
+          LOADED_API = url;
           renderGrid();
+          openSkillFromUrl();
           return;
         } catch (e) {
           console.warn('API falló, probando siguiente:', url, e);
@@ -1093,6 +1262,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('year').textContent = new Date().getFullYear();
       M.AutoInit();
+      M.Modal.init(document.getElementById('skill-modal'), {
+        onCloseEnd: () => {
+          window.currentSkillSlug = null;
+          clearSkillUrl();
+        }
+      });
 
       const input = document.getElementById('search-input');
       input.placeholder = t('buscador');
@@ -1121,6 +1296,10 @@
         const input = document.getElementById('search-input');
         input.placeholder = t('buscador');
         renderGrid();
+        if (window.currentSkillSlug) {
+          const skill = ALL_SKILLS.find(s => s.slug === window.currentSkillSlug);
+          if (skill) { renderModalContent(skill); syncUrlToSkill(skill); }
+        }
       };
     }
   </script>
