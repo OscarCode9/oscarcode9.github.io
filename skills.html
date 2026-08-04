@@ -847,7 +847,10 @@
             <p>${escapeHtml(skillText(s, 'description'))}</p>
             <div class="card-meta">
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">archive</i> ${s.sizeHuman}</span>
-              <span class="card-download"><i class="material-icons">download</i> ${t('descargarDirecto')}</span>
+              <span style="display:inline-flex;align-items:center;gap:8px;">
+                <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/skills/${s.slug}" style="font-size:0.72rem;display:inline-flex;align-items:center;gap:4px;"><span class="ov-dot"></span><span class="ov-count">-</span></span>
+                <span class="card-download"><i class="material-icons">download</i> ${t('descargarDirecto')}</span>
+              </span>
             </div>
           </div>
         </div>`;
@@ -867,6 +870,8 @@
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
         });
       });
+
+      loadSkillVisits();
     }
 
     function openModal(slug) {
@@ -882,9 +887,10 @@
         </div>
         <p class="desc">${escapeHtml(skillText(skill, 'description'))}</p>
         <div class="meta-row">
-          <span>📦 ${skill.sizeHuman}</span>
-          <span>📄 ${skill.fileCount} ${t('archivos')}</span>
-          <span>🔒 ${t('sanitizado')}</span>
+          <span><i class="fas fa-archive" style="margin-right:4px;"></i>${skill.sizeHuman}</span>
+          <span><i class="fas fa-file-lines" style="margin-right:4px;"></i>${skill.fileCount} ${t('archivos')}</span>
+          <span><i class="fas fa-lock" style="margin-right:4px;"></i>${t('sanitizado')}</span>
+          <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/skills/${skill.slug}" style="font-size:0.75rem;display:inline-flex;align-items:center;gap:4px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">-</span></span>
         </div>
         <div class="readme">${renderReadme(skill.readme)}</div>
         <div class="install-hint">
@@ -896,6 +902,7 @@
       btn.download = `${skill.slug}.zip`;
       document.getElementById('modal-download-label').textContent = `${t('descargar')} ${escapeHtml(skillText(skill, 'name'))}`;
       M.Modal.getInstance(modal).open();
+      registerVisit(skill.slug);
     }
 
     function clearAllFilters() {
@@ -905,6 +912,43 @@
       updateSearchClear();
       renderFilters();
       renderGrid();
+    }
+
+    const VISITS_API = 'https://agents.oventlabs.net';
+
+    function visitsPath(slug) {
+      return '/skills/' + slug;
+    }
+
+    async function loadSkillVisits() {
+      const badges = document.querySelectorAll('[data-ov-visits]');
+      const paths = new Set([...badges].map(b => b.getAttribute('data-ov-path')));
+      for (const path of paths) {
+        try {
+          const res = await fetch(`${VISITS_API}/api/visits?path=${encodeURIComponent(path)}`);
+          if (!res.ok) continue;
+          const data = await res.json();
+          badges.forEach(b => {
+            if (b.getAttribute('data-ov-path') === path) {
+              const el = b.querySelector('.ov-count');
+              if (el) el.textContent = (data.count ?? 0).toLocaleString('es-MX');
+            }
+          });
+        } catch (e) { /* silencioso */ }
+      }
+    }
+
+    async function registerVisit(slug) {
+      const path = visitsPath(slug);
+      try {
+        await fetch(`${VISITS_API}/api/visits/hit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path }),
+          credentials: 'omit'
+        });
+      } catch (e) { /* silencioso */ }
+      loadSkillVisits();
     }
 
     function updateSearchClear() {
