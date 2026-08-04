@@ -673,6 +673,8 @@
             <div class="card-meta">
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">archive</i> ${s.sizeHuman}</span>
               <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">description</i> ${s.fileCount} ${t('archivos')}</span>
+              <span title="${t('vistas')}"><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">visibility</i> <span class="stat-views" data-slug="${s.slug}">${fmtCount((SKILL_STATS[s.slug] || {}).views)}</span></span>
+              <span title="${t('descargas')}"><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">download</i> <span class="stat-downloads" data-slug="${s.slug}">${fmtCount((SKILL_STATS[s.slug] || {}).downloads)}</span></span>
             </div>
           </div>
         </div>`;
