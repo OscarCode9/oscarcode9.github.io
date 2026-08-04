@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills Library | OscarCode9</title>
+  <meta name="description" content="Biblioteca de skills de IA — empaquetadas, sanitizadas y listas para descargar.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <style>
+    :root {
+      --primary: #00d4ff;
+      --primary-glow: rgba(0, 212, 255, 0.15);
+      --accent: #7c3aed;
+      --success: #10b981;
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(255, 255, 255, 0.08);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background: rgba(10, 10, 15, 0.9) !important;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: fixed;
+      width: 100%;
+      z-index: 9999;
+      height: 70px;
+      line-height: 70px;
+    }
+
+    .brand-logo {
+      font-family: 'Fira Code', monospace !important;
+      font-weight: 600;
+    }
+
+    nav ul li a {
+      color: var(--text-secondary) !important;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-transform: none;
+    }
+
+    nav ul li a.active {
+      color: var(--primary) !important;
+      font-weight: 600;
+    }
+
+    .sidenav { background: var(--bg-card) !important; }
+    .sidenav li a { color: var(--text-primary) !important; }
+
+    .hero {
+      padding: 140px 0 40px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'Fira Code', monospace;
+      font-size: 2.4rem;
+      font-weight: 600;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p { color: var(--text-secondary); max-width: 640px; margin: 12px auto 0; }
+
+    .hero .badge {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+    }
+
+    .filters {
+      padding: 8px 0 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .filter-chip {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-chip.active {
+      background: var(--gradient-1);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .grid { padding-bottom: 60px; }
+
+    .skill-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.25s;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 30px var(--primary-glow);
+    }
+
+    .skill-card .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .skill-card .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .skill-card .area-tag {
+      font-size: 0.68rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .skill-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .skill-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .skill-card .card-meta {
+      margin-top: 12px;
+      display: flex;
+      gap: 14px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .modal-content h3 { font-family: 'Fira Code', monospace; }
+
+    .modal {
+      background: var(--bg-card) !important;
+      max-width: 860px !important;
+      max-height: 88% !important;
+      border-radius: 14px !important;
+      border: 1px solid var(--border);
+    }
+
+    .modal .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .modal .area-tag {
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .modal .desc { color: var(--text-secondary); margin-bottom: 16px; }
+
+    .modal .readme {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      max-height: 340px;
+      overflow-y: auto;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .modal .readme h1 { font-size: 1.15rem; color: var(--primary); margin-bottom: 8px; }
+    .modal .readme h2 { font-size: 1rem; color: var(--primary); margin: 10px 0 6px; }
+    .modal .readme h3 { font-size: 0.92rem; color: var(--text-primary); margin: 8px 0 4px; }
+    .modal .readme code { color: var(--primary); }
+    .modal .readme a { color: var(--primary); }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      margin: 14px 0;
+      padding: 12px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .btn-download {
+      background: var(--gradient-1);
+      color: #fff;
+      border: none;
+      padding: 12px 26px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow); }
+
+    .install-hint {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--bg-dark);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'Fira Code', monospace;
+    }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .loading { text-align: center; padding: 60px 0; color: var(--text-muted); }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 16px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-box {
+      text-align: center;
+      padding: 40px;
+      color: #f87171;
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 12px;
+      background: rgba(248, 113, 113, 0.05);
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-logo">{ OscarCode }</a>
+        <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="skills.html" class="active">Skills</a></li>
+          <li><a href="index.html#experience">Experiencia</a></li>
+          <li><a href="index.html#about">Sobre Mí</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#portfolio">Portafolio</a></li>
+          <li><a href="index.html#contact">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-nav">
+    <li><a href="skills.html" class="active">Skills</a></li>
+    <li><a href="index.html#experience">Experiencia</a></li>
+    <li><a href="index.html#about">Sobre Mí</a></li>
+    <li><a href="index.html#blog">Blog</a></li>
+    <li><a href="index.html#portfolio">Portafolio</a></li>
+    <li><a href="index.html#contact">Contacto</a></li>
+  </ul>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Skills Library</h1>
+      <p>Skills de IA para tus agentes — empaquetadas, sanitizadas (sin credenciales) y listas para instalar en cualquier herramienta que soporte skills.</p>
+      <span class="badge" id="badge-count">Cargando biblioteca…</span>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="filters" id="filters"></div>
+  </div>
+
+  <div class="container grid">
+    <div id="grid-content">
+      <div class="loading">
+        <div class="spinner"></div>
+        Cargando skills…
+      </div>
+    </div>
+  </div>
+
+  <div id="skill-modal" class="modal">
+    <div class="modal-content" id="modal-content"></div>
+    <div class="modal-footer" style="background: var(--bg-card); border-top: 1px solid var(--border); padding: 12px 24px;">
+      <a href="#!" class="modal-close" style="color: var(--text-secondary); margin-right: 12px;">Cerrar</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      &copy; <span id="year"></span> OscarCode9 · Skills Library
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    let ALL_SKILLS = [];
+    let ACTIVE_FILTER = 'all';
+
+    const API_URLS = [
+      'https://vida.oventlabs.net/api/skills',
+      'https://oscarcode9-skills.s3.us-east-2.amazonaws.com/index.json'
+    ];
+
+    const AREA_LABELS = {
+      'frontend-ui-ux': 'Frontend / UI / UX',
+      'backend-nodejs': 'Backend / Node',
+      'databases': 'Bases de datos',
+      'devops-deploy': 'DevOps / Deploy',
+      'testing-qa': 'Testing / QA',
+      'documentos-reportes': 'Documentos / Reportes',
+      'email-comunicaciones': 'Email',
+      'ai-agentes-tools': 'AI / Agentes',
+      'movil-flutter': 'Móvil / Flutter',
+      'proyectos-especificos': 'Proyectos'
+    };
+
+    function areaLabel(area) {
+      return AREA_LABELS[area] || area;
+    }
+
+    function initials(name) {
+      return name.split(/[-_]/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function renderReadme(md) {
+      return escapeHtml(md)
+        .replace(/^##### (.*)$/gm, '<h3>$1</h3>')
+        .replace(/^#### (.*)$/gm, '<h3>$1</h3>')
+        .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.*)$/gm, '<h1>$1</h1>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    }
+
+    function renderFilters() {
+      const areas = ['all', ...new Set(ALL_SKILLS.map(s => s.area))];
+      const labels = { 'all': 'Todas' };
+      const el = document.getElementById('filters');
+      el.innerHTML = areas.map(a =>
+        `<button class="filter-chip ${ACTIVE_FILTER === a ? 'active' : ''}" data-area="${a}">${labels[a] || areaLabel(a)}</button>`
+      ).join('');
+      el.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          ACTIVE_FILTER = chip.dataset.area;
+          renderFilters();
+          renderGrid();
+        });
+      });
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('grid-content');
+      const skills = ACTIVE_FILTER === 'all'
+        ? ALL_SKILLS
+        : ALL_SKILLS.filter(s => s.area === ACTIVE_FILTER);
+
+      if (!skills.length) {
+        grid.innerHTML = '<div class="error-box">No hay skills en esta área.</div>';
+        return;
+      }
+
+      grid.innerHTML = '<div class="row">' + skills.map(s => `
+        <div class="col s12 m6 l4">
+          <div class="skill-card" data-slug="${s.slug}">
+            <div class="card-top">
+              <div class="icon">${initials(s.name)}</div>
+              <span class="area-tag">${areaLabel(s.area)}</span>
+            </div>
+            <h3>${escapeHtml(s.name)}</h3>
+            <p>${escapeHtml(s.description)}</p>
+            <div class="card-meta">
+              <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">archive</i> ${s.sizeHuman}</span>
+              <span><i class="material-icons" style="font-size:0.8rem;vertical-align:-1px;">description</i> ${s.fileCount} archivos</span>
+            </div>
+          </div>
+        </div>
+      `).join('') + '</div>';
+
+      grid.querySelectorAll('.skill-card').forEach(card => {
+        card.addEventListener('click', () => openModal(card.dataset.slug));
+      });
+    }
+
+    function openModal(slug) {
+      const skill = ALL_SKILLS.find(s => s.slug === slug);
+      if (!skill) return;
+
+      const modal = document.getElementById('skill-modal');
+      document.getElementById('modal-content').innerHTML = `
+        <div class="modal-header">
+          <h3>${escapeHtml(skill.name)}</h3>
+          <span class="area-tag">${areaLabel(skill.area)}</span>
+        </div>
+        <p class="desc">${escapeHtml(skill.description)}</p>
+        <div class="meta-row">
+          <span>📦 ${skill.sizeHuman}</span>
+          <span>📄 ${skill.fileCount} archivos</span>
+          <span>🔒 sanitizado</span>
+        </div>
+        <div class="readme">${renderReadme(skill.readme)}</div>
+        <div class="install-hint">
+          Instalación: descarga el zip, descomprime y mueve la carpeta a <b>~/.agents/skills/</b> (global) o a <b>.agents/skills/</b> de tu proyecto. Lista en: <b>skills.sh</b> / cualquier agente compatible.
+        </div>
+        <div style="margin-top: 18px;">
+          <a href="${skill.downloadUrl}" download class="btn-download">
+            <i class="material-icons" style="font-size:1.1rem;">download</i> Descargar ${escapeHtml(skill.name)}
+          </a>
+        </div>
+      `;
+      M.Modal.getInstance(modal).open();
+    }
+
+    async function loadSkills() {
+      const grid = document.getElementById('grid-content');
+      const badge = document.getElementById('badge-count');
+      for (const url of API_URLS) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (!data.skills || !data.skills.length) continue;
+          ALL_SKILLS = data.skills;
+          badge.textContent = `${data.count} skills · actualizado ${new Date(data.updatedAt).toLocaleDateString('es-MX')}`;
+          renderFilters();
+          renderGrid();
+          return;
+        } catch (e) {
+          console.warn('API falló, probando siguiente:', url, e);
+        }
+      }
+      grid.innerHTML = '<div class="error-box">No se pudo cargar la biblioteca. Intenta más tarde.</div>';
+      badge.textContent = 'Error de conexión';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      M.AutoInit();
+      loadSkills();
+    });
+  </script>
+</body>
+
+</html>
