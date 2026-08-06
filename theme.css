@@ -443,20 +443,25 @@
 
 /* Hero Mascot / Visual Polish */
 .hero-video {
-  mix-blend-mode: normal;
+  mix-blend-mode: screen;
 }
 
 [data-theme="light"] .hero-video {
-  mix-blend-mode: normal !important;
-  filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.12)) !important;
+  mix-blend-mode: screen !important;
+  filter: none !important;
+}
+
+[data-theme="light"] .hero-image-wrapper {
+  background: radial-gradient(circle at center, #0a0a14 0%, #161b26 55%, transparent 72%) !important;
+  border-radius: 50% !important;
 }
 
 [data-theme="light"] .hero-image-glow,
 [data-theme="light"] .hero .hero-image-glow {
   display: block !important;
-  opacity: 0.65 !important;
+  opacity: 0.4 !important;
   visibility: visible !important;
-  background: radial-gradient(circle at center, rgba(2, 132, 199, 0.12) 0%, rgba(124, 58, 237, 0.08) 55%, transparent 70%) !important;
+  background: radial-gradient(circle at center, rgba(0, 212, 255, 0.3) 0%, rgba(124, 58, 237, 0.2) 60%, transparent 75%) !important;
 }
 
 [data-theme="light"] .hero::before,
@@ -465,12 +470,10 @@
 [data-theme="light"] section.hero::after {
   display: none !important;
   opacity: 0 !important;
-  visibility: hidden !important;
-  background: none !important;
 }
 
 [data-theme="light"] .hero-image-wrapper::after {
-  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.14) 0%, rgba(15, 23, 42, 0) 70%);
+  display: none !important;
 }
 
 /* Specific Index.html Sections & Components Override for Light Mode */
