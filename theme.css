@@ -437,15 +437,22 @@
   filter: none;
 }
 
-[data-theme="light"] .hero-image-glow {
+[data-theme="light"] .hero-image-glow,
+[data-theme="light"] .hero .hero-image-glow {
   display: none !important;
   opacity: 0 !important;
+  visibility: hidden !important;
+  background: none !important;
 }
 
 [data-theme="light"] .hero::before,
-[data-theme="light"] .hero::after {
+[data-theme="light"] .hero::after,
+[data-theme="light"] section.hero::before,
+[data-theme="light"] section.hero::after {
   display: none !important;
   opacity: 0 !important;
+  visibility: hidden !important;
+  background: none !important;
 }
 
 [data-theme="light"] .hero-image-wrapper::after {
