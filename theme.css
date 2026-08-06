@@ -442,8 +442,21 @@
 }
 
 /* Hero Mascot / Visual Polish */
+[data-theme="light"] .hero-image-wrapper {
+  background: radial-gradient(circle at 50% 50%, #0c0e14 0%, #161a26 62%, transparent 72%) !important;
+  border-radius: 50% !important;
+}
+
 [data-theme="light"] .hero-video {
-  filter: none;
+  mix-blend-mode: screen !important;
+  filter: none !important;
+}
+
+[data-theme="light"] .hero-image-glow {
+  background: radial-gradient(circle at center, rgba(0, 212, 255, 0.35) 0%, rgba(124, 58, 237, 0.25) 60%, transparent 75%) !important;
+  opacity: 0.6 !important;
+  display: block !important;
+  visibility: visible !important;
 }
 
 [data-theme="light"] .hero-image-wrapper::after {
