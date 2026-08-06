@@ -14,31 +14,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <script src="public/i18n.js"></script>
   <script src="visits-badge.js"></script>
-  <script>
-    // Tema light/dark — se aplica antes del primer paint para evitar flash
-    (function () {
-      function getTheme() {
-        var saved = localStorage.getItem('site-theme');
-        if (saved === 'light' || saved === 'dark') return saved;
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-      }
-      var current = getTheme();
-      document.documentElement.setAttribute('data-theme', current);
-      function updateIcons() {
-        document.querySelectorAll('.theme-icon').forEach(function (icon) {
-          icon.textContent = current === 'light' ? 'light_mode' : 'dark_mode';
-        });
-      }
-      function toggleTheme() {
-        current = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', current);
-        localStorage.setItem('site-theme', current);
-        updateIcons();
-      }
-      document.addEventListener('DOMContentLoaded', updateIcons);
-      window.toggleTheme = toggleTheme;
-    })();
-  </script>
+
 
   <style>
     :root {
@@ -704,25 +680,6 @@
 
     .loading { text-align: center; padding: 60px 0; color: var(--text-muted); }
 
-    /* TEMA LIGHT */
-    [data-theme="light"] {
-      --bg-dark: #f6f8fb;
-      --bg-card: #ffffff;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #94a3b8;
-      --border: rgba(15, 23, 42, 0.12);
-      --primary-glow: rgba(0, 212, 255, 0.2);
-      --accent-glow: rgba(124, 58, 237, 0.12);
-      --nav-bg: rgba(255, 255, 255, 0.88);
-      --sidebar-bg: rgba(255, 255, 255, 0.92);
-      --hover-bg: rgba(15, 23, 42, 0.05);
-      --soft-bg: rgba(15, 23, 42, 0.03);
-      --badge-bg: rgba(15, 23, 42, 0.06);
-      --clear-hover-bg: rgba(15, 23, 42, 0.06);
-      --skeleton-shimmer: linear-gradient(90deg, rgba(15,23,42,0.04) 25%, rgba(15,23,42,0.08) 50%, rgba(15,23,42,0.04) 75%);
-    }
-
     body { transition: background-color 0.3s ease, color 0.3s ease; }
     .skill-card, .sidenav, .modal { transition: background-color 0.3s ease, border-color 0.3s ease; }
 
@@ -734,6 +691,8 @@
       .btn-download:hover { transform: none; }
     }
   </style>
+  <link rel="stylesheet" href="theme.css">
+  <script src="theme.js"></script>
 </head>
 
 <body>
@@ -750,7 +709,6 @@
           <li><a href="index.html#blog">Blog</a></li>
           <li><a href="index.html#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
           <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
-          <li><a id="theme-toggle" onclick="toggleTheme()" style="cursor:pointer;" aria-label="Cambiar tema" title="Tema"><i class="material-icons theme-icon">dark_mode</i></a></li>
           <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
         </ul>
       </div>
@@ -764,7 +722,6 @@
     <li><a href="index.html#blog">Blog</a></li>
     <li><a href="index.html#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
     <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
-    <li><a id="theme-toggle-mobile" onclick="toggleTheme()" style="cursor:pointer;" aria-label="Cambiar tema" title="Tema"><i class="material-icons theme-icon">dark_mode</i></a></li>
     <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
   </ul>
 

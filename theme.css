@@ -1,0 +1,39 @@
+/* ============================================================
+   Tema light compartido — oscarcode9.github.io (todas las paginas)
+   Dark es el tema por defecto; [data-theme="light"] lo sobreescribe.
+   ============================================================ */
+
+[data-theme="light"] {
+  --bg-dark: #f6f8fb;
+  --bg-card: #ffffff;
+  --bg-code: #eef2f7;
+  --text-primary: #0f172a;
+  --text-secondary: rgba(15, 23, 42, 0.75);
+  --text-muted: rgba(15, 23, 42, 0.5);
+  --border: rgba(15, 23, 42, 0.12);
+  --primary-glow: rgba(0, 212, 255, 0.2);
+  --accent-glow: rgba(124, 58, 237, 0.12);
+  --nav-bg: rgba(255, 255, 255, 0.88);
+  --sidebar-bg: rgba(255, 255, 255, 0.92);
+  --hover-bg: rgba(15, 23, 42, 0.05);
+  --soft-bg: rgba(15, 23, 42, 0.03);
+  --badge-bg: rgba(15, 23, 42, 0.06);
+  --clear-hover-bg: rgba(15, 23, 42, 0.06);
+  --skeleton-shimmer: linear-gradient(90deg, rgba(15, 23, 42, 0.04) 25%, rgba(15, 23, 42, 0.08) 50%, rgba(15, 23, 42, 0.04) 75%);
+}
+
+/* Navbar / sidenav / sidebar: los fondos oscuros hardcodeados se aclaran */
+[data-theme="light"] nav {
+  background: var(--nav-bg) !important;
+}
+
+[data-theme="light"] .sidenav {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .skills-sidebar {
+  background: var(--sidebar-bg);
+}
+
+/* Transiciones suaves al cambiar de tema */
+body { transition: background-color 0.3s ease, color 0.3s ease; }
