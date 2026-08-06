@@ -411,7 +411,7 @@
         <span class="post-tag idea">Idea</span>
         <br><br>
         <i class="far fa-calendar"></i>
-        <span class="lang-es">Publicado: 3 de marzo de 2026 · Actualizado: 5 de marzo de 2026</span><span class="lang-en">Published: March 3, 2026 · Updated: March 5, 2026</span>
+        <span class="lang-es">Publicado: 3 de marzo de 2026 · Actualizado: 1 de agosto de 2026</span><span class="lang-en">Published: March 3, 2026 · Updated: August 1, 2026</span>
         &nbsp;|&nbsp;
         <i class="far fa-user"></i> Oscar Martinez
         &nbsp;|&nbsp;
@@ -587,13 +587,13 @@ class Node:
           <div class="token-count">52 tokens</div>
         </div>
         <div class="syntax-box kern">
-          <div class="syntax-label">KERN v0.2</div>
+          <div class="syntax-label">KERN v0.4 (Compact)</div>
           <pre><code>fn add(a,b)=a+b
 
 result=[x**2 for x in range(10) if x%2==0]
 
-cls Node{fn __init__(self,val){self.val=val}}</code></pre>
-          <div class="token-count"><span>41 tokens</span> · −21%</div>
+cls Node{fn __init__(self,a){self.val=a}}</code></pre>
+          <div class="token-count"><span>38 tokens</span> · −26.9%</div>
         </div>
       </div>
 
@@ -741,253 +741,277 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </div>
 
       <h2>
-        <span class="lang-es">Estado actual</span>
-        <span class="lang-en">Current Status</span>
+        <span class="lang-es">Estado actual & Benchmark moderno (Agosto 2026)</span>
+        <span class="lang-en">Current Status & Modern Benchmark (August 2026)</span>
       </h2>
 
       <p>
-        <span class="lang-es">La gramática v0.2 está completa y validada, pero eso ya no es lo más importante. Desde el 3 de marzo de 2026, Kern ya tiene pipeline completo <code>Python → Kern → Python</code> funcionando sobre benchmarks reales.</span>
-        <span class="lang-en">Grammar v0.2 is complete and validated, but that's no longer the main point. As of March 3, 2026, Kern already has a full <code>Python → Kern → Python</code> pipeline running on real benchmarks.</span>
+        <span class="lang-es">Kern ha evolucionado a la <strong>Gramática v0.4</strong> e introduce una arquitectura de perfil dual diseñada para equilibrar reversibilidad exacta y compresión de tokens:</span>
+        <span class="lang-en">Kern has evolved to <strong>Grammar v0.4</strong> and introduces a dual-profile architecture designed to balance exact reversibility with token compression:</span>
       </p>
+
+      <ul>
+        <li>
+          <span class="lang-es"><strong>Kern Reversible (por defecto):</strong> Preserva el 100% de los nombres e identificadores originales del código fuente de Python, garantizando una reconstrucción AST idéntica.</span>
+          <span class="lang-en"><strong>Kern Reversible (default):</strong> Preserves 100% of original Python source identifier names, guaranteeing identical AST reconstruction.</span>
+        </li>
+        <li>
+          <span class="lang-es"><strong>Kern Compact (opt-in con <code>compact=True</code>):</strong> Mantiene estables las funciones de entrada y APIs públicas, pero renombra variables locales utilizando un orden de alias óptimo para el tokenizer (BPE-aware) y aplica simplificaciones sintácticas conservadoras.</span>
+          <span class="lang-en"><strong>Kern Compact (opt-in with <code>compact=True</code>):</strong> Keeps entry functions and public APIs stable, but alpha-renames local variables using tokenizer-friendly alias ordering (BPE-aware) and applies conservative syntactic simplifications.</span>
+        </li>
+      </ul>
 
       <div class="callout info">
         <p>
-          <span class="lang-es"><strong>Actualización de implementación:</strong> transpilador y compilador inverso ya están construidos, con round-trip y validación funcional completos en HumanEval.</span>
-          <span class="lang-en"><strong>Implementation update:</strong> both the transpiler and inverse compiler are now built, with complete round-trip and functional validation on HumanEval.</span>
+          <span class="lang-es"><strong>Evaluación reproducible de mercado:</strong> Medido sobre las suites oficiales EvalPlus (HumanEval+ 164, MBPP+ 378) y BigCodeBench v0.1.4 (1,140 tareas), sumando <strong>1,682 programas reales de producción</strong>. Comparado directamente contra <code>python-minifier 3.2.0</code>.</span>
+          <span class="lang-en"><strong>Reproducible market evaluation:</strong> Measured across official EvalPlus suites (HumanEval+ 164, MBPP+ 378) and BigCodeBench v0.1.4 (1,140 tasks), totaling <strong>1,682 production programs</strong>. Compared directly against <code>python-minifier 3.2.0</code>.</span>
         </p>
       </div>
 
       <h3>
-        <span class="lang-es">Resultados de benchmark (3 mar 2026, actualizado)</span>
-        <span class="lang-en">Benchmark Results (Mar 3, 2026, updated)</span>
+        <span class="lang-es">1. Reducción de Tokens en Corpus Moderno (1,682 programas · cl100k_base)</span>
+        <span class="lang-en">1. Token Reduction on Modern Corpus (1,682 programs · cl100k_base)</span>
       </h3>
 
       <table class="diff-table">
         <thead>
           <tr>
-            <th><span class="lang-es">Escenario</span><span class="lang-en">Scenario</span></th>
-            <th><span class="lang-es">Python tokens</span><span class="lang-en">Python tokens</span></th>
-            <th><span class="lang-es">Kern tokens</span><span class="lang-en">Kern tokens</span></th>
-            <th><span class="lang-es">Reducción</span><span class="lang-en">Reduction</span></th>
+            <th><span class="lang-es">Dataset</span><span class="lang-en">Dataset</span></th>
+            <th><span class="lang-es">Python</span><span class="lang-en">Python</span></th>
+            <th><span class="lang-es">python-minifier</span><span class="lang-en">python-minifier</span></th>
+            <th><span class="lang-es">Kern Reversible</span><span class="lang-en">Kern Reversible</span></th>
+            <th><span class="lang-es">Kern Compact</span><span class="lang-en">Kern Compact</span></th>
+            <th><span class="lang-es">Ahorro Compact</span><span class="lang-en">Compact Savings</span></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><span class="lang-es">Gramática v0.2 (24 ejemplos sintéticos)</span><span class="lang-en">Grammar v0.2 (24 synthetic samples)</span></td>
-            <td>464</td><td>349</td><td style="color: var(--accent-green);">−24.8%</td>
+            <td>HumanEval+ (164)</td>
+            <td>10,571</td>
+            <td>7,813 (−26.09%)</td>
+            <td>7,736 (−26.82%)</td>
+            <td style="color: var(--accent-gold);"><strong>7,300</strong></td>
+            <td style="color: var(--accent-green);">−30.94%</td>
           </tr>
           <tr>
-            <td><span class="lang-es">HumanEval completo (164) · cl100k_base</span><span class="lang-en">Full HumanEval (164) · cl100k_base</span></td>
-            <td>30368</td><td>8873</td><td style="color: var(--accent-gold);"><strong>−70.8%</strong></td>
+            <td>MBPP+ (378)</td>
+            <td>15,183</td>
+            <td>11,565 (−23.83%)</td>
+            <td>11,023 (−27.40%)</td>
+            <td style="color: var(--accent-gold);"><strong>10,412</strong></td>
+            <td style="color: var(--accent-green);">−31.42%</td>
           </tr>
           <tr>
-            <td><span class="lang-es">MBPP train (374) · cl100k_base</span><span class="lang-en">MBPP train (374) · cl100k_base</span></td>
-            <td>21202</td><td>16786</td><td style="color: var(--accent-green);">−20.8%</td>
+            <td>BigCodeBench (1,140)</td>
+            <td>163,786</td>
+            <td>123,109 (−24.84%)</td>
+            <td>128,909 (−21.29%)</td>
+            <td style="color: var(--accent-gold);"><strong>118,278</strong></td>
+            <td style="color: var(--accent-green);">−27.79%</td>
           </tr>
           <tr>
-            <td><strong><span class="lang-es">HumanEval + MBPP train (538) · cl100k_base</span><span class="lang-en">HumanEval + MBPP train (538) · cl100k_base</span></strong></td>
-            <td><strong>51570</strong></td><td><strong>25659</strong></td><td style="color: var(--accent-gold);"><strong>−50.2%</strong></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>
-        <span class="lang-es">Benchmark multi-tokenizer (538 casos válidos)</span>
-        <span class="lang-en">Multi-tokenizer Benchmark (538 valid cases)</span>
-      </h3>
-
-      <table class="diff-table">
-        <thead>
-          <tr>
-            <th><span class="lang-es">Tokenizer</span><span class="lang-en">Tokenizer</span></th>
-            <th><span class="lang-es">HumanEval</span><span class="lang-en">HumanEval</span></th>
-            <th><span class="lang-es">MBPP train</span><span class="lang-en">MBPP train</span></th>
-            <th><span class="lang-es">Global (538)</span><span class="lang-en">Global (538)</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>cl100k_base</code></td>
-            <td style="color: var(--accent-green);">−70.78%</td>
-            <td style="color: var(--accent-green);">−20.83%</td>
-            <td style="color: var(--accent-gold);"><strong>−50.24%</strong></td>
-          </tr>
-          <tr>
-            <td><code>o200k_base</code></td>
-            <td style="color: var(--accent-green);">−70.58%</td>
-            <td style="color: var(--accent-green);">−20.31%</td>
-            <td style="color: var(--accent-gold);"><strong>−49.87%</strong></td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">LLaMA tokenizer (TinyLlama proxy)</span><span class="lang-en">LLaMA tokenizer (TinyLlama proxy)</span></td>
-            <td style="color: var(--accent-green);">−69.77%</td>
-            <td style="color: var(--accent-green);">−24.57%</td>
-            <td style="color: var(--accent-gold);"><strong>−50.09%</strong></td>
-          </tr>
-          <tr>
-            <td><code>codegen_350m_mono</code></td>
-            <td style="color: var(--accent-green);">−67.13%</td>
-            <td style="color: var(--accent-green);">−23.31%</td>
-            <td style="color: var(--accent-gold);"><strong>−47.48%</strong></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>
-        <span class="lang-es">Correctitud del pipeline (3 mar 2026)</span>
-        <span class="lang-en">Pipeline Correctness (Mar 3, 2026)</span>
-      </h3>
-
-      <table class="diff-table">
-        <thead>
-          <tr>
-            <th><span class="lang-es">Métrica</span><span class="lang-en">Metric</span></th>
-            <th><span class="lang-es">Resultado</span><span class="lang-en">Result</span></th>
-            <th><span class="lang-es">Objetivo</span><span class="lang-en">Target</span></th>
-            <th><span class="lang-es">Estado</span><span class="lang-en">Status</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="lang-es">Transpilación Python → Kern</span><span class="lang-en">Python → Kern transpilation</span></td>
-            <td>164/164</td><td>100%</td><td style="color: var(--accent-green);">PASS</td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Compilación Kern → Python</span><span class="lang-en">Kern → Python compilation</span></td>
-            <td>164/164</td><td>100%</td><td style="color: var(--accent-green);">PASS</td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Parseo Python de salida</span><span class="lang-en">Output Python parseability</span></td>
-            <td>164/164</td><td>100%</td><td style="color: var(--accent-green);">PASS</td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Equivalencia AST (normalizada)</span><span class="lang-en">AST equivalence (normalized)</span></td>
-            <td>164/164</td><td>&ge; 90%</td><td style="color: var(--accent-green);">PASS</td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Validación funcional HumanEval <code>check(entry_point)</code></span><span class="lang-en">HumanEval functional validation <code>check(entry_point)</code></span></td>
-            <td>164/164</td><td>&ge; 90%</td><td style="color: var(--accent-green);"><strong>PASS</strong></td>
+            <td><strong>Combinado (1,682)</strong></td>
+            <td><strong>189,540</strong></td>
+            <td>142,487 (−24.82%)</td>
+            <td>147,668 (−22.09%)</td>
+            <td style="color: var(--accent-gold);"><strong>135,990</strong></td>
+            <td style="color: var(--accent-gold);"><strong>−28.25%</strong></td>
           </tr>
         </tbody>
       </table>
 
       <p>
-        <span class="lang-es">Conclusión de esta fase: el pipeline ya está cerrado y validado. En 538 casos reales (HumanEval + MBPP train), Kern mantiene reducción de tokens cercana al 50% en promedio global y sin romper compilación ni correctitud funcional en HumanEval.</span>
-        <span class="lang-en">Phase conclusion: the pipeline is now closed and validated. Across 538 real cases (HumanEval + MBPP train), Kern sustains close to 50% global token reduction without breaking compilation or HumanEval functional correctness.</span>
-      </p>
-
-      <p>
-        <span class="lang-es"><strong>Afirmación del benchmark actual:</strong> en todos los datasets y tokenizers evaluados, Kern supera a SimPy y Token Sugar en robustez (parse/correctitud) y eficiencia de tokens dentro del mismo protocolo de evaluación.</span>
-        <span class="lang-en"><strong>Current benchmark claim:</strong> across all evaluated datasets and tokenizers, Kern outperforms SimPy and Token Sugar on robustness (parse/correctness) and token efficiency under the same evaluation protocol.</span>
+        <span class="lang-es">Kern Compact utiliza <strong>6,497 tokens menos que python-minifier</strong> en el total combinado (un 4.56% de compresión adicional sobre el código minificado) y gana individualmente en cada dataset evaluado. Bajo <code>o200k_base</code>, Kern Compact mantiene una ventaja de 6,167 tokens (4.24%).</span>
+        <span class="lang-en">Kern Compact uses <strong>6,497 fewer tokens than python-minifier</strong> in the combined total (4.56% additional compression relative to minified output) and wins individually on every evaluated dataset. Under <code>o200k_base</code>, Kern Compact maintains a 6,167-token advantage (4.24%).</span>
       </p>
 
       <h3>
-        <span class="lang-es">Update de dataset para fine-tuning (5 mar 2026)</span>
-        <span class="lang-en">Fine-Tuning Dataset Update (Mar 5, 2026)</span>
+        <span class="lang-es">2. Preservación Funcional en EvalPlus (Base + Extra Tests)</span>
+        <span class="lang-en">2. Functional Preservation in EvalPlus (Base + Extra Tests)</span>
+      </h3>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Dataset</span><span class="lang-en">Dataset</span></th>
+            <th><span class="lang-es">Python referencia</span><span class="lang-en">Python reference</span></th>
+            <th><span class="lang-es">python-minifier</span><span class="lang-en">python-minifier</span></th>
+            <th><span class="lang-es">Kern Reversible</span><span class="lang-en">Kern Reversible</span></th>
+            <th><span class="lang-es">Kern Compact</span><span class="lang-en">Kern Compact</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>HumanEval+ (164)</td>
+            <td>163/164</td>
+            <td>163/164</td>
+            <td style="color: var(--accent-green);">163/164</td>
+            <td style="color: var(--accent-green);">163/164</td>
+          </tr>
+          <tr>
+            <td>MBPP+ (378)</td>
+            <td>377/378</td>
+            <td>378/378</td>
+            <td style="color: var(--accent-green);">378/378</td>
+            <td style="color: var(--accent-green);">378/378</td>
+          </tr>
+          <tr>
+            <td><strong>Total Combinado (542)</strong></td>
+            <td>540/542</td>
+            <td>541/542</td>
+            <td style="color: var(--accent-gold);"><strong>541/542</strong></td>
+            <td style="color: var(--accent-gold);"><strong>541/542</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span class="lang-es">3. Auditoría del Tokenizer `o200k_harmony`</span>
+        <span class="lang-en">3. `o200k_harmony` Tokenizer Audit</span>
       </h3>
 
       <p>
-        <span class="lang-es">Ya está construido el primer corpus grande para entrenamiento de modelo: <code>20,000</code> pares Python → Kern generados automáticamente desde CodeSearchNet (Python), con pipeline de validación activo (<code>Python → Kern → Python</code> + <code>ast.parse</code>).</span>
-        <span class="lang-en">The first large model-training corpus is now ready: <code>20,000</code> Python → Kern pairs automatically generated from CodeSearchNet (Python), with active validation pipeline (<code>Python → Kern → Python</code> + <code>ast.parse</code>).</span>
+        <span class="lang-es">Se verificó la fidelidad del tokenizer <code>o200k_harmony</code> sobre los 1,682 programas (6,728 ejecuciones de stream de texto): las secuencias de tokens ordinarias son 100% idénticas a <code>o200k_base</code>. Kern mantiene intacta su ventaja de 6,167 tokens sobre python-minifier.</span>
+        <span class="lang-en">The <code>o200k_harmony</code> tokenizer fidelity was verified across all 1,682 programs (6,728 text stream runs): ordinary source token streams are 100% identical to <code>o200k_base</code>. Kern preserves its 6,167-token advantage over python-minifier intact.</span>
+      </p>
+
+      <h3>
+        <span class="lang-es">4. Comparativa Frente a Lenguajes del Mercado (Head-to-Head)</span>
+        <span class="lang-en">4. Head-to-Head Market Language Comparisons</span>
+      </h3>
+
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th><span class="lang-es">Lenguaje / Rival</span><span class="lang-en">Language / Rival</span></th>
+            <th><span class="lang-es">Protocolo</span><span class="lang-en">Protocol</span></th>
+            <th><span class="lang-es">Kern Compact</span><span class="lang-en">Kern Compact</span></th>
+            <th><span class="lang-es">Rival</span><span class="lang-en">Rival</span></th>
+            <th><span class="lang-es">Ventaja de Kern</span><span class="lang-en">Kern Advantage</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sigil 0.1.0</strong></td>
+            <td>1,682 programas · cl100k</td>
+            <td>136,202 tokens (541/542 EvalPlus)</td>
+            <td>173,520 tokens (4/542 EvalPlus)</td>
+            <td style="color: var(--accent-gold);"><strong>−21.51% tokens</strong> (vs Sigil)</td>
+          </tr>
+          <tr>
+            <td><strong>Toke</strong></td>
+            <td>60 pares JSON-CLI · cl100k</td>
+            <td>3,012 tokens (60/60 pass)</td>
+            <td>6,347 tokens (29/60 pass)</td>
+            <td style="color: var(--accent-gold);"><strong>−52.54% tokens</strong> (vs Toke)</td>
+          </tr>
+          <tr>
+            <td><strong>KARN v1.0.0</strong></td>
+            <td>46 pares ejecutables · cl100k</td>
+            <td>670 tokens (46/46 pass)</td>
+            <td>685 tokens (46/46 pass)</td>
+            <td style="color: var(--accent-green);">−2.19% tokens</td>
+          </tr>
+          <tr>
+            <td><strong>NERD 3.0.0</strong></td>
+            <td>7 pares deterministas · cl100k</td>
+            <td>436 tokens (7/7 pass)</td>
+            <td>484 tokens (7/7 pass)</td>
+            <td style="color: var(--accent-green);">−9.92% tokens</td>
+          </tr>
+          <tr>
+            <td><strong>Vyxal 3.12.0</strong></td>
+            <td>14 programas frontier · cl100k</td>
+            <td>91 tokens (14/14 pass)</td>
+            <td>151 tokens (14/14 pass)</td>
+            <td style="color: var(--accent-gold);"><strong>−39.74% tokens</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span class="lang-es">5. Frontera de Lenguajes Compactos y Golf (CJam, Kona K3, GNU APL)</span>
+        <span class="lang-en">5. Compact & Golf Language Frontier (CJam, Kona K3, GNU APL)</span>
+      </h3>
+
+      <p>
+        <span class="lang-es">Evaluado en un registro de 14 programas completos con salida exacta frente a ejecutables reales: Kern Compact lidera la densidad neutra de tokens de LLM (<code>cl100k_base</code>) frente a lenguajes extremas de esoterismo y golf:</span>
+        <span class="lang-en">Evaluated on a 14-program complete registry with exact stdout against real runtimes: Kern Compact leads neutral LLM token density (<code>cl100k_base</code>) against extreme esolangs and golf languages:</span>
       </p>
 
       <table class="diff-table">
         <thead>
           <tr>
-            <th><span class="lang-es">Métrica</span><span class="lang-en">Metric</span></th>
-            <th><span class="lang-es">Resultado</span><span class="lang-en">Result</span></th>
+            <th><span class="lang-es">Sistema</span><span class="lang-en">System</span></th>
+            <th><span class="lang-es">Tokens cl100k_base</span><span class="lang-en">cl100k_base Tokens</span></th>
+            <th><span class="lang-es">Tokens o200k_base</span><span class="lang-en">o200k_base Tokens</span></th>
+            <th><span class="lang-es">Exact Stdout</span><span class="lang-en">Exact Stdout</span></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><span class="lang-es">Dataset origen</span><span class="lang-en">Source dataset</span></td>
-            <td><code>code_search_net/python</code></td>
+            <td style="color: var(--accent-gold);"><strong>Kern Compact</strong></td>
+            <td style="color: var(--accent-gold);"><strong>91</strong></td>
+            <td style="color: var(--accent-gold);"><strong>92</strong></td>
+            <td style="color: var(--accent-green);">14/14</td>
           </tr>
           <tr>
-            <td><span class="lang-es">Registros escaneados</span><span class="lang-en">Rows scanned</span></td>
-            <td>21,825</td>
+            <td>CJam 0.6.5</td>
+            <td>93</td>
+            <td>95</td>
+            <td style="color: var(--accent-green);">14/14</td>
           </tr>
           <tr>
-            <td><span class="lang-es">Ejemplos aceptados</span><span class="lang-en">Accepted examples</span></td>
-            <td><strong>20,000</strong></td>
+            <td>Kona K3</td>
+            <td>115</td>
+            <td>113</td>
+            <td style="color: var(--accent-green);">14/14</td>
           </tr>
           <tr>
-            <td><span class="lang-es">Keep rate</span><span class="lang-en">Keep rate</span></td>
-            <td>91.64%</td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Split train/valid</span><span class="lang-en">Train/valid split</span></td>
-            <td>19,000 / 1,000</td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Formato de salida</span><span class="lang-en">Output format</span></td>
-            <td><span class="lang-es">pares JSONL + chat JSONL para Qwen SFT</span><span class="lang-en">pairs JSONL + chat JSONL for Qwen SFT</span></td>
+            <td>GNU APL 2.0</td>
+            <td>142</td>
+            <td>134</td>
+            <td style="color: var(--accent-green);">14/14</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="callout info">
-        <p>
-          <span class="lang-es"><strong>Implementado:</strong> script de generación a gran escala <code>prepare_finetune_dataset_csn.py</code>. Salida base en <code>data/finetune_csn20k/</code> dentro del repo Kern.</span>
-          <span class="lang-en"><strong>Implemented:</strong> large-scale dataset builder script <code>prepare_finetune_dataset_csn.py</code>. Base output lives in <code>data/finetune_csn20k/</code> inside the Kern repo.</span>
-        </p>
-      </div>
-
       <h3>
-        <span class="lang-es">Update de entrenamiento QLoRA en Colab T4 (5 mar 2026)</span>
-        <span class="lang-en">QLoRA Training Update on Colab T4 (Mar 5, 2026)</span>
+        <span class="lang-es">6. Tokenizer Nativo Propietario: `Kern-16K`</span>
+        <span class="lang-en">6. Purpose-Built Native Tokenizer: `Kern-16K`</span>
       </h3>
 
       <p>
-        <span class="lang-es">El primer run de entrenamiento ya <strong>terminó correctamente</strong> en Colab GPU T4. Por límite de VRAM de T4, se usó <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (no 9B) para validar pipeline end-to-end + estabilidad real de entrenamiento.</span>
-        <span class="lang-en">The first training run has now <strong>completed successfully</strong> on Colab T4 GPU. Due to T4 VRAM limits, it used <code>Qwen/Qwen2.5-Coder-3B-Instruct</code> (not 9B) to validate full end-to-end pipeline + real training stability.</span>
+        <span class="lang-es">Para escenarios de extremo rendimiento, Kern cuenta con un tokenizer BPE sin pérdida a nivel de bytes entrenado sobre 25,953 programas de Kern Compact con vocabulario de 16,384 tokens.</span>
+        <span class="lang-en">For ultra-high-efficiency setups, Kern includes a purpose-built lossless byte-level BPE tokenizer trained on 25,953 Kern Compact programs with a 16,384 vocabulary size.</span>
       </p>
 
       <table class="diff-table">
         <thead>
           <tr>
-            <th><span class="lang-es">Métrica</span><span class="lang-en">Metric</span></th>
-            <th><span class="lang-es">Estado actual</span><span class="lang-en">Current status</span></th>
+            <th><span class="lang-es">Configuración de Tokenizer Nativo</span><span class="lang-en">Native Tokenizer Setup</span></th>
+            <th><span class="lang-es">60 Pares JSON-CLI</span><span class="lang-en">60 JSON-CLI Pairs</span></th>
+            <th><span class="lang-es">1,682 Programas Modernos</span><span class="lang-en">1,682 Modern Programs</span></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><span class="lang-es">Hardware</span><span class="lang-en">Hardware</span></td>
-            <td>Google Colab T4 (15GB VRAM)</td>
+            <td>Python + cl100k</td>
+            <td>3,565 tokens</td>
+            <td>189,540 tokens</td>
           </tr>
           <tr>
-            <td><span class="lang-es">Modelo base de arranque</span><span class="lang-en">Bootstrap base model</span></td>
-            <td><code>Qwen/Qwen2.5-Coder-3B-Instruct</code></td>
+            <td>Toke + Toke-16K</td>
+            <td>3,906 tokens</td>
+            <td>—</td>
           </tr>
           <tr>
-            <td><span class="lang-es">Dataset usado en run inicial</span><span class="lang-en">Dataset used in initial run</span></td>
-            <td>5,000 train / 500 valid (subset de <code>finetune_csn20k_v2</code>)</td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Progreso</span><span class="lang-en">Progress</span></td>
-            <td><span class="lang-es">Run completado: 313/313 steps, 1 época (~1h29m)</span><span class="lang-en">Run completed: 313/313 steps, 1 epoch (~1h29m)</span></td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Bloqueo técnico resuelto</span><span class="lang-en">Resolved technical blocker</span></td>
-            <td><span class="lang-es">Compatibilidad TRL + precisión mixta en T4 (evitado crash bf16)</span><span class="lang-en">TRL compatibility + mixed precision on T4 (bf16 crash avoided)</span></td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Artefacto final</span><span class="lang-en">Final artifact</span></td>
-            <td><code>outputs/qwen-kern-qlora-t4/final_adapter</code></td>
-          </tr>
-          <tr>
-            <td><span class="lang-es">Publicado</span><span class="lang-en">Published</span></td>
-            <td><a href="https://huggingface.co/Oscarcode99/kern-qwen25-3b-lora-t4-run1" target="_blank">Oscarcode99/kern-qwen25-3b-lora-t4-run1</a></td>
+            <td style="color: var(--accent-gold);"><strong>Kern Compact + Kern-16K</strong></td>
+            <td style="color: var(--accent-gold);"><strong>2,788 tokens (−28.62% vs Toke-16K)</strong></td>
+            <td style="color: var(--accent-gold);"><strong>117,303 tokens (−38.11% vs Python+cl100k)</strong></td>
           </tr>
         </tbody>
       </table>
-
-      <div class="callout info">
-        <p>
-          <span class="lang-es"><strong>Telemetría del run #1:</strong> <code>train_loss=5.313</code>, <code>eval_loss=8.483</code>, <code>train_runtime=5338s</code>. Este run valida la infraestructura; la siguiente métrica crítica es <strong>Pass@1</strong> contra baseline Python.</span>
-          <span class="lang-en"><strong>Run #1 telemetry:</strong> <code>train_loss=5.313</code>, <code>eval_loss=8.483</code>, <code>train_runtime=5338s</code>. This run validates infrastructure; the next critical metric is <strong>Pass@1</strong> against Python baseline.</span>
-        </p>
-      </div>
 
       <h3>
         <span class="lang-es">Próximos pasos</span>
@@ -995,8 +1019,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
       </h3>
 
       <p>
-        <span class="lang-es">Siguiente fase inmediata: evaluar Pass@1 + round-trip/compilación del adapter entrenado, luego escalar de subset a corpus completo (20k) y comparar costo por solución contra baseline Python. En paralelo, ampliar cobertura con tareas inversas (Kern → Python) para reforzar lectura/edición nativa de Kern.</span>
-        <span class="lang-en">Immediate next phase: evaluate Pass@1 + round-trip/compile behavior of the trained adapter, then scale from subset to the full 20k corpus and compare cost per solution versus a Python baseline. In parallel, expand coverage with inverse tasks (Kern → Python) to strengthen native Kern reading/editing.</span>
+        <span class="lang-es">Fase actual: consolidar Pass@1 en modelos finetuneados con el dataset masivo de 20k pares, integración con backend FastAPI/Monaco y mantenimiento de benchmarks comparativos frente a nuevos modelos y tokenizadores.</span>
+        <span class="lang-en">Current phase: consolidate Pass@1 across fine-tuned models with the massive 20k dataset, FastAPI/Monaco playground integration, and maintaining benchmark comparisons against newly released models and tokenizers.</span>
       </p>
 
       <div class="callout info">
@@ -1015,8 +1039,8 @@ cls Node{fn __init__(self,val){self.val=val}}</code></pre>
 
       <div class="post-footer">
         <p>
-          <span class="lang-es">Escrito por <strong>Oscar Martinez</strong> — Actualizado el 5 de marzo de 2026</span>
-          <span class="lang-en">Written by <strong>Oscar Martinez</strong> — Updated on March 5, 2026</span>
+          <span class="lang-es">Escrito por <strong>Oscar Martinez</strong> — Actualizado el 1 de agosto de 2026</span>
+          <span class="lang-en">Written by <strong>Oscar Martinez</strong> — Updated on August 1, 2026</span>
         </p>
         <p style="margin-top: 10px; color: rgba(255,255,255,0.4);">
           <a href="index.html"><span class="lang-es">← Volver al inicio</span><span class="lang-en">← Back to home</span></a>
