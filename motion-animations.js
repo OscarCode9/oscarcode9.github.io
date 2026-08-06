@@ -71,8 +71,7 @@
     groups.forEach(([selector, delay]) => {
       const elements = hero.querySelectorAll(selector);
       elements.forEach((element, index) => {
-        animate(element, { opacity: 0, y: 28 }, { duration: 0 });
-        animate(element, { opacity: 1, y: 0 }, {
+        animate(element, { opacity: [0, 1], y: [28, 0] }, {
           type: 'spring',
           stiffness: 140,
           damping: 20,
@@ -92,8 +91,7 @@
       if (prefersReducedMotion()) return;
 
       inView(element, () => {
-        animate(element, { opacity: 0, y: config.y }, { duration: 0 });
-        animate(element, { opacity: 1, y: 0 }, {
+        animate(element, { opacity: [0, 1], y: [config.y, 0] }, {
           type: 'spring',
           stiffness: 160,
           damping: 24,
@@ -113,8 +111,7 @@
       if (prefersReducedMotion()) return;
 
       inView(element, () => {
-        animate(element, { opacity: 0, y: config.y }, { duration: 0 });
-        animate(element, { opacity: 1, y: 0 }, {
+        animate(element, { opacity: [0, 1], y: [config.y, 0] }, {
           type: 'spring',
           stiffness: 160,
           damping: 24,
@@ -144,8 +141,7 @@
     inView(category, () => {
       const tags = category.querySelectorAll('.skill-tag');
       tags.forEach((tag, index) => {
-        animate(tag, { opacity: 0, scale: 0.9 }, { duration: 0 });
-        animate(tag, { opacity: 1, scale: 1 }, {
+        animate(tag, { opacity: [0, 1], scale: [0.9, 1] }, {
           type: 'spring',
           stiffness: 200,
           damping: 22,
