@@ -4,14 +4,23 @@
    ============================================================ */
 
 [data-theme="light"] {
+  --primary: #0284c7;
+  --primary-dark: #0369a1;
+  --accent-green: #059669;
+  --accent-yellow: #d97706;
+  --accent-gold: #d97706;
+  --accent-orange: #ea580c;
+  --accent-blue: #2563eb;
+  --accent-purple: #7c3aed;
   --bg-dark: #f6f8fb;
   --bg-card: #ffffff;
+  --bg-soft: #f1f5f9;
   --bg-code: #eef2f7;
   --text-primary: #0f172a;
-  --text-secondary: rgba(15, 23, 42, 0.75);
-  --text-muted: rgba(15, 23, 42, 0.5);
+  --text-secondary: rgba(15, 23, 42, 0.82);
+  --text-muted: rgba(15, 23, 42, 0.58);
   --border: rgba(15, 23, 42, 0.12);
-  --primary-glow: rgba(0, 212, 255, 0.2);
+  --primary-glow: rgba(2, 132, 199, 0.15);
   --accent-glow: rgba(124, 58, 237, 0.12);
   --nav-bg: rgba(255, 255, 255, 0.92);
   --sidebar-bg: rgba(255, 255, 255, 0.95);
@@ -586,6 +595,25 @@
   background-color: #e2e8f0 !important;
   color: #0f172a !important;
   border-bottom: 2px solid var(--border) !important;
+}
+
+[data-theme="light"] .summary-card h3 {
+  color: #d97706 !important;
+}
+
+[data-theme="light"] .callout strong {
+  color: #047857 !important;
+}
+
+[data-theme="light"] .video-shell {
+  background: #ffffff !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+[data-theme="light"] .video-caption {
+  background: #f8fafc !important;
+  color: #334155 !important;
 }
 
 body {
