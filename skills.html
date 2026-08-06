@@ -14,6 +14,31 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <script src="public/i18n.js"></script>
   <script src="visits-badge.js"></script>
+  <script>
+    // Tema light/dark — se aplica antes del primer paint para evitar flash
+    (function () {
+      function getTheme() {
+        var saved = localStorage.getItem('site-theme');
+        if (saved === 'light' || saved === 'dark') return saved;
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      var current = getTheme();
+      document.documentElement.setAttribute('data-theme', current);
+      function updateIcons() {
+        document.querySelectorAll('.theme-icon').forEach(function (icon) {
+          icon.textContent = current === 'light' ? 'light_mode' : 'dark_mode';
+        });
+      }
+      function toggleTheme() {
+        current = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', current);
+        localStorage.setItem('site-theme', current);
+        updateIcons();
+      }
+      document.addEventListener('DOMContentLoaded', updateIcons);
+      window.toggleTheme = toggleTheme;
+    })();
+  </script>
 
   <style>
     :root {
@@ -30,6 +55,13 @@
       --border: rgba(255, 255, 255, 0.08);
       --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
       --radius: 14px;
+      --nav-bg: rgba(10, 10, 15, 0.9);
+      --sidebar-bg: rgba(10, 10, 15, 0.92);
+      --hover-bg: rgba(255, 255, 255, 0.04);
+      --soft-bg: rgba(255, 255, 255, 0.03);
+      --badge-bg: rgba(255, 255, 255, 0.05);
+      --clear-hover-bg: rgba(255, 255, 255, 0.06);
+      --skeleton-shimmer: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,7 +78,7 @@
 
     /* NAVBAR — igual al principal */
     nav {
-      background: rgba(10, 10, 15, 0.9) !important;
+      background: var(--nav-bg) !important;
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       position: fixed;
@@ -174,7 +206,7 @@
       transition: color 0.2s, background 0.2s;
     }
 
-    .search-clear:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.06); }
+    .search-clear:hover { color: var(--text-primary); background: var(--clear-hover-bg); }
     .search-clear.visible { display: flex; }
 
     /* STATS */
@@ -210,7 +242,7 @@
       left: 0;
       bottom: 0;
       width: 220px;
-      background: rgba(10, 10, 15, 0.92);
+      background: var(--sidebar-bg);
       backdrop-filter: blur(16px);
       border-right: 1px solid var(--border);
       padding: 22px 14px;
@@ -247,13 +279,13 @@
       border: 1px solid transparent;
     }
 
-    .sidebar-item:hover { background: rgba(255, 255, 255, 0.04); color: var(--text-primary); }
+    .sidebar-item:hover { background: var(--hover-bg); color: var(--text-primary); }
 
     .sidebar-item .count {
       font-family: 'Fira Code', monospace;
       font-size: 0.68rem;
       color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--badge-bg);
       padding: 1px 7px;
       border-radius: 999px;
       transition: all 0.2s;
@@ -445,7 +477,7 @@
       transition: color 0.2s;
       padding: 4px 8px;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--soft-bg);
       border: 1px solid transparent;
     }
 
@@ -463,7 +495,7 @@
       padding: 60px 20px;
       border: 1px dashed var(--border);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--soft-bg);
       color: var(--text-secondary);
     }
 
@@ -497,7 +529,7 @@
     .skeleton-line {
       height: 12px;
       border-radius: 6px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+      background: var(--skeleton-shimmer);
       background-size: 200% 100%;
       animation: shimmer 1.4s ease infinite;
       margin-bottom: 12px;
@@ -672,6 +704,28 @@
 
     .loading { text-align: center; padding: 60px 0; color: var(--text-muted); }
 
+    /* TEMA LIGHT */
+    [data-theme="light"] {
+      --bg-dark: #f6f8fb;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: rgba(15, 23, 42, 0.12);
+      --primary-glow: rgba(0, 212, 255, 0.2);
+      --accent-glow: rgba(124, 58, 237, 0.12);
+      --nav-bg: rgba(255, 255, 255, 0.88);
+      --sidebar-bg: rgba(255, 255, 255, 0.92);
+      --hover-bg: rgba(15, 23, 42, 0.05);
+      --soft-bg: rgba(15, 23, 42, 0.03);
+      --badge-bg: rgba(15, 23, 42, 0.06);
+      --clear-hover-bg: rgba(15, 23, 42, 0.06);
+      --skeleton-shimmer: linear-gradient(90deg, rgba(15,23,42,0.04) 25%, rgba(15,23,42,0.08) 50%, rgba(15,23,42,0.04) 75%);
+    }
+
+    body { transition: background-color 0.3s ease, color 0.3s ease; }
+    .skill-card, .sidenav, .modal { transition: background-color 0.3s ease, border-color 0.3s ease; }
+
     /* REDUCED MOTION */
     @media (prefers-reduced-motion: reduce) {
       .skill-card { animation: none; }
@@ -696,6 +750,7 @@
           <li><a href="index.html#blog">Blog</a></li>
           <li><a href="index.html#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
           <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+          <li><a id="theme-toggle" onclick="toggleTheme()" style="cursor:pointer;" aria-label="Cambiar tema" title="Tema"><i class="material-icons theme-icon">dark_mode</i></a></li>
           <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
         </ul>
       </div>
@@ -709,6 +764,7 @@
     <li><a href="index.html#blog">Blog</a></li>
     <li><a href="index.html#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
     <li><a href="index.html#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
+    <li><a id="theme-toggle-mobile" onclick="toggleTheme()" style="cursor:pointer;" aria-label="Cambiar tema" title="Tema"><i class="material-icons theme-icon">dark_mode</i></a></li>
     <li><a class="lang-toggle" onclick="toggleLanguage()">🌐 EN</a></li>
   </ul>
 
