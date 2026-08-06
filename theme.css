@@ -35,5 +35,14 @@
   background: var(--sidebar-bg);
 }
 
+/* Mascota: en light se quita la sombra que la pierde contra el fondo claro */
+[data-theme="light"] .hero-mascot {
+  filter: none !important;
+}
+
+[data-theme="light"] .hero-video {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
+}
+
 /* Transiciones suaves al cambiar de tema */
 body { transition: background-color 0.3s ease, color 0.3s ease; }
