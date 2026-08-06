@@ -260,7 +260,7 @@
         Today I want to talk to you about <strong>REST</strong>, the architectural style that revolutionized the way we build modern web applications. If you've ever wondered how the APIs you use every day work, this article is for you.
       </p>
 
-      <h3><span class="lang-es">🌐 ¿Qué es REST?</span><span class="lang-en">🌐 What is REST?</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-globe" aria-hidden="true"></i> ¿Qué es REST?</span><span class="lang-en"><i class="fas fa-globe" aria-hidden="true"></i> What is REST?</span></h3>
 
       <p class="flow-text lang-es">
         <strong>REST</strong> (Representational State Transfer) es un estilo de arquitectura para sistemas distribuidos, definido por <strong>Roy Fielding</strong> en su tesis doctoral del año 2000. Fielding, uno de los creadores del protocolo HTTP, estableció los principios que hoy sustentan la mayor parte de la web moderna.
@@ -276,7 +276,7 @@
         Companies like Twitter, Spotify, Netflix, and virtually any modern digital service expose their functionalities through REST APIs. It is the de facto standard for communication between systems.
       </p>
 
-      <h3><span class="lang-es">🔧 Los 4 Métodos HTTP Fundamentales</span><span class="lang-en">🔧 The 4 Fundamental HTTP Methods</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-wrench" aria-hidden="true"></i> Los 4 Métodos HTTP Fundamentales</span><span class="lang-en"><i class="fas fa-wrench" aria-hidden="true"></i> The 4 Fundamental HTTP Methods</span></h3>
 
       <p class="flow-text lang-es">
         REST aprovecha los verbos HTTP para definir las operaciones sobre los recursos. Este mapeo intuitivo es parte de su elegancia:
@@ -304,7 +304,7 @@
         </div>
       </div>
 
-      <h3><span class="lang-es">📦 Stateless: El Principio Clave</span><span class="lang-en">📦 Stateless: The Key Principle</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-box" aria-hidden="true"></i> Stateless: El Principio Clave</span><span class="lang-en"><i class="fas fa-box" aria-hidden="true"></i> Stateless: The Key Principle</span></h3>
 
       <p class="flow-text lang-es">
         Una de las restricciones fundamentales de REST es que cada petición debe contener <strong>toda la información necesaria</strong> para ser procesada. El servidor no guarda estado del cliente entre peticiones.
@@ -320,7 +320,7 @@
         How is the user identified then? Through <strong>authentication tokens</strong> (like JWT) that travel with each request. This allows our servers to be easily scalable, since any instance can handle any request.
       </p>
 
-      <h3><span class="lang-es">📝 JSON: El Lenguaje Universal</span><span class="lang-en">📝 JSON: The Universal Language</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-file-lines" aria-hidden="true"></i> JSON: El Lenguaje Universal</span><span class="lang-en"><i class="fas fa-file-lines" aria-hidden="true"></i> JSON: The Universal Language</span></h3>
 
       <p class="flow-text lang-es">
         Aunque REST puede trabajar con XML, texto plano o incluso HTML, <strong>JSON</strong> (JavaScript Object Notation) se ha convertido en el formato preferido por su simplicidad y legibilidad:
@@ -340,7 +340,7 @@
   }
 }</code></pre>
 
-      <h3><span class="lang-es">💻 API REST Completa con Express</span><span class="lang-en">💻 Complete REST API with Express</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-laptop-code" aria-hidden="true"></i> API REST Completa con Express</span><span class="lang-en"><i class="fas fa-laptop-code" aria-hidden="true"></i> Complete REST API with Express</span></h3>
 
       <p class="flow-text lang-es">
         Veamos cómo implementar una API REST completa siguiendo las mejores prácticas. Este ejemplo incluye todas las operaciones CRUD sobre un recurso de usuarios:
@@ -431,10 +431,10 @@ app.delete('/api/usuarios/:id', (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log('🚀 API REST corriendo en http://localhost:3000');
+  console.log('>>> API REST corriendo en http://localhost:3000');
 });</code></pre>
 
-      <h3><span class="lang-es">🎯 ¿Por qué REST sigue siendo relevante?</span><span class="lang-en">🎯 Why is REST Still Relevant?</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-bullseye" aria-hidden="true"></i> ¿Por qué REST sigue siendo relevante?</span><span class="lang-en"><i class="fas fa-bullseye" aria-hidden="true"></i> Why is REST Still Relevant?</span></h3>
 
       <p class="flow-text lang-es">
         Aunque han surgido alternativas como GraphQL y gRPC, REST sigue siendo la opción más popular por varias razones:

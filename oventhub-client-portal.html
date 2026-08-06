@@ -346,7 +346,7 @@
 
       <!-- ============ 1. EL PROBLEMA ============ -->
       <div class="section">
-        <h2 class="section-title">😤 <span class="lang-es">El Problema</span><span class="lang-en">The Problem</span></h2>
+        <h2 class="section-title"><i class="fas fa-face-angry" aria-hidden="true"></i> <span class="lang-es">El Problema</span><span class="lang-en">The Problem</span></h2>
         <p class="lang-es"><strong>OventLabs</strong> es una fábrica de software impulsada por agentes de IA. Construimos apps para clientes usando OpenClaw, sub-agentes y un stack moderno. Pero teníamos un problema clásico: <strong>los clientes no sabían qué estaba pasando con su proyecto</strong>.</p>
         <p class="lang-en"><strong>OventLabs</strong> is an AI-agent-powered software factory. We build apps for clients using OpenClaw, sub-agents, and a modern stack. But we had a classic problem: <strong>clients had no idea what was happening with their project</strong>.</p>
 
@@ -354,25 +354,25 @@
         <p class="lang-en">Everything was over WhatsApp and email. "Is it ready?" "What's the progress?" "When will you deliver?" — that doesn't scale. We needed a portal where clients could:</p>
 
         <ul>
-          <li class="lang-es">🔐 Autenticarse sin contraseña (magic links)</li>
-          <li class="lang-es">📝 Hacer onboarding con un wizard inteligente</li>
-          <li class="lang-es">🤖 Ver su alcance generado por IA automáticamente</li>
-          <li class="lang-es">📊 Trackear requerimientos en tiempo real</li>
-          <li class="lang-en">🔐 Authenticate without passwords (magic links)</li>
-          <li class="lang-en">📝 Onboard through a smart wizard</li>
-          <li class="lang-en">🤖 See their AI-generated scope automatically</li>
-          <li class="lang-en">📊 Track requirements in real time</li>
+          <li class="lang-es"><i class="fas fa-lock" aria-hidden="true"></i> Autenticarse sin contraseña (magic links)</li>
+          <li class="lang-es"><i class="fas fa-file-lines" aria-hidden="true"></i> Hacer onboarding con un wizard inteligente</li>
+          <li class="lang-es"><i class="fas fa-robot" aria-hidden="true"></i> Ver su alcance generado por IA automáticamente</li>
+          <li class="lang-es"><i class="fas fa-chart-bar" aria-hidden="true"></i> Trackear requerimientos en tiempo real</li>
+          <li class="lang-en"><i class="fas fa-lock" aria-hidden="true"></i> Authenticate without passwords (magic links)</li>
+          <li class="lang-en"><i class="fas fa-file-lines" aria-hidden="true"></i> Onboard through a smart wizard</li>
+          <li class="lang-en"><i class="fas fa-robot" aria-hidden="true"></i> See their AI-generated scope automatically</li>
+          <li class="lang-en"><i class="fas fa-chart-bar" aria-hidden="true"></i> Track requirements in real time</li>
         </ul>
 
         <div class="callout">
-          <p class="lang-es"><strong>El reto:</strong> construir todo esto en <strong>1 día</strong>. No en un sprint de 2 semanas. Un. Solo. Día. 🚀</p>
-          <p class="lang-en"><strong>The challenge:</strong> build all of this in <strong>1 day</strong>. Not a 2-week sprint. One. Single. Day. 🚀</p>
+          <p class="lang-es"><strong>El reto:</strong> construir todo esto en <strong>1 día</strong>. No en un sprint de 2 semanas. Un. Solo. Día. <i class="fas fa-rocket" aria-hidden="true"></i></p>
+          <p class="lang-en"><strong>The challenge:</strong> build all of this in <strong>1 day</strong>. Not a 2-week sprint. One. Single. Day. <i class="fas fa-rocket" aria-hidden="true"></i></p>
         </div>
       </div>
 
       <!-- ============ 2. LA ARQUITECTURA ============ -->
       <div class="section">
-        <h2 class="section-title">🏗️ <span class="lang-es">La Arquitectura</span><span class="lang-en">The Architecture</span></h2>
+        <h2 class="section-title"><i class="fas fa-screwdriver-wrench" aria-hidden="true"></i> <span class="lang-es">La Arquitectura</span><span class="lang-en">The Architecture</span></h2>
         <p class="lang-es">Decisión clave: <strong>no construir un backend separado</strong>. OventHub vive dentro del mismo Next.js 15 que ya servía la landing de <code>agents.oventlabs.net</code>. API routes, Prisma, auth — todo en el mismo deploy.</p>
         <p class="lang-en">Key decision: <strong>don't build a separate backend</strong>. OventHub lives inside the same Next.js 15 app that already served the <code>agents.oventlabs.net</code> landing. API routes, Prisma, auth — all in a single deploy.</p>
 
@@ -390,12 +390,12 @@
 
         <div class="grid">
           <div class="card">
-            <h4>⚡ <span class="lang-es">Frontend + Backend</span><span class="lang-en">Frontend + Backend</span></h4>
+            <h4><i class="fas fa-bolt" aria-hidden="true"></i> <span class="lang-es">Frontend + Backend</span><span class="lang-en">Frontend + Backend</span></h4>
             <p class="lang-es">Next.js 15 con React 19. API routes para auth, onboarding, AI y requirements. Un solo container Docker.</p>
             <p class="lang-en">Next.js 15 with React 19. API routes for auth, onboarding, AI and requirements. Single Docker container.</p>
           </div>
           <div class="card">
-            <h4>🗄️ <span class="lang-es">Base de Datos</span><span class="lang-en">Database</span></h4>
+            <h4><i class="fas fa-database" aria-hidden="true"></i> <span class="lang-es">Base de Datos</span><span class="lang-en">Database</span></h4>
             <p class="lang-es">Prisma ORM + PostgreSQL corriendo en el container <code>tenk-postgres</code>. Compartido con otros proyectos en la misma EC2.</p>
             <p class="lang-en">Prisma ORM + PostgreSQL running in the <code>tenk-postgres</code> container. Shared with other projects on the same EC2.</p>
           </div>
@@ -404,7 +404,7 @@
 
       <!-- ============ 3. MAGIC LINK AUTH ============ -->
       <div class="section">
-        <h2 class="section-title">🔐 <span class="lang-es">Magic Link Auth (sin contraseñas)</span><span class="lang-en">Magic Link Auth (no passwords)</span></h2>
+        <h2 class="section-title"><i class="fas fa-lock" aria-hidden="true"></i> <span class="lang-es">Magic Link Auth (sin contraseñas)</span><span class="lang-en">Magic Link Auth (no passwords)</span></h2>
         <p class="lang-es">Nada de contraseñas. El flujo es brutal en su simplicidad:</p>
         <p class="lang-en">No passwords. The flow is brutally simple:</p>
 
@@ -441,30 +441,30 @@ await sendEmail(email, `${APP_URL}/api/auth/verify?token=${token}`);</code></pre
 
       <!-- ============ 4. ONBOARDING ============ -->
       <div class="section">
-        <h2 class="section-title">📝 <span class="lang-es">Onboarding como Funnel de Leads</span><span class="lang-en">Onboarding as a Lead Funnel</span></h2>
+        <h2 class="section-title"><i class="fas fa-file-lines" aria-hidden="true"></i> <span class="lang-es">Onboarding como Funnel de Leads</span><span class="lang-en">Onboarding as a Lead Funnel</span></h2>
         <p class="lang-es">El onboarding no es solo "llena tu perfil". Es un <strong>funnel de calificación de leads</strong> disfrazado de wizard bonito. 4 pasos:</p>
         <p class="lang-en">Onboarding isn't just "fill your profile". It's a <strong>lead qualification funnel</strong> disguised as a pretty wizard. 4 steps:</p>
 
         <div class="grid">
           <div class="card">
-            <h4>1️⃣ <span class="lang-es">Perfil</span><span class="lang-en">Profile</span></h4>
+            <h4>1⃣ <span class="lang-es">Perfil</span><span class="lang-en">Profile</span></h4>
             <p class="lang-es">Nombre, empresa, rol, teléfono. Lo básico para saber quién eres.</p>
             <p class="lang-en">Name, company, role, phone. The basics to know who you are.</p>
           </div>
           <div class="card">
-            <h4>2️⃣ <span class="lang-es">Metodología</span><span class="lang-en">Methodology</span></h4>
+            <h4>2⃣ <span class="lang-es">Metodología</span><span class="lang-en">Methodology</span></h4>
             <p class="lang-es">Tipo de proyecto, presupuesto, urgencia. Calificación automática.</p>
             <p class="lang-en">Project type, budget, urgency. Automatic qualification.</p>
           </div>
           <div class="card">
-            <h4>3️⃣ <span class="lang-es">Descripción del Problema</span><span class="lang-en">Problem Description</span></h4>
+            <h4>3⃣ <span class="lang-es">Descripción del Problema</span><span class="lang-en">Problem Description</span></h4>
             <p class="lang-es">El cliente describe su problema en texto libre. Esto alimenta al AI para generar el alcance.</p>
             <p class="lang-en">The client describes their problem in free text. This feeds the AI to generate the scope.</p>
           </div>
           <div class="card">
-            <h4>4️⃣ <span class="lang-es">Confirmación</span><span class="lang-en">Confirmation</span></h4>
-            <p class="lang-es">Resumen → Crear proyecto → Trigger automático de generación de alcance con IA. 🤖</p>
-            <p class="lang-en">Summary → Create project → Automatic trigger for AI scope generation. 🤖</p>
+            <h4>4⃣ <span class="lang-es">Confirmación</span><span class="lang-en">Confirmation</span></h4>
+            <p class="lang-es">Resumen → Crear proyecto → Trigger automático de generación de alcance con IA. <i class="fas fa-robot" aria-hidden="true"></i></p>
+            <p class="lang-en">Summary → Create project → Automatic trigger for AI scope generation. <i class="fas fa-robot" aria-hidden="true"></i></p>
           </div>
         </div>
 
@@ -476,7 +476,7 @@ await sendEmail(email, `${APP_URL}/api/auth/verify?token=${token}`);</code></pre
 
       <!-- ============ 5. AI SCOPE GENERATION ============ -->
       <div class="section">
-        <h2 class="section-title">🤖 <span class="lang-es">Generación de Alcance con IA ($0 de costo)</span><span class="lang-en">AI Scope Generation ($0 cost)</span></h2>
+        <h2 class="section-title"><i class="fas fa-robot" aria-hidden="true"></i> <span class="lang-es">Generación de Alcance con IA ($0 de costo)</span><span class="lang-en">AI Scope Generation ($0 cost)</span></h2>
         <p class="lang-es">Esta es la parte favorita. Cuando el cliente completa el onboarding, <strong>la IA genera automáticamente un documento de alcance completo</strong>. Y lo mejor: <strong>cuesta $0</strong>.</p>
         <p class="lang-en">This is the favorite part. When the client completes onboarding, <strong>the AI automatically generates a complete scope document</strong>. And the best part: <strong>it costs $0</strong>.</p>
 
@@ -511,14 +511,14 @@ await sendEmail(email, `${APP_URL}/api/auth/verify?token=${token}`);</code></pre
         </div>
 
         <div class="callout success">
-          <p class="lang-es"><strong>💰 Costo: $0.</strong> El modelo Claude Opus 4.5 corre via Copilot API, incluido en la suscripción. No OpenAI, no Anthropic direct, no billing sorpresa.</p>
-          <p class="lang-en"><strong>💰 Cost: $0.</strong> The Claude Opus 4.5 model runs via Copilot API, included in the subscription. No OpenAI, no Anthropic direct, no surprise billing.</p>
+          <p class="lang-es"><strong><i class="fas fa-coins" aria-hidden="true"></i> Costo: $0.</strong> El modelo Claude Opus 4.5 corre via Copilot API, incluido en la suscripción. No OpenAI, no Anthropic direct, no billing sorpresa.</p>
+          <p class="lang-en"><strong><i class="fas fa-coins" aria-hidden="true"></i> Cost: $0.</strong> The Claude Opus 4.5 model runs via Copilot API, included in the subscription. No OpenAI, no Anthropic direct, no surprise billing.</p>
         </div>
       </div>
 
       <!-- ============ 6. AUTO-PARSEO ============ -->
       <div class="section">
-        <h2 class="section-title">📊 <span class="lang-es">Auto-parseo de Requerimientos</span><span class="lang-en">Auto-parsing Requirements</span></h2>
+        <h2 class="section-title"><i class="fas fa-chart-bar" aria-hidden="true"></i> <span class="lang-es">Auto-parseo de Requerimientos</span><span class="lang-en">Auto-parsing Requirements</span></h2>
         <p class="lang-es">La IA genera una tabla markdown con requerimientos (<code>RF-001</code>, <code>RF-002</code>...). Un parser automático extrae esos requerimientos del documento de alcance y crea registros en la base de datos.</p>
         <p class="lang-en">The AI generates a markdown table with requirements (<code>RF-001</code>, <code>RF-002</code>...). An automatic parser extracts those requirements from the scope document and creates records in the database.</p>
 
@@ -538,28 +538,28 @@ await sendEmail(email, `${APP_URL}/api/auth/verify?token=${token}`);</code></pre
 
       <!-- ============ 7. MULTI-AGENT ============ -->
       <div class="section">
-        <h2 class="section-title">🤖 <span class="lang-es">Desarrollo Multi-Agente</span><span class="lang-en">Multi-Agent Development</span></h2>
+        <h2 class="section-title"><i class="fas fa-robot" aria-hidden="true"></i> <span class="lang-es">Desarrollo Multi-Agente</span><span class="lang-en">Multi-Agent Development</span></h2>
         <p class="lang-es">Esto no se construyó en un IDE con café y keyboard shortcuts. Se construyó con <strong>OpenClaw</strong> — un ejército de agentes de IA trabajando en paralelo.</p>
         <p class="lang-en">This wasn't built in an IDE with coffee and keyboard shortcuts. It was built with <strong>OpenClaw</strong> — an army of AI agents working in parallel.</p>
 
         <div class="grid">
           <div class="card">
-            <h4>🔗 oventhub-integrate</h4>
+            <h4><i class="fas fa-link" aria-hidden="true"></i> oventhub-integrate</h4>
             <p class="lang-es">Fusionó el backend standalone dentro del portfolio Next.js. Migration de rutas, schemas, y middleware.</p>
             <p class="lang-en">Merged the standalone backend into the portfolio Next.js. Route, schema, and middleware migration.</p>
           </div>
           <div class="card">
-            <h4>📝 oventhub-onboarding</h4>
+            <h4><i class="fas fa-file-lines" aria-hidden="true"></i> oventhub-onboarding</h4>
             <p class="lang-es">Construyó el wizard de 4 pasos en <strong>5 minutos</strong>. Con glassmorphism, validaciones y dark theme.</p>
             <p class="lang-en">Built the 4-step wizard in <strong>5 minutes</strong>. With glassmorphism, validations and dark theme.</p>
           </div>
           <div class="card">
-            <h4>🎨 oventhub-dark-modal</h4>
+            <h4><i class="fas fa-palette" aria-hidden="true"></i> oventhub-dark-modal</h4>
             <p class="lang-es">Arregló CSS vars en todas las páginas del hub. El dark theme consistente es más difícil de lo que parece.</p>
             <p class="lang-en">Fixed CSS vars across all hub pages. Consistent dark theme is harder than it looks.</p>
           </div>
           <div class="card">
-            <h4>⚡ <span class="lang-es">Anti-Agile</span><span class="lang-en">Anti-Agile</span></h4>
+            <h4><i class="fas fa-bolt" aria-hidden="true"></i> <span class="lang-es">Anti-Agile</span><span class="lang-en">Anti-Agile</span></h4>
             <p class="lang-es">Same day deploy. Zero sprints. Zero ceremonies. Zero standups. <strong>Solo resultados.</strong></p>
             <p class="lang-en">Same day deploy. Zero sprints. Zero ceremonies. Zero standups. <strong>Just results.</strong></p>
           </div>
@@ -568,67 +568,67 @@ await sendEmail(email, `${APP_URL}/api/auth/verify?token=${token}`);</code></pre
 
       <!-- ============ 8. GOTCHAS ============ -->
       <div class="section">
-        <h2 class="section-title">💥 <span class="lang-es">Lecciones Aprendidas / Gotchas</span><span class="lang-en">Lessons Learned / Gotchas</span></h2>
+        <h2 class="section-title"><i class="fas fa-burst" aria-hidden="true"></i> <span class="lang-es">Lecciones Aprendidas / Gotchas</span><span class="lang-en">Lessons Learned / Gotchas</span></h2>
         <p class="lang-es">No todo fue miel sobre hojuelas. Estas son las trampas reales que nos mordieron:</p>
         <p class="lang-en">Not everything was smooth sailing. These are the real traps that bit us:</p>
 
         <div class="callout danger">
-          <p class="lang-es"><strong>🔥 Port mapping hell:</strong> <code>-p 3001:3001</code> NO <code>-p 3001:3000</code>. Si tu app escucha en 3001 dentro del container, mapea 3001:3001. Parece obvio. Causó 502s <strong>múltiples veces</strong>.</p>
-          <p class="lang-en"><strong>🔥 Port mapping hell:</strong> <code>-p 3001:3001</code> NOT <code>-p 3001:3000</code>. If your app listens on 3001 inside the container, map 3001:3001. Seems obvious. Caused 502s <strong>multiple times</strong>.</p>
+          <p class="lang-es"><strong><i class="fas fa-fire" aria-hidden="true"></i> Port mapping hell:</strong> <code>-p 3001:3001</code> NO <code>-p 3001:3000</code>. Si tu app escucha en 3001 dentro del container, mapea 3001:3001. Parece obvio. Causó 502s <strong>múltiples veces</strong>.</p>
+          <p class="lang-en"><strong><i class="fas fa-fire" aria-hidden="true"></i> Port mapping hell:</strong> <code>-p 3001:3001</code> NOT <code>-p 3001:3000</code>. If your app listens on 3001 inside the container, map 3001:3001. Seems obvious. Caused 502s <strong>multiple times</strong>.</p>
         </div>
 
         <div class="callout danger">
-          <p class="lang-es"><strong>🔥 Docker --env-file incluye quotes literalmente:</strong> si pones <code>DB_URL="postgres://..."</code> en tu <code>.env</code>, Docker lo lee con las comillas incluidas. <strong>No pongas comillas alrededor de los valores.</strong></p>
-          <p class="lang-en"><strong>🔥 Docker --env-file includes quotes literally:</strong> if you put <code>DB_URL="postgres://..."</code> in your <code>.env</code>, Docker reads it with the quotes included. <strong>Don't put quotes around values.</strong></p>
+          <p class="lang-es"><strong><i class="fas fa-fire" aria-hidden="true"></i> Docker --env-file incluye quotes literalmente:</strong> si pones <code>DB_URL="postgres://..."</code> en tu <code>.env</code>, Docker lo lee con las comillas incluidas. <strong>No pongas comillas alrededor de los valores.</strong></p>
+          <p class="lang-en"><strong><i class="fas fa-fire" aria-hidden="true"></i> Docker --env-file includes quotes literally:</strong> if you put <code>DB_URL="postgres://..."</code> in your <code>.env</code>, Docker reads it with the quotes included. <strong>Don't put quotes around values.</strong></p>
         </div>
 
         <div class="callout warning">
-          <p class="lang-es"><strong>⚠️ react-markdown no bundlea en Next.js standalone</strong> → switcheamos a <code>marked</code>. Menos features, pero funciona en el output standalone sin drama.</p>
-          <p class="lang-en"><strong>⚠️ react-markdown doesn't bundle in Next.js standalone</strong> → switched to <code>marked</code>. Fewer features, but works in standalone output without drama.</p>
+          <p class="lang-es"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> react-markdown no bundlea en Next.js standalone</strong> → switcheamos a <code>marked</code>. Menos features, pero funciona en el output standalone sin drama.</p>
+          <p class="lang-en"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> react-markdown doesn't bundle in Next.js standalone</strong> → switched to <code>marked</code>. Fewer features, but works in standalone output without drama.</p>
         </div>
 
         <div class="callout warning">
-          <p class="lang-es"><strong>⚠️ CSS vars como canales RGB:</strong> <code>--ov-bg: 15 23 42</code> con <code>rgb(var(--ov-bg))</code> funciona. Hex fallbacks rompen el dark theme. Mantén consistencia.</p>
-          <p class="lang-en"><strong>⚠️ CSS vars as RGB channels:</strong> <code>--ov-bg: 15 23 42</code> with <code>rgb(var(--ov-bg))</code> works. Hex fallbacks break the dark theme. Stay consistent.</p>
+          <p class="lang-es"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> CSS vars como canales RGB:</strong> <code>--ov-bg: 15 23 42</code> con <code>rgb(var(--ov-bg))</code> funciona. Hex fallbacks rompen el dark theme. Mantén consistencia.</p>
+          <p class="lang-en"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> CSS vars as RGB channels:</strong> <code>--ov-bg: 15 23 42</code> with <code>rgb(var(--ov-bg))</code> works. Hex fallbacks break the dark theme. Stay consistent.</p>
         </div>
 
         <div class="callout">
-          <p class="lang-es"><strong>📝 Visit counter usa file store</strong> → necesita volume mount en cada recreación de container. Si no, pierdes el conteo.</p>
-          <p class="lang-en"><strong>📝 Visit counter uses file store</strong> → needs volume mount on every container recreate. Otherwise, you lose the count.</p>
+          <p class="lang-es"><strong><i class="fas fa-file-lines" aria-hidden="true"></i> Visit counter usa file store</strong> → necesita volume mount en cada recreación de container. Si no, pierdes el conteo.</p>
+          <p class="lang-en"><strong><i class="fas fa-file-lines" aria-hidden="true"></i> Visit counter uses file store</strong> → needs volume mount on every container recreate. Otherwise, you lose the count.</p>
         </div>
 
         <div class="callout">
-          <p class="lang-es"><strong>📝 Copilot API model ID:</strong> <code>claude-opus-4.5</code> (con punto). NO <code>claude-opus-4-5</code> (con guión). Un carácter de diferencia = request fallido.</p>
-          <p class="lang-en"><strong>📝 Copilot API model ID:</strong> <code>claude-opus-4.5</code> (with dot). NOT <code>claude-opus-4-5</code> (with hyphen). One character difference = failed request.</p>
+          <p class="lang-es"><strong><i class="fas fa-file-lines" aria-hidden="true"></i> Copilot API model ID:</strong> <code>claude-opus-4.5</code> (con punto). NO <code>claude-opus-4-5</code> (con guión). Un carácter de diferencia = request fallido.</p>
+          <p class="lang-en"><strong><i class="fas fa-file-lines" aria-hidden="true"></i> Copilot API model ID:</strong> <code>claude-opus-4.5</code> (with dot). NOT <code>claude-opus-4-5</code> (with hyphen). One character difference = failed request.</p>
         </div>
       </div>
 
       <!-- ============ 9. STACK FINAL ============ -->
       <div class="section">
-        <h2 class="section-title">🛠️ <span class="lang-es">Stack Final</span><span class="lang-en">Final Stack</span></h2>
+        <h2 class="section-title"><i class="fas fa-screwdriver-wrench" aria-hidden="true"></i> <span class="lang-es">Stack Final</span><span class="lang-en">Final Stack</span></h2>
         <ul class="stack-list">
-          <li>⚡ Next.js 15 + React 19</li>
-          <li>🎨 Tailwind CSS 4 + Glassmorphism</li>
-          <li>🗄️ Prisma + PostgreSQL</li>
-          <li>🤖 GitHub Copilot API (Claude Opus 4.5)</li>
-          <li>🐳 Docker + EC2 + Nginx + ALB</li>
-          <li>📧 Nodemailer + Hostinger SMTP</li>
-          <li>🧠 OpenClaw (multi-agent orchestration)</li>
+          <li><i class="fas fa-bolt" aria-hidden="true"></i> Next.js 15 + React 19</li>
+          <li><i class="fas fa-palette" aria-hidden="true"></i> Tailwind CSS 4 + Glassmorphism</li>
+          <li><i class="fas fa-database" aria-hidden="true"></i> Prisma + PostgreSQL</li>
+          <li><i class="fas fa-robot" aria-hidden="true"></i> GitHub Copilot API (Claude Opus 4.5)</li>
+          <li><i class="fas fa-whale" aria-hidden="true"></i> Docker + EC2 + Nginx + ALB</li>
+          <li><i class="fas fa-envelope" aria-hidden="true"></i> Nodemailer + Hostinger SMTP</li>
+          <li><i class="fas fa-brain" aria-hidden="true"></i> OpenClaw (multi-agent orchestration)</li>
         </ul>
       </div>
 
       <!-- ============ 10. QUÉ SIGUE ============ -->
       <div class="section">
-        <h2 class="section-title">🚀 <span class="lang-es">¿Qué sigue?</span><span class="lang-en">What's next?</span></h2>
+        <h2 class="section-title"><i class="fas fa-rocket" aria-hidden="true"></i> <span class="lang-es">¿Qué sigue?</span><span class="lang-en">What's next?</span></h2>
         <ul>
-          <li class="lang-es">🎛️ <strong>Panel de admin</strong> para actualizar estados de requerimientos</li>
-          <li class="lang-es">🔔 <strong>Notificaciones en tiempo real</strong> cuando cambie un status</li>
-          <li class="lang-es">📎 <strong>Archivos adjuntos</strong> por requerimiento</li>
-          <li class="lang-es">💳 <strong>Integración con Stripe</strong> para cobros y pagos</li>
-          <li class="lang-en">🎛️ <strong>Admin panel</strong> for requirement status updates</li>
-          <li class="lang-en">🔔 <strong>Real-time notifications</strong> when a status changes</li>
-          <li class="lang-en">📎 <strong>File attachments</strong> per requirement</li>
-          <li class="lang-en">💳 <strong>Stripe integration</strong> for billing and payments</li>
+          <li class="lang-es"><i class="fas fa-sliders" aria-hidden="true"></i> <strong>Panel de admin</strong> para actualizar estados de requerimientos</li>
+          <li class="lang-es"><i class="fas fa-bell" aria-hidden="true"></i> <strong>Notificaciones en tiempo real</strong> cuando cambie un status</li>
+          <li class="lang-es"><i class="fas fa-paperclip" aria-hidden="true"></i> <strong>Archivos adjuntos</strong> por requerimiento</li>
+          <li class="lang-es"><i class="fas fa-credit-card" aria-hidden="true"></i> <strong>Integración con Stripe</strong> para cobros y pagos</li>
+          <li class="lang-en"><i class="fas fa-sliders" aria-hidden="true"></i> <strong>Admin panel</strong> for requirement status updates</li>
+          <li class="lang-en"><i class="fas fa-bell" aria-hidden="true"></i> <strong>Real-time notifications</strong> when a status changes</li>
+          <li class="lang-en"><i class="fas fa-paperclip" aria-hidden="true"></i> <strong>File attachments</strong> per requirement</li>
+          <li class="lang-en"><i class="fas fa-credit-card" aria-hidden="true"></i> <strong>Stripe integration</strong> for billing and payments</li>
         </ul>
 
         <div class="callout success">

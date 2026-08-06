@@ -393,8 +393,8 @@
       <a href="index.html" class="back-link">
         <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
-      <h1 class="post-title"><span class="lang-es">🦞 OpenClaw: WhatsApp + Multi-Provider Failover — Nunca Más Offline</span><span class="lang-en">🦞 OpenClaw: WhatsApp + Multi-Provider Failover — Never Offline Again</span></h1>
+      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px"><i class="fas fa-globe" aria-hidden="true"></i> EN</span>
+      <h1 class="post-title"><span class="lang-es"><i class="fas fa-terminal" aria-hidden="true"></i> OpenClaw: WhatsApp + Multi-Provider Failover — Nunca Más Offline</span><span class="lang-en"><i class="fas fa-terminal" aria-hidden="true"></i> OpenClaw: WhatsApp + Multi-Provider Failover — Never Offline Again</span></h1>
     <div class="ov-views-wrap">
       <div class="ov-views-badge" data-ov-visits>
         <span class="ov-dot"></span>
@@ -409,7 +409,7 @@
         <span class="post-tag">AI Agents</span>
         <span class="post-tag devops">DevOps</span>
         <br><br>
-        <span><span class="lang-es">📅 14-16 de Febrero, 2026 · ⏱️ 15 min de lectura · Actualizado con post-mortem y análisis de falla triple</span><span class="lang-en">📅 February 14-16, 2026 · ⏱️ 15 min read · Updated with post-mortem and triple failure analysis</span></span>
+        <span><span class="lang-es"><i class="fas fa-calendar" aria-hidden="true"></i> 14-16 de Febrero, 2026 · ⏱ 15 min de lectura · Actualizado con post-mortem y análisis de falla triple</span><span class="lang-en"><i class="fas fa-calendar" aria-hidden="true"></i> February 14-16, 2026 · ⏱ 15 min read · Updated with post-mortem and triple failure analysis</span></span>
       </div>
     </div>
   </header>
@@ -424,7 +424,7 @@
       <p class="lang-en">In this post I explain how I configured my setup to be <strong>practically indestructible</strong>: automatic WhatsApp reconnection, a watchdog that checks every 15 minutes, and 4 model providers in a failover chain so if one goes down, the next one steps in immediately.</p>
 
       <div class="openclaw-box">
-        <h4><span class="lang-es">🦞 ¿Qué es OpenClaw?</span><span class="lang-en">🦞 What is OpenClaw?</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-terminal" aria-hidden="true"></i> ¿Qué es OpenClaw?</span><span class="lang-en"><i class="fas fa-terminal" aria-hidden="true"></i> What is OpenClaw?</span></h4>
         <p class="lang-es">OpenClaw es una plataforma open-source para crear agentes de IA con acceso a canales de mensajería (WhatsApp, Telegram, etc.), herramientas del sistema, y múltiples proveedores de modelos. Básicamente, un agente que vive en tu terminal y responde por WhatsApp.</p>
         <p class="lang-en">OpenClaw is an open-source platform for creating AI agents with access to messaging channels (WhatsApp, Telegram, etc.), system tools, and multiple model providers. Basically, an agent that lives in your terminal and responds via WhatsApp.</p>
       </div>
@@ -438,7 +438,7 @@
       <p class="lang-en">Looking at the logs, I found <strong>two errors</strong> that were chaining together:</p>
 
       <div class="warning-box">
-        <h4><span class="lang-es">⚠️ Error 1: DNS temporal — ENOTFOUND</span><span class="lang-en">⚠️ Error 1: Temporary DNS — ENOTFOUND</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Error 1: DNS temporal — ENOTFOUND</span><span class="lang-en"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Error 1: Temporary DNS — ENOTFOUND</span></h4>
         <p class="lang-es">El gateway de WhatsApp no podía resolver <code>web.whatsapp.com</code>. Esto pasa cuando hay una interrupción de red momentánea o el gateway se reinicia y la resolución DNS aún no está lista.</p>
         <p class="lang-en">The WhatsApp gateway couldn't resolve <code>web.whatsapp.com</code>. This happens when there's a momentary network interruption or the gateway restarts and DNS resolution isn't ready yet.</p>
       </div>
@@ -450,7 +450,7 @@
 <span class="output">  status: STOPPED</span></code></pre>
 
       <div class="warning-box">
-        <h4><span class="lang-es">⚠️ Error 2: Token de Copilot expirado — HTTP 403</span><span class="lang-en">⚠️ Error 2: Copilot Token Expired — HTTP 403</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Error 2: Token de Copilot expirado — HTTP 403</span><span class="lang-en"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Error 2: Copilot Token Expired — HTTP 403</span></h4>
         <p class="lang-es">El proveedor principal (GitHub Copilot) estaba devolviendo 403 Forbidden. El token de autenticación había expirado y no se renovó automáticamente. Resultado: aún cuando el canal se reconectara, el agente no podía generar respuestas.</p>
         <p class="lang-en">The primary provider (GitHub Copilot) was returning 403 Forbidden. The authentication token had expired and didn't auto-renew. Result: even when the channel reconnected, the agent couldn't generate responses.</p>
       </div>
@@ -501,7 +501,7 @@
 <span class="output">Cron               ✓ OK     0 active jobs</span></code></pre>
 
       <div class="info-box">
-        <h4>💡 Pro tip</h4>
+        <h4><i class="fas fa-lightbulb" aria-hidden="true"></i> Pro tip</h4>
         <p class="lang-es">Siempre corre <code>openclaw health</code> primero. Te da una vista panorámica de todo lo que está bien y mal en un solo comando. Desde ahí sabes dónde enfocarte.</p>
         <p class="lang-en">Always run <code>openclaw health</code> first. It gives you a panoramic view of everything that's working and not in a single command. From there you know where to focus.</p>
       </div>
@@ -540,7 +540,7 @@
 <span class="output">terminal     CONNECTED    2026-02-14 10:30      1d 2h</span></code></pre>
 
       <div class="tip-box">
-        <h4><span class="lang-es">✔ Canal restaurado</span><span class="lang-en">✔ Channel Restored</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-check" aria-hidden="true"></i> Canal restaurado</span><span class="lang-en"><i class="fas fa-check" aria-hidden="true"></i> Channel Restored</span></h4>
         <p class="lang-es">WhatsApp vuelve a estar <code>CONNECTED</code>. Pero esto fue un fix manual. Si se vuelve a caer a las 3am, ¿quién lo reconecta? Nadie. Por eso necesitamos el watchdog.</p>
         <p class="lang-en">WhatsApp is <code>CONNECTED</code> again. But this was a manual fix. If it goes down again at 3am, who reconnects it? Nobody. That's why we need the watchdog.</p>
       </div>
@@ -577,7 +577,7 @@
       </ul>
 
       <div class="info-box">
-        <h4><span class="lang-es">🔄 ¿Cómo funciona internamente?</span><span class="lang-en">🔄 How Does It Work Internally?</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-arrows-rotate" aria-hidden="true"></i> ¿Cómo funciona internamente?</span><span class="lang-en"><i class="fas fa-arrows-rotate" aria-hidden="true"></i> How Does It Work Internally?</span></h4>
         <p class="lang-es">El cron de OpenClaw no es un crontab de Unix. Es un scheduler interno que vive en el gateway. Cada 15 minutos, invoca al agente con el mensaje que le diste, el agente analiza el estado usando sus herramientas (<code>channels_status</code>, <code>gateway_restart</code>, etc.) y toma las acciones necesarias. Es como tener un DevOps bot viviendo en tu máquina.</p>
         <p class="lang-en">The OpenClaw cron is not a Unix crontab. It's an internal scheduler that lives in the gateway. Every 15 minutes, it invokes the agent with the message you gave it, the agent analyzes status using its tools (<code>channels_status</code>, <code>gateway_restart</code>, etc.) and takes the necessary actions. It's like having a DevOps bot living on your machine.</p>
       </div>
@@ -591,7 +591,7 @@
 <span class="output">whatsapp-watchdog     15m         2026-02-14 10:45      whatsapp    ACTIVE</span></code></pre>
 
       <div class="tip-box">
-        <h4><span class="lang-es">✔ Watchdog activo</span><span class="lang-en">✔ Watchdog Active</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-check" aria-hidden="true"></i> Watchdog activo</span><span class="lang-en"><i class="fas fa-check" aria-hidden="true"></i> Watchdog Active</span></h4>
         <p class="lang-es">Ahora si WhatsApp se desconecta a las 3am, el watchdog lo detecta en máximo 15 minutos y lo reconecta solo. Puedes dormir tranquilo.</p>
         <p class="lang-en">Now if WhatsApp disconnects at 3am, the watchdog detects it in at most 15 minutes and reconnects it on its own. You can sleep easy.</p>
       </div>
@@ -655,7 +655,7 @@
 <span class="output">   [2] anthropic/claude-sonnet-4-5-20250929</span></code></pre>
 
       <div class="info-box">
-        <h4><span class="lang-es">💡 ¿Por qué este orden?</span><span class="lang-en">💡 Why This Order?</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-lightbulb" aria-hidden="true"></i> ¿Por qué este orden?</span><span class="lang-en"><i class="fas fa-lightbulb" aria-hidden="true"></i> Why This Order?</span></h4>
         <p class="lang-es">El modelo primario (<code>openai-codex/gpt-5.3-codex</code>) ya está configurado como default. Los fallbacks se prueban en orden. Puse Claude Opus primero porque es el más capaz. Sonnet como segundo porque es rápido y barato. Y el de Anthropic directo como último recurso porque usa los créditos de mi suscripción de Claude Code.</p>
         <p class="lang-en">The primary model (<code>openai-codex/gpt-5.3-codex</code>) is already configured as default. Fallbacks are tried in order. I put Claude Opus first because it's the most capable. Sonnet as second because it's fast and cheap. And Anthropic direct as last resort because it uses my Claude Code subscription credits.</p>
       </div>
@@ -667,7 +667,7 @@
 
       <pre><code><span class="command">openclaw models auth login-github-copilot</span></code></pre>
 
-      <pre><code><span class="output">🔐 GitHub Copilot Authentication</span>
+      <pre><code><span class="output"> GitHub Copilot Authentication</span>
 <span class="output">   Open this URL in your browser:</span>
 <span class="output">   → https://github.com/login/device</span>
 <span class="output"></span>
@@ -693,7 +693,7 @@
 <span class="output">   Available models: claude-opus-4.6, claude-sonnet-4.5, gpt-4o, o1...</span></code></pre>
 
       <div class="warning-box">
-        <h4>⚠️ Token expiration</h4>
+        <h4><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Token expiration</h4>
         <p class="lang-es">Los tokens de Copilot expiran periódicamente. Si ves errores 403, re-ejecuta <code>openclaw models auth login-github-copilot</code> para renovar. Con el failover configurado, incluso si el token expira, los otros proveedores toman el relevo mientras lo renuevas.</p>
         <p class="lang-en">Copilot tokens expire periodically. If you see 403 errors, re-run <code>openclaw models auth login-github-copilot</code> to renew. With failover configured, even if the token expires, the other providers take over while you renew it.</p>
       </div>
@@ -704,7 +704,7 @@
       <p class="lang-en">This is the most elegant part of the setup. OpenClaw can read Claude Code credentials directly from the <strong>macOS Keychain</strong>. If you already have Claude Code installed and authenticated, you don't need to configure tokens or API keys manually.</p>
 
       <div class="tip-box">
-        <h4><span class="lang-es">🔑 Credenciales automáticas</span><span class="lang-en">🔑 Automatic Credentials</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-key" aria-hidden="true"></i> Credenciales automáticas</span><span class="lang-en"><i class="fas fa-key" aria-hidden="true"></i> Automatic Credentials</span></h4>
         <p class="lang-es">OpenClaw busca las credenciales en el Keychain de macOS bajo el nombre <code>Claude Code-credentials</code>. Si Claude Code está autenticado en tu máquina, OpenClaw las encuentra y las usa directamente. Zero config.</p>
         <p class="lang-en">OpenClaw looks for credentials in the macOS Keychain under the name <code>Claude Code-credentials</code>. If Claude Code is authenticated on your machine, OpenClaw finds and uses them directly. Zero config.</p>
       </div>
@@ -723,7 +723,7 @@
       <p class="lang-en">That's it. The empty <code>{}</code> means "use the credentials you already have". OpenClaw detects the Keychain, extracts the token, and uses it when it needs to make requests to the Anthropic API.</p>
 
       <div class="info-box">
-        <h4><span class="lang-es">💡 ¿Por qué es el último fallback?</span><span class="lang-en">💡 Why Is It the Last Fallback?</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-lightbulb" aria-hidden="true"></i> ¿Por qué es el último fallback?</span><span class="lang-en"><i class="fas fa-lightbulb" aria-hidden="true"></i> Why Is It the Last Fallback?</span></h4>
         <p class="lang-es">Porque los requests a la API directa de Anthropic se descuentan de tu suscripción de Claude Code. Los otros proveedores (Copilot) usan sus propios créditos. Entonces reservo Anthropic directo como último recurso para no gastar créditos innecesariamente.</p>
         <p class="lang-en">Because requests to the direct Anthropic API are deducted from your Claude Code subscription. The other providers (Copilot) use their own credits. So I reserve Anthropic direct as a last resort to avoid spending credits unnecessarily.</p>
       </div>
@@ -743,7 +743,7 @@
 
       <pre><code><span class="command">openclaw doctor --fix</span></code></pre>
 
-      <pre><code><span class="output">🔍 Running diagnostics...</span>
+      <pre><code><span class="output">> Running diagnostics...</span>
 <span class="output"></span>
 <span class="output">  Node.js        ✓  v22.14.0 (/opt/homebrew/bin/node)</span>
 <span class="output">  npm            ✓  v10.9.2</span>
@@ -756,7 +756,7 @@
 <span class="output">✓ All checks passed. No fixes needed.</span></code></pre>
 
       <div class="tip-box">
-        <h4><span class="lang-es">✔ Sistema estable</span><span class="lang-en">✔ Stable System</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-check" aria-hidden="true"></i> Sistema estable</span><span class="lang-en"><i class="fas fa-check" aria-hidden="true"></i> Stable System</span></h4>
         <p class="lang-es">Con Node.js instalado vía Homebrew, el gateway tiene una instalación de Node confiable que no depende de la sesión de shell ni de variables de entorno de nvm. Esto es especialmente importante para que el watchdog funcione correctamente en background.</p>
         <p class="lang-en">With Node.js installed via Homebrew, the gateway has a reliable Node installation that doesn't depend on the shell session or nvm environment variables. This is especially important for the watchdog to work correctly in the background.</p>
       </div>
@@ -803,7 +803,7 @@
 <span class="command">openclaw config set</span> <span class="flag">agents.defaults.model.enabled</span> <span class="string">true</span></code></pre>
 
       <div class="tip-box">
-        <h4><span class="lang-es">✔ Failover verificado</span><span class="lang-en">✔ Failover Verified</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-check" aria-hidden="true"></i> Failover verificado</span><span class="lang-en"><i class="fas fa-check" aria-hidden="true"></i> Failover Verified</span></h4>
         <p class="lang-es">Si recibes respuesta cuando el primario está deshabilitado, el failover está funcionando correctamente. El agente cambió automáticamente al siguiente proveedor disponible.</p>
         <p class="lang-en">If you receive a response when the primary is disabled, failover is working correctly. The agent automatically switched to the next available provider.</p>
       </div>
@@ -814,7 +814,7 @@
       <p class="lang-en">Here's the complete failover flow diagram:</p>
 
       <div class="ascii-diagram">
-  📱 WhatsApp Message
+  <i class="fas fa-mobile-screen" aria-hidden="true"></i> WhatsApp Message
        │
        ↓
   ┌────────────────────────┐
@@ -832,28 +832,28 @@
      │                                          │
      ↓                                          │
   ┌──────────────────┐                          │
-  │ PRIMARY          │──── OK ──── Responde ──► 📱│
+  │ PRIMARY          │──── OK ──── Responde ──► <i class="fas fa-mobile-screen" aria-hidden="true"></i>│
   │ openai-codex/    │                          │
   │ gpt-5.3-codex    │                          │
   └──────┬───────────┘                          │
          │ FAIL                                 │
          ↓                                      │
   ┌──────────────────┐                          │
-  │ FALLBACK #1      │──── OK ──── Responde ──► 📱│
+  │ FALLBACK #1      │──── OK ──── Responde ──► <i class="fas fa-mobile-screen" aria-hidden="true"></i>│
   │ github-copilot/  │                          │
   │ claude-opus-4.6  │                          │
   └──────┬───────────┘                          │
          │ FAIL                                 │
          ↓                                      │
   ┌──────────────────┐                          │
-  │ FALLBACK #2      │──── OK ──── Responde ──► 📱│
+  │ FALLBACK #2      │──── OK ──── Responde ──► <i class="fas fa-mobile-screen" aria-hidden="true"></i>│
   │ copilot-proxy/   │                          │
   │ claude-sonnet-4.5│                          │
   └──────┬───────────┘                          │
          │ FAIL                                 │
          ↓                                      │
   ┌──────────────────┐                          │
-  │ FALLBACK #3      │──── OK ──── Responde ──► 📱│
+  │ FALLBACK #3      │──── OK ──── Responde ──► <i class="fas fa-mobile-screen" aria-hidden="true"></i>│
   │ anthropic/       │                          │
   │ claude-sonnet-4-5│                          │
   │ (Claude Code)    │                          │
@@ -864,7 +864,7 @@
       <h3><span class="lang-es">Resumen de lo que configuramos</span><span class="lang-en">Summary of What We Configured</span></h3>
 
       <div class="summary-box">
-        <h3><span class="lang-es">🦞 Setup Final</span><span class="lang-en">🦞 Final Setup</span></h3>
+        <h3><span class="lang-es"><i class="fas fa-terminal" aria-hidden="true"></i> Setup Final</span><span class="lang-en"><i class="fas fa-terminal" aria-hidden="true"></i> Final Setup</span></h3>
         <p><span class="lang-es">Un agente de OpenClaw que es prácticamente indestructible:</span><span class="lang-en">An OpenClaw agent that is practically indestructible:</span></p>
       </div>
 
@@ -880,27 +880,27 @@
           <tr>
             <td><strong>WhatsApp Channel</strong></td>
             <td><span class="lang-es">Canal de comunicación principal</span><span class="lang-en">Main communication channel</span></td>
-            <td>✓ CONNECTED</td>
+            <td><i class="fas fa-check" aria-hidden="true"></i> CONNECTED</td>
           </tr>
           <tr>
             <td><strong>Watchdog Cron</strong></td>
             <td><span class="lang-es">Revisa WhatsApp cada 15 min, reconecta si se cae</span><span class="lang-en">Checks WhatsApp every 15 min, reconnects if it goes down</span></td>
-            <td>✓ ACTIVE</td>
+            <td><i class="fas fa-check" aria-hidden="true"></i> ACTIVE</td>
           </tr>
           <tr>
             <td><strong>4 <span class="lang-es">Proveedores</span><span class="lang-en">Providers</span></strong></td>
             <td><span class="lang-es">Cadena de failover automática de modelos</span><span class="lang-en">Automatic model failover chain</span></td>
-            <td>✓ 4/4 OK</td>
+            <td><i class="fas fa-check" aria-hidden="true"></i> 4/4 OK</td>
           </tr>
           <tr>
             <td><strong>Node.js (Homebrew)</strong></td>
             <td><span class="lang-es">Runtime estable a nivel de sistema</span><span class="lang-en">Stable system-level runtime</span></td>
-            <td>✓ v22.14.0</td>
+            <td><i class="fas fa-check" aria-hidden="true"></i> v22.14.0</td>
           </tr>
           <tr>
             <td><strong>Claude Code Keychain</strong></td>
             <td><span class="lang-es">Credenciales Anthropic sin configuración manual</span><span class="lang-en">Anthropic credentials without manual configuration</span></td>
-            <td>✓ Auto-detected</td>
+            <td><i class="fas fa-check" aria-hidden="true"></i> Auto-detected</td>
           </tr>
         </tbody>
       </table>
@@ -928,7 +928,7 @@
       <p class="lang-en">Plot twist: after configuring everything above, the bot went down again. I'd send messages via WhatsApp and it would respond with <code>"Connection error."</code> as literal text. The failover chain was configured... but wasn't working.</p>
 
       <div class="warning-box">
-        <h4><span class="lang-es">⚠️ El error real</span><span class="lang-en">⚠️ The Real Error</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> El error real</span><span class="lang-en"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> The Real Error</span></h4>
         <p class="lang-es">Al revisar los logs del agente, encontré esto: <code>FailoverError: No API key found for provider "anthropic". Auth store: ~/.openclaw/agents/main/agent/auth-profiles.json</code>. Anthropic fallaba porque sus credenciales <strong>no estaban en el auth-profiles del agente</strong>.</p>
         <p class="lang-en">Looking at the agent logs, I found this: <code>FailoverError: No API key found for provider "anthropic". Auth store: ~/.openclaw/agents/main/agent/auth-profiles.json</code>. Anthropic was failing because its credentials <strong>were not in the agent's auth-profiles</strong>.</p>
       </div>
@@ -994,7 +994,7 @@
 <span class="output">"Ejecuta '/ruta/completa/a/openclaw gateway restart' para reconectarlo."</span></code></pre>
 
       <div class="tip-box">
-        <h4><span class="lang-es">✔ Lección aprendida</span><span class="lang-en">✔ Lesson Learned</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-check" aria-hidden="true"></i> Lección aprendida</span><span class="lang-en"><i class="fas fa-check" aria-hidden="true"></i> Lesson Learned</span></h4>
         <p class="lang-es">Configurar el failover tiene <strong>dos partes</strong>: (1) registrar los modelos en la config global, y (2) asegurarte de que las <strong>credenciales</strong> de cada proveedor estén en el <code>auth-profiles.json</code> del agente. Si falta cualquiera de las dos, el failover no funciona. Y para cron jobs, siempre usa rutas absolutas.</p>
         <p class="lang-en">Configuring failover has <strong>two parts</strong>: (1) register models in the global config, and (2) make sure the <strong>credentials</strong> of each provider are in the agent's <code>auth-profiles.json</code>. If either is missing, failover doesn't work. And for cron jobs, always use absolute paths.</p>
       </div>
@@ -1047,7 +1047,7 @@
       </table>
 
       <div class="openclaw-box">
-        <h4><span class="lang-es">🦞 Para los que quieren ir más allá</span><span class="lang-en">🦞 For Those Who Want to Go Further</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-terminal" aria-hidden="true"></i> Para los que quieren ir más allá</span><span class="lang-en"><i class="fas fa-terminal" aria-hidden="true"></i> For Those Who Want to Go Further</span></h4>
         <p class="lang-es">Puedes agregar más canales (Telegram, Slack) como fallback de comunicación, configurar alertas por email cuando el watchdog detecta una falla, o incluso agregar proveedores locales (Ollama, LM Studio) como último-último recurso para funcionar completamente offline. Las posibilidades con OpenClaw son infinitas.</p>
         <p class="lang-en">You can add more channels (Telegram, Slack) as communication fallback, configure email alerts when the watchdog detects a failure, or even add local providers (Ollama, LM Studio) as a last-last resort to work completely offline. The possibilities with OpenClaw are endless.</p>
       </div>
@@ -1058,7 +1058,7 @@
       <p class="lang-en">Remember when I said if all 3 providers fail at the same time "we have bigger problems"? Well, it happened. Hours after publishing this post, all 3 died simultaneously:</p>
 
       <div class="warning-box">
-        <h4>💀 Error: All models failed (3)</h4>
+        <h4><i class="fas fa-skull" aria-hidden="true"></i> Error: All models failed (3)</h4>
         <p>
           <code>github-copilot/claude-opus-4.6</code>: cooldown (rate_limit)<br>
           <code>anthropic/claude-sonnet-4-5-20250929</code>: OAuth token refresh failed<br>
@@ -1185,7 +1185,7 @@
 <span class="output">OK</span></code></pre>
 
       <div class="tip-box">
-        <h4><span class="lang-es">✔ Bot restaurado</span><span class="lang-en">✔ Bot Restored</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-check" aria-hidden="true"></i> Bot restaurado</span><span class="lang-en"><i class="fas fa-check" aria-hidden="true"></i> Bot Restored</span></h4>
         <p class="lang-es">Los 2 primeros proveedores siguen con rate limit temporal, pero el tercero (Anthropic con tokens frescos) responde correctamente. La cadena de failover funciona como debe: si los primeros fallan, el tercero entra.</p>
         <p class="lang-en">The first 2 providers still have temporary rate limits, but the third (Anthropic with fresh tokens) responds correctly. The failover chain works as it should: if the first ones fail, the third one steps in.</p>
       </div>
@@ -1206,7 +1206,7 @@
       </ol>
 
       <div class="openclaw-box">
-        <h4><span class="lang-es">🦞 El setup actualizado</span><span class="lang-en">🦞 The Updated Setup</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-terminal" aria-hidden="true"></i> El setup actualizado</span><span class="lang-en"><i class="fas fa-terminal" aria-hidden="true"></i> The Updated Setup</span></h4>
         <p class="lang-es">Después de este incidente, la cadena de failover tiene <strong>3 proveedores activos</strong> con tokens verificados, cooldowns limpios, y el primary model correctamente configurado. La próxima vez que un proveedor falle, los otros dos entran. Y si los 3 fallan... bueno, ya sé cómo arreglarlo en 5 minutos en vez de 5 horas.</p>
         <p class="lang-en">After this incident, the failover chain has <strong>3 active providers</strong> with verified tokens, clean cooldowns, and the primary model correctly configured. Next time a provider fails, the other two step in. And if all 3 fail... well, now I know how to fix it in 5 minutes instead of 5 hours.</p>
       </div>

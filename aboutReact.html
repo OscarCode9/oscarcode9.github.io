@@ -252,7 +252,7 @@
         In this article we will demystify the fundamental concepts of React: <strong>components</strong>, <strong>props</strong>, and <strong>state</strong>. If you come from HTML/CSS/vanilla JavaScript, you'll see that the learning curve is not as steep as it seems.
       </p>
 
-      <h3><span class="lang-es">🧩 ¿Qué es un Componente?</span><span class="lang-en">🧩 What is a Component?</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-puzzle-piece" aria-hidden="true"></i> ¿Qué es un Componente?</span><span class="lang-en"><i class="fas fa-puzzle-piece" aria-hidden="true"></i> What is a Component?</span></h3>
 
       <p class="flow-text lang-es">
         En React, todo es un <strong>componente</strong>. Piensa en ellos como piezas de LEGO: pequeños bloques reutilizables que juntos forman interfaces complejas. Un botón, un menú, una tarjeta de producto... cada uno puede ser un componente independiente.
@@ -285,12 +285,12 @@ class Saludo extends Component {
 export default Saludo;</code></pre>
 
       <div class="concept-box">
-        <h4><span class="lang-es">💡 El método render()</span><span class="lang-en">💡 The render() Method</span></h4>
+        <h4><span class="lang-es"><i class="fas fa-lightbulb" aria-hidden="true"></i> El método render()</span><span class="lang-en"><i class="fas fa-lightbulb" aria-hidden="true"></i> The render() Method</span></h4>
         <p class="lang-es">El <code>render()</code> es obligatorio en componentes de clase. Se ejecuta cada vez que el estado cambia, actualizando la UI automáticamente. React se encarga de optimizar qué partes del DOM realmente necesitan actualizarse.</p>
         <p class="lang-en">The <code>render()</code> method is mandatory in class components. It runs every time the state changes, updating the UI automatically. React takes care of optimizing which parts of the DOM actually need to be updated.</p>
       </div>
 
-      <h3><span class="lang-es">⚡ Componentes Funcionales (El estándar moderno)</span><span class="lang-en">⚡ Functional Components (The Modern Standard)</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-bolt" aria-hidden="true"></i> Componentes Funcionales (El estándar moderno)</span><span class="lang-en"><i class="fas fa-bolt" aria-hidden="true"></i> Functional Components (The Modern Standard)</span></h3>
 
       <p class="flow-text lang-es">
         Desde React 16.8, los <strong>componentes funcionales con Hooks</strong> se han convertido en la forma recomendada de escribir React. Son más concisos, fáciles de testear y permiten reutilizar lógica entre componentes:
@@ -323,7 +323,7 @@ const Calculadora = ({ num1, num2 }) => {
         Components must always start with uppercase letters. It's a best practice and it's what the official React documentation tells us.
       </p>
 
-      <h3><span class="lang-es">📨 Props: Comunicación entre componentes</span><span class="lang-en">📨 Props: Communication Between Components</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-paper-plane" aria-hidden="true"></i> Props: Comunicación entre componentes</span><span class="lang-en"><i class="fas fa-paper-plane" aria-hidden="true"></i> Props: Communication Between Components</span></h3>
 
       <div class="concept-box">
         <h4><span class="lang-es">¿Qué son los Props?</span><span class="lang-en">What are Props?</span></h4>
@@ -349,7 +349,7 @@ const TarjetaUsuario = ({ nombre, rol, avatar }) => {
   avatar="/images/oscar.jpg"
 /></code></pre>
 
-      <h3><span class="lang-es">🔄 State: Datos que cambian</span><span class="lang-en">🔄 State: Data That Changes</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-arrows-rotate" aria-hidden="true"></i> State: Datos que cambian</span><span class="lang-en"><i class="fas fa-arrows-rotate" aria-hidden="true"></i> State: Data That Changes</span></h3>
 
       <div class="concept-box">
         <h4><span class="lang-es">¿Qué es el State?</span><span class="lang-en">What is State?</span></h4>
@@ -367,13 +367,13 @@ const Contador = () => {
     <div className="contador">
       <h2>Contador: {count}</h2>
       <button onClick={() => setCount(count + 1)}>
-        ➕ Incrementar
+         Incrementar
       </button>
       <button onClick={() => setCount(count - 1)}>
-        ➖ Decrementar
+         Decrementar
       </button>
       <button onClick={() => setCount(0)}>
-        🔄 Reiniciar
+         Reiniciar
       </button>
     </div>
   );
@@ -395,17 +395,17 @@ const ArticuloCard = ({ titulo, autor }) => {  // Props ↓
       
       <div className="actions">
         <button onClick={() => setLikes(likes + 1)}>
-          ❤️ {likes}               {/* State: cambia */}
+           {likes}               {/* State: cambia */}
         </button>
         <button onClick={() => setSaved(!saved)}>
-          {saved ? '🔖' : '📑'}    {/* State: cambia */}
+          {saved ? '' : ''}    {/* State: cambia */}
         </button>
       </div>
     </article>
   );
 };</code></pre>
 
-      <h3><span class="lang-es">🔗 useEffect: El ciclo de vida moderno</span><span class="lang-en">🔗 useEffect: The Modern Lifecycle</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-link" aria-hidden="true"></i> useEffect: El ciclo de vida moderno</span><span class="lang-en"><i class="fas fa-link" aria-hidden="true"></i> useEffect: The Modern Lifecycle</span></h3>
 
       <p class="flow-text lang-es">
         El hook <code>useEffect</code> nos permite ejecutar efectos secundarios: llamadas a APIs, suscripciones, manipulación del DOM, etc.
@@ -450,7 +450,7 @@ const UserProfile = ({ userId }) => {
   );
 };</code></pre>
 
-      <h3><span class="lang-es">🎯 Conclusión</span><span class="lang-en">🎯 Conclusion</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-bullseye" aria-hidden="true"></i> Conclusión</span><span class="lang-en"><i class="fas fa-bullseye" aria-hidden="true"></i> Conclusion</span></h3>
 
       <p class="flow-text lang-es">
         Estos tres conceptos —<strong>componentes</strong>, <strong>props</strong> y <strong>state</strong>— son los pilares de React. Una vez que los domines, estarás listo para explorar patrones más avanzados como Context, useReducer, custom hooks y más.

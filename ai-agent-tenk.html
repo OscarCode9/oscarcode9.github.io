@@ -453,7 +453,7 @@
       <a href="index.html" class="back-link">
         <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px"><i class="fas fa-globe" aria-hidden="true"></i> EN</span>
       <h1 class="post-title"><span class="lang-es">Cómo Construí un Agente de IA con Tool Calling</span><span class="lang-en">How I Built an AI Agent with Tool Calling</span></h1>
     <div class="ov-views-wrap">
       <div class="ov-views-badge" data-ov-visits>
@@ -498,12 +498,12 @@
 
       <div class="comparison">
         <div class="comparison-box bad">
-          <h4>🤖 Chatbot</h4>
+          <h4><i class="fas fa-robot" aria-hidden="true"></i> Chatbot</h4>
           <p class="lang-es">Le preguntas "¿cuántas horas practiqué esta semana?" y responde <em>"No tengo acceso a tus datos"</em> o inventa algo.</p>
           <p class="lang-en">You ask "how many hours did I practice this week?" and it replies <em>"I don't have access to your data"</em> or makes something up.</p>
         </div>
         <div class="comparison-box good">
-          <h4>🧠 <span class="lang-es">Agente</span><span class="lang-en">Agent</span></h4>
+          <h4><i class="fas fa-brain" aria-hidden="true"></i> <span class="lang-es">Agente</span><span class="lang-en">Agent</span></h4>
           <p class="lang-es">Recibe la pregunta, <strong>decide</strong> que necesita consultar tu historial, <strong>ejecuta</strong> la consulta a la base de datos, <strong>analiza</strong> los resultados y responde con datos reales.</p>
           <p class="lang-en">Receives the question, <strong>decides</strong> it needs to check your history, <strong>executes</strong> the database query, <strong>analyzes</strong> the results, and responds with real data.</p>
         </div>
@@ -609,8 +609,8 @@ export async function executeTool(
       <p class="lang-en">The <code>TAgentToolResult</code> type standardizes the response: <code>{ success: boolean, data: unknown, error?: string }</code>. This prevents an error in a tool from crashing the entire loop — the agent receives the error as data and can decide what to do (retry, use another tool, or notify the user).</p>
 
       <div class="callout warning">
-        <p class="lang-es"><strong>⚠️ Nota de seguridad:</strong> Siempre filtramos por <code>userId</code> extraído del JWT — <strong>nunca del input del modelo</strong>. Esto previene ataques de prompt injection donde un usuario intente acceder a datos ajenos.</p>
-        <p class="lang-en"><strong>⚠️ Security note:</strong> We always filter by <code>userId</code> extracted from the JWT — <strong>never from the model's input</strong>. This prevents prompt injection attacks where a user might try to access other users' data.</p>
+        <p class="lang-es"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Nota de seguridad:</strong> Siempre filtramos por <code>userId</code> extraído del JWT — <strong>nunca del input del modelo</strong>. Esto previene ataques de prompt injection donde un usuario intente acceder a datos ajenos.</p>
+        <p class="lang-en"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Security note:</strong> We always filter by <code>userId</code> extracted from the JWT — <strong>never from the model's input</strong>. This prevents prompt injection attacks where a user might try to access other users' data.</p>
       </div>
 
       <h3><span class="lang-es">Paso 3: Respuesta al Modelo</span><span class="lang-en">Step 3: Response to the Model</span></h3>
@@ -718,8 +718,8 @@ async function runAgentLoop(userId: string, messages: IChatMessage[]) {
 }</code></pre>
 
       <div class="callout info">
-        <p class="lang-es"><strong>💡 Detalle clave:</strong> Cuando el agente alcanza el máximo de 5 iteraciones, la mayoría de implementaciones simplemente devuelven el último contenido. Nosotros hacemos una <strong>llamada extra sin herramientas</strong> — esto obliga a Claude a sintetizar toda la información recopilada en una respuesta coherente, en vez de cortarse a mitad de un razonamiento.</p>
-        <p class="lang-en"><strong>💡 Key detail:</strong> When the agent reaches the maximum 5 iterations, most implementations simply return the last content. We make an <strong>extra call without tools</strong> — this forces Claude to synthesize all collected information into a coherent response, instead of cutting off mid-reasoning.</p>
+        <p class="lang-es"><strong><i class="fas fa-lightbulb" aria-hidden="true"></i> Detalle clave:</strong> Cuando el agente alcanza el máximo de 5 iteraciones, la mayoría de implementaciones simplemente devuelven el último contenido. Nosotros hacemos una <strong>llamada extra sin herramientas</strong> — esto obliga a Claude a sintetizar toda la información recopilada en una respuesta coherente, en vez de cortarse a mitad de un razonamiento.</p>
+        <p class="lang-en"><strong><i class="fas fa-lightbulb" aria-hidden="true"></i> Key detail:</strong> When the agent reaches the maximum 5 iterations, most implementations simply return the last content. We make an <strong>extra call without tools</strong> — this forces Claude to synthesize all collected information into a coherent response, instead of cutting off mid-reasoning.</p>
       </div>
 
       <p class="lang-es">El array de <code>messages</code> crece con cada iteración: pregunta del usuario → respuesta con tool_calls → resultados de las tools → nueva respuesta → etc. Claude tiene <strong>contexto completo</strong> de toda la conversación para generar la respuesta final.</p>
@@ -808,8 +808,8 @@ async function runAgentLoop(userId: string, messages: IChatMessage[]) {
       <p class="lang-en">This gives the model a typed vocabulary to classify its observations. Each insight has a semantic <code>type</code> that allows rendering different styles in the UI (color badges, icons, etc.).</p>
 
       <div class="callout">
-        <p class="lang-es"><strong>💡 Decisión de diseño:</strong> Las herramientas son <em>granulares a propósito</em>. Podríamos haber creado una sola herramienta <code>get_all_data</code> que devuelva todo, pero eso enviaría datos innecesarios en cada consulta. Con herramientas granulares, Claude solo pide lo que necesita — consumiendo menos tokens y reduciendo la latencia.</p>
-        <p class="lang-en"><strong>💡 Design decision:</strong> The tools are <em>intentionally granular</em>. We could have created a single <code>get_all_data</code> tool that returns everything, but that would send unnecessary data on every query. With granular tools, Claude only requests what it needs — consuming fewer tokens and reducing latency.</p>
+        <p class="lang-es"><strong><i class="fas fa-lightbulb" aria-hidden="true"></i> Decisión de diseño:</strong> Las herramientas son <em>granulares a propósito</em>. Podríamos haber creado una sola herramienta <code>get_all_data</code> que devuelva todo, pero eso enviaría datos innecesarios en cada consulta. Con herramientas granulares, Claude solo pide lo que necesita — consumiendo menos tokens y reduciendo la latencia.</p>
+        <p class="lang-en"><strong><i class="fas fa-lightbulb" aria-hidden="true"></i> Design decision:</strong> The tools are <em>intentionally granular</em>. We could have created a single <code>get_all_data</code> tool that returns everything, but that would send unnecessary data on every query. With granular tools, Claude only requests what it needs — consuming fewer tokens and reducing latency.</p>
       </div>
 
 
@@ -855,17 +855,17 @@ HERRAMIENTAS:
 - NUNCA inventes estadísticas. Si no tienes datos, pídelos con las tools.
 
 NIVELES DE MAESTRÍA:
-🌱 Semilla (0-100h) — Apenas comenzando
-📘 Aprendiz (100-500h) — Fundamentos sólidos
-⚡ Intermedio (500-2,000h) — Competencia real
-🔥 Avanzado (2,000-5,000h) — Dominio profundo
-👑 Master (5,000-10,000h) — Élite
+ Semilla (0-100h) — Apenas comenzando
+ Aprendiz (100-500h) — Fundamentos sólidos
+ Intermedio (500-2,000h) — Competencia real
+[fire] Avanzado (2,000-5,000h) — Dominio profundo
+ Master (5,000-10,000h) — Élite
 
 PLAN SEMANAL (cuando lo pidan):
-1. 📊 Resumen — datos clave de la semana anterior
-2. 📅 Plan — qué skill, qué día, cuántas horas
-3. 🎯 Foco — 1 recomendación basada en patrones
-4. 🏆 Meta — horas objetivo realistas
+1. [chart] Resumen — datos clave de la semana anterior
+2. [date] Plan — qué skill, qué día, cuántas horas
+3. [target] Foco — 1 recomendación basada en patrones
+4. [trophy] Meta — horas objetivo realistas
 
 REGLAS:
 - Máximo 300 palabras por respuesta
@@ -890,7 +890,7 @@ REGLAS:
 
       <div class="comparison">
         <div class="comparison-box bad">
-          <h4><span class="lang-es">❌ API Key Centralizada</span><span class="lang-en">❌ Centralized API Key</span></h4>
+          <h4><span class="lang-es"><i class="fas fa-circle-xmark" aria-hidden="true"></i> API Key Centralizada</span><span class="lang-en"><i class="fas fa-circle-xmark" aria-hidden="true"></i> Centralized API Key</span></h4>
           <ul>
             <li><span class="lang-es">Rate limits compartidos entre todos</span><span class="lang-en">Shared rate limits across all users</span></li>
             <li><span class="lang-es">Costo de API para nosotros</span><span class="lang-en">API cost for us</span></li>
@@ -899,7 +899,7 @@ REGLAS:
           </ul>
         </div>
         <div class="comparison-box good">
-          <h4><span class="lang-es">✅ OAuth Per-User</span><span class="lang-en">✅ OAuth Per-User</span></h4>
+          <h4><span class="lang-es"><i class="fas fa-circle-check" aria-hidden="true"></i> OAuth Per-User</span><span class="lang-en"><i class="fas fa-circle-check" aria-hidden="true"></i> OAuth Per-User</span></h4>
           <ul>
             <li><span class="lang-es">Rate limits individuales</span><span class="lang-en">Individual rate limits</span></li>
             <li><span class="lang-es">Zero API cost para nosotros</span><span class="lang-en">Zero API cost for us</span></li>
@@ -986,8 +986,8 @@ const codeChallenge = await generateCodeChallenge(codeVerifier);</code></pre>
       <h3><span class="lang-es">Las Trampas de Anthropic que Nadie Documenta</span><span class="lang-en">Anthropic's Undocumented Gotchas</span></h3>
 
       <div class="callout danger">
-        <p class="lang-es"><strong>🔥 Detalle #1:</strong> Anthropic devuelve el código de autorización en formato <code>code#state</code> como un solo string. Hay que parsear el <code>#</code> manualmente:</p>
-        <p class="lang-en"><strong>🔥 Gotcha #1:</strong> Anthropic returns the authorization code in <code>code#state</code> format as a single string. You have to parse the <code>#</code> manually:</p>
+        <p class="lang-es"><strong><i class="fas fa-fire" aria-hidden="true"></i> Detalle #1:</strong> Anthropic devuelve el código de autorización en formato <code>code#state</code> como un solo string. Hay que parsear el <code>#</code> manualmente:</p>
+        <p class="lang-en"><strong><i class="fas fa-fire" aria-hidden="true"></i> Gotcha #1:</strong> Anthropic returns the authorization code in <code>code#state</code> format as a single string. You have to parse the <code>#</code> manually:</p>
       </div>
 
       <pre><code>// El usuario pega: "abc123xyz#state-789def"
@@ -996,8 +996,8 @@ const code = rawCode.substring(0, hashIndex);   // "abc123xyz"
 const state = rawCode.substring(hashIndex + 1);  // "state-789def"</code></pre>
 
       <div class="callout danger">
-        <p class="lang-es"><strong>🔥 Detalle #2:</strong> Anthropic es el <strong>único proveedor OAuth</strong> que requiere <code>Content-Type: application/json</code> en el token exchange. Google, GitHub, todos usan <code>application/x-www-form-urlencoded</code>.</p>
-        <p class="lang-en"><strong>🔥 Gotcha #2:</strong> Anthropic is the <strong>only OAuth provider</strong> that requires <code>Content-Type: application/json</code> in the token exchange. Google, GitHub, everyone else uses <code>application/x-www-form-urlencoded</code>.</p>
+        <p class="lang-es"><strong><i class="fas fa-fire" aria-hidden="true"></i> Detalle #2:</strong> Anthropic es el <strong>único proveedor OAuth</strong> que requiere <code>Content-Type: application/json</code> en el token exchange. Google, GitHub, todos usan <code>application/x-www-form-urlencoded</code>.</p>
+        <p class="lang-en"><strong><i class="fas fa-fire" aria-hidden="true"></i> Gotcha #2:</strong> Anthropic is the <strong>only OAuth provider</strong> that requires <code>Content-Type: application/json</code> in the token exchange. Google, GitHub, everyone else uses <code>application/x-www-form-urlencoded</code>.</p>
       </div>
 
       <pre><code>// Token exchange — JSON, NO form-urlencoded
@@ -1077,7 +1077,7 @@ RateLimitFailure(minutes: 42)         ← Repository
 AiCoachStatus.rateLimited             ← BLoC State
          │
          ▼
-🟡 RateLimitBanner                    ← UI Widget
+[warn] RateLimitBanner                    ← UI Widget
    "Intenta en ~42 min"</code></pre>
         <p class="diagram-caption"><span class="lang-es">El error 429 transformándose de API response a UI amigable</span><span class="lang-en">The 429 error transforming from API response to user-friendly UI</span></p>
       </div>
@@ -1132,7 +1132,7 @@ if (failure is RateLimitFailure) {
 
       <div class="comparison">
         <div class="comparison-box bad">
-          <h4>❌ Agent Loop (39s)</h4>
+          <h4><i class="fas fa-circle-xmark" aria-hidden="true"></i> Agent Loop (39s)</h4>
           <pre><code>// 6 API calls secuenciales:
 // Claude pide tool 1 → ejecuta
 // Claude pide tool 2 → ejecuta
@@ -1141,7 +1141,7 @@ if (failure is RateLimitFailure) {
 // 4 rondas ida y vuelta</code></pre>
         </div>
         <div class="comparison-box good">
-          <h4>✅ Pre-fetch (8s)</h4>
+          <h4><i class="fas fa-circle-check" aria-hidden="true"></i> Pre-fetch (8s)</h4>
           <pre><code>// 3 queries en paralelo (~50ms)
 // + 1 API call con todo
 // = 4.7x más rápido</code></pre>
@@ -1498,12 +1498,12 @@ export async function getUserSkills(userId: string, args: Record&lt;string, unkn
 
   const data = skills.map((skill) =&gt; {
     const totalHours = skill.sessions.reduce((sum, s) =&gt; sum + Number(s.hours), 0);
-    const mastery = getMasteryLevel(totalHours); // 🌱📘⚡🔥👑
+    const mastery = getMasteryLevel(totalHours); // [fire]
 
     return {
       id: skill.id,
       name: skill.name,
-      emoji: skill.emoji || '📚',
+      emoji: skill.emoji || '',
       totalHours: Math.round(totalHours * 10) / 10,
       goalHours: skill.goalHours,
       masteryLevel: `${mastery.emoji} ${mastery.name}`,
@@ -1686,7 +1686,7 @@ export function convertToAnthropicMsg(msg) {
 
       <!-- ==================== TAKEAWAYS ==================== -->
       <div class="takeaways">
-        <h3><span class="lang-es">💡 Lecciones Aprendidas</span><span class="lang-en">💡 Lessons Learned</span></h3>
+        <h3><span class="lang-es"><i class="fas fa-lightbulb" aria-hidden="true"></i> Lecciones Aprendidas</span><span class="lang-en"><i class="fas fa-lightbulb" aria-hidden="true"></i> Lessons Learned</span></h3>
         <ol>
           <li class="lang-es"><strong>El agent loop es poderoso pero costoso</strong> — cada iteración es una API call. Usa pre-fetch cuando el flujo es predecible.</li>
           <li class="lang-en"><strong>The agent loop is powerful but expensive</strong> — each iteration is an API call. Use pre-fetch when the flow is predictable.</li>
@@ -1713,7 +1713,7 @@ export function convertToAnthropicMsg(msg) {
 
 
       <!-- ==================== SCREENSHOTS ==================== -->
-      <h2>📱 <span class="lang-es">La App en Acción</span><span class="lang-en">The App in Action</span></h2>
+      <h2><i class="fas fa-mobile-screen" aria-hidden="true"></i> <span class="lang-es">La App en Acción</span><span class="lang-en">The App in Action</span></h2>
 
       <div class="post-gallery">
         <figure>

@@ -245,7 +245,7 @@
         If you've ever wondered how services like Netflix, Uber, or GitHub achieve such fast searches across millions of records, the answer is probably <strong>ElasticSearch</strong>. In this tutorial you'll learn how to integrate this powerful search engine with Node.js using the <strong>Koa</strong> framework.
       </p>
 
-      <h3><span class="lang-es">🔍 ¿Qué es ElasticSearch?</span><span class="lang-en">🔍 What is ElasticSearch?</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> ¿Qué es ElasticSearch?</span><span class="lang-en"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> What is ElasticSearch?</span></h3>
 
       <p class="flow-text lang-es">
         <strong>ElasticSearch</strong> es un motor de búsqueda y análisis distribuido, de código abierto, construido sobre Apache Lucene. Es capaz de manejar grandes volúmenes de datos con tiempos de respuesta en milisegundos, lo que lo convierte en la opción preferida para aplicaciones que requieren búsquedas en tiempo real.
@@ -261,7 +261,7 @@
         Although it's written in Java, ElasticSearch exposes a REST API that allows us to interact with it from any programming language: JavaScript, Python, C#, Go, and more.
       </p>
 
-      <h3><span class="lang-es">✨ Características principales</span><span class="lang-en">✨ Key Features</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Características principales</span><span class="lang-en"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Key Features</span></h3>
 
       <ul class="feature-list">
         <li><strong>Orientado a documentos:</strong> <span class="lang-es">Almacena datos en formato JSON, ideal para JavaScript</span><span class="lang-en">Stores data in JSON format, ideal for JavaScript</span></li>
@@ -273,10 +273,10 @@
       </ul>
 
       <div class="note">
-        <p><strong><span class="lang-es">📋 Requisitos previos:</span><span class="lang-en">📋 Prerequisites:</span></strong> <span class="lang-es">Asegúrate de tener instalado Node.js (v14+), npm o Yarn, y ElasticSearch (v7+) corriendo en tu máquina local.</span><span class="lang-en">Make sure you have Node.js (v14+), npm or Yarn, and ElasticSearch (v7+) installed and running on your local machine.</span></p>
+        <p><strong><span class="lang-es"><i class="fas fa-clipboard-list" aria-hidden="true"></i> Requisitos previos:</span><span class="lang-en"><i class="fas fa-clipboard-list" aria-hidden="true"></i> Prerequisites:</span></strong> <span class="lang-es">Asegúrate de tener instalado Node.js (v14+), npm o Yarn, y ElasticSearch (v7+) corriendo en tu máquina local.</span><span class="lang-en">Make sure you have Node.js (v14+), npm or Yarn, and ElasticSearch (v7+) installed and running on your local machine.</span></p>
       </div>
 
-      <h3><span class="lang-es">🚀 Configurando el proyecto con Koa</span><span class="lang-en">🚀 Setting Up the Project with Koa</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-rocket" aria-hidden="true"></i> Configurando el proyecto con Koa</span><span class="lang-en"><i class="fas fa-rocket" aria-hidden="true"></i> Setting Up the Project with Koa</span></h3>
 
       <p class="flow-text lang-es">
         Usaremos <strong>Koa</strong>, un framework minimalista creado por el equipo detrás de Express. Koa aprovecha async/await de forma nativa, eliminando callbacks y haciendo el código más limpio y mantenible.
@@ -294,12 +294,12 @@ $ koa serverElastic --hbs
 # Entrar al directorio e instalar dependencias
 $ cd serverElastic && npm install</code></pre>
 
-      <h3><span class="lang-es">📦 Instalando el cliente oficial</span><span class="lang-en">📦 Installing the Official Client</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-box" aria-hidden="true"></i> Instalando el cliente oficial</span><span class="lang-en"><i class="fas fa-box" aria-hidden="true"></i> Installing the Official Client</span></h3>
 
       <pre><code class="language-bash"># Cliente oficial de Elasticsearch para Node.js
 $ npm install @elastic/elasticsearch</code></pre>
 
-      <h3><span class="lang-es">🔌 Configurando la conexión</span><span class="lang-en">🔌 Configuring the Connection</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-plug" aria-hidden="true"></i> Configurando la conexión</span><span class="lang-en"><i class="fas fa-plug" aria-hidden="true"></i> Configuring the Connection</span></h3>
 
       <p class="flow-text lang-es">
         Primero, creamos un módulo para gestionar la conexión con ElasticSearch. Es buena práctica verificar la conexión al iniciar la aplicación:
@@ -378,7 +378,7 @@ indexDocument('articles', {
   created_at: new Date()
 });</code></pre>
 
-      <h3><span class="lang-es">🔎 Implementando búsquedas</span><span class="lang-en">🔎 Implementing Searches</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Implementando búsquedas</span><span class="lang-en"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Implementing Searches</span></h3>
 
       <p class="flow-text lang-es">
         El poder real de ElasticSearch está en sus capacidades de búsqueda. Utilizamos <code>multi_match</code> para buscar en múltiples campos simultáneamente:
@@ -414,7 +414,7 @@ indexDocument('articles', {
 const results = await search('articles', 'elasticsearch');
 console.log(results);</code></pre>
 
-      <h3><span class="lang-es">🌐 API REST con Koa</span><span class="lang-en">🌐 REST API with Koa</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-globe" aria-hidden="true"></i> API REST con Koa</span><span class="lang-en"><i class="fas fa-globe" aria-hidden="true"></i> REST API with Koa</span></h3>
 
       <p class="flow-text lang-es">
         Finalmente, exponemos nuestra funcionalidad de búsqueda a través de una API REST limpia y eficiente:
@@ -478,10 +478,10 @@ router.get('/api/search', async (ctx) => {
 
 app.use(router.routes());
 app.listen(3000, () => {
-  console.log('🚀 Server running on http://localhost:3000');
+  console.log('>>> Server running on http://localhost:3000');
 });</code></pre>
 
-      <h3><span class="lang-es">🎯 Conclusión</span><span class="lang-en">🎯 Conclusion</span></h3>
+      <h3><span class="lang-es"><i class="fas fa-bullseye" aria-hidden="true"></i> Conclusión</span><span class="lang-en"><i class="fas fa-bullseye" aria-hidden="true"></i> Conclusion</span></h3>
 
       <p class="flow-text lang-es">
         Has aprendido a configurar ElasticSearch con Node.js y Koa, crear índices, indexar documentos y realizar búsquedas avanzadas. Esta combinación es ideal para:

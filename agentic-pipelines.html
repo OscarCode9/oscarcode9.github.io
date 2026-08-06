@@ -376,7 +376,7 @@
         <i class="fas fa-arrow-left"></i>
         <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <span class="lang-toggle" onclick="toggleLanguage()">🌐 EN</span>
+      <span class="lang-toggle" onclick="toggleLanguage()"><i class="fas fa-globe" aria-hidden="true"></i> EN</span>
 
       <h1 class="post-title">
         <span class="lang-es">El YAML está muerto. Tus pipelines ahora tienen que pensar.</span>
@@ -468,17 +468,17 @@
                                                      ¿Build OK?
                                                     NO /      \ SÍ
                                                       /        ▼
-                                              ❌ FALLA    prisma migrate
+                                              [X] FALLA    prisma migrate
                                            (espera humano)    │
                                                         ¿Migración OK?
                                                        NO /      \ SÍ
                                                          /        ▼
-                                                 ❌ FALLA    health check
+                                                 [X] FALLA    health check
                                               (espera humano)    │
                                                            ¿API OK?
                                                           NO /   \ SÍ
                                                             /     ▼
-                                                    ❌ FALLA  ✅ Deploy
+                                                    [X] FALLA  [OK] Deploy
                                                  (espera humano)
         </code></pre>
         <p class="diagram-caption"><span class="lang-es">Pipeline tradicional: cualquier falla detiene todo y espera a un humano</span><span class="lang-en">Traditional pipeline: any failure stops everything and waits for a human</span></p>
@@ -533,7 +533,7 @@
           │ Paso 6: Health chk │◀─── Revisa logs, corrige y reinicia
           └─────────┬──────────┘
                     │ ✓
-              ✅ Deploy exitoso
+              [OK] Deploy exitoso
            (sin intervención humana)
         </code></pre>
         <p class="diagram-caption"><span class="lang-es">Pipeline agéntico: el agente razona, reintenta y corrige en cada paso</span><span class="lang-en">Agentic pipeline: the agent reasons, retries, and fixes at each step</span></p>
@@ -567,7 +567,7 @@ Verifica que el archivo generado NO sea de 0 bytes. Si lo es, no continúes.
 Si hay conflictos de merge, resuélvelos manteniendo origin/main.
 
 ## Paso 3 — Build y reinicio de la API
-⚠️ docker compose --build falla con "unknown flag: --allow". Usa este workaround:
+[!] docker compose --build falla con "unknown flag: --allow". Usa este workaround:
   docker build --no-cache -t backend-tenk-api -f Dockerfile .
   docker compose -f docker-compose.prod.yml up -d --force-recreate tenk-api
 
@@ -629,7 +629,7 @@ jobs:
 
       <div class="comparison">
         <div class="comparison-box bad">
-          <h4>❌ <span class="lang-es">Pipeline YAML tradicional</span><span class="lang-en">Traditional YAML Pipeline</span></h4>
+          <h4><i class="fas fa-circle-xmark" aria-hidden="true"></i> <span class="lang-es">Pipeline YAML tradicional</span><span class="lang-en">Traditional YAML Pipeline</span></h4>
           <ul>
             <li><span class="lang-es">Falla y espera al humano</span><span class="lang-en">Fails and waits for a human</span></li>
             <li><span class="lang-es">Solo ejecuta comandos</span><span class="lang-en">Only executes commands</span></li>
@@ -639,7 +639,7 @@ jobs:
           </ul>
         </div>
         <div class="comparison-box good">
-          <h4>✅ <span class="lang-es">Pipeline agéntico (MD)</span><span class="lang-en">Agentic Pipeline (MD)</span></h4>
+          <h4><i class="fas fa-circle-check" aria-hidden="true"></i> <span class="lang-es">Pipeline agéntico (MD)</span><span class="lang-en">Agentic Pipeline (MD)</span></h4>
           <ul>
             <li><span class="lang-es">Diagnostica y reintenta</span><span class="lang-en">Diagnoses and retries</span></li>
             <li><span class="lang-es">Entiende el "por qué" de cada paso</span><span class="lang-en">Understands the "why" of each step</span></li>

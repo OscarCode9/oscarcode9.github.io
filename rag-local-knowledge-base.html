@@ -403,7 +403,7 @@
       <a href="index.html" class="back-link">
         <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
       </a>
-      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+      <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px"><i class="fas fa-globe" aria-hidden="true"></i> EN</span>
       <h1 class="post-title"><span class="lang-es">RAG Local: Memoria Infinita para tu Agente de IA por $0</span><span class="lang-en">Local RAG: Infinite Memory for Your AI Agent for $0</span></h1>
       <div class="ov-views-wrap">
         <div class="ov-views-badge" data-ov-visits>
@@ -485,8 +485,8 @@
       <p class="lang-en">The magic is in <strong>embeddings</strong>. They're numerical representations of text meaning. Two texts about the same topic will have similar vectors, even if they use different words.</p>
 
       <div class="callout info">
-        <p class="lang-es"><strong>💡 Ejemplo:</strong> "El perro corre en el parque" y "El can trota en el jardín" tienen embeddings casi idénticos. Una búsqueda por keywords no los conectaría. Una búsqueda semántica sí.</p>
-        <p class="lang-en"><strong>💡 Example:</strong> "The dog runs in the park" and "The canine trots in the garden" have nearly identical embeddings. A keyword search wouldn't connect them. A semantic search does.</p>
+        <p class="lang-es"><strong><i class="fas fa-lightbulb" aria-hidden="true"></i> Ejemplo:</strong> "El perro corre en el parque" y "El can trota en el jardín" tienen embeddings casi idénticos. Una búsqueda por keywords no los conectaría. Una búsqueda semántica sí.</p>
+        <p class="lang-en"><strong><i class="fas fa-lightbulb" aria-hidden="true"></i> Example:</strong> "The dog runs in the park" and "The canine trots in the garden" have nearly identical embeddings. A keyword search wouldn't connect them. A semantic search does.</p>
       </div>
 
 
@@ -498,22 +498,22 @@
 
       <div class="comparison">
         <div class="comparison-box bad">
-          <h4><span class="lang-es">❌ Stack "Enterprise"</span><span class="lang-en">❌ "Enterprise" Stack</span></h4>
+          <h4><span class="lang-es"><i class="fas fa-circle-xmark" aria-hidden="true"></i> Stack "Enterprise"</span><span class="lang-en"><i class="fas fa-circle-xmark" aria-hidden="true"></i> "Enterprise" Stack</span></h4>
           <ul>
             <li><span class="lang-es"><strong>OpenAI Embeddings:</strong> $0.0001/1K tokens</span><span class="lang-en"><strong>OpenAI Embeddings:</strong> $0.0001/1K tokens</span></li>
             <li><span class="lang-es"><strong>Pinecone/Weaviate:</strong> $70+/mes</span><span class="lang-en"><strong>Pinecone/Weaviate:</strong> $70+/month</span></li>
             <li><span class="lang-es"><strong>AWS/GCP:</strong> Hosting adicional</span><span class="lang-en"><strong>AWS/GCP:</strong> Additional hosting</span></li>
-            <li><span class="lang-es"><strong>Privacidad:</strong> Todo en la nube 😬</span><span class="lang-en"><strong>Privacy:</strong> Everything in the cloud 😬</span></li>
+            <li><span class="lang-es"><strong>Privacidad:</strong> Todo en la nube <i class="fas fa-face-grimace" aria-hidden="true"></i></span><span class="lang-en"><strong>Privacy:</strong> Everything in the cloud <i class="fas fa-face-grimace" aria-hidden="true"></i></span></li>
             <li><span class="lang-es"><strong>Costo mensual:</strong> $100-500+</span><span class="lang-en"><strong>Monthly cost:</strong> $100-500+</span></li>
           </ul>
         </div>
         <div class="comparison-box good">
-          <h4><span class="lang-es">✅ Nuestro Stack</span><span class="lang-en">✅ Our Stack</span></h4>
+          <h4><span class="lang-es"><i class="fas fa-circle-check" aria-hidden="true"></i> Nuestro Stack</span><span class="lang-en"><i class="fas fa-circle-check" aria-hidden="true"></i> Our Stack</span></h4>
           <ul>
             <li><span class="lang-es"><strong>Ollama + mxbai-embed-large:</strong> $0</span><span class="lang-en"><strong>Ollama + mxbai-embed-large:</strong> $0</span></li>
             <li><span class="lang-es"><strong>SQLite:</strong> $0 (incluido en tu OS)</span><span class="lang-en"><strong>SQLite:</strong> $0 (included in your OS)</span></li>
             <li><span class="lang-es"><strong>Hosting:</strong> Tu Mac</span><span class="lang-en"><strong>Hosting:</strong> Your Mac</span></li>
-            <li><span class="lang-es"><strong>Privacidad:</strong> 100% local 🔒</span><span class="lang-en"><strong>Privacy:</strong> 100% local 🔒</span></li>
+            <li><span class="lang-es"><strong>Privacidad:</strong> 100% local <i class="fas fa-lock" aria-hidden="true"></i></span><span class="lang-en"><strong>Privacy:</strong> 100% local <i class="fas fa-lock" aria-hidden="true"></i></span></li>
             <li><span class="lang-es"><strong>Costo mensual:</strong> $0</span><span class="lang-en"><strong>Monthly cost:</strong> $0</span></li>
           </ul>
         </div>
@@ -521,11 +521,11 @@
 
       <h3><span class="lang-es">Los Componentes</span><span class="lang-en">The Components</span></h3>
 
-      <h4>🦙 Ollama</h4>
+      <h4><i class="fas fa-paw" aria-hidden="true"></i> Ollama</h4>
       <p class="lang-es"><a href="https://ollama.ai">Ollama</a> es como Docker pero para LLMs. Un comando y tienes modelos corriendo local. Lo usamos para los embeddings, no para generar texto (eso lo hace tu LLM principal).</p>
       <p class="lang-en"><a href="https://ollama.ai">Ollama</a> is like Docker but for LLMs. One command and you have models running locally. We use it for embeddings, not for text generation (your main LLM handles that).</p>
 
-      <h4>🧠 mxbai-embed-large</h4>
+      <h4><i class="fas fa-brain" aria-hidden="true"></i> mxbai-embed-large</h4>
       <p class="lang-es">El modelo de embeddings de <a href="https://mixedbread.ai">Mixedbread AI</a>. 335M parámetros. Vectores de 1024 dimensiones. <strong>Supera a OpenAI's ada-002 en el benchmark MTEB.</strong> Y es open source.</p>
       <p class="lang-en">The embeddings model from <a href="https://mixedbread.ai">Mixedbread AI</a>. 335M parameters. 1024-dimension vectors. <strong>Outperforms OpenAI's ada-002 on the MTEB benchmark.</strong> And it's open source.</p>
 
@@ -534,7 +534,7 @@
         <div class="stat-label"><span class="lang-es">Score MTEB de mxbai-embed-large vs 61.0% de text-embedding-ada-002</span><span class="lang-en">MTEB score for mxbai-embed-large vs 61.0% for text-embedding-ada-002</span></div>
       </div>
 
-      <h4>🗄️ SQLite</h4>
+      <h4><i class="fas fa-database" aria-hidden="true"></i> SQLite</h4>
       <p class="lang-es">La base de datos más deployeada del mundo. Viene en tu Mac. Cero configuración. Para nuestro caso de uso (cientos o miles de documentos personales), es más que suficiente. No necesitas Pinecone.</p>
       <p class="lang-en">The most deployed database in the world. Comes with your Mac. Zero configuration. For our use case (hundreds or thousands of personal documents), it's more than enough. You don't need Pinecone.</p>
 
@@ -569,8 +569,8 @@ brew install ollama
       <p class="lang-en">That's all the setup. Ollama runs as a background service. Now you have a local endpoint to generate embeddings for any text.</p>
 
       <div class="callout">
-        <p class="lang-es"><strong>📝 Nota:</strong> En Apple Silicon (M1/M2/M3), los embeddings se generan en ~100ms por documento. En Intel puede tardar un poco más, pero sigue siendo instantáneo para uso interactivo.</p>
-        <p class="lang-en"><strong>📝 Note:</strong> On Apple Silicon (M1/M2/M3), embeddings generate in ~100ms per document. On Intel it might take slightly longer, but it's still instant for interactive use.</p>
+        <p class="lang-es"><strong><i class="fas fa-file-lines" aria-hidden="true"></i> Nota:</strong> En Apple Silicon (M1/M2/M3), los embeddings se generan en ~100ms por documento. En Intel puede tardar un poco más, pero sigue siendo instantáneo para uso interactivo.</p>
+        <p class="lang-en"><strong><i class="fas fa-file-lines" aria-hidden="true"></i> Note:</strong> On Apple Silicon (M1/M2/M3), embeddings generate in ~100ms per document. On Intel it might take slightly longer, but it's still instant for interactive use.</p>
       </div>
 
 
@@ -647,8 +647,8 @@ async function search(query, limit = 5) {
 }</code></pre>
 
       <div class="callout warning">
-        <p class="lang-es"><strong>⚠️ Sobre escalabilidad:</strong> Sí, estamos haciendo búsqueda lineal. Para un Knowledge Base personal (<10,000 documentos), esto toma milisegundos. Si necesitas millones de documentos, considera <code>sqlite-vec</code>, FAISS, o una base de datos vectorial dedicada. Pero para uso personal, keep it simple.</p>
-        <p class="lang-en"><strong>⚠️ On scalability:</strong> Yes, we're doing linear search. For a personal Knowledge Base (<10,000 documents), this takes milliseconds. If you need millions of documents, consider <code>sqlite-vec</code>, FAISS, or a dedicated vector database. But for personal use, keep it simple.</p>
+        <p class="lang-es"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Sobre escalabilidad:</strong> Sí, estamos haciendo búsqueda lineal. Para un Knowledge Base personal (<10,000 documentos), esto toma milisegundos. Si necesitas millones de documentos, considera <code>sqlite-vec</code>, FAISS, o una base de datos vectorial dedicada. Pero para uso personal, keep it simple.</p>
+        <p class="lang-en"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> On scalability:</strong> Yes, we're doing linear search. For a personal Knowledge Base (<10,000 documents), this takes milliseconds. If you need millions of documents, consider <code>sqlite-vec</code>, FAISS, or a dedicated vector database. But for personal use, keep it simple.</p>
       </div>
 
 
@@ -765,8 +765,8 @@ kb list --limit 10</code></pre>
       </ul>
 
       <div class="callout warning">
-        <p class="lang-es"><strong>⚠️ Clarificación importante:</strong> Cuando haces una búsqueda y el agente usa los resultados para responder, el contenido sí va al LLM (Claude/GPT/etc). La diferencia es que <strong>tú controlas qué se envía</strong>. El KB y los embeddings son 100% locales. El LLM es donde decides qué contexto compartir.</p>
-        <p class="lang-en"><strong>⚠️ Important clarification:</strong> When you search and the agent uses results to respond, the content does go to the LLM (Claude/GPT/etc). The difference is <strong>you control what's sent</strong>. The KB and embeddings are 100% local. The LLM is where you decide what context to share.</p>
+        <p class="lang-es"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Clarificación importante:</strong> Cuando haces una búsqueda y el agente usa los resultados para responder, el contenido sí va al LLM (Claude/GPT/etc). La diferencia es que <strong>tú controlas qué se envía</strong>. El KB y los embeddings son 100% locales. El LLM es donde decides qué contexto compartir.</p>
+        <p class="lang-en"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Important clarification:</strong> When you search and the agent uses results to respond, the content does go to the LLM (Claude/GPT/etc). The difference is <strong>you control what's sent</strong>. The KB and embeddings are 100% local. The LLM is where you decide what context to share.</p>
       </div>
 
 
@@ -776,30 +776,30 @@ kb list --limit 10</code></pre>
       <p class="lang-es">Una vez que tienes el KB funcionando, las posibilidades son infinitas:</p>
       <p class="lang-en">Once you have the KB running, the possibilities are endless:</p>
 
-      <h4>📚 <span class="lang-es">Importar tu Readwise/Instapaper</span><span class="lang-en">Import your Readwise/Instapaper</span></h4>
+      <h4><i class="fas fa-book-open" aria-hidden="true"></i> <span class="lang-es">Importar tu Readwise/Instapaper</span><span class="lang-en">Import your Readwise/Instapaper</span></h4>
       <p class="lang-es">Exporta tus highlights y artículos guardados, impórtalos al KB. Ahora puedes preguntarle a tu agente "¿qué he leído sobre productividad este año?".</p>
       <p class="lang-en">Export your highlights and saved articles, import them to the KB. Now you can ask your agent "what have I read about productivity this year?".</p>
 
-      <h4>📝 <span class="lang-es">Indexar tus notas de Obsidian/Notion</span><span class="lang-en">Index your Obsidian/Notion notes</span></h4>
+      <h4><i class="fas fa-file-lines" aria-hidden="true"></i> <span class="lang-es">Indexar tus notas de Obsidian/Notion</span><span class="lang-en">Index your Obsidian/Notion notes</span></h4>
       <p class="lang-es">Un script que sincroniza tu vault de Obsidian al KB. Búsqueda semántica sobre años de notas personales.</p>
       <p class="lang-en">A script that syncs your Obsidian vault to the KB. Semantic search over years of personal notes.</p>
 
-      <h4>📧 <span class="lang-es">Emails importantes</span><span class="lang-en">Important emails</span></h4>
+      <h4><i class="fas fa-envelope" aria-hidden="true"></i> <span class="lang-es">Emails importantes</span><span class="lang-en">Important emails</span></h4>
       <p class="lang-es">Guarda emails clave (propuestas, contratos, decisiones) en el KB. "¿Qué acordamos con el cliente X sobre el precio?".</p>
       <p class="lang-en">Save key emails (proposals, contracts, decisions) to the KB. "What did we agree with client X about pricing?".</p>
 
-      <h4>🎙️ <span class="lang-es">Transcripciones de reuniones</span><span class="lang-en">Meeting transcripts</span></h4>
+      <h4><i class="fas fa-microphone" aria-hidden="true"></i> <span class="lang-es">Transcripciones de reuniones</span><span class="lang-en">Meeting transcripts</span></h4>
       <p class="lang-es">Transcribe tus llamadas de Zoom, guárdalas en el KB. "¿Qué mencionó Juan sobre el deadline en la última reunión?".</p>
       <p class="lang-en">Transcribe your Zoom calls, save them to the KB. "What did Juan mention about the deadline in the last meeting?".</p>
 
-      <h4>📄 <span class="lang-es">Documentación técnica</span><span class="lang-en">Technical documentation</span></h4>
+      <h4><i class="fas fa-file" aria-hidden="true"></i> <span class="lang-es">Documentación técnica</span><span class="lang-en">Technical documentation</span></h4>
       <p class="lang-es">Indexa la documentación de tus proyectos. El agente puede responder preguntas sobre tu propio código/arquitectura.</p>
       <p class="lang-en">Index your project documentation. The agent can answer questions about your own code/architecture.</p>
 
 
       <!-- ==================== TAKEAWAYS ==================== -->
       <div class="takeaways">
-        <h3><span class="lang-es">💡 Ideas Clave</span><span class="lang-en">💡 Key Takeaways</span></h3>
+        <h3><span class="lang-es"><i class="fas fa-lightbulb" aria-hidden="true"></i> Ideas Clave</span><span class="lang-en"><i class="fas fa-lightbulb" aria-hidden="true"></i> Key Takeaways</span></h3>
         <ul>
           <li class="lang-es"><strong>RAG ya no requiere presupuesto enterprise.</strong> Ollama + mxbai-embed-large + SQLite = $0 y corre en tu Mac.</li>
           <li class="lang-en"><strong>RAG no longer requires enterprise budget.</strong> Ollama + mxbai-embed-large + SQLite = $0 and runs on your Mac.</li>

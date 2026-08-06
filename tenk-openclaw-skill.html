@@ -219,7 +219,7 @@
     <a href="index.html" class="back-link">
       <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al inicio</span><span class="lang-en">Back to home</span>
     </a>
-    <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
+    <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px"><i class="fas fa-globe" aria-hidden="true"></i> EN</span>
 
     <div class="post-tags">
       <span class="tag">TenK</span>
@@ -367,17 +367,17 @@ POST   /api/device-auth/authorize/:code    → acepta JSON (sessionToken o email
       <div class="screen-content">
         <div style="display: flex; gap: 24px; flex-wrap: wrap;">
           <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
-            <div style="font-size: 1.5rem; margin-bottom: 8px;">🔑</div>
+            <div style="font-size: 1.5rem; margin-bottom: 8px;"><i class="fas fa-key" aria-hidden="true"></i></div>
             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Step 1: Login</div>
             <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Email + contraseña de TenK</span><span class="lang-en">Email + TenK password</span></div>
           </div>
           <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(16,185,129,0.06); border-radius: 10px; border: 1px solid rgba(16,185,129,0.2);">
-            <div style="font-size: 1.5rem; margin-bottom: 8px;">✅</div>
+            <div style="font-size: 1.5rem; margin-bottom: 8px;"><i class="fas fa-circle-check" aria-hidden="true"></i></div>
             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;"><span class="lang-es">Step 2: Confirmar</span><span class="lang-en">Step 2: Confirm</span></div>
             <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Tu nombre + permisos + Autorizar / Rechazar</span><span class="lang-en">Your name + permissions + Authorize / Reject</span></div>
           </div>
           <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
-            <div style="font-size: 1.5rem; margin-bottom: 8px;">🎉</div>
+            <div style="font-size: 1.5rem; margin-bottom: 8px;"><i class="fas fa-champagne-glasses" aria-hidden="true"></i></div>
             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Done</div>
             <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Asistente conectado</span><span class="lang-en">Assistant connected</span></div>
           </div>
@@ -428,21 +428,21 @@ setState(() => _step = _Step.login);</code></pre>
       </div>
       <div class="terminal-body">
         <div><span class="t-prompt">$ </span><span class="t-cmd">tenk.sh auth</span></div>
-        <div><span class="t-out">🔐 Iniciando autenticación con TenK...</span></div>
+        <div><span class="t-out"><i class="fas fa-lock" aria-hidden="true"></i> Iniciando autenticación con TenK...</span></div>
         <div><span class="t-out"></span></div>
-        <div><span class="t-info">  👉  https://tenk.oventlabs.com/#/authorize/K7JC-SVAK</span></div>
+        <div><span class="t-info">  <i class="fas fa-hand-point-right" aria-hidden="true"></i>  https://tenk.oventlabs.com/#/authorize/K7JC-SVAK</span></div>
         <div><span class="t-out">  Código: K7JC-SVAK (expira en 600s)</span></div>
         <div><span class="t-out">  ...</span></div>
-        <div><span class="t-success">✅ Autenticado exitosamente. Token guardado.</span></div>
+        <div><span class="t-success"><i class="fas fa-circle-check" aria-hidden="true"></i> Autenticado exitosamente. Token guardado.</span></div>
         <br>
         <div><span class="t-prompt">$ </span><span class="t-cmd">tenk.sh stats</span></div>
-        <div><span class="t-success">📊 Stats TenK:</span></div>
+        <div><span class="t-success"><i class="fas fa-chart-bar" aria-hidden="true"></i> Stats TenK:</span></div>
         <div><span class="t-out">   Total: 247.5h de 10000h (2.47%)</span></div>
         <div><span class="t-out">   Faltan: 9752.5h para las 10,000h</span></div>
         <div><span class="t-out">   Habilidades activas: 8</span></div>
         <br>
         <div><span class="t-prompt">$ </span><span class="t-cmd">tenk.sh log guitarra 45 "Arpegios flamencos"</span></div>
-        <div><span class="t-success">✅ Registrado: Guitarra — 45 min</span></div>
+        <div><span class="t-success"><i class="fas fa-circle-check" aria-hidden="true"></i> Registrado: Guitarra — 45 min</span></div>
       </div>
     </div>
 
@@ -477,12 +477,12 @@ setState(() => _step = _Step.login);</code></pre>
     <p class="lang-es">
       Curioso porque mi propio scanner decía "CLEAN". El problema: yo buscaba bytes &lt; 0x09 o entre 0x0a-0x20.
       Pero hay caracteres Unicode en categorías <code>Cf</code> (format) y <code>Cc</code> (control) que pasan ese filtro.
-      Los emojis en el markdown (📊, ✍️, 🔥) fueron el culpable.
+      Los emojis en el markdown (<i class="fas fa-chart-bar" aria-hidden="true"></i>, <i class="fas fa-pen" aria-hidden="true"></i>, <i class="fas fa-fire" aria-hidden="true"></i>) fueron el culpable.
     </p>
     <p class="lang-en">
       Curious, because my own scanner said "CLEAN". The problem: I was looking for bytes &lt; 0x09 or between 0x0a-0x20.
       But there are Unicode characters in <code>Cf</code> (format) and <code>Cc</code> (control) categories that pass that filter.
-      The emojis in the markdown (📊, ✍️, 🔥) were the culprit.
+      The emojis in the markdown (<i class="fas fa-chart-bar" aria-hidden="true"></i>, <i class="fas fa-pen" aria-hidden="true"></i>, <i class="fas fa-fire" aria-hidden="true"></i>) were the culprit.
     </p>
 
     <p class="lang-es">La solución: reescribir todos los archivos del skill como <strong>pure ASCII</strong>:</p>
@@ -518,8 +518,8 @@ print('CLEAN' if not weird else f'BAD: {weird[:5]}')
       I added a dark section before the footer with:
     </p>
     <ul>
-      <li class="lang-es">Logo oficial de TenK × logo de OpenClaw (🦞)</li>
-      <li class="lang-en">Official TenK logo × OpenClaw logo (🦞)</li>
+      <li class="lang-es">Logo oficial de TenK × logo de OpenClaw (<i class="fas fa-terminal" aria-hidden="true"></i>)</li>
+      <li class="lang-en">Official TenK logo × OpenClaw logo (<i class="fas fa-terminal" aria-hidden="true"></i>)</li>
       <li class="lang-es">Preview de chat en terminal mostrando el skill en acción</li>
       <li class="lang-en">Chat preview in terminal showing the skill in action</li>
       <li><span class="lang-es">Comando de instalación:</span><span class="lang-en">Install command:</span> <code>npx clawhub@latest install tenk-connect</code></li>
@@ -530,12 +530,12 @@ print('CLEAN' if not weird else f'BAD: {weird[:5]}')
 
     <div class="result-card">
       <div class="rc-title"><span class="lang-es">Estado final en producción</span><span class="lang-en">Final Production Status</span></div>
-      <div class="result-row"><span class="label">Backend (Hono + Prisma)</span><span class="value green">✅ device_codes table + 4 endpoints</span></div>
-      <div class="result-row"><span class="label">Flutter web (/authorize/:code)</span><span class="value green">✅ live en tenk.oventlabs.com</span></div>
-      <div class="result-row"><span class="label">Skill CLI (tenk.sh)</span><span class="value green">✅ auth, skills, stats, log, streak</span></div>
-      <div class="result-row"><span class="label"><span class="lang-es">Paquete ClaHub</span><span class="lang-en">ClaHub Package</span></span><span class="value green">✅ pure ASCII, JSON-safe</span></div>
-      <div class="result-row"><span class="label">Landing page</span><span class="value green">✅ <span class="lang-es">sección OpenClaw live</span><span class="lang-en">OpenClaw section live</span></span></div>
-      <div class="result-row"><span class="label"><span class="lang-es">Datos de producción</span><span class="lang-en">Production Data</span></span><span class="value green">✅ 22 users, 35 skills — 0 pérdidas</span></div>
+      <div class="result-row"><span class="label">Backend (Hono + Prisma)</span><span class="value green"><i class="fas fa-circle-check" aria-hidden="true"></i> device_codes table + 4 endpoints</span></div>
+      <div class="result-row"><span class="label">Flutter web (/authorize/:code)</span><span class="value green"><i class="fas fa-circle-check" aria-hidden="true"></i> live en tenk.oventlabs.com</span></div>
+      <div class="result-row"><span class="label">Skill CLI (tenk.sh)</span><span class="value green"><i class="fas fa-circle-check" aria-hidden="true"></i> auth, skills, stats, log, streak</span></div>
+      <div class="result-row"><span class="label"><span class="lang-es">Paquete ClaHub</span><span class="lang-en">ClaHub Package</span></span><span class="value green"><i class="fas fa-circle-check" aria-hidden="true"></i> pure ASCII, JSON-safe</span></div>
+      <div class="result-row"><span class="label">Landing page</span><span class="value green"><i class="fas fa-circle-check" aria-hidden="true"></i> <span class="lang-es">sección OpenClaw live</span><span class="lang-en">OpenClaw section live</span></span></div>
+      <div class="result-row"><span class="label"><span class="lang-es">Datos de producción</span><span class="lang-en">Production Data</span></span><span class="value green"><i class="fas fa-circle-check" aria-hidden="true"></i> 22 users, 35 skills — 0 pérdidas</span></div>
     </div>
 
     <h2><span class="lang-es">Lo que aprendí</span><span class="lang-en">What I Learned</span></h2>

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼 | Oscar Code</title>
+  <title>Debuggeando XoxoBot: OAuth Tokens y el Copilot API  | Oscar Code</title>
   <meta name="description" content="Cómo arreglé el error 'Ups, algo falló' en XoxoBot. Token OAuth expirado, fallback al servidor, y lecciones sobre GitHub Copilot API.">
   <meta name="keywords" content="XoxoBot, GitHub Copilot, OAuth, device flow, API, debugging, tokens, OventLabs">
-  <meta property="og:title" content="Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼">
+  <meta property="og:title" content="Debuggeando XoxoBot: OAuth Tokens y el Copilot API ">
   <meta property="og:description" content="Un token expirado, un 403, y la solución elegante: fallback automático al token del servidor.">
   <meta property="og:type" content="article">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -346,8 +346,8 @@
     <a href="index.html" class="back-link">
       <i class="fas fa-arrow-left"></i> <span class="lang-es">Volver al blog</span><span class="lang-en">Back to blog</span>
     </a>
-    <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px">🌐 EN</span>
-    <h1 class="post-title"><span class="lang-es">Debuggeando XoxoBot: OAuth Tokens y el Copilot API 🪼</span><span class="lang-en">Debugging XoxoBot: OAuth Tokens and the Copilot API 🪼</span></h1>
+    <span class="lang-toggle" onclick="toggleLanguage()" style="position:absolute;top:30px;right:30px"><i class="fas fa-globe" aria-hidden="true"></i> EN</span>
+    <h1 class="post-title"><span class="lang-es">Debuggeando XoxoBot: OAuth Tokens y el Copilot API <i class="fas fa-water" aria-hidden="true"></i></span><span class="lang-en">Debugging XoxoBot: OAuth Tokens and the Copilot API <i class="fas fa-water" aria-hidden="true"></i></span></h1>
 
     <div class="ov-views-wrap">
       <div class="ov-views-badge" data-ov-visits>
@@ -369,10 +369,10 @@
 <main class="post-content">
   <div class="container">
     
-    <div class="emoji-big">🔥 → 🔍 → ✅</div>
+    <div class="emoji-big"><i class="fas fa-fire" aria-hidden="true"></i> → <i class="fas fa-magnifying-glass" aria-hidden="true"></i> → <i class="fas fa-circle-check" aria-hidden="true"></i></div>
 
-    <p class="lang-es">Ayer por la noche, XoxoBot (mi chatbot axolotl 🪼) dejó de funcionar. El mensaje: <strong>"Ups, algo falló 😅 Intenta de nuevo."</strong></p>
-    <p class="lang-en">Last night, XoxoBot (my axolotl chatbot 🪼) stopped working. The message: <strong>"Oops, something went wrong 😅 Try again."</strong></p>
+    <p class="lang-es">Ayer por la noche, XoxoBot (mi chatbot axolotl <i class="fas fa-water" aria-hidden="true"></i>) dejó de funcionar. El mensaje: <strong>"Ups, algo falló <i class="fas fa-face-smile" aria-hidden="true"></i> Intenta de nuevo."</strong></p>
+    <p class="lang-en">Last night, XoxoBot (my axolotl chatbot <i class="fas fa-water" aria-hidden="true"></i>) stopped working. The message: <strong>"Oops, something went wrong <i class="fas fa-face-smile" aria-hidden="true"></i> Try again."</strong></p>
 
     <p class="lang-es">No era el tipo de error que te dice qué pasó. Era el peor tipo: un catch genérico que esconde el problema real. Pero tengo un arma secreta: <strong>OscarCode9</strong>, mi agente de IA corriendo en OpenClaw. Le dije que lo arreglara, y esto es lo que encontró.</p>
     <p class="lang-en">It wasn't the kind of error that tells you what happened. It was the worst kind: a generic catch that hides the real problem. But I have a secret weapon: <strong>OscarCode9</strong>, my AI agent running in OpenClaw. I told it to fix it, and this is what it found.</p>
@@ -401,15 +401,15 @@
       </div>
       <div class="flow-step error">
         <div class="flow-number">5</div>
-        <div><span class="lang-es">API intenta intercambiar token por Copilot API token → <strong>💥 FAIL</strong></span><span class="lang-en">API attempts to exchange token for Copilot API token → <strong>💥 FAIL</strong></span></div>
+        <div><span class="lang-es">API intenta intercambiar token por Copilot API token → <strong><i class="fas fa-burst" aria-hidden="true"></i> FAIL</strong></span><span class="lang-en">API attempts to exchange token for Copilot API token → <strong><i class="fas fa-burst" aria-hidden="true"></i> FAIL</strong></span></div>
       </div>
     </div>
 
     <div class="highlight-box">
-      <p class="lang-es"><strong>🎯 Problema #1:</strong> El scope <code>read:user</code> no tiene permisos para acceder a la API de Copilot. Necesitas una suscripción activa de GitHub Copilot.</p>
-      <p class="lang-en"><strong>🎯 Problem #1:</strong> The <code>read:user</code> scope doesn't have permissions to access the Copilot API. You need an active GitHub Copilot subscription.</p>
-      <p class="lang-es"><strong>🎯 Problema #2:</strong> El token OAuth (<code>ghu_...</code>) del servidor había expirado. Estos tokens duran ~8 horas.</p>
-      <p class="lang-en"><strong>🎯 Problem #2:</strong> The server's OAuth token (<code>ghu_...</code>) had expired. These tokens last ~8 hours.</p>
+      <p class="lang-es"><strong><i class="fas fa-bullseye" aria-hidden="true"></i> Problema #1:</strong> El scope <code>read:user</code> no tiene permisos para acceder a la API de Copilot. Necesitas una suscripción activa de GitHub Copilot.</p>
+      <p class="lang-en"><strong><i class="fas fa-bullseye" aria-hidden="true"></i> Problem #1:</strong> The <code>read:user</code> scope doesn't have permissions to access the Copilot API. You need an active GitHub Copilot subscription.</p>
+      <p class="lang-es"><strong><i class="fas fa-bullseye" aria-hidden="true"></i> Problema #2:</strong> El token OAuth (<code>ghu_...</code>) del servidor había expirado. Estos tokens duran ~8 horas.</p>
+      <p class="lang-en"><strong><i class="fas fa-bullseye" aria-hidden="true"></i> Problem #2:</strong> The server's OAuth token (<code>ghu_...</code>) had expired. These tokens last ~8 hours.</p>
     </div>
 
     <h2><i class="fas fa-search"></i> <span class="lang-es">El Diagnóstico</span><span class="lang-en">The Diagnosis</span></h2>
@@ -475,8 +475,8 @@
 }</code></pre>
 
     <div class="highlight-box success">
-      <p class="lang-es"><strong>✅ Resultado:</strong> El bot ahora acepta tanto tokens OAuth (<code>ghu_...</code>) como tokens Copilot directos (<code>tid=...</code>). Si uno falla, usa el otro.</p>
-      <p class="lang-en"><strong>✅ Result:</strong> The bot now accepts both OAuth tokens (<code>ghu_...</code>) and direct Copilot tokens (<code>tid=...</code>). If one fails, it uses the other.</p>
+      <p class="lang-es"><strong><i class="fas fa-circle-check" aria-hidden="true"></i> Resultado:</strong> El bot ahora acepta tanto tokens OAuth (<code>ghu_...</code>) como tokens Copilot directos (<code>tid=...</code>). Si uno falla, usa el otro.</p>
+      <p class="lang-en"><strong><i class="fas fa-circle-check" aria-hidden="true"></i> Result:</strong> The bot now accepts both OAuth tokens (<code>ghu_...</code>) and direct Copilot tokens (<code>tid=...</code>). If one fails, it uses the other.</p>
     </div>
 
     <h2><i class="fas fa-rocket"></i> <span class="lang-es">El Deploy</span><span class="lang-en">The Deploy</span></h2>
@@ -506,8 +506,8 @@ docker run -d --name ovents-landing <span class="string">-p 3001:3001</span> \
   ovents-landing:prod</code></pre>
 
     <div class="highlight-box info">
-      <p class="lang-es"><strong>⚠️ Nota importante:</strong> El port mapping debe ser <code>-p 3001:3001</code>, NO <code>-p 3001:3000</code>. Este error causa 502 Bad Gateway y me ha mordido múltiples veces.</p>
-      <p class="lang-en"><strong>⚠️ Important note:</strong> The port mapping must be <code>-p 3001:3001</code>, NOT <code>-p 3001:3000</code>. This error causes 502 Bad Gateway and has bitten me multiple times.</p>
+      <p class="lang-es"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Nota importante:</strong> El port mapping debe ser <code>-p 3001:3001</code>, NO <code>-p 3001:3000</code>. Este error causa 502 Bad Gateway y me ha mordido múltiples veces.</p>
+      <p class="lang-en"><strong><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Important note:</strong> The port mapping must be <code>-p 3001:3001</code>, NOT <code>-p 3001:3000</code>. This error causes 502 Bad Gateway and has bitten me multiple times.</p>
     </div>
 
     <h2><i class="fas fa-graduation-cap"></i> <span class="lang-es">Lecciones Aprendidas</span><span class="lang-en">Lessons Learned</span></h2>
@@ -529,7 +529,7 @@ docker run -d --name ovents-landing <span class="string">-p 3001:3001</span> \
 
     <div class="flow-diagram">
       <div class="flow-step">
-        <div class="flow-number">📊</div>
+        <div class="flow-number"><i class="fas fa-chart-bar" aria-hidden="true"></i></div>
         <div>
           <strong>~15 <span class="lang-es">minutos</span><span class="lang-en">minutes</span></strong> <span class="lang-es">de diagnóstico + fix + deploy</span><span class="lang-en">of diagnosis + fix + deploy</span><br>
           <span style="color: var(--text-muted);"><span class="lang-es">Hecho por OscarCode9 (agente de IA) mientras yo veía los logs</span><span class="lang-en">Done by OscarCode9 (AI agent) while I watched the logs</span></span>
@@ -540,7 +540,7 @@ docker run -d --name ovents-landing <span class="string">-p 3001:3001</span> \
     <div class="author-card">
       <img src="xoxobot-avatar.gif" alt="XoxoBot" class="author-avatar">
       <div class="author-info">
-        <h4>XoxoBot 🪼</h4>
+        <h4>XoxoBot <i class="fas fa-water" aria-hidden="true"></i></h4>
         <p class="lang-es">El asistente que casi muere por un token expirado, pero sobrevivió gracias a un fallback elegante. Ahora más fuerte que nunca.</p>
         <p class="lang-en">The assistant that almost died from an expired token, but survived thanks to an elegant fallback. Now stronger than ever.</p>
       </div>
