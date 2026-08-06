@@ -616,6 +616,98 @@
   color: #334155 !important;
 }
 
+/* All Blog Articles Specific Light Mode Fixes */
+[data-theme="light"] .step-num,
+[data-theme="light"] .step-number {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .post-tag.ai,
+[data-theme="light"] .post-tag.hot {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+}
+
+[data-theme="light"] .post-tag.linkedin {
+  background: #0077b5 !important;
+  color: #ffffff !important;
+  border-color: #0077b5 !important;
+}
+
+[data-theme="light"] .post-tag.logistics,
+[data-theme="light"] .post-tag.idea {
+  background: rgba(2, 132, 199, 0.08) !important;
+  color: #0284c7 !important;
+  border: 1px solid rgba(2, 132, 199, 0.25) !important;
+}
+
+[data-theme="light"] .lang-btn.active {
+  background: rgba(2, 132, 199, 0.12) !important;
+  color: #0284c7 !important;
+  border-color: rgba(2, 132, 199, 0.3) !important;
+}
+
+[data-theme="light"] .tag.purple {
+  background: rgba(124, 58, 237, 0.1) !important;
+  color: #7c3aed !important;
+  border: 1px solid rgba(124, 58, 237, 0.25) !important;
+}
+
+[data-theme="light"] .tag.blue {
+  background: rgba(2, 132, 199, 0.1) !important;
+  color: #0284c7 !important;
+  border: 1px solid rgba(2, 132, 199, 0.25) !important;
+}
+
+[data-theme="light"] .tag.orange {
+  background: rgba(234, 88, 12, 0.1) !important;
+  color: #ea580c !important;
+  border: 1px solid rgba(234, 88, 12, 0.25) !important;
+}
+
+[data-theme="light"] .callout.blue {
+  background: #eff6ff !important;
+  border-left: 4px solid #2563eb !important;
+  color: #1e3a8a !important;
+}
+
+[data-theme="light"] .callout.purple {
+  background: #f5f3ff !important;
+  border-left: 4px solid #7c3aed !important;
+  color: #4c1d95 !important;
+}
+
+[data-theme="light"] .callout.orange {
+  background: #fff7ed !important;
+  border-left: 4px solid #ea580c !important;
+  color: #7c2d12 !important;
+}
+
+[data-theme="light"] .t-info {
+  color: #0284c7 !important;
+}
+
+[data-theme="light"] .dev-timeline::before {
+  background: rgba(15, 23, 42, 0.15) !important;
+}
+
+[data-theme="light"] .ov-dot,
+[data-theme="light"] .dot.green {
+  background: #10b981 !important;
+}
+
+[data-theme="light"] .post-content pre code,
+[data-theme="light"] pre code {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .post-content h2,
+[data-theme="light"] .post-content h3 {
+  color: #0f172a !important;
+}
+
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
