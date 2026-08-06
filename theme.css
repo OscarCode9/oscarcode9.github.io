@@ -447,12 +447,12 @@
 }
 
 [data-theme="light"] .hero-image-wrapper {
-  background: radial-gradient(circle at center, #0a0a1a 0%, #0a0a1a 55%, transparent 70%) !important;
-  border-radius: 50% !important;
+  background: none !important;
+  border-radius: 0 !important;
 }
 
 [data-theme="light"] .hero-video {
-  mix-blend-mode: screen !important;
+  mix-blend-mode: normal !important;
   filter: none !important;
 }
 
