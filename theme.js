@@ -51,7 +51,9 @@
     } else {
       // Paginas de articulo: pegar el toggle junto al lang-toggle del header
       var anchor = document.querySelector('.post-header .lang-toggle') ||
-                   document.querySelector('.post-header .back-link');
+                   document.querySelector('.post-header .back-link') ||
+                   document.querySelector('.lang-toggle') ||
+                   document.querySelector('.back-link');
       if (anchor) {
         var btn = document.createElement('span');
         btn.className = 'lang-toggle';
@@ -64,11 +66,31 @@
         btn.onclick = toggleTheme;
         if (getComputedStyle(anchor).position === 'absolute') {
           btn.style.position = 'absolute';
-          btn.style.top = '30px';
+          btn.style.top = getComputedStyle(anchor).top || '30px';
           btn.style.right = '88px';
           btn.style.marginLeft = '0';
         }
         anchor.after(btn);
+      } else if (document.body) {
+        var floatBtn = document.createElement('div');
+        floatBtn.setAttribute('data-theme-toggle', '');
+        floatBtn.style.position = 'fixed';
+        floatBtn.style.bottom = '20px';
+        floatBtn.style.right = '20px';
+        floatBtn.style.zIndex = '99999';
+        floatBtn.style.background = 'var(--bg-card)';
+        floatBtn.style.border = '1px solid var(--border)';
+        floatBtn.style.borderRadius = '50%';
+        floatBtn.style.width = '44px';
+        floatBtn.style.height = '44px';
+        floatBtn.style.display = 'flex';
+        floatBtn.style.alignItems = 'center';
+        floatBtn.style.justifyContent = 'center';
+        floatBtn.style.cursor = 'pointer';
+        floatBtn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        floatBtn.appendChild(icon.cloneNode(true));
+        floatBtn.onclick = toggleTheme;
+        document.body.appendChild(floatBtn);
       }
     }
 
