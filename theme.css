@@ -589,6 +589,13 @@
   border: 1px solid rgba(2, 132, 199, 0.2) !important;
 }
 
+[data-theme="light"] .tech-chip.ai-chip {
+  background: var(--gradient-1) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.25) !important;
+}
+
 [data-theme="light"] .info-table th,
 [data-theme="light"] .comparison-table th {
   background-color: #e2e8f0 !important;
