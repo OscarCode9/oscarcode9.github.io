@@ -8,7 +8,7 @@
   function getTheme() {
     var saved = localStorage.getItem('site-theme');
     if (saved === 'light' || saved === 'dark') return saved;
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    return 'dark';
   }
 
   var current = getTheme();
