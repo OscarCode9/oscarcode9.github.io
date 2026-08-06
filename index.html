@@ -178,7 +178,21 @@
 
     .hero-video {
       mix-blend-mode: screen;
-      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+    }
+
+    .hero-image-wrapper::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 3%;
+      transform: translateX(-50%);
+      width: 62%;
+      height: 13%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
+      filter: blur(5px);
+      z-index: -1;
+      pointer-events: none;
     }
 
     .hero-mascot {
