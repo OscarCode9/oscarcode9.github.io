@@ -21,17 +21,17 @@
 
   <style>
     :root {
-      --primary: #00d4ff;
-      --primary-glow: rgba(0, 212, 255, 0.15);
-      --accent: #7c3aed;
-      --success: #10b981;
-      --bg-dark: #0a0a0f;
-      --bg-card: #12121a;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --border: rgba(255, 255, 255, 0.08);
-      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #0284c7 100%);
+      --primary: #bd93f9;
+      --primary-glow: rgba(189, 147, 249, 0.18);
+      --accent: #ff79c6;
+      --success: #50fa7b;
+      --bg-dark: #282a36;
+      --bg-card: #2f3041;
+      --text-primary: #f8f8f2;
+      --text-secondary: #c5c9dd;
+      --text-muted: #8a8fa8;
+      --border: rgba(248, 248, 242, 0.1);
+      --gradient-1: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -45,7 +45,7 @@
 
     /* NAVBAR */
     nav {
-      background: rgba(10, 10, 15, 0.9) !important;
+      background: rgba(40, 42, 54, 0.92) !important;
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       position: fixed;
@@ -117,8 +117,8 @@
       font-weight: 600;
       letter-spacing: 0.5px;
       color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: rgba(80, 250, 123, 0.1);
+      border: 1px solid rgba(80, 250, 123, 0.3);
       padding: 5px 14px;
       border-radius: 999px;
     }
@@ -128,7 +128,7 @@
       height: 8px;
       border-radius: 50%;
       background: var(--success);
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+      box-shadow: 0 0 8px rgba(80, 250, 123, 0.7);
       animation: pulse-dot 2s ease infinite;
     }
 
@@ -212,7 +212,7 @@
       right: -200px;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(189, 147, 249, 0.15) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -341,7 +341,7 @@
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(189, 147, 249, 0.3);
       color: #fff;
     }
 
@@ -460,7 +460,7 @@
     }
 
     .skill-category:hover {
-      border-color: rgba(0, 212, 255, 0.3);
+      border-color: rgba(189, 147, 249, 0.3);
       transform: translateY(-5px);
     }
 
@@ -530,7 +530,7 @@
 
     /* ABOUT SECTION */
     .about-section {
-      background: linear-gradient(180deg, var(--bg-dark) 0%, #0d0d14 100%);
+      background: linear-gradient(180deg, var(--bg-dark) 0%, #22232e 100%);
     }
 
     .about-container {
@@ -551,7 +551,7 @@
       object-fit: cover;
       display: block;
       margin: 0 auto 20px auto;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 30px rgba(189, 147, 249, 0.3);
     }
 
     .about-intro h3 {
@@ -612,7 +612,7 @@
     }
 
     .about-love-section h4 i.fa-robot {
-      color: #7c3aed;
+      color: #bd93f9;
     }
 
     .about-love-section .heart {
@@ -635,12 +635,12 @@
     }
 
     .about-love-section.ai-section {
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
-      border-color: rgba(124, 58, 237, 0.3);
+      background: linear-gradient(135deg, rgba(189, 147, 249, 0.1) 0%, rgba(189, 147, 249, 0.05) 100%);
+      border-color: rgba(189, 147, 249, 0.3);
     }
 
     .about-love-section.ai-section:hover {
-      border-color: rgba(124, 58, 237, 0.5);
+      border-color: rgba(189, 147, 249, 0.5);
     }
 
     .about-love-section p {
@@ -672,7 +672,7 @@
 
     .fun-fact:hover {
       border-color: var(--primary);
-      background: rgba(0, 212, 255, 0.05);
+      background: rgba(189, 147, 249, 0.05);
     }
 
     .fun-fact-icon {
@@ -689,7 +689,7 @@
       font-size: 1rem;
       color: var(--primary);
       padding: 20px;
-      background: rgba(0, 212, 255, 0.05);
+      background: rgba(189, 147, 249, 0.05);
       border-left: 3px solid var(--primary);
       border-radius: 0 10px 10px 0;
       margin: 0;
@@ -702,7 +702,7 @@
     }
 
     /* EXPERIENCE TIMELINE */
-    .experience-section { background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); }
+    .experience-section { background: linear-gradient(135deg, #282a36 0%, #1f2030 100%); }
 
     .timeline {
       position: relative;
@@ -741,7 +741,7 @@
 
     .timeline-item.current .timeline-dot {
       background: var(--success);
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+      box-shadow: 0 0 0 4px rgba(80, 250, 123, 0.2);
     }
 
     .timeline-content {
@@ -752,7 +752,7 @@
       transition: border-color 0.3s;
     }
 
-    .timeline-content:hover { border-color: rgba(0, 212, 255, 0.3); }
+    .timeline-content:hover { border-color: rgba(189, 147, 249, 0.3); }
 
     .timeline-header {
       display: flex;
@@ -816,7 +816,7 @@
     .tech-badge {
       font-size: 0.75rem;
       padding: 4px 10px;
-      background: rgba(0, 212, 255, 0.1);
+      background: rgba(189, 147, 249, 0.1);
       color: var(--primary);
       border-radius: 4px;
     }
@@ -845,7 +845,7 @@
 
     .blog-item:hover {
       padding-left: 15px;
-      background: linear-gradient(90deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+      background: linear-gradient(90deg, rgba(189, 147, 249, 0.05) 0%, transparent 100%);
     }
 
     .blog-item-content {
@@ -894,7 +894,7 @@
       display: inline-block;
       font-size: 0.7rem;
       padding: 3px 8px;
-      background: rgba(0, 212, 255, 0.1);
+      background: rgba(189, 147, 249, 0.1);
       color: var(--primary);
       border-radius: 4px;
       margin-right: 10px;
@@ -925,7 +925,7 @@
     .portfolio-card:hover {
       border-color: var(--primary);
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 212, 255, 0.1);
+      box-shadow: 0 12px 40px rgba(189, 147, 249, 0.1);
     }
 
     .portfolio-preview {
@@ -976,7 +976,7 @@
       display: inline-block;
       font-size: 0.65rem;
       padding: 3px 8px;
-      background: rgba(0, 212, 255, 0.08);
+      background: rgba(189, 147, 249, 0.08);
       color: var(--primary);
       border-radius: 4px;
       font-family: 'Fira Code', monospace;
@@ -1072,7 +1072,7 @@
 
     .btn-submit:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.25);
+      box-shadow: 0 10px 25px rgba(189, 147, 249, 0.25);
     }
 
     /* FOOTER */
@@ -1359,8 +1359,8 @@
         <a href="curso-ia-clase-1.html" class="blog-item">
           <div class="blog-item-content">
             <div class="blog-item-date">
-              <span class="blog-item-tag" style="background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3);">IA</span>
-              <span class="blog-item-tag" style="background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);">Video</span>
+              <span class="blog-item-tag" style="background: rgba(189,147,249,0.15); color: #bd93f9; border: 1px solid rgba(189,147,249,0.3);">IA</span>
+              <span class="blog-item-tag" style="background: rgba(80,250,123,0.15); color: #50fa7b; border: 1px solid rgba(80,250,123,0.3);">Video</span>
               03 Jun 2026
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/curso-ia-clase-1.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span>
             </div>
@@ -1389,8 +1389,8 @@
         <a href="logistics-fleet-platform.html" class="blog-item">
           <div class="blog-item-content">
             <div class="blog-item-date">
-              <span class="blog-item-tag" style="background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3);">Logistics</span>
-              <span class="blog-item-tag" style="background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);"><i class="fas fa-truck"></i> Full Stack</span>
+              <span class="blog-item-tag" style="background: rgba(189,147,249,0.15); color: #bd93f9; border: 1px solid rgba(189,147,249,0.3);">Logistics</span>
+              <span class="blog-item-tag" style="background: rgba(80,250,123,0.15); color: #50fa7b; border: 1px solid rgba(80,250,123,0.3);"><i class="fas fa-truck"></i> Full Stack</span>
               04 Jul 2026
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/logistics-fleet-platform.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span>
             </div>
@@ -1420,7 +1420,7 @@
           <div class="blog-item-content">
             <div class="blog-item-date">
               <span class="blog-item-tag">DevOps</span>
-              <span class="blog-item-tag" style="background: rgba(0,212,255,0.15); color: #00d4ff;"><i class="fas fa-robot"></i> CI/CD</span>
+              <span class="blog-item-tag" style="background: rgba(189,147,249,0.15); color: #bd93f9;"><i class="fas fa-robot"></i> CI/CD</span>
               27 Feb 2026
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/agentic-pipelines.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span>
             </div>
@@ -1435,7 +1435,7 @@
           <div class="blog-item-content">
             <div class="blog-item-date">
               <span class="blog-item-tag">RAG</span>
-              <span class="blog-item-tag" style="background: rgba(124,58,237,0.15); color: #a78bfa;"><i class="fas fa-brain"></i> OpenClaw</span>
+              <span class="blog-item-tag" style="background: rgba(189,147,249,0.15); color: #a78bfa;"><i class="fas fa-brain"></i> OpenClaw</span>
               19 Feb 2026
             
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/rag-local-knowledge-base.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span></div>
@@ -1450,7 +1450,7 @@
           <div class="blog-item-content">
             <div class="blog-item-date">
               <span class="blog-item-tag">TenK</span>
-              <span class="blog-item-tag" style="background: rgba(16,185,129,0.15); color: #10B981;"><i class="fas fa-terminal"></i> OpenClaw</span>
+              <span class="blog-item-tag" style="background: rgba(80,250,123,0.15); color: #10B981;"><i class="fas fa-terminal"></i> OpenClaw</span>
               18 Feb 2026
             
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/tenk-openclaw-skill.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span></div>
@@ -1494,7 +1494,7 @@
           <div class="blog-item-content">
             <div class="blog-item-date">
               <span class="blog-item-tag">AI</span>
-              <span class="blog-item-tag" style="background: rgba(16,185,129,0.15); color: #10b981;"><i class="fas fa-robot"></i> Full Stack</span>
+              <span class="blog-item-tag" style="background: rgba(80,250,123,0.15); color: #50fa7b;"><i class="fas fa-robot"></i> Full Stack</span>
               16 Feb 2026
             
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/oventhub-client-portal.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span></div>
@@ -1509,7 +1509,7 @@
           <div class="blog-item-content">
             <div class="blog-item-date">
               <span class="blog-item-tag">AWS</span>
-              <span class="blog-item-tag" style="background: rgba(0,212,255,0.15); color: #00d4ff;"><i class="fas fa-code"></i> DevOps</span>
+              <span class="blog-item-tag" style="background: rgba(189,147,249,0.15); color: #bd93f9;"><i class="fas fa-code"></i> DevOps</span>
               15 Feb 2026
             
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/agents-oventlabs-alb-acm.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span></div>
@@ -1524,7 +1524,7 @@
           <div class="blog-item-content">
             <div class="blog-item-date">
               <span class="blog-item-tag">OpenClaw</span>
-              <span class="blog-item-tag" style="background: rgba(0,212,255,0.15); color: #00d4ff;"><i class="fas fa-terminal"></i> DevOps</span>
+              <span class="blog-item-tag" style="background: rgba(189,147,249,0.15); color: #bd93f9;"><i class="fas fa-terminal"></i> DevOps</span>
               14-16 Feb 2026
             
               <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/openclaw-whatsapp-failover.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span></div>
@@ -2161,9 +2161,9 @@
       window.addEventListener('scroll', function() {
         const nav = document.querySelector('nav');
         if (window.scrollY > 50) {
-          nav.style.background = 'rgba(10, 10, 15, 0.98)';
+          nav.style.background = 'rgba(40, 42, 54, 0.98)';
         } else {
-          nav.style.background = 'rgba(10, 10, 15, 0.9)';
+          nav.style.background = 'rgba(40, 42, 54, 0.92)';
         }
       });
 
