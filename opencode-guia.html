@@ -16,20 +16,20 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <style>
     :root {
-      --primary: #bd93f9;
-      --primary-dark: #8b6ce0;
-      --bg-dark: #282a36;
-      --bg-card: #2f3041;
-      --bg-code: #1f2030;
-      --text-primary: #f8f8f2;
-      --text-secondary: rgba(248,248,242,0.75);
-      --text-muted: rgba(248,248,242,0.5);
-      --accent-blue: #8be9fd;
-      --accent-purple: #bd93f9;
-      --accent-pink: #ff79c6;
-      --accent-orange: #ffb86c;
-      --accent-red: #ff5555;
-      --accent-green: #50fa7b;
+      --primary: #7c4dff;
+      --primary-dark: #5e35b1;
+      --bg-dark: #ffffff;
+      --bg-card: #f6f6fa;
+      --bg-code: #f1f1f6;
+      --text-primary: #1f2233;
+      --text-secondary: rgba(31,34,51,0.75);
+      --text-muted: rgba(31,34,51,0.5);
+      --accent-blue: #00897b;
+      --accent-purple: #7c4dff;
+      --accent-pink: #d81b60;
+      --accent-orange: #ef6c00;
+      --accent-red: #c62828;
+      --accent-green: #2e7d32;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,8 +49,8 @@
     .post-header {
       text-align: center;
       padding: 80px 20px 60px;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, #1f2030 50%, #1f2030 100%);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: #fafaff;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
       position: relative;
       overflow: hidden;
     }
@@ -62,8 +62,8 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle at 30% 50%, rgba(189,147,249,0.12) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 50%, rgba(80,250,123,0.06) 0%, transparent 50%);
+      background: radial-gradient(circle at 30% 50%, rgba(124,77,255,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(46,125,50,0.04) 0%, transparent 50%);
       animation: headerGlow 8s ease-in-out infinite alternate;
     }
 
@@ -92,10 +92,7 @@
     .post-title {
       font-size: 2.5em;
       margin-bottom: 15px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--primary);
       position: relative;
       z-index: 1;
     }
@@ -126,8 +123,8 @@
     }
 
     .post-tag.ai { background: var(--accent-purple); }
-    .post-tag.tool { background: var(--accent-green); color: #000; }
-    .post-tag.models { background: var(--accent-blue); color: #000; }
+    .post-tag.tool { background: var(--accent-green); color: #fff; }
+    .post-tag.models { background: var(--accent-blue); color: #fff; }
 
     /* ========== CONTENT ========== */
     .post-content { padding: 60px 0 80px; }
@@ -300,15 +297,15 @@
 
     .card {
       background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(0,0,0,0.08);
       border-radius: 12px;
       padding: 22px;
       position: relative;
     }
 
     .card.recommended {
-      border-color: rgba(189,147,249,0.5);
-      box-shadow: 0 0 20px rgba(189,147,249,0.08);
+      border-color: rgba(124,77,255,0.5);
+      box-shadow: 0 0 20px rgba(124,77,255,0.1);
     }
 
     .card h4 { margin-top: 0; }
@@ -318,7 +315,7 @@
     .badge {
       display: inline-block;
       background: var(--accent-green);
-      color: #000;
+      color: #fff;
       font-size: 0.7em;
       font-weight: 700;
       padding: 2px 10px;
@@ -332,7 +329,7 @@
 
     .badge.free {
       background: var(--accent-green);
-      color: #000;
+      color: #fff;
     }
 
     /* ========== TABLAS ========== */
@@ -346,7 +343,7 @@
     }
 
     .post-content th {
-      background: rgba(189,147,249,0.15);
+      background: rgba(124,77,255,0.1);
       color: var(--primary);
       font-weight: 600;
       text-align: left;
@@ -356,7 +353,7 @@
 
     .post-content td {
       padding: 12px 18px;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(0,0,0,0.08);
       color: var(--text-secondary);
       font-size: 0.92em;
     }
@@ -384,8 +381,8 @@
 
     /* ========== CTA ========== */
     .cta {
-      background: linear-gradient(135deg, rgba(189,147,249,0.15) 0%, rgba(255,121,198,0.15) 100%);
-      border: 1px solid rgba(189,147,249,0.4);
+      background: #f6f3ff;
+      border: 1px solid rgba(124,77,255,0.35);
       border-radius: 16px;
       padding: 40px;
       margin: 45px 0;
@@ -393,7 +390,7 @@
     }
 
     .cta h3 {
-      color: var(--text-primary);
+      color: #1f2233 !important;
       margin-top: 0;
       font-size: 1.5em;
     }
@@ -402,21 +399,23 @@
 
     .cta-button {
       display: inline-block;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
-      color: #fff;
+      background: #7c4dff;
+      color: #ffffff !important;
       font-weight: 700;
       font-size: 1.05em;
       padding: 14px 34px;
-      border-radius: 30px;
+      border-radius: 8px;
       text-decoration: none;
       margin: 15px 0 10px;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
       border-bottom: none;
+      -webkit-text-fill-color: #ffffff;
     }
 
     .cta-button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(189,147,249,0.35);
+      background: var(--primary-dark);
+      box-shadow: 0 8px 25px rgba(124,77,255,0.25);
       border-bottom: none;
     }
 
@@ -426,8 +425,8 @@
 
     /* ========== TAKEAWAYS ========== */
     .takeaways {
-      background: linear-gradient(135deg, rgba(80,250,123,0.1) 0%, rgba(139,233,253,0.05) 100%);
-      border: 1px solid rgba(80,250,123,0.2);
+      background: #f2faf4;
+      border: 1px solid rgba(46,125,50,0.2);
       border-radius: 16px;
       padding: 30px;
       margin: 40px 0;
@@ -441,7 +440,7 @@
     .post-footer {
       text-align: center;
       padding: 60px 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(0,0,0,0.1);
       margin-top: 60px;
     }
 
