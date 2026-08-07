@@ -18,21 +18,21 @@
 
   <style>
     :root {
-      --primary: #00d4ff;
-      --primary-glow: rgba(0, 212, 255, 0.15);
-      --accent: #7c3aed;
-      --accent-glow: rgba(124, 58, 237, 0.2);
-      --success: #10b981;
-      --bg-dark: #0a0a0f;
-      --bg-card: #12121a;
+      --primary: #bd93f9;
+      --primary-glow: rgba(189, 147, 249, 0.15);
+      --accent: #bd93f9;
+      --accent-glow: rgba(189, 147, 249, 0.2);
+      --success: #50fa7b;
+      --bg-dark: #282a36;
+      --bg-card: #2f3041;
       --text-primary: #f1f5f9;
       --text-secondary: #94a3b8;
       --text-muted: #64748b;
       --border: rgba(255, 255, 255, 0.08);
-      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+      --gradient-1: linear-gradient(135deg, #bd93f9 0%, #bd93f9 100%);
       --radius: 14px;
-      --nav-bg: rgba(10, 10, 15, 0.9);
-      --sidebar-bg: rgba(10, 10, 15, 0.92);
+      --nav-bg: rgba(40, 42, 54, 0.9);
+      --sidebar-bg: rgba(40, 42, 54, 0.92);
       --hover-bg: rgba(255, 255, 255, 0.04);
       --soft-bg: rgba(255, 255, 255, 0.03);
       --badge-bg: rgba(255, 255, 255, 0.05);
@@ -161,7 +161,7 @@
 
     .search-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow), 0 0 24px rgba(0, 212, 255, 0.15);
+      box-shadow: 0 0 0 3px var(--primary-glow), 0 0 24px rgba(189, 147, 249, 0.15);
     }
 
     .search-clear {
@@ -270,12 +270,12 @@
     .sidebar-item.active {
       background: var(--primary-glow);
       color: var(--primary);
-      border-color: rgba(0, 212, 255, 0.3);
+      border-color: rgba(189, 147, 249, 0.3);
       font-weight: 600;
     }
 
     .sidebar-item.active .count {
-      background: rgba(0, 212, 255, 0.15);
+      background: rgba(189, 147, 249, 0.15);
       color: var(--primary);
     }
 
@@ -362,11 +362,11 @@
       background:
         linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
         var(--gradient-1) border-box;
-      box-shadow: 0 0 18px rgba(0, 212, 255, 0.12), 0 0 4px rgba(124, 58, 237, 0.18);
+      box-shadow: 0 0 18px rgba(189, 147, 249, 0.12), 0 0 4px rgba(189, 147, 249, 0.18);
     }
 
     .skill-card.featured:hover {
-      box-shadow: 0 10px 34px var(--primary-glow), 0 0 22px rgba(124, 58, 237, 0.3);
+      box-shadow: 0 10px 34px var(--primary-glow), 0 0 22px rgba(189, 147, 249, 0.3);
     }
 
     .featured-badge {
@@ -381,7 +381,7 @@
       border-radius: 999px;
       background: var(--gradient-1);
       color: #fff;
-      box-shadow: 0 2px 10px rgba(0, 212, 255, 0.35);
+      box-shadow: 0 2px 10px rgba(189, 147, 249, 0.35);
       z-index: 2;
     }
 
@@ -410,9 +410,9 @@
       font-size: 0.68rem;
       padding: 3px 10px;
       border-radius: 999px;
-      background: rgba(0, 212, 255, 0.1);
+      background: rgba(189, 147, 249, 0.1);
       color: var(--primary);
-      border: 1px solid rgba(0, 212, 255, 0.25);
+      border: 1px solid rgba(189, 147, 249, 0.25);
       font-family: 'Fira Code', monospace;
     }
 
@@ -459,8 +459,8 @@
 
     .skill-card:hover .card-download {
       color: var(--primary);
-      border-color: rgba(0, 212, 255, 0.3);
-      background: rgba(0, 212, 255, 0.06);
+      border-color: rgba(189, 147, 249, 0.3);
+      background: rgba(189, 147, 249, 0.06);
     }
 
     .card-download .material-icons { font-size: 0.95rem; }
@@ -539,9 +539,9 @@
       font-size: 0.72rem;
       padding: 4px 12px;
       border-radius: 999px;
-      background: rgba(0, 212, 255, 0.1);
+      background: rgba(189, 147, 249, 0.1);
       color: var(--primary);
-      border: 1px solid rgba(0, 212, 255, 0.25);
+      border: 1px solid rgba(189, 147, 249, 0.25);
       font-family: 'Fira Code', monospace;
     }
 
@@ -641,12 +641,12 @@
 
     .btn-share:hover {
       color: var(--primary);
-      border-color: rgba(0, 212, 255, 0.4);
-      background: rgba(0, 212, 255, 0.06);
+      border-color: rgba(189, 147, 249, 0.4);
+      background: rgba(189, 147, 249, 0.06);
     }
 
     .btn-share:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-    .btn-share.copied { color: var(--success); border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08); }
+    .btn-share.copied { color: var(--success); border-color: rgba(80, 250, 123, 0.4); background: rgba(80, 250, 123, 0.08); }
     .btn-share .material-icons { font-size: 1.05rem; }
 
     .modal-footer-actions {
@@ -691,7 +691,7 @@
       .btn-download:hover { transform: none; }
     }
   </style>
-  <link rel="stylesheet" href="theme.css?v=15">
+  <link rel="stylesheet" href="theme.css?v=16">
   <script src="theme.js?v=13"></script>
 </head>
 

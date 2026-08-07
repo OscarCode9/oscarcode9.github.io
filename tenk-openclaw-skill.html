@@ -49,8 +49,8 @@
       content: '';
       position: absolute; top: -50%; left: -50%;
       width: 200%; height: 200%;
-      background: radial-gradient(circle at 30% 50%, rgba(16,185,129,0.07) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 50%, rgba(16,185,129,0.04) 0%, transparent 50%);
+      background: radial-gradient(circle at 30% 50%, rgba(80,250,123,0.07) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(80,250,123,0.04) 0%, transparent 50%);
       animation: headerGlow 8s ease-in-out infinite alternate;
     }
     @keyframes headerGlow {
@@ -69,8 +69,8 @@
     .post-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
     .tag {
       padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
-      background: rgba(16,185,129,0.12); color: var(--primary);
-      border: 1px solid rgba(16,185,129,0.25);
+      background: rgba(80,250,123,0.12); color: var(--primary);
+      border: 1px solid rgba(80,250,123,0.25);
     }
     .tag.purple { background: rgba(179,136,255,0.12); color: #b388ff; border-color: rgba(179,136,255,0.25); }
     .tag.blue   { background: rgba(79,195,247,0.12); color: #4fc3f7; border-color: rgba(79,195,247,0.25); }
@@ -109,7 +109,7 @@
     pre code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; }
     code {
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      background: rgba(16,185,129,0.1); color: var(--primary);
+      background: rgba(80,250,123,0.1); color: var(--primary);
       padding: 2px 7px; border-radius: 5px; font-size: 0.9em;
     }
     pre code { background: none; color: inherit; padding: 0; }
@@ -122,7 +122,7 @@
     .callout {
       border-radius: 12px; padding: 20px 24px; margin: 28px 0; border-left: 4px solid;
     }
-    .callout.green  { background: rgba(16,185,129,0.08); border-color: var(--primary); }
+    .callout.green  { background: rgba(80,250,123,0.08); border-color: var(--primary); }
     .callout.blue   { background: rgba(79,195,247,0.08); border-color: #4fc3f7; }
     .callout.purple { background: rgba(179,136,255,0.08); border-color: #b388ff; }
     .callout.orange { background: rgba(255,171,64,0.08); border-color: #ffab40; }
@@ -138,7 +138,7 @@
     .flow-step { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
     .flow-num {
       width: 26px; height: 26px; border-radius: 50%;
-      background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35);
+      background: rgba(80,250,123,0.15); border: 1px solid rgba(80,250,123,0.35);
       color: var(--primary); font-size: 0.78rem; font-weight: 700;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
@@ -208,7 +208,7 @@
   <script src="public/i18n.js"></script>
   <link rel="stylesheet" href="visits-badge.css">
   <script src="visits-badge.js" defer></script>
-  <link rel="stylesheet" href="theme.css?v=15">
+  <link rel="stylesheet" href="theme.css?v=16">
   <script src="theme.js?v=13"></script>
 </head>
 <body>
@@ -371,7 +371,7 @@ POST   /api/device-auth/authorize/:code    → acepta JSON (sessionToken o email
             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Step 1: Login</div>
             <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Email + contraseña de TenK</span><span class="lang-en">Email + TenK password</span></div>
           </div>
-          <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(16,185,129,0.06); border-radius: 10px; border: 1px solid rgba(16,185,129,0.2);">
+          <div style="flex: 1; min-width: 180px; text-align: center; padding: 20px; background: rgba(80,250,123,0.06); border-radius: 10px; border: 1px solid rgba(80,250,123,0.2);">
             <div style="font-size: 1.5rem; margin-bottom: 8px;"><i class="fas fa-circle-check" aria-hidden="true"></i></div>
             <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;"><span class="lang-es">Step 2: Confirmar</span><span class="lang-en">Step 2: Confirm</span></div>
             <div style="font-size: 0.8rem; color: var(--text-muted);"><span class="lang-es">Tu nombre + permisos + Autorizar / Rechazar</span><span class="lang-en">Your name + permissions + Authorize / Reject</span></div>

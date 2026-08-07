@@ -1,4 +1,43 @@
 /* ============================================================
+   Paleta Dracula compartida (dark por defecto) — oscarcode9.github.io
+   Carga despues del <style> inline de cada pagina, asi que
+   unifica la paleta en todas las paginas del sitio.
+   ============================================================ */
+:root {
+  --primary: #bd93f9;
+  --primary-dark: #8b6ce0;
+  --primary-glow: rgba(189, 147, 249, 0.18);
+  --accent: #ff79c6;
+  --accent-blue: #8be9fd;
+  --accent-purple: #bd93f9;
+  --accent-green: #50fa7b;
+  --accent-yellow: #f1fa8c;
+  --accent-gold: #f1fa8c;
+  --accent-orange: #ffb86c;
+  --accent-pink: #ff79c6;
+  --success: #50fa7b;
+  --bg-dark: #282a36;
+  --bg-card: #2f3041;
+  --text-primary: #f8f8f2;
+  --text-secondary: #c5c9dd;
+  --text-muted: #8a8fa8;
+  --border: rgba(248, 248, 242, 0.1);
+  --gradient-1: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+}
+
+/* Gradientes de texto fuera — igual que el index: color solido */
+.post-title,
+.stat-highlight .stat-number,
+.summary-box .price,
+.hero h1,
+.brand-logo,
+.kern-logo {
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* ============================================================
    Tema light compartido — oscarcode9.github.io (todas las paginas)
    Light es el tema por defecto (dark si el dispositivo prefiere
    modo oscuro); [data-theme="light"] sobreescribe el dark.
