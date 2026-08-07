@@ -459,14 +459,7 @@
 }
 
 [data-theme="light"] .hero-image-glow {
-  background: radial-gradient(circle at 50% 45%,
-    #1e3a8a 0%,
-    #1d4ed8 22%,
-    #2563eb 40%,
-    #3b82f6 55%,
-    rgba(147, 197, 253, 0.5) 68%,
-    rgba(219, 234, 254, 0.18) 80%,
-    rgba(246, 248, 251, 0) 92%) !important;
+  background: transparent !important;
   opacity: 1 !important;
   display: block !important;
   visibility: visible !important;
