@@ -9,17 +9,17 @@
   <style>
     :root {
       --primary: #bd93f9;
-      --primary-dark: #00a8cc;
-      --bg-dark: #0a0a0a;
-      --bg-card: #111111;
+      --primary-dark: #8be9fd;
+      --bg-dark: #282a36;
+      --bg-card: #2f3041;
       --text-primary: #ffffff;
       --text-secondary: rgba(255,255,255,0.7);
       --text-muted: rgba(255,255,255,0.5);
-      --accent-orange: #ffab40;
-      --accent-red: #ff6b6b;
-      --accent-green: #69f0ae;
-      --accent-blue: #4fc3f7;
-      --accent-purple: #b388ff;
+      --accent-orange: #ffb86c;
+      --accent-red: #ff5555;
+      --accent-green: #50fa7b;
+      --accent-blue: #8be9fd;
+      --accent-purple: #bd93f9;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,7 +40,7 @@
     .post-header {
       text-align: center;
       padding: 80px 20px 60px;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1a1f 50%, #0d2a2d 100%);
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1f2030 50%, #22232e 100%);
       border-bottom: 1px solid rgba(255,255,255,0.1);
       position: relative;
       overflow: hidden;
@@ -54,7 +54,7 @@
       width: 200%;
       height: 200%;
       background: radial-gradient(circle at 30% 50%, rgba(189,147,249,0.06) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 50%, rgba(0,168,204,0.04) 0%, transparent 50%);
+                  radial-gradient(circle at 70% 50%, rgba(139,233,253,0.04) 0%, transparent 50%);
       animation: headerGlow 8s ease-in-out infinite;
     }
 
@@ -118,9 +118,9 @@
     }
 
     .post-tag.devops {
-      background: rgba(255,171,64,0.15);
+      background: rgba(255,184,108,0.15);
       color: var(--accent-orange);
-      border-color: rgba(255,171,64,0.3);
+      border-color: rgba(255,184,108,0.3);
     }
 
     .post-content {
@@ -178,7 +178,7 @@
     }
 
     .post-content pre {
-      background: #0d1117;
+      background: #21222c;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
       padding: 20px 24px;
@@ -202,8 +202,8 @@
     .post-content pre .output { color: var(--text-muted); font-style: italic; }
 
     .warning-box {
-      background: rgba(255,107,107,0.08);
-      border: 1px solid rgba(255,107,107,0.3);
+      background: rgba(255,85,85,0.08);
+      border: 1px solid rgba(255,85,85,0.3);
       border-left: 4px solid var(--accent-red);
       border-radius: 0 12px 12px 0;
       padding: 25px 30px;
@@ -224,13 +224,13 @@
     .warning-box p:not(:last-child) { margin-bottom: 10px; }
 
     .warning-box code {
-      background: rgba(255,107,107,0.15);
+      background: rgba(255,85,85,0.15);
       color: var(--accent-red);
     }
 
     .info-box {
-      background: rgba(79,195,247,0.08);
-      border: 1px solid rgba(79,195,247,0.3);
+      background: rgba(139,233,253,0.08);
+      border: 1px solid rgba(139,233,253,0.3);
       border-left: 4px solid var(--accent-blue);
       border-radius: 0 12px 12px 0;
       padding: 25px 30px;
@@ -248,8 +248,8 @@
     }
 
     .tip-box {
-      background: rgba(105,240,174,0.08);
-      border: 1px solid rgba(105,240,174,0.3);
+      background: rgba(80,250,123,0.08);
+      border: 1px solid rgba(80,250,123,0.3);
       border-left: 4px solid var(--accent-green);
       border-radius: 0 12px 12px 0;
       padding: 25px 30px;
@@ -268,8 +268,8 @@
     }
 
     .openclaw-box {
-      background: rgba(255,171,64,0.08);
-      border: 1px solid rgba(255,171,64,0.3);
+      background: rgba(255,184,108,0.08);
+      border: 1px solid rgba(255,184,108,0.3);
       border-left: 4px solid var(--accent-orange);
       border-radius: 0 12px 12px 0;
       padding: 25px 30px;
@@ -320,7 +320,7 @@
     }
 
     .summary-box {
-      background: linear-gradient(135deg, rgba(189,147,249,0.08) 0%, rgba(105,240,174,0.08) 100%);
+      background: linear-gradient(135deg, rgba(189,147,249,0.08) 0%, rgba(80,250,123,0.08) 100%);
       border: 1px solid rgba(189,147,249,0.25);
       border-radius: 16px;
       padding: 35px;
@@ -339,7 +339,7 @@
     }
 
     .ascii-diagram {
-      background: #0d1117;
+      background: #21222c;
       border: 1px solid rgba(189,147,249,0.2);
       border-radius: 12px;
       padding: 25px 30px;
@@ -383,7 +383,7 @@
   <script src="public/i18n.js"></script>
   <link rel="stylesheet" href="visits-badge.css">
   <script src="visits-badge.js" defer></script>
-  <link rel="stylesheet" href="theme.css?v=16">
+  <link rel="stylesheet" href="theme.css?v=17">
   <script src="theme.js?v=13"></script>
 </head>
 <body>

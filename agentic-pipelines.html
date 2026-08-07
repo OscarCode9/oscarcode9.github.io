@@ -14,18 +14,18 @@
   <style>
     :root {
       --primary: #bd93f9;
-      --primary-dark: #00a8cc;
-      --bg-dark: #0a0a0a;
-      --bg-card: #111111;
+      --primary-dark: #8be9fd;
+      --bg-dark: #282a36;
+      --bg-card: #2f3041;
       --bg-code: #1f2030;
       --text-primary: #ffffff;
       --text-secondary: rgba(255,255,255,0.7);
       --text-muted: rgba(255,255,255,0.5);
-      --accent-blue: #4fc3f7;
-      --accent-purple: #b388ff;
-      --accent-orange: #ffab40;
-      --accent-red: #ff6b6b;
-      --accent-green: #69f0ae;
+      --accent-blue: #8be9fd;
+      --accent-purple: #bd93f9;
+      --accent-orange: #ffb86c;
+      --accent-red: #ff5555;
+      --accent-green: #50fa7b;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,7 +47,7 @@
     .post-header {
       text-align: center;
       padding: 80px 20px 60px;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1f2d 50%, #0a1a26 100%);
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1f2030 50%, #0a1a26 100%);
       border-bottom: 1px solid rgba(255,255,255,0.1);
       position: relative;
       overflow: hidden;
@@ -61,7 +61,7 @@
       width: 200%;
       height: 200%;
       background: radial-gradient(circle at 30% 50%, rgba(189,147,249,0.06) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 50%, rgba(79,195,247,0.04) 0%, transparent 50%);
+                  radial-gradient(circle at 70% 50%, rgba(139,233,253,0.04) 0%, transparent 50%);
       animation: headerGlow 8s ease-in-out infinite alternate;
     }
 
@@ -184,7 +184,7 @@
     pre code {
       font-family: 'Fira Code', monospace;
       font-size: 0.85em;
-      color: #e2e8f0;
+      color: #f8f8f2;
       line-height: 1.7;
     }
 
@@ -197,7 +197,7 @@
       border-radius: 4px;
     }
 
-    pre code { background: none; color: #e2e8f0; padding: 0; }
+    pre code { background: none; color: #f8f8f2; padding: 0; }
 
     /* Callout boxes */
     .callout {
@@ -263,7 +263,7 @@
       border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .comparison-box.bad { border-color: rgba(255,107,107,0.3); }
+    .comparison-box.bad { border-color: rgba(255,85,85,0.3); }
     .comparison-box.good { border-color: rgba(189,147,249,0.3); }
     .comparison-box h4 { margin-top: 0; margin-bottom: 10px; }
     .comparison-box.bad h4 { color: var(--accent-red); }
@@ -365,7 +365,7 @@
   <link rel="stylesheet" href="visits-badge.css">
   <script src="visits-badge.js" defer></script>
   <script src="public/i18n.js"></script>
-  <link rel="stylesheet" href="theme.css?v=16">
+  <link rel="stylesheet" href="theme.css?v=17">
   <script src="theme.js?v=13"></script>
 </head>
 <body>

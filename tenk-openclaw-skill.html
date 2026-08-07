@@ -12,18 +12,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #10B981;
-      --primary-dark: #059669;
-      --bg-dark: #0a0f1c;
-      --bg-card: #111827;
-      --bg-code: #0d1117;
+      --primary: #50fa7b;
+      --primary-dark: #50fa7b;
+      --bg-dark: #282a36;
+      --bg-card: #2f3041;
+      --bg-code: #21222c;
       --text-primary: #ffffff;
       --text-secondary: rgba(255,255,255,0.7);
       --text-muted: rgba(255,255,255,0.45);
-      --accent-blue: #4fc3f7;
-      --accent-purple: #b388ff;
-      --accent-orange: #ffab40;
-      --accent-green: #10B981;
+      --accent-blue: #8be9fd;
+      --accent-purple: #bd93f9;
+      --accent-orange: #ffb86c;
+      --accent-green: #50fa7b;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,7 +40,7 @@
     .post-header {
       text-align: center;
       padding: 80px 20px 60px;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1f17 50%, #111827 100%);
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1f2030 50%, #2f3041 100%);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       position: relative;
       overflow: hidden;
@@ -72,9 +72,9 @@
       background: rgba(80,250,123,0.12); color: var(--primary);
       border: 1px solid rgba(80,250,123,0.25);
     }
-    .tag.purple { background: rgba(179,136,255,0.12); color: #b388ff; border-color: rgba(179,136,255,0.25); }
-    .tag.blue   { background: rgba(79,195,247,0.12); color: #4fc3f7; border-color: rgba(79,195,247,0.25); }
-    .tag.orange { background: rgba(255,171,64,0.12); color: #ffab40; border-color: rgba(255,171,64,0.25); }
+    .tag.purple { background: rgba(189,147,249,0.12); color: #bd93f9; border-color: rgba(189,147,249,0.25); }
+    .tag.blue   { background: rgba(139,233,253,0.12); color: #8be9fd; border-color: rgba(139,233,253,0.25); }
+    .tag.orange { background: rgba(255,184,108,0.12); color: #ffb86c; border-color: rgba(255,184,108,0.25); }
 
     .post-header h1 {
       font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 800;
@@ -106,7 +106,7 @@
       border-radius: 12px; padding: 24px; overflow-x: auto;
       margin: 24px 0; position: relative;
     }
-    pre code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; }
+    pre code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.88rem; line-height: 1.7; color: #f8f8f2; }
     code {
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
       background: rgba(80,250,123,0.1); color: var(--primary);
@@ -123,9 +123,9 @@
       border-radius: 12px; padding: 20px 24px; margin: 28px 0; border-left: 4px solid;
     }
     .callout.green  { background: rgba(80,250,123,0.08); border-color: var(--primary); }
-    .callout.blue   { background: rgba(79,195,247,0.08); border-color: #4fc3f7; }
-    .callout.purple { background: rgba(179,136,255,0.08); border-color: #b388ff; }
-    .callout.orange { background: rgba(255,171,64,0.08); border-color: #ffab40; }
+    .callout.blue   { background: rgba(139,233,253,0.08); border-color: #8be9fd; }
+    .callout.purple { background: rgba(189,147,249,0.08); border-color: #bd93f9; }
+    .callout.orange { background: rgba(255,184,108,0.08); border-color: #ffb86c; }
     .callout-title  { font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
     .callout p      { margin: 0; font-size: 0.95rem; }
 
@@ -155,11 +155,11 @@
     .result-row .value.green { color: var(--primary); }
 
     .terminal {
-      background: #0d1117; border: 1px solid rgba(255,255,255,0.08);
+      background: #21222c; border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px; overflow: hidden; margin: 24px 0;
     }
     .terminal-bar {
-      background: #161b22; padding: 10px 16px;
+      background: #21222c; padding: 10px 16px;
       display: flex; align-items: center; gap: 8px;
     }
     .dot { width: 12px; height: 12px; border-radius: 50%; }
@@ -168,17 +168,17 @@
     .dot.green { background: #28c840; }
     .terminal-body { padding: 20px 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; line-height: 1.8; }
     .t-prompt { color: var(--primary); }
-    .t-cmd { color: #e2e8f0; }
-    .t-out { color: #94a3b8; margin-left: 2px; }
+    .t-cmd { color: #f8f8f2; }
+    .t-out { color: #c5c9dd; margin-left: 2px; }
     .t-success { color: var(--primary); }
-    .t-info { color: #4fc3f7; }
+    .t-info { color: #8be9fd; }
 
     .screenshot-frame {
       background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px; overflow: hidden; margin: 28px 0;
     }
     .screenshot-bar {
-      background: #1e293b; padding: 12px 16px;
+      background: #2f3041; padding: 12px 16px;
       display: flex; align-items: center; gap: 8px;
     }
     .url-bar {
@@ -195,7 +195,7 @@
     .author-info { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 20px; }
     .author-avatar {
       width: 52px; height: 52px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), #059669);
+      background: linear-gradient(135deg, var(--primary), #50fa7b);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.3rem; font-weight: 800; color: white;
     }
@@ -208,7 +208,7 @@
   <script src="public/i18n.js"></script>
   <link rel="stylesheet" href="visits-badge.css">
   <script src="visits-badge.js" defer></script>
-  <link rel="stylesheet" href="theme.css?v=16">
+  <link rel="stylesheet" href="theme.css?v=17">
   <script src="theme.js?v=13"></script>
 </head>
 <body>
