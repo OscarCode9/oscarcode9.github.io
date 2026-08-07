@@ -2150,7 +2150,7 @@
         });
       });
 
-      // Contact form submission via API + AWS SES (oventlabs.net)
+      // Contact form submission via API + AWS SES (tenk.oventlabs.net)
       document.getElementById('contactForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = this.querySelector('button[type="submit"]');
@@ -2162,33 +2162,21 @@
         const email = this.email.value.trim();
         const mensaje = this.mensaje.value.trim();
 
-        const payload = JSON.stringify({ name: nombre, email: email, message: mensaje });
+        try {
+          const res = await fetch('https://tenk.oventlabs.net/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: nombre, email: email, message: mensaje }),
+          });
 
-        let sent = false;
-        const endpoints = [
-          'https://tenk.oventlabs.net/api/contact',
-          'http://localhost:3000/contact'
-        ];
-
-        for (const ep of endpoints) {
-          try {
-            const res = await fetch(ep, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: payload,
-            });
-            if (res.ok) {
-              sent = true;
-              break;
-            }
-          } catch (err) {}
-        }
-
-        if (sent) {
-          M.toast({html: '¡Gracias por tu mensaje! Se envió directamente a oscar.martinez.mtz.97@gmail.com <i class="fas fa-rocket"></i>', classes: 'rounded'});
-          this.reset();
-        } else {
-          M.toast({html: 'No se pudo enviar el correo. Por favor intenta más tarde.', classes: 'rounded red'});
+          if (res.ok) {
+            M.toast({html: '¡Gracias por tu mensaje! Se envió directamente a oscar.martinez.mtz.97@gmail.com <i class="fas fa-rocket"></i>', classes: 'rounded'});
+            this.reset();
+          } else {
+            M.toast({html: 'Error al enviar el mensaje. Por favor intenta más tarde.', classes: 'rounded red'});
+          }
+        } catch (err) {
+          M.toast({html: 'No se pudo conectar con el servidor. Intenta más tarde.', classes: 'rounded red'});
         } finally {
           btn.disabled = false;
           btn.innerHTML = origText;
