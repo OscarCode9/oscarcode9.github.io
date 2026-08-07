@@ -2162,25 +2162,33 @@
         const email = this.email.value.trim();
         const mensaje = this.mensaje.value.trim();
 
-        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:3000'
-          : 'https://api.oventlabs.net';
-        try {
-          const res = await fetch(`${apiUrl}/contact`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: nombre, email: email, message: mensaje }),
-          });
+        const payload = JSON.stringify({ name: nombre, email: email, message: mensaje });
 
-          if (res.ok) {
-            M.toast({html: '¡Gracias por tu mensaje! Llegó directamente a tu correo oscar.martinez.mtz.97@gmail.com <i class="fas fa-rocket"></i>', classes: 'rounded'});
-            this.reset();
-          } else {
-            M.toast({html: 'Error al enviar el mensaje. Por favor intenta de nuevo.', classes: 'rounded red'});
-          }
-        } catch (err) {
-          M.toast({html: 'Mensaje enviado directamente a tu correo oscar.martinez.mtz.97@gmail.com <i class="fas fa-check-circle"></i>', classes: 'rounded'});
+        let sent = false;
+        const endpoints = [
+          'https://tenk.oventlabs.net/api/contact',
+          'http://localhost:3000/contact'
+        ];
+
+        for (const ep of endpoints) {
+          try {
+            const res = await fetch(ep, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: payload,
+            });
+            if (res.ok) {
+              sent = true;
+              break;
+            }
+          } catch (err) {}
+        }
+
+        if (sent) {
+          M.toast({html: '¡Gracias por tu mensaje! Se envió directamente a oscar.martinez.mtz.97@gmail.com <i class="fas fa-rocket"></i>', classes: 'rounded'});
           this.reset();
+        } else {
+          M.toast({html: 'No se pudo enviar el correo. Por favor intenta más tarde.', classes: 'rounded red'});
         } finally {
           btn.disabled = false;
           btn.innerHTML = origText;
