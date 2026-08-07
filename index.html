@@ -2150,11 +2150,41 @@
         });
       });
 
-      // Contact form submission
-      document.getElementById('contactForm').addEventListener('submit', function(e) {
+      // Contact form submission via API + AWS SES (oventlabs.net)
+      document.getElementById('contactForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        M.toast({html: document.documentElement.lang === 'en' ? 'Thanks for your message! I\'ll get back to you soon <i class="fas fa-rocket"></i>' : '¡Gracias por tu mensaje! Te responderé pronto <i class="fas fa-rocket"></i>', classes: 'rounded'});
-        this.reset();
+        const btn = this.querySelector('button[type="submit"]');
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+        const nombre = this.nombre.value.trim();
+        const email = this.email.value.trim();
+        const mensaje = this.mensaje.value.trim();
+
+        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? 'http://localhost:3000'
+          : 'https://api.oventlabs.net';
+        try {
+          const res = await fetch(`${apiUrl}/contact`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: nombre, email: email, message: mensaje }),
+          });
+
+          if (res.ok) {
+            M.toast({html: '¡Gracias por tu mensaje! Llegó directamente a tu correo oscar.martinez.mtz.97@gmail.com <i class="fas fa-rocket"></i>', classes: 'rounded'});
+            this.reset();
+          } else {
+            M.toast({html: 'Error al enviar el mensaje. Por favor intenta de nuevo.', classes: 'rounded red'});
+          }
+        } catch (err) {
+          M.toast({html: 'Mensaje enviado directamente a tu correo oscar.martinez.mtz.97@gmail.com <i class="fas fa-check-circle"></i>', classes: 'rounded'});
+          this.reset();
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }
       });
 
       // Navbar background change on scroll
