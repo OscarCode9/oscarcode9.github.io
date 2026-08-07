@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>opencode: la guía definitiva de agentes de IA en tu terminal | Oscar Code</title>
+  <meta name="description" content="Guía paso a paso para usar opencode con agentes de IA: instalación, orquestación de modelos (orquestador + ejecutor), comandos, y el plan Go gratis.">
+  <meta name="keywords" content="opencode, agentes IA, Claude Code, DeepSeek V4 Flash, opencode Go, orquestador, terminal, CLI">
+  <meta property="og:title" content="opencode: la guía definitiva de agentes de IA en tu terminal">
+  <meta property="og:description" content="Aprende a orquestar modelos con opencode: plan con el fuerte, ejecuta con el rápido. Instalación, comandos y plan Go.">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <style>
+    :root {
+      --primary: #bd93f9;
+      --primary-dark: #8b6ce0;
+      --bg-dark: #282a36;
+      --bg-card: #2f3041;
+      --bg-code: #1f2030;
+      --text-primary: #f8f8f2;
+      --text-secondary: rgba(248,248,242,0.75);
+      --text-muted: rgba(248,248,242,0.5);
+      --accent-blue: #8be9fd;
+      --accent-purple: #bd93f9;
+      --accent-pink: #ff79c6;
+      --accent-orange: #ffb86c;
+      --accent-red: #ff5555;
+      --accent-green: #50fa7b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+    /* ========== HEADER ========== */
+    .post-header {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1f2030 50%, #1f2030 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(189,147,249,0.12) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(80,250,123,0.06) 0%, transparent 50%);
+      animation: headerGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2%, 2%); }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-5px);
+    }
+
+    .post-title {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-subtitle {
+      font-size: 1.2em;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-meta {
+      color: var(--text-muted);
+      font-size: 0.95em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .post-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin-right: 8px;
+    }
+
+    .post-tag.ai { background: var(--accent-purple); }
+    .post-tag.tool { background: var(--accent-green); color: #000; }
+    .post-tag.models { background: var(--accent-blue); color: #000; }
+
+    /* ========== CONTENT ========== */
+    .post-content { padding: 60px 0 80px; }
+
+    .post-content h2 {
+      font-size: 1.8em;
+      margin: 60px 0 25px;
+      color: var(--primary);
+      border-bottom: 2px solid rgba(189,147,249,0.3);
+      padding-bottom: 10px;
+      scroll-margin-top: 20px;
+    }
+
+    .post-content h2:first-child { margin-top: 0; }
+
+    .post-content h3 {
+      font-size: 1.35em;
+      margin: 40px 0 15px;
+      color: var(--accent-blue);
+    }
+
+    .post-content h4 {
+      font-size: 1.1em;
+      margin: 25px 0 10px;
+      color: var(--accent-pink);
+    }
+
+    .post-content p {
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+    }
+
+    .post-content strong { color: var(--text-primary); }
+
+    .post-content a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .post-content a:hover { border-bottom-color: var(--primary); }
+
+    .post-content ul, .post-content ol {
+      margin: 15px 0 20px 25px;
+      color: var(--text-secondary);
+    }
+
+    .post-content li { margin-bottom: 8px; }
+
+    /* ========== ÍNDICE ========== */
+    .toc {
+      background: var(--bg-card);
+      border: 1px solid rgba(189,147,249,0.25);
+      border-radius: 16px;
+      padding: 25px 30px;
+      margin: 35px 0;
+    }
+
+    .toc h3 {
+      color: var(--primary);
+      margin: 0 0 15px;
+      font-size: 1.1em;
+    }
+
+    .toc ol { margin: 0 0 0 20px; }
+
+    .toc li { margin-bottom: 8px; }
+
+    .toc a {
+      color: var(--text-secondary);
+      border-bottom: none;
+    }
+
+    .toc a:hover { color: var(--accent-green); }
+
+    /* ========== CÓDIGO ========== */
+    .code-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75em;
+      color: var(--primary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .post-content pre {
+      background: var(--bg-code);
+      border: 1px solid rgba(189,147,249,0.25);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 10px 0 20px;
+      overflow-x: auto;
+    }
+
+    .post-content pre code {
+      color: var(--accent-green);
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 0.9em;
+    }
+
+    .post-content code {
+      background: var(--bg-code);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--accent-pink);
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 0.9em;
+    }
+
+    /* ========== CALLOUTS ========== */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--bg-card);
+      padding: 20px 25px;
+      margin: 25px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .callout.warning { border-left-color: var(--accent-orange); }
+    .callout.danger { border-left-color: var(--accent-red); }
+    .callout.info { border-left-color: var(--accent-blue); }
+    .callout.success { border-left-color: var(--accent-green); }
+
+    .callout p { margin-bottom: 0; }
+    .callout p:not(:last-child) { margin-bottom: 10px; }
+
+    /* ========== DIAGRAMA ========== */
+    .diagram {
+      background: var(--bg-code);
+      border: 1px solid rgba(189,147,249,0.25);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 25px 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .diagram pre code {
+      color: var(--primary);
+      font-size: 0.8em;
+    }
+
+    .diagram-caption {
+      margin-top: 12px;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ========== CARDS ========== */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 22px;
+      position: relative;
+    }
+
+    .card.recommended {
+      border-color: rgba(189,147,249,0.5);
+      box-shadow: 0 0 20px rgba(189,147,249,0.08);
+    }
+
+    .card h4 { margin-top: 0; }
+
+    .card p { margin-bottom: 0; }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent-green);
+      color: #000;
+      font-size: 0.7em;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge.free {
+      background: var(--accent-green);
+      color: #000;
+    }
+
+    /* ========== TABLAS ========== */
+    .post-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 30px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .post-content th {
+      background: rgba(189,147,249,0.15);
+      color: var(--primary);
+      font-weight: 600;
+      text-align: left;
+      padding: 14px 18px;
+      font-size: 0.95em;
+    }
+
+    .post-content td {
+      padding: 12px 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-secondary);
+      font-size: 0.92em;
+    }
+
+    .post-content td strong { color: var(--text-primary); }
+
+    /* ========== CHECKLIST ========== */
+    .checklist { list-style: none; margin-left: 0 !important; }
+
+    .checklist li {
+      position: relative;
+      padding-left: 32px;
+      margin-bottom: 14px;
+    }
+
+    .checklist li::before {
+      content: '\f00c';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      position: absolute;
+      left: 0;
+      top: 2px;
+      color: var(--accent-green);
+    }
+
+    /* ========== CTA ========== */
+    .cta {
+      background: linear-gradient(135deg, rgba(189,147,249,0.15) 0%, rgba(255,121,198,0.15) 100%);
+      border: 1px solid rgba(189,147,249,0.4);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 45px 0;
+      text-align: center;
+    }
+
+    .cta h3 {
+      color: var(--text-primary);
+      margin-top: 0;
+      font-size: 1.5em;
+    }
+
+    .cta p { color: var(--text-secondary); }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-pink) 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05em;
+      padding: 14px 34px;
+      border-radius: 30px;
+      text-decoration: none;
+      margin: 15px 0 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-bottom: none;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(189,147,249,0.35);
+      border-bottom: none;
+    }
+
+    .cta-note { font-size: 0.85em; color: var(--text-muted); }
+
+    .cta-note code { font-size: 0.85em; }
+
+    /* ========== TAKEAWAYS ========== */
+    .takeaways {
+      background: linear-gradient(135deg, rgba(80,250,123,0.1) 0%, rgba(139,233,253,0.05) 100%);
+      border: 1px solid rgba(80,250,123,0.2);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+
+    .takeaways h3 { color: var(--primary); margin-top: 0; }
+    .takeaways ul { color: var(--text-secondary); }
+    .takeaways li { margin-bottom: 12px; }
+
+    /* ========== FOOTER ========== */
+    .post-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+
+    .post-footer a { color: var(--primary); text-decoration: none; }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .post-title { font-size: 1.7em; }
+      .post-header { padding: 60px 15px 40px; }
+      .post-content h2 { font-size: 1.4em; }
+      .cards { grid-template-columns: 1fr; }
+      .cta { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="post-header">
+    <div class="container">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Volver al inicio
+      </a>
+      <h1 class="post-title">opencode: agentes de IA en tu terminal</h1>
+      <p class="post-subtitle">Instalación, orquestación de modelos (plan con el fuerte, ejecuta con el rápido) y comandos que usas todos los días.</p>
+      <div class="post-meta">
+        <span class="post-tag ai">Agentes IA</span>
+        <span class="post-tag tool">Terminal</span>
+        <span class="post-tag models">Modelos</span>
+        <br><br>
+        <i class="far fa-clock"></i> 7 de agosto de 2026 &nbsp;|&nbsp;
+        <i class="far fa-user"></i> Oscar Code &nbsp;|&nbsp;
+        <i class="far fa-clock"></i> ~12 min de lectura
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="post-content">
+    <div class="container">
+
+      <!-- INTRO -->
+      <div class="callout danger">
+        <p><strong>Basta de pagar $20/mes por Claude Code y quedarte encerrado en un solo proveedor.</strong> opencode es el agente de IA open-source que corre en tu terminal, usa cualquier modelo, y con el plan Go te dan crédito gratis para empezar.</p>
+      </div>
+
+      <p>Esta guía no es teórica. Es exactamente el setup que uso todos los días: un <strong>agente orquestador fuerte</strong> que planea y decide, y un <strong>modelo ejecutor rápido y barato</strong> que hace el trabajo pesado de editar código. Si quieres saltarte el marketing de los agentes de IA, esto es lo que de verdad importa: el costo y la velocidad.</p>
+
+      <div class="cta">
+        <h3><i class="fas fa-gift" aria-hidden="true"></i> Empieza gratis con opencode Go</h3>
+        <p>Crea tu cuenta con mi link y te regalan <strong>$5 USD de crédito</strong> para usar modelos como DeepSeek V4 Flash sin meter la tarjeta.</p>
+        <a class="cta-button" href="https://opencode.ai/go?ref=FC5A91NW61" target="_blank" rel="noopener">
+          <i class="fas fa-rocket" aria-hidden="true"></i> Crear cuenta gratis — $5 de crédito
+        </a>
+        <p class="cta-note">Código de referido: <code>FC5A91NW61</code> — aplicado automáticamente</p>
+      </div>
+
+      <!-- ÍNDICE -->
+      <div class="toc">
+        <h3><i class="fas fa-list-ul" aria-hidden="true"></i> Índice</h3>
+        <ol>
+          <li><a href="#que-es">¿Qué es opencode?</a></li>
+          <li><a href="#instalacion">Instalación y primeros pasos</a></li>
+          <li><a href="#orquestacion">Modelos y orquestación (la parte que importa)</a></li>
+          <li><a href="#comandos">Comandos para cambiar de modelo</a></li>
+          <li><a href="#go">opencode Go: agentes gratis (o casi)</a></li>
+          <li><a href="#claude-code">¿Y entonces por qué no uso Claude Code?</a></li>
+          <li><a href="#diarios">Comandos diarios útiles</a></li>
+        </ol>
+      </div>
+
+      <!-- ==================== SECCIÓN 1 ==================== -->
+      <h2 id="que-es"><span class="section-number" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;font-weight:bold;font-size:0.9em;margin-right:12px;">1</span> ¿Qué es opencode?</h2>
+
+      <p>opencode es un <strong>agente de IA open-source para desarrollo</strong> que corre en tu terminal. Piensa en Claude Code pero:</p>
+
+      <ul>
+        <li><strong>Open-source</strong> — el código está en GitHub (<a href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener">anomalyco/opencode</a>, ~195K estrellas).</li>
+        <li><strong>Multi-proveedor</strong> — usa Claude, OpenAI, DeepSeek, cualquier modelo. No estás atado a un vendor.</li>
+        <li><strong>Multi-agente</strong> — agentes especializados (build, plan, debug) y configuración por agente.</li>
+        <li><strong>Plan gratis real</strong> — con opencode Go te regalan crédito para empezar.</li>
+        <li><strong>Cualquier terminal</strong> — es un binario. Corres <code>opencode</code> y listo, sin IDE.</li>
+      </ul>
+
+      <p>Es un agente <em>agentic</em>: lee tu código, usa tool calling (edita archivos, corre comandos, consulta el repo) y trabaja contigo en ciclos. No es un chatbot: es un ingeniero junior que no se cansa.</p>
+
+      <div class="callout info">
+        <p><strong><i class="fas fa-lightbulb" aria-hidden="true"></i> Dato:</strong> opencode usa un modelo central que puede delegar trabajo a <strong>agentes sub-agentes</strong>. Eso es exactamente lo que aprovechamos en la sección 3 para orquestar modelos.</p>
+      </div>
+
+      <!-- ==================== SECCIÓN 2 ==================== -->
+      <h2 id="instalacion"><span class="section-number" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;font-weight:bold;font-size:0.9em;margin-right:12px;">2</span> Instalación y primeros pasos</h2>
+
+      <h3><i class="fas fa-terminal" aria-hidden="true"></i> Paso 1: instala</h3>
+
+      <div class="code-label"><i class="fas fa-code" aria-hidden="true"></i> INSTALACIÓN</div>
+      <pre><code>curl -fsSL https://opencode.ai/install | bash</code></pre>
+
+      <p>También disponible vía npm (<code>npm install -g opencode-ai</code>), Homebrew (<code>brew install anomalyco/tap/opencode</code>) o binarios desde <a href="https://github.com/anomalyco/opencode/releases" target="_blank" rel="noopener">GitHub Releases</a>.</p>
+
+      <h3><i class="fas fa-plug" aria-hidden="true"></i> Paso 2: conéctate a un proveedor</h3>
+
+      <p>Dentro de opencode usa <code>/connect</code> para conectar proveedores (opencode, Anthropic, OpenAI, etc.) o configura tu API key en <code>opencode.json</code>:</p>
+
+      <div class="code-label"><i class="fas fa-code" aria-hidden="true"></i> CONFIG DE PROVIDERS</div>
+      <pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "anthropic": { "apiKey": "sk-ant-..." },
+    "opencode-go": { "apiKey": "oc-go-..." }
+  }
+}</code></pre>
+
+      <h3><i class="fas fa-check-double" aria-hidden="true"></i> Paso 3: verifica</h3>
+
+      <ul class="checklist">
+        <li><code>opencode --version</code> — confirma que el binario quedó instalado.</li>
+        <li><code>opencode</code> en la raíz de tu proyecto — arranca la TUI.</li>
+        <li><code>/init</code> — opencode analiza tu repo y genera <code>AGENTS.md</code> (las reglas de trabajo para el agente).</li>
+        <li>Escribe tu primer prompt: <em>"¿cómo está estructurado este proyecto?"</em>.</li>
+      </ul>
+
+      <div class="callout success">
+        <p><strong><i class="fas fa-thumbs-up" aria-hidden="true"></i> Pro tip:</strong> haz commit de tu <code>AGENTS.md</code>. Es el contexto permanente del agente: convenciones, arquitectura, comandos de build/lint/test. Un buen AGENTS.md vale más que cualquier modelo caro.</p>
+      </div>
+
+      <!-- ==================== SECCIÓN 3 ==================== -->
+      <h2 id="orquestacion"><span class="section-number" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;font-weight:bold;font-size:0.9em;margin-right:12px;">3</span> Modelos y orquestación <span style="font-size:0.5em;color:var(--accent-pink);">— LA PARTE CENTRAL</span></h2>
+
+      <p>Aquí está la idea que cambia tu flujo de trabajo. No necesitas <em>un</em> modelo para todo. Necesitas <strong>dos</strong>:</p>
+
+      <div class="cards">
+        <div class="card recommended">
+          <span class="badge"><i class="fas fa-crown" aria-hidden="true"></i> Recomendado</span>
+          <h4><i class="fas fa-brain" aria-hidden="true"></i> Agente orquestador</h4>
+          <p>Un modelo <strong>fuerte</strong> que planea, razona y decide qué hacer. Es quien lee tu prompt, descompone el problema, decide el orden de las operaciones y usa tool calling. Costo alto, pero poquísimas llamadas: solo las decisiones.</p>
+          <p style="margin-top:10px;"><code>anthropic/claude-opus-5</code> (o cualquier modelo top: GPT-5.6, Gemini 3 Pro…)</p>
+        </div>
+        <div class="card recommended">
+          <span class="badge"><i class="fas fa-bolt" aria-hidden="true"></i> Recomendado</span>
+          <h4><i class="fas fa-rocket" aria-hidden="true"></i> Modelo ejecutor</h4>
+          <p>Un modelo <strong>rápido y barato</strong> que ejecuta: edita archivos, corre comandos, hace el trabajo mecánico. Se le llama muchísimo (cada paso de código), así que debe ser barato.</p>
+          <p style="margin-top:10px;"><code>opencode-go/deepseek-v4-flash</code> — rápido, barato, incluido en Go.</p>
+        </div>
+      </div>
+
+      <h3><i class="fas fa-sitemap" aria-hidden="true"></i> Cómo se combinan</h3>
+
+      <p>El orquestador usa <strong>tool calling</strong>: no "piensa" cada línea, sino que delega tareas de ejecución al modelo rápido. Flujo real:</p>
+
+      <div class="diagram">
+        <pre><code>┌──────────────────────────────────────────────────────────────┐
+│                    TU PROMPT                                  │
+│         "Agrega login con JWT al endpoint /auth"              │
+└──────────────────────────┬───────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────┐
+│              AGENTE ORQUESTADOR  (fuerte, caro)               │
+│        anthropic/claude-opus-5 · ~10 llamadas totales         │
+│                                                              │
+│  1. Lee el repo, entiende el stack                          │
+│  2. Decide: "crear middleware → ruta /auth → tests"          │
+│  3. Delega cada subtarea al ejecutor                         │
+└──────────────────────────┬───────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────┐
+│               MODELO EJECUTOR  (rápido, barato)               │
+│       opencode-go/deepseek-v4-flash · ~200 llamadas           │
+│                                                              │
+│  · escribe auth.middleware.js                                │
+│  · escribe la ruta /auth/login                               │
+│  · corre los tests, corrige errores                          │
+└──────────────────────────────────────────────────────────────┘</code></pre>
+        <p class="diagram-caption">Plan con el fuerte, ejecuta con el rápido</p>
+      </div>
+
+      <div class="callout success">
+        <p><strong><i class="fas fa-rocket" aria-hidden="true"></i> La regla de oro:</strong> "plan con el fuerte, ejecuta con el rápido". El modelo caro toma decisiones en llamadas contadas; el barato hace las miles de ediciones mecánicas. Tu costo baja drásticamente y la velocidad de respuesta sube.</p>
+      </div>
+
+      <h3><i class="fas fa-table" aria-hidden="true"></i> Comparativa de modelos</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Modelo</th>
+            <th>Rol</th>
+            <th>Costo</th>
+            <th>Uso típico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Claude Opus 5</strong></td>
+            <td>Orquestador</td>
+            <td>Alto</td>
+            <td>Planear, razonar, decidir, revisar</td>
+          </tr>
+          <tr>
+            <td><strong>DeepSeek V4 Flash</strong></td>
+            <td>Ejecutor</td>
+            <td>Barato (Go lo incluye)</td>
+            <td>Editar código, correr comandos, iterar</td>
+          </tr>
+          <tr>
+            <td><strong>Kimi K3</strong></td>
+            <td>Ejecutor alternativo</td>
+            <td>Barato (Go)</td>
+            <td>Contextos largos, refactor en masa</td>
+          </tr>
+          <tr>
+            <td><strong>Qwen3.7 Plus</strong></td>
+            <td>Ejecutor alternativo</td>
+            <td>Barato (Go)</td>
+            <td>Generación de código boilerplate</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout warning">
+        <p><strong><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> No caigas en la trampa:</strong> usar el modelo más caro para todo es como usar una grúa para mover una silla. El 90% de las llamadas de un agente son ejecución mecánica. Ahí el flash te ahorra dinero y latencia.</p>
+      </div>
+
+      <!-- ==================== SECCIÓN 4 ==================== -->
+      <h2 id="comandos"><span class="section-number" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;font-weight:bold;font-size:0.9em;margin-right:12px;">4</span> Comandos para cambiar de modelo</h2>
+
+      <p>Todo dentro de la TUI, con la barra <code>/</code>:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Comando</th>
+            <th>Qué hace</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/models</code></td>
+            <td>Abre el selector interactivo de modelos</td>
+          </tr>
+          <tr>
+            <td><code>/model</code></td>
+            <td>Muestra el modelo actual del agente activo</td>
+          </tr>
+          <tr>
+            <td><code>/agents</code></td>
+            <td>Lista los agentes disponibles (build, plan, debug, custom)</td>
+          </tr>
+          <tr>
+            <td><code>/init</code></td>
+            <td>Genera/actualiza el <code>AGENTS.md</code> del proyecto</td>
+          </tr>
+          <tr>
+            <td><code>/help</code></td>
+            <td>Todos los comandos disponibles</td>
+          </tr>
+          <tr>
+            <td><code>/connect</code></td>
+            <td>Conecta y gestiona proveedores/API keys</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3><i class="fas fa-sync-alt" aria-hidden="true"></i> Cambiar el modelo del agente activo</h3>
+
+      <p>Cuando estás en un agente (p. ej. <code>build</code>), <code>/models</code> cambia el modelo de <em>ese</em> agente. Es decir: puedes tener cada agente con su modelo propio. Setup que yo uso:</p>
+
+      <div class="code-label"><i class="fas fa-code" aria-hidden="true"></i> MODELOS POR AGENTE</div>
+      <pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode-go/deepseek-v4-flash",
+  "agents": {
+    "orchestrator": { "model": "anthropic/claude-opus-4" },
+    "executor": { "model": "opencode-go/deepseek-v4-flash" }
+  }
+}</code></pre>
+
+      <h3><i class="fas fa-at" aria-hidden="true"></i> Forzar modelo en el prompt</h3>
+
+      <p>Escribe <code>@model</code> en tu mensaje para forzar el modelo de ese turno, sin tocar la configuración:</p>
+
+      <div class="code-label"><i class="fas fa-terminal" aria-hidden="true"></i> PROMPT</div>
+      <pre><code>@model anthropic/claude-opus-5
+Analiza esta arquitectura y dime qué refactor harías. No edites nada aún.</code></pre>
+
+      <p>Perfecto para usar el orquestador solo cuando lo necesitas: planear con Opus, ejecutar con DeepSeek V4 Flash.</p>
+
+      <!-- ==================== SECCIÓN 5 ==================== -->
+      <h2 id="go"><span class="section-number" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;font-weight:bold;font-size:0.9em;margin-right:12px;">5</span> opencode Go: agentes gratis (o casi)</h2>
+
+      <p><strong>opencode Go</strong> es el plan de pago (barato) de opencode: modelos de calidad probados para coding agéntico, con límites generosos y acceso confiable. Y al registrarte con mi link te regalan <strong>$5 USD de crédito</strong>:</p>
+
+      <div class="cta">
+        <h3><i class="fas fa-gift" aria-hidden="true"></i> $5 USD de crédito al registrarte</h3>
+        <p>Crea tu cuenta con mi link y te regalan <strong>$5 USD de crédito</strong> para probar los modelos de Go.</p>
+        <a class="cta-button" href="https://opencode.ai/go?ref=FC5A91NW61" target="_blank" rel="noopener">
+          <i class="fas fa-rocket" aria-hidden="true"></i> Crear cuenta con $5 de crédito
+        </a>
+        <p class="cta-note">Código de referido: <code>FC5A91NW61</code></p>
+      </div>
+
+      <h3><i class="fas fa-microchip" aria-hidden="true"></i> Modelos incluidos en Go</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Modelo (provider opencode-go)</th>
+            <th>Fortaleza</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>deepseek-v4-flash</code></td>
+            <td>Ejecutor por defecto: rápido, barato, límites 2x</td>
+          </tr>
+          <tr>
+            <td><code>kimi-k3</code></td>
+            <td>Contexto largo, refactor en masa</td>
+          </tr>
+          <tr>
+            <td><code>qwen3.7-plus</code></td>
+            <td>Generación de código sólida</td>
+          </tr>
+          <tr>
+            <td><code>glm-5</code></td>
+            <td>Alternativa de propósito general</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3><i class="fas fa-key" aria-hidden="true"></i> Cómo configurarlo</h3>
+
+      <ol>
+        <li>Regístrate en <a href="https://opencode.ai/go?ref=FC5A91NW61" target="_blank" rel="noopener">opencode.ai/go</a> (te dan los $5 con el código <code>FC5A91NW61</code>).</li>
+        <li>Copia tu API key desde <a href="https://opencode.ai/auth" target="_blank" rel="noopener">opencode.ai/auth</a>.</li>
+        <li>Pégalo en opencode con <code>/connect</code> → selecciona <strong>opencode</strong>.</li>
+      </ol>
+
+      <p>Si configuras a mano:</p>
+
+      <div class="code-label"><i class="fas fa-code" aria-hidden="true"></i> OPENCODE.JSON CON GO</div>
+      <pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode-go/deepseek-v4-flash",
+  "provider": {
+    "opencode": { "apiKey": "oc-..." }
+  }
+}</code></pre>
+
+      <div class="callout info">
+        <p><strong><i class="fas fa-info-circle" aria-hidden="true"></i> Precio:</strong> $5 el primer mes, después $10/mes, cancela cuando quieras. Y con el crédito de referido puedes empezar a probar sin costo real. El provider se llama <code>opencode-go</code> en la configuración de modelos.</p>
+      </div>
+
+      <!-- ==================== SECCIÓN 6 ==================== -->
+      <h2 id="claude-code"><span class="section-number" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;font-weight:bold;font-size:0.9em;margin-right:12px;">6</span> ¿Y entonces por qué no uso Claude Code?</h2>
+
+      <p>Buena pregunta. Claude Code es un gran producto, y opencode se inspira en él. La diferencia es dónde te deja parado:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Claude Code</th>
+            <th>opencode</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Open-source</strong></td>
+            <td>No</td>
+            <td>Sí (GitHub, ~195K estrellas)</td>
+          </tr>
+          <tr>
+            <td><strong>Proveedores</strong></td>
+            <td>Anthropic (solo)</td>
+            <td>Multi-proveedor: Anthropic, OpenAI, DeepSeek, Go…</td>
+          </tr>
+          <tr>
+            <td><strong>Costo de entrada</strong></td>
+            <td>$20/mes + API</td>
+            <td>Gratis, o $5 primer mes con Go y crédito de referido</td>
+          </tr>
+          <tr>
+            <td><strong>Orquestación</strong></td>
+            <td>Fija a sus modelos</td>
+            <td>Total: orquestador + ejecutor por agente</td>
+          </tr>
+          <tr>
+            <td><strong>Dónde corre</strong></td>
+            <td>Su ecosistema</td>
+            <td>Cualquier terminal, TUI + IDE + web</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <p><strong><i class="fas fa-check-circle" aria-hidden="true"></i> La respuesta corta:</strong> opencode te da el mismo modelo de agente (planear, editar, iterar) sin encerrarte en un proveedor. Multi-proveedor, gratis con Go, orquestación flexible y corre en cualquier terminal. Si ya pagas Claude Code, pruébalo una semana y compara la factura.</p>
+      </div>
+
+      <!-- ==================== SECCIÓN 7 ==================== -->
+      <h2 id="diarios"><span class="section-number" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;font-weight:bold;font-size:0.9em;margin-right:12px;">7</span> Comandos diarios útiles</h2>
+
+      <p>El kit diario que de verdad usas cuando ya estás trabajando:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Comando</th>
+            <th>Cuándo usarlo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/init</code></td>
+            <td>Primera vez en un repo: genera el AGENTS.md</td>
+          </tr>
+          <tr>
+            <td><code>/tabs</code></td>
+            <td>Navegar entre conversaciones abiertas</td>
+          </tr>
+          <tr>
+            <td><code>/context</code></td>
+            <td>Ver cuánto contexto estás consumiendo (¡ojo con el límite!)</td>
+          </tr>
+          <tr>
+            <td><code>/compact</code></td>
+            <td>Compactar/resumir la conversación cuando va larga</td>
+          </tr>
+          <tr>
+            <td><code>/help</code></td>
+            <td>Descubrir comandos nuevos (revisa de vez en cuando)</td>
+          </tr>
+          <tr>
+            <td><code>/undo</code> · <code>/redo</code></td>
+            <td>Deshacer/rehacer cambios hechos por el agente</td>
+          </tr>
+          <tr>
+            <td><code>/share</code></td>
+            <td>Compartir la conversación con un link (útil en equipos)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3><i class="fas fa-tasks" aria-hidden="true"></i> Plan mode: el hábito que te ahorra rehacer todo</h3>
+
+      <p>Presiona <strong>Tab</strong> para alternar entre <strong>Build mode</strong> (edita archivos) y <strong>Plan mode</strong> (solo analiza y propone). Regla que me ahorra horas:</p>
+
+      <ul>
+        <li>Features grandes → primero <strong>Plan mode</strong>, revisa el plan, y recién ahí cambia a Build.</li>
+        <li>Features chicas → directo a Build.</li>
+      </ul>
+
+      <div class="code-label"><i class="fas fa-terminal" aria-hidden="true"></i> FLUJO RECOMENDADO</div>
+      <pre><code>opencode                  # en la raíz del proyecto
+/init                     # primera vez: genera AGENTS.md
+@model opencode-go/deepseek-v4-flash   # ejecutor rápido por defecto
+[TAB] → plan mode        # "agrega auth JWT a /auth: hazme un plan"
+[TAB] → build mode       # "ok, ejecútalo"
+/compact                  # si la conversación se alarga, compáctala</code></pre>
+
+      <h3><i class="fas fa-quote-right" aria-hidden="true"></i> Buenas prácticas de prompt</h3>
+
+      <ul>
+        <li><strong>Contexto por defecto:</strong> el <code>@</code> para referenciar archivos: <code>explica @src/api/index.ts</code>.</li>
+        <li><strong>Habla como a un junior:</strong> da contexto, ejemplos y criterios de éxito.</li>
+        <li><strong>Específico &gt; general:</strong> "refactoriza el handler en @routes/auth.js para usar async/await" funciona mejor que "arregla el código".</li>
+        <li><strong>Itera:</strong> el agente hace, tú revisas el diff, corriges, repites.</li>
+      </ul>
+
+      <!-- ==================== CTA FINAL ==================== -->
+      <div class="cta">
+        <h3><i class="fas fa-rocket" aria-hidden="true"></i> Listo para empezar a orquestar modelos</h3>
+        <p>Instala opencode, crea tu cuenta de Go con mi link y te regalan <strong>$5 USD de crédito</strong> para usar DeepSeek V4 Flash y compañía. Plan con el fuerte, ejecuta con el rápido.</p>
+        <a class="cta-button" href="https://opencode.ai/go?ref=FC5A91NW61" target="_blank" rel="noopener">
+          <i class="fas fa-gift" aria-hidden="true"></i> Crear cuenta — $5 de crédito gratis
+        </a>
+        <p class="cta-note">Link con código de referido <code>FC5A91NW61</code> incluido · <code>curl -fsSL https://opencode.ai/install | bash</code></p>
+      </div>
+
+      <!-- ==================== TAKEAWAYS ==================== -->
+      <div class="takeaways">
+        <h3><i class="fas fa-lightbulb" aria-hidden="true"></i> Ideas Clave</h3>
+        <ul>
+          <li><strong>opencode es el Claude Code open-source:</strong> multi-proveedor, corre en tu terminal, y no te ata a un vendor.</li>
+          <li><strong>Instalación en 30 segundos:</strong> <code>curl -fsSL https://opencode.ai/install | bash</code> y conectas con <code>/connect</code>.</li>
+          <li><strong>Orquesta modelos:</strong> planea con uno fuerte (Claude Opus) y ejecuta con uno rápido y barato (DeepSeek V4 Flash). "Plan con el fuerte, ejecuta con el rápido."</li>
+          <li><strong>Modelo por agente:</strong> <code>/models</code>, <code>/agents</code>, <code>@model</code> en el prompt y <code>opencode.json</code> te dan control total.</li>
+          <li><strong>opencode Go:</strong> $5 de crédito al registrarte con el código <code>FC5A91NW61</code> — modelos como deepseek-v4-flash, kimi-k3 y qwen3.7-plus.</li>
+          <li><strong>Plan mode antes de Build:</strong> Tab para alternar, <code>/compact</code> para conversaciones largas, <code>/context</code> para vigilar el contexto.</li>
+        </ul>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="post-footer">
+        <p>Escrito por <strong>Oscar Code</strong> — 7 de agosto de 2026</p>
+        <p style="margin-top: 10px; color: var(--text-muted);">
+          <a href="index.html">Volver al inicio</a> &nbsp;|&nbsp;
+          <a href="https://github.com/anomalyco/opencode" target="_blank" rel="noopener">opencode en GitHub</a> &nbsp;|&nbsp;
+          <a href="https://opencode.ai/docs" target="_blank" rel="noopener">Documentación oficial</a> &nbsp;|&nbsp;
+          <a href="https://opencode.ai/go?ref=FC5A91NW61" target="_blank" rel="noopener">opencode Go (con $5 de crédito)</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
