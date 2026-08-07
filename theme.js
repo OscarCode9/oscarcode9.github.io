@@ -2,13 +2,15 @@
    Tema light/dark compartido — oscarcode9.github.io
    - Aplica el tema antes del primer paint (evita flash)
    - Inyecta el boton toggle en nav y sidenav si no existe
-   - Persiste en localStorage, respeta prefers-color-scheme
+   - Persiste en localStorage; light por defecto, dark solo si
+     el dispositivo tiene preferido modo oscuro
    ============================================================ */
 (function () {
   function getTheme() {
     var saved = localStorage.getItem('site-theme');
     if (saved === 'light' || saved === 'dark') return saved;
-    return 'dark';
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    return 'light';
   }
 
   var current = getTheme();

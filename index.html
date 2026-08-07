@@ -31,7 +31,7 @@
       --text-secondary: #94a3b8;
       --text-muted: #64748b;
       --border: rgba(255, 255, 255, 0.08);
-      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #0284c7 100%);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,9 +58,9 @@
     .brand-logo {
       font-family: 'Fira Code', monospace !important;
       font-weight: 600;
-      background: var(--gradient-1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--primary);
+      background: none;
+      -webkit-text-fill-color: currentColor;
       white-space: nowrap;
       font-size: 1.3rem;
     }
@@ -94,14 +94,16 @@
     }
 
     .hero-content {
-      text-align: left;
-      max-width: 680px;
+      text-align: center;
+      max-width: 720px;
       flex: 1;
+      margin: 0 auto;
     }
 
     .hero-topline {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 14px;
       flex-wrap: wrap;
       margin-bottom: 14px;
@@ -198,10 +200,12 @@
       left: -15px;
       right: -15px;
       bottom: -15px;
-      background: var(--gradient-1);
       border-radius: 50%;
-      opacity: 0.2;
-      filter: blur(25px);
+      background: radial-gradient(circle at 50% 50%,
+        rgba(37, 99, 235, 0.35) 0%,
+        rgba(59, 130, 246, 0.2) 40%,
+        rgba(96, 165, 250, 0.08) 62%,
+        transparent 80%);
       z-index: -1;
     }
 
@@ -252,9 +256,9 @@
     }
 
     .hero-title .highlight {
-      background: var(--gradient-1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--primary);
+      background: none;
+      -webkit-text-fill-color: currentColor;
     }
 
     .typing-text {
@@ -262,7 +266,7 @@
       color: var(--primary);
       display: inline-block;
       min-width: 280px;
-      text-align: left;
+      text-align: center;
     }
 
     .typing-text::after {
@@ -286,13 +290,13 @@
       font-size: 1.08rem;
       color: var(--text-secondary);
       max-width: 620px;
-      margin: 0 0 30px;
+      margin: 0 auto 30px;
       line-height: 1.8;
     }
 
     .hero-stats {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
       gap: 18px;
       margin-bottom: 30px;
       flex-wrap: wrap;
@@ -325,7 +329,7 @@
     .stat-label { font-size: 0.8rem; color: var(--text-muted); }
 
     .btn-primary {
-      background: var(--gradient-1);
+      background: var(--primary);
       border: none;
       border-radius: 999px;
       padding: 14px 30px;
@@ -368,7 +372,7 @@
 
     .hero-buttons {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
       gap: 15px;
       flex-wrap: wrap;
       margin-bottom: 26px;
@@ -380,6 +384,7 @@
       flex-wrap: wrap;
       gap: 10px;
       align-items: center;
+      justify-content: center;
     }
 
     .tech-chip {
@@ -400,7 +405,7 @@
     .tech-chip i { font-size: 0.95rem; }
 
     .tech-chip.ai-chip {
-      background: var(--gradient-1);
+      background: var(--primary);
       border-color: transparent;
       color: #fff;
       font-weight: 700;
@@ -419,7 +424,7 @@
       margin: 0 auto;
     }
 
-    .section-header { text-align: left; margin-bottom: 60px; }
+    .section-header { text-align: center; margin-bottom: 60px; }
 
     .section-title {
       font-size: 2.2rem;
@@ -433,10 +438,11 @@
       content: '';
       position: absolute;
       bottom: -10px;
-      left: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: 50px;
       height: 3px;
-      background: var(--gradient-1);
+      background: var(--primary);
       border-radius: 2px;
     }
 
@@ -533,10 +539,12 @@
 
     .about-container {
       max-width: 900px;
+      margin: 0 auto;
     }
 
     .about-content {
       max-width: 900px;
+      margin: 0 auto;
     }
 
     .about-photo {
@@ -556,9 +564,9 @@
     }
 
     .about-intro .highlight {
-      background: var(--gradient-1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--primary);
+      background: none;
+      -webkit-text-fill-color: currentColor;
     }
 
     .about-tagline {
@@ -703,6 +711,7 @@
     .timeline {
       position: relative;
       max-width: 900px;
+      margin: 0 auto;
     }
 
     .timeline::before {
@@ -821,6 +830,7 @@
 
     .blog-list {
       max-width: 900px;
+      margin: 0 auto;
     }
 
     .blog-item {
@@ -1010,6 +1020,7 @@
     .contact-container {
       max-width: 600px;
       margin: 0 auto;
+      width: 100%;
     }
 
     .contact-form {
@@ -1028,8 +1039,11 @@
       border-radius: 8px !important;
       padding: 14px 16px !important;
       color: var(--text-primary) !important;
-      width: 100%;
-      font-size: 0.95rem;
+      width: 100% !important;
+      height: auto !important;
+      box-sizing: border-box !important;
+      margin: 0 0 20px 0 !important;
+      font-size: 0.95rem !important;
     }
 
     .input-field input:focus,
@@ -1045,7 +1059,7 @@
     }
 
     .btn-submit {
-      background: var(--gradient-1);
+      background: var(--primary);
       border: none;
       border-radius: 8px;
       padding: 14px;
@@ -1098,8 +1112,8 @@
     .sidenav li a { color: var(--text-primary) !important; }
 
     @media (max-width: 992px) {
-      .hero .container { flex-direction: column; text-align: left; }
-      .hero-content { text-align: left; max-width: 100%; order: 2; margin-top: -20px; }
+      .hero .container { flex-direction: column; text-align: center; }
+      .hero-content { text-align: center; max-width: 100%; order: 2; margin-top: -20px; }
       .hero-image { order: 1; margin-bottom: 0; }
       .hero-image-wrapper { width: 240px; height: 240px; }
       .hero-mascot { width: 100px; margin-bottom: 10px; }
@@ -1114,7 +1128,7 @@
       .hero-image { margin-bottom: 0; }
       .hero-title { font-size: 1.8rem; margin-top: 0; }
       .hero-stats { flex-direction: column; gap: 15px; }
-      .stat-item { text-align: left; }
+      .stat-item { text-align: center; }
       .section { padding: 60px 0; }
       .section-title { font-size: 1.8rem; }
       .timeline::before { left: 5px; }
@@ -1125,14 +1139,15 @@
       .blog-item-arrow { display: none; }
       .hero-image-wrapper { width: 200px; height: 200px; }
       .hero-mascot { width: 90px; margin-bottom: 8px; }
+      .contact-form { padding: 28px 20px; }
     }
   </style>
   <script src="public/i18n.js"></script>
 
   <link rel="stylesheet" href="visits-badge.css">
   <script src="visits-badge.js" defer></script>
-  <link rel="stylesheet" href="theme.css?v=13">
-  <script src="theme.js?v=12"></script>
+  <link rel="stylesheet" href="theme.css?v=14">
+  <script src="theme.js?v=13"></script>
 </head>
 
 <body>

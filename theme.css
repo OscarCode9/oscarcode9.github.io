@@ -1,6 +1,7 @@
 /* ============================================================
    Tema light compartido — oscarcode9.github.io (todas las paginas)
-   Dark es el tema por defecto; [data-theme="light"] lo sobreescribe.
+   Light es el tema por defecto (dark si el dispositivo prefiere
+   modo oscuro); [data-theme="light"] sobreescribe el dark.
    ============================================================ */
 
 [data-theme="light"] {
@@ -88,9 +89,10 @@
 [data-theme="light"] .post-title,
 [data-theme="light"] h1.gradient-text,
 [data-theme="light"] .section-title.gradient-text {
-  background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #6b21a8 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  color: var(--text-primary) !important;
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
 }
 
 [data-theme="light"] p,
@@ -457,10 +459,18 @@
 }
 
 [data-theme="light"] .hero-image-glow {
-  background: radial-gradient(circle at center, rgba(2, 132, 199, 0.18) 0%, rgba(124, 58, 237, 0.12) 55%, transparent 70%) !important;
-  opacity: 0.7 !important;
+  background: radial-gradient(circle at 50% 45%,
+    #1e3a8a 0%,
+    #1d4ed8 22%,
+    #2563eb 40%,
+    #3b82f6 55%,
+    rgba(147, 197, 253, 0.5) 68%,
+    rgba(219, 234, 254, 0.18) 80%,
+    rgba(246, 248, 251, 0) 92%) !important;
+  opacity: 1 !important;
   display: block !important;
   visibility: visible !important;
+  filter: none !important;
 }
 
 [data-theme="light"] .hero-image-wrapper::after {
@@ -590,7 +600,7 @@
 }
 
 [data-theme="light"] .tech-chip.ai-chip {
-  background: var(--gradient-1) !important;
+  background: var(--primary) !important;
   border-color: transparent !important;
   color: #ffffff !important;
   box-shadow: 0 4px 18px rgba(2, 132, 199, 0.25) !important;
