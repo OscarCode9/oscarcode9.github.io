@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cómo funciona OscarCode Weekly News: la arquitectura técnica del agente editorial | Oscar Code</title>
+  <meta name="description" content="Toda la parte técnica detrás del newsletter semanal de IA: pipeline de 9 fases, LLM multi-proveedor con fallback, SearXNG, verificación de fechas, dedupe por evento, contenido bilingüe ES/EN, sección China, seguridad y deploy en EC2.">
+  <meta name="keywords" content="newsletter IA, agente editorial, pipeline, LLM, SearXNG, AWS SES, GitHub Pages, Bun, TypeScript, Prisma, deep research, dedupe, bilingüe">
+  <meta property="og:title" content="Cómo funciona OscarCode Weekly News: la arquitectura técnica del agente editorial">
+  <meta property="og:description" content="Pipeline de 9 fases, LLM con fallback multi-proveedor, verificación de fechas, dedupe por evento, bilingüe ES/EN y seguridad — toda la ingeniería detrás del newsletter.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://oscarcode9.github.io/news-agent-technical.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="visits-badge.css">
+  <script src="visits-badge.js" defer></script>
+  <style>
+    :root {
+      --primary: #bd93f9;
+      --primary-glow: rgba(189, 147, 249, 0.18);
+      --accent: #ff79c6;
+      --success: #50fa7b;
+      --cyan: #8be9fd;
+      --yellow: #f1fa8c;
+      --bg-dark: #282a36;
+      --bg-card: #2f3041;
+      --bg-code: #21222c;
+      --text-primary: #f8f8f2;
+      --text-secondary: #c5c9dd;
+      --text-muted: #8a8fa8;
+      --border: rgba(248, 248, 242, 0.1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg-dark); color: var(--text-primary); font-family: 'Inter', sans-serif; line-height: 1.8; }
+    nav {
+      background: rgba(40, 42, 54, 0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); position: fixed; width: 100%; z-index: 9999;
+      height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    }
+    .brand-logo { font-family: 'Fira Code', monospace; font-weight: 600; color: var(--primary); text-decoration: none; font-size: 1.3rem; }
+    .brand-logo span { color: var(--accent); }
+    nav ul { list-style: none; display: flex; gap: 22px; }
+    nav ul li a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
+    nav ul li a:hover { color: var(--primary); }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+    .post-header { text-align: center; padding: 150px 24px 50px; }
+    .post-header .tag { display: inline-block; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); border: 1px solid rgba(189,147,249,0.3); padding: 5px 12px; border-radius: 999px; margin-bottom: 18px; }
+    .post-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 14px; line-height: 1.25; }
+    .post-header .meta { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+    .post-body { padding: 30px 24px 60px; }
+    .post-body h2 { font-size: 1.45rem; font-weight: 700; margin: 40px 0 16px; color: var(--primary); }
+    .post-body h3 { font-size: 1.1rem; font-weight: 700; margin: 28px 0 10px; color: var(--cyan); }
+    .post-body p { color: var(--text-secondary); margin-bottom: 16px; }
+    .post-body ul, .post-body ol { color: var(--text-secondary); margin: 0 0 16px 22px; }
+    .post-body li { margin-bottom: 8px; }
+    .post-body strong { color: var(--text-primary); }
+    .post-body code { font-family: 'Fira Code', monospace; font-size: 0.85em; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--cyan); }
+    .post-body pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; overflow-x: auto; margin: 0 0 20px; }
+    .post-body pre code { background: none; padding: 0; color: var(--text-primary); font-size: 0.8rem; line-height: 1.6; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin: 24px 0; }
+    .card h3 { margin-top: 0; }
+    .card p { margin-bottom: 8px; }
+    .phase { border-left: 3px solid var(--primary); padding: 4px 0 4px 16px; margin: 14px 0; }
+    .phase .name { color: var(--text-primary); font-weight: 600; }
+    .phase .desc { color: var(--text-muted); font-size: 0.9rem; }
+    .badge { display: inline-block; font-family: 'Fira Code', monospace; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+    .badge.purple { background: rgba(189,147,249,0.15); color: var(--primary); }
+    .badge.green { background: rgba(80,250,123,0.15); color: var(--success); }
+    .badge.pink { background: rgba(255,121,198,0.15); color: var(--accent); }
+    .badge.cyan { background: rgba(139,233,253,0.15); color: var(--cyan); }
+    .badge.yellow { background: rgba(241,250,140,0.15); color: var(--yellow); }
+    .cta { text-align: center; padding: 40px 24px 60px; }
+    .cta .btn { display: inline-block; background: var(--primary); color: #282a36; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 999px; text-decoration: none; transition: transform 0.25s, box-shadow 0.3s; }
+    .cta .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--primary-glow); }
+    .cta p { color: var(--text-muted); margin-top: 14px; font-size: 0.9rem; }
+    footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+    a { color: var(--primary); }
+    @media (max-width: 700px) {
+      .post-header h1 { font-size: 1.6rem; }
+      nav ul { gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="brand-logo" href="https://oscarcode9.github.io">{ OscarCode }</a>
+    <ul>
+      <li><a href="https://oscarcode9.github.io/news">News</a></li>
+      <li><a href="https://oscarcode9.github.io/skills.html">Skills</a></li>
+      <li><a href="https://oscarcode9.github.io">Inicio</a></li>
+    </ul>
+  </nav>
+
+  <header class="post-header">
+    <span class="tag"><i class="fas fa-robot"></i> Ingeniería · IA · Autonomía</span>
+    <h1>Cómo funciona OscarCode Weekly News: la arquitectura técnica del agente editorial</h1>
+    <p class="meta">08 Ago 2026 · 12 min de lectura
+      <span class="ov-views-badge" data-ov-visits data-ov-readonly data-ov-path="/news-agent-technical.html" style="font-size:11px; padding:.2rem .5rem; vertical-align:middle; margin-left:6px;"><span class="ov-dot"></span><span class="ov-label">Visitas</span> <span class="ov-count">—</span></span>
+    </p>
+  </header>
+
+  <article class="post-body">
+    <div class="container">
+      <p>Detrás de <strong><a href="https://oscarcode9.github.io/news/">OscarCode Weekly News</a></strong> — el newsletter que cada viernes te cuenta lo más relevante de la inteligencia artificial en español y sin jerga — no hay una persona buscando noticias: hay un <strong>agente editorial autónomo</strong> que investiga, verifica, redacta y publica solo. Este post explica toda la ingeniería que lo hace posible.</p>
+
+      <h2>1. La idea</h2>
+      <p>El objetivo no es "publicar contenido automáticamente" sino: <strong>detectar lo verdaderamente importante de la semana → investigarlo bien → convertirlo en información útil → publicarlo solo</strong>. La automatización es el mecanismo; el producto es una edición semanal de alto valor editorial, generada sin intervención humana (RF-045: autonomía total, verificable porque no existe ningún paso de aprobación en el flujo).</p>
+
+      <h2>2. El pipeline: 9 fases en orden</h2>
+      <p>El corazón es un orquestador (<code>weekly-news.orchestrator.ts</code>) que ejecuta una máquina de estados con transiciones validadas y registradas en base de datos (<code>news_run_events</code>):</p>
+
+      <div class="card">
+        <div class="phase"><div class="name">F0 · Orquestación</div><div class="desc">Crea el run (STARTED), ejecuta cada fase, termina en COMPLETED o FAILED. Persistencia intermedia en cada fase (aunque el run falle, lo investigado queda).</div></div>
+        <div class="phase"><div class="name">F1 · Investigación</div><div class="desc">Busca por categorías en <strong>SearXNG</strong> (el buscador self-hosted del servidor) + señales sociales y <strong>X Research</strong> (lo que está generando conversación).</div></div>
+        <div class="phase"><div class="name">F2 · Filtrado y ranking</div><div class="desc">Dedupe por URL/título, filtro de ruido (clickbait, rumores, marketing), ranking con 6 señales deterministas (recencia, autoridad del dominio, relevancia, sustancia, especificidad, señal social) y umbral mínimo.</div></div>
+        <div class="phase"><div class="name">F3 · Deep research + validación</div><div class="desc">El <strong>modelo fuerte (LLM)</strong> investiga a fondo cada finalista: qué pasó, por qué importa, contexto, actores, producto y fuentes primarias/secundarias. Validación cruzada (≥2 fuentes independientes → VERIFIED) y referencias obligatorias.</div></div>
+        <div class="phase"><div class="name">F4 · Editorial</div><div class="desc">Carga el catálogo de skills desde S3, elige la skill de la semana (sin repetir en 12 semanas), genera el tip práctico y construye la edición validada por schema Zod.</div></div>
+        <div class="phase"><div class="name">F5 · Historial</div><div class="desc">Cada edición/historia/skill publicada se registra en PostgreSQL para anti-repetición: una URL ya cubierta no vuelve a entrar.</div></div>
+        <div class="phase"><div class="name">F6 · Publicación</div><div class="desc">Solo publica si la validación pasó. Genera HTML estático (tema Dracula, bilingüe ES/EN con toggle), hace commit + push a GitHub Pages y guarda la URL permanente <code>/news/2026-W32/</code>.</div></div>
+        <div class="phase"><div class="name">F7 · Email</div><div class="desc">Envía el newsletter por AWS SES a los suscriptores ACTIVE, con doble protección: un fallo de entrega no aborta el envío y el re-run de la misma semana no reenvía.</div></div>
+        <div class="phase"><div class="name">F8 · Confiabilidad</div><div class="desc">Reintentos con backoff (2s/5s/15s), timeouts configurables, fallback de proveedores LLM, métricas por run y presupuesto de costo (embudo 200→30→5).</div></div>
+      </div>
+
+      <h2>3. El LLM: multi-proveedor con fallback</h2>
+      <p>El research profundo usa un cliente LLM propio (<code>llm.client.ts</code>) que intenta los proveedores en orden de prioridad (<code>LLM_PROVIDERS</code>) y salta al siguiente si uno falla o se pasa del timeout. Cada llamada pide al modelo un <strong>reporte JSON validado por schema Zod</strong>: qué pasó, fecha real del evento, actores, producto, impacto para la gente común, contexto, evidencia y fuentes — en <strong>dos idiomas</strong> (ES + EN) para alimentar el toggle del sitio. Si el JSON sale inválido o truncado, se <strong>reintenta</strong> antes de caer al fallback determinista (así la edición siempre queda en español).</p>
+      <p>Reglas editoriales forzadas en el prompt: nombrar siempre los modelos con su versión (GPT-5.6 Luna, Claude Opus 4.8, Gemini 4, DeepSeek…), nunca decir "un grupo de agentes" sin nombres, y redactar como una persona que le explica a un amigo, sin etiquetas tipo "Para la gente común:".</p>
+
+      <h2>4. Sin noticias viejas: verificación de fechas</h2>
+      <p>Tres capas se encargan de que nunca entre contenido de 2024:</p>
+      <ul>
+        <li><strong>Ventana del buscador</strong>: solo candidatos con fecha de publicación dentro de los últimos días configurados.</li>
+        <li><strong>Veredicto del LLM</strong> (<code>isRecent</code>): el modelo decide si la noticia es de las últimas 3 semanas, con margen de 6 meses sobre su fecha estimada.</li>
+        <li><strong>Agente verificador de fechas</strong> (<code>dates.verify</code>): lee la <strong>página real del artículo</strong>, extrae su fecha de publicación (JSON-LD de schema.org, meta <code>article:published_time</code> o <code>&lt;time datetime&gt;</code>) y esa fecha tiene la última palabra.</li>
+      </ul>
+
+      <h2>5. Sin duplicados: dedupe por evento</h2>
+      <p>Dos medios pueden cubrir la misma noticia con títulos distintos y URLs distintas. El agente detecta el evento con tres señales: <strong>solape de texto</strong> (tokens significativos), <strong>producto compartido</strong> extraído por el LLM, y <strong>entidades de modelo</strong> (gpt, luna, minimax, bytedance, kimi, qwen, glm…). Si dos historias son el mismo evento, se queda la de mayor impacto. Esto se aplica también <strong>dentro de la sección china</strong> y <strong>cruzado</strong> entre secciones.</p>
+
+      <h2>6. La sección "IA de China"</h2>
+      <p>Una búsqueda dedicada al ecosistema chino (DeepSeek, Qwen/Alibaba, Kimi/Moonshot, GLM/Zhipu, MiniMax, Baidu ERNIE, Tencent Hunyuan, SenseTime) con presupuesto de research separado y hasta 3 historias propias. Si una noticia china ya está en la sección general, no se repite: se queda la de mayor impacto. Cuando no hay chinas únicas esa semana, la sección se omite (calidad &gt; volumen).</p>
+
+      <h2>7. Bilingüe ES/EN con toggle</h2>
+      <p>Cada edición se publica en <strong>español (por defecto)</strong> y en <strong>inglés</strong>: el research LLM genera los textos en ambos idiomas; la edición EN se construye con los campos <code>*En</code> y un fallback determinista si faltan. El sitio <code>/news/</code> tiene un botón ES|EN en el nav que alterna entre <code>/news/2026-W32/</code> y <code>/news/2026-W32/en/</code>.</p>
+
+      <h2>8. Infraestructura y deploy</h2>
+      <div class="card">
+        <p><span class="badge purple">EC2 us-east-2</span> Contenedor <code>news-agent</code> (Bun/TypeScript) + PostgreSQL propio, con límites de CPU/memoria, usuario no-root y red aislada.</p>
+        <p><span class="badge cyan">SearXNG</span> Buscador web self-hosted del servidor, consultado por la red Docker interna (nunca expuesto).</p>
+        <p><span class="badge green">AWS SES</span> Envío de emails con dominio verificado (<code>no-reply@oventlabs.net</code>), configuration set y tags de campaña por edición.</p>
+        <p><span class="badge pink">GitHub Pages</span> Publicación estática en <code>oscarcode9.github.io/news</code> con URLs permanentes por semana.</p>
+        <p><span class="badge yellow">news.oventlabs.net</span> API pública (suscripción, confirmación, baja, contador y detección de agentes) detrás del ALB con TLS wildcard.</p>
+        <p><span class="badge purple">Cron</span> Viernes 08:00 (America/Mexico_City) dispara el pipeline completo; también corre manualmente con <code>--dry-run</code>.</p>
+      </div>
+
+      <h2>9. Seguridad del formulario</h2>
+      <ul>
+        <li><strong>Rate limiting por IP</strong> (5 suscripciones/hora) con respuesta 429 + <code>retry-after</code> — evita usar la bienvenida como cañón de spam.</li>
+        <li><strong>Anti header-injection</strong>: el email nunca admite saltos de línea ni caracteres de control; longitud máx RFC (254).</li>
+        <li><strong>Honeypot</strong> anti-bots: un campo oculto que, si viene lleno, rechaza la petición en silencio.</li>
+        <li><strong>Límite de payload</strong> (1 KB), CORS restringido y TLS en todo el trayecto (ALB → API).</li>
+        <li><strong>Secrets fuera del repo</strong>: .env solo en el servidor, .dockerignore para la imagen y redacción de tokens en errores de git.</li>
+      </ul>
+
+      <h2>10. Contador y detección de agentes</h2>
+      <p>El sitio registra cada visita en el sistema compartido de contadores (<code>agents.oventlabs.net/api/visits</code>, el mismo del portfolio) y además un beacon propio que guarda el <strong>user-agent</strong> de cada visitante. Así se detecta cuándo un <strong>agente de IA (GPTBot, ClaudeBot, Gemini, Perplexity…) o un crawler</strong> busca el sitio — útil para posicionamiento y para saber quién nos lee.</p>
+
+      <h2>11. Calidad verificable por código</h2>
+      <p>Toda la suite es de <strong>integración 100% local</strong> (390+ tests): mocks para SES, git, LLM y S3; PostgreSQL local real. Cada requerimiento funcional (RF-001…RF-045) tiene su prueba y el criterio de aceptación está documentado en <code>agent.spec.md</code>. El MVP se acepta con la suite completa en verde.</p>
+
+      <p><strong>¿Quieres verlo funcionando?</strong> Suscríbete: al poner tu correo recibes al instante la última edición de bienvenida, sin confirmación ni vueltas.</p>
+    </div>
+  </article>
+
+  <div class="cta">
+    <a class="btn" href="https://oscarcode9.github.io/news/?subscribe=1"><i class="fas fa-envelope"></i> Suscribirme al newsletter</a>
+    <p>Gratis · Sin spam · Baja en un clic · Cada viernes</p>
+  </div>
+
+  <footer>
+    <p>OscarCode — Full Stack Developer · <a href="https://oscarcode9.github.io/news">OscarCode Weekly News</a></p>
+  </footer>
+</body>
+</html>
