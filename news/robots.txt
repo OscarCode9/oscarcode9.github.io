@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /news/
+Sitemap: https://oscarcode9.github.io/news/sitemap.xml
