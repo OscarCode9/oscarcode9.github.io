@@ -4,76 +4,130 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly News 2026-W32 — OscarCode Weekly News</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --primary: #bd93f9;
+    --primary-glow: rgba(189, 147, 249, 0.18);
+    --accent: #ff79c6;
+    --success: #50fa7b;
+    --bg-dark: #282a36;
+    --bg-card: #2f3041;
+    --text-primary: #f8f8f2;
+    --text-secondary: #c5c9dd;
+    --text-muted: #8a8fa8;
+    --border: rgba(248, 248, 242, 0.1);
+    --gradient-1: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background-color: var(--bg-dark); color: var(--text-primary); font-family: 'Inter', sans-serif; line-height: 1.6; }
+  nav {
+    background: rgba(40, 42, 54, 0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); position: fixed; width: 100%; z-index: 9999;
+    height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  }
+  .brand-logo { font-family: 'Fira Code', monospace; font-weight: 600; color: var(--primary); text-decoration: none; font-size: 1.3rem; }
+  .brand-logo span { color: var(--accent); }
+  nav ul { list-style: none; display: flex; gap: 22px; }
+  nav ul li a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
+  nav ul li a:hover, nav ul li a.active { color: var(--primary); }
+  .hero { padding: 150px 24px 60px; text-align: center; }
+  .hero-badge { display: inline-block; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); border: 1px solid rgba(189, 147, 249, 0.3); padding: 6px 14px; border-radius: 999px; margin-bottom: 18px; }
+  .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 14px; background: var(--gradient-1); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .intro { color: var(--text-secondary); font-size: 1.05rem; max-width: 720px; margin: 0 auto; }
+  .hero .date { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.8rem; margin-top: 10px; }
+  .section { padding: 40px 24px; }
+  .section > .container { width: 90%; max-width: 900px; margin: 0 auto; }
+  .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; position: relative; display: inline-block; }
+  .section-title::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px; border-radius: 2px; background: var(--gradient-1); }
+  .story { padding: 24px 0; border-bottom: 1px solid var(--border); }
+  .story:first-child { border-top: 1px solid var(--border); }
+  .story-tag { display: inline-block; font-size: 0.7rem; padding: 3px 8px; background: var(--primary-glow); color: var(--primary); border-radius: 4px; margin-bottom: 8px; font-family: 'Fira Code', monospace; }
+  .story h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .story .summary { color: var(--text-secondary); margin-bottom: 12px; }
+  .story h3 { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 4px; }
+  .story p { color: var(--text-secondary); }
+  .story .sources { margin-top: 10px; font-size: 0.8rem; }
+  .story .sources a { color: var(--primary); text-decoration: none; }
+  .story .sources a:hover { text-decoration: underline; }
+  .empty { color: var(--text-muted); padding: 12px 0; }
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+  .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+  .card .name { color: var(--text-primary); font-weight: 600; }
+  .card .area { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+  .card p { color: var(--text-secondary); font-size: 0.95rem; }
+  .card.tip { border-left: 3px solid var(--accent); }
+  .card.tip .name { color: var(--accent); font-family: 'Fira Code', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; }
+  .social { color: var(--text-secondary); padding: 8px 0 24px; }
+  .social h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+  .social ul { list-style: none; }
+  .social li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .previous-list { list-style: none; }
+  .previous-list li { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .previous-list li:first-child { border-top: 1px solid var(--border); }
+  .previous-list a { color: var(--text-primary); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+  .previous-list a:hover { color: var(--primary); }
+  .previous-list .date { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.75rem; }
+  .empty-first { color: var(--text-muted); padding: 18px 0; }
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .btn-primary { display: inline-block; background: var(--primary); border: none; border-radius: 999px; padding: 13px 28px; font-weight: 600; color: #fff; text-decoration: none; transition: transform 0.25s, box-shadow 0.3s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(189, 147, 249, 0.3); color: #fff; }
+  .btn-secondary { display: inline-block; background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 13px 28px; font-weight: 600; color: var(--text-primary); text-decoration: none; transition: all 0.25s; }
+  .btn-secondary:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-glow); }
+  footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 60px; }
+</style>
 </head>
 <body>
-  <header>
-    <p><a href="../index.html">&larr; Volver al índice</a></p>
-    <p class="edition">Edición 2026-W32 · 2026-08-08</p>
-    <h1>Weekly News 2026-W32</h1>
-    <p class="intro">Lo más relevante de la semana para developers: 4 historias verificadas, la skill github-profile-dashboard y un tip para trabajar mejor.</p>
-  </header>
+  <nav>
+    <a class="brand-logo" href="https://oscarcode9.github.io">OscarCode<span>.</span></a>
+    <ul>
+      <li><a href="https://oscarcode9.github.io/news" class="">News</a></li>
+      <li><a href="https://oscarcode9.github.io/skills.html">Skills</a></li>
+      <li><a href="https://oscarcode9.github.io">Inicio</a></li>
+    </ul>
+  </nav>
   <main>
-    <section class="stories">
-      <h2>Historias de la semana</h2>
+  <header class="hero">
+    <div class="hero-badge">OscarCode Weekly News · 2026-W32</div>
+    <h1>Weekly News 2026-W32</h1>
+    <p class="intro">Lo más relevante de la semana para developers: 1 historias verificadas, la skill mui-table-alignment y un tip para trabajar mejor.</p>
+    <p class="date">2026-08-08</p>
+    <div class="cta-row">
+      <a class="btn-secondary" href="../index.html">&larr; Volver al índice</a>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Historias de la semana</h2>
 
     <article class="story">
-      <h2>Agent-as-a-Judge: Evaluate Agents with Agents</h2>
-      <p class="summary">Contemporary evaluation techniques are inadequate for agentic systems. These approaches either focus exclusively on final outcomes -- ignoring the step-by-step nature of agentic systems, or require excessive manual labour. To address this, we introduce the Agent-as-a-Judge framework, wherein agentic systems are used to evaluate agentic systems. This is an organic extension of the LLM-as-a-Judge framework, incorporating agentic features that enable intermediate feedback for the entire task-solving process. We apply the Agent-as-a-Judge to the task of code generation. To overcome issues with existing benchmarks and provide a proof-of-concept testbed for Agent-as-a-Judge, we present DevAI, a new benchmark of 55 realistic automated AI development tasks. It includes rich manual annotations, like a total of 365 hierarchical user requirements. We benchmark three of the popular agentic systems using Agent-as-a-Judge and find it dramatically outperforms LLM-as-a-Judge and is as reliable as our human evaluation baseline. Altogether, we believe that Agent-as-a-Judge marks a concrete step forward for modern agentic systems -- by providing rich and reliable reward signals necessary for dynamic</p>
+      <span class="story-tag">dx.doi.org</span>
+      <h2>Supplementary material for &quot;A Survey of Web-of-Agents Interoperability: From Multi-Agent Systems and Semantic Web Agents to LLM-Based Agent Protocols&quot;</h2>
+      <p class="summary">Supplementary material for the survey &quot;A Survey of Web-of-Agents Interoperability: From Multi-Agent Systems and Semantic Web Agents to LLM-Based Agent Protocols&quot; (Petrova, Bliznioukov, State; SEDAN Group, SnT, University of Luxembourg). Contents: the manuscript&#39;s 152-entry bibliography; a per-entry inclusion/exclusion log for all 206 screened candidates (152 included, 54 excluded); the OpenAlex bibliometric query design (ten queries), per-year raw and normalised publication counts (1995–2026), and a re-runnable Python script; the interoperability-faithful Generation III series data; and standalone TikZ source for all five figures. Enables independent verification of the bibliometric analysis (Figure 2) and the PRISMA-style selection funnel (Figure 3). Released under CC-BY-4.0.</p>
       <h3>¿Qué pasó?</h3>
-      <p>Contemporary evaluation techniques are inadequate for agentic systems. These approaches either focus exclusively on final outcomes -- ignoring the step-by-step nature of agentic systems, or require excessive manual labour. To address this, we introduce the Agent-as-a-Judge framework, wherein agentic systems are used to evaluate agentic systems. This is an organic extension of the LLM-as-a-Judge framework, incorporating agentic features that enable intermediate feedback for the entire task-solving process. We apply the Agent-as-a-Judge to the task of code generation. To overcome issues with existing benchmarks and provide a proof-of-concept testbed for Agent-as-a-Judge, we present DevAI, a new benchmark of 55 realistic automated AI development tasks. It includes rich manual annotations, like a total of 365 hierarchical user requirements. We benchmark three of the popular agentic systems using Agent-as-a-Judge and find it dramatically outperforms LLM-as-a-Judge and is as reliable as our human evaluation baseline. Altogether, we believe that Agent-as-a-Judge marks a concrete step forward for modern agentic systems -- by providing rich and reliable reward signals necessary for dynamic</p>
+      <p>Supplementary material for the survey &quot;A Survey of Web-of-Agents Interoperability: From Multi-Agent Systems and Semantic Web Agents to LLM-Based Agent Protocols&quot; (Petrova, Bliznioukov, State; SEDAN Group, SnT, University of Luxembourg). Contents: the manuscript&#39;s 152-entry bibliography; a per-entry inclusion/exclusion log for all 206 screened candidates (152 included, 54 excluded); the OpenAlex bibliometric query design (ten queries), per-year raw and normalised publication counts (1995–2026), and a re-runnable Python script; the interoperability-faithful Generation III series data; and standalone TikZ source for all five figures. Enables independent verification of the bibliometric analysis (Figure 2) and the PRISMA-style selection funnel (Figure 3). Released under CC-BY-4.0.</p>
       <h3>¿Por qué importa?</h3>
-      <p>Impacto en la audiencia: Contemporary evaluation techniques are inadequate for agentic systems. These approaches either focus exclusively on final outcomes -- ignoring the step-by-step nature of agentic systems, or require excessive manual labour. To address this, we introduce the Agent-as-a-Judge framework, wherein agentic systems are used to evaluate agentic systems. This is an organic extension of the LLM-as-a-Judge framework, incorporating agentic features that enable intermediate feedback for the entire task-solving process. We apply the Agent-as-a-Judge to the task of code generation. To overcome issues with existing benchmarks and provide a proof-of-concept testbed for Agent-as-a-Judge, we present DevAI, a new benchmark of 55 realistic automated AI development tasks. It includes rich manual annotations, like a total of 365 hierarchical user requirements. We benchmark three of the popular agentic systems using Agent-as-a-Judge and find it dramatically outperforms LLM-as-a-Judge and is as reliable as our human evaluation baseline. Altogether, we believe that Agent-as-a-Judge marks a concrete step forward for modern agentic systems -- by providing rich and reliable reward signals necessary for dynamic</p>
+      <p>Impacto en la audiencia: Supplementary material for the survey &quot;A Survey of Web-of-Agents Interoperability: From Multi-Agent Systems and Semantic Web Agents to LLM-Based Agent Protocols&quot; (Petrova, Bliznioukov, State; SEDAN Group, SnT, University of Luxembourg). Contents: the manuscript&#39;s 152-entry bibliography; a per-entry inclusion/exclusion log for all 206 screened candidates (152 included, 54 excluded); the OpenAlex bibliometric query design (ten queries), per-year raw and normalised publication counts (1995–2026), and a re-runnable Python script; the interoperability-faithful Generation III series data; and standalone TikZ source for all five figures. Enables independent verification of the bibliometric analysis (Figure 2) and the PRISMA-style selection funnel (Figure 3). Released under CC-BY-4.0.</p>
       <h3>Impacto para developers</h3>
-      <p>Contexto: Contemporary evaluation techniques are inadequate for agentic systems. These approaches either focus exclusively on final outcomes -- ignoring the step-by-step nature of agentic systems, or require excessive manual labour. To address this, we introduce the Agent-as-a-Judge framework, wherein agentic systems are used to evaluate agentic systems. This is an organic extension of the LLM-as-a-Judge framework, incorporating agentic features that enable intermediate feedback for the entire task-solving process. We apply the Agent-as-a-Judge to the task of code generation. To overcome issues with existing benchmarks and provide a proof-of-concept testbed for Agent-as-a-Judge, we present DevAI, a new benchmark of 55 realistic automated AI development tasks. It includes rich manual annotations, like a total of 365 hierarchical user requirements. We benchmark three of the popular agentic systems using Agent-as-a-Judge and find it dramatically outperforms LLM-as-a-Judge and is as reliable as our human evaluation baseline. Altogether, we believe that Agent-as-a-Judge marks a concrete step forward for modern agentic systems -- by providing rich and reliable reward signals necessary for dynamic</p>
-      <p class="sources">Fuentes: <a href="https://doi.org/10.48550/arXiv.2410.10934" rel="noopener">doi.org</a> · <a href="https://doi.org/" rel="noopener">doi.org</a></p>
+      <p>Contexto: Supplementary material for the survey &quot;A Survey of Web-of-Agents Interoperability: From Multi-Agent Systems and Semantic Web Agents to LLM-Based Agent Protocols&quot; (Petrova, Bliznioukov, State; SEDAN Group, SnT, University of Luxembourg). Contents: the manuscript&#39;s 152-entry bibliography; a per-entry inclusion/exclusion log for all 206 screened candidates (152 included, 54 excluded); the OpenAlex bibliometric query design (ten queries), per-year raw and normalised publication counts (1995–2026), and a re-runnable Python script; the interoperability-faithful Generation III series data; and standalone TikZ source for all five figures. Enables independent verification of the bibliometric analysis (Figure 2) and the PRISMA-style selection funnel (Figure 3). Released under CC-BY-4.0.</p>
+      <p class="sources">Fuentes: <a href="https://dx.doi.org/10.5281/zenodo.20931331" rel="noopener">dx.doi.org</a> · <a href="https://dx.doi.org/" rel="noopener">dx.doi.org</a></p>
     </article>
 
-    <article class="story">
-      <h2>Chrowned by an Extension: Abusing the Chrome DevTools Protocol through the Debugger API</h2>
-      <p class="summary">The Chromium open-source project has become a fundamental piece of the Web as we know it today, with multiple vendors offering browsers based on its codebase. One of its most popular features is the possibility of altering or enhancing the browser functionality through third-party programs known as browser extensions. Extensions have access to a wide range of capabilities through the use of APIs exposed by Chromium. The Debugger API -- arguably the most powerful of such APIs -- allows extensions to use the Chrome DevTools Protocol (CDP), a capability-rich tool for debugging and instrumenting the browser. In this paper, we describe several vulnerabilities present in the Debugger API and in the granting of capabilities to extensions that can be used by an attacker to take control of the browser, escalate privileges, and break context isolation. We demonstrate their impact by introducing six attacks that allow an attacker to steal user information, monitor network traffic, modify site permissions (\eg access to camera or microphone), bypass security interstitials without user intervention, and change the browser settings. Our attacks work in all major Chromium-based browsers as they a</p>
-      <h3>¿Qué pasó?</h3>
-      <p>The Chromium open-source project has become a fundamental piece of the Web as we know it today, with multiple vendors offering browsers based on its codebase. One of its most popular features is the possibility of altering or enhancing the browser functionality through third-party programs known as browser extensions. Extensions have access to a wide range of capabilities through the use of APIs exposed by Chromium. The Debugger API -- arguably the most powerful of such APIs -- allows extensions to use the Chrome DevTools Protocol (CDP), a capability-rich tool for debugging and instrumenting the browser. In this paper, we describe several vulnerabilities present in the Debugger API and in the granting of capabilities to extensions that can be used by an attacker to take control of the browser, escalate privileges, and break context isolation. We demonstrate their impact by introducing six attacks that allow an attacker to steal user information, monitor network traffic, modify site permissions (\eg access to camera or microphone), bypass security interstitials without user intervention, and change the browser settings. Our attacks work in all major Chromium-based browsers as they a</p>
-      <h3>¿Por qué importa?</h3>
-      <p>Impacto en la audiencia: The Chromium open-source project has become a fundamental piece of the Web as we know it today, with multiple vendors offering browsers based on its codebase. One of its most popular features is the possibility of altering or enhancing the browser functionality through third-party programs known as browser extensions. Extensions have access to a wide range of capabilities through the use of APIs exposed by Chromium. The Debugger API -- arguably the most powerful of such APIs -- allows extensions to use the Chrome DevTools Protocol (CDP), a capability-rich tool for debugging and instrumenting the browser. In this paper, we describe several vulnerabilities present in the Debugger API and in the granting of capabilities to extensions that can be used by an attacker to take control of the browser, escalate privileges, and break context isolation. We demonstrate their impact by introducing six attacks that allow an attacker to steal user information, monitor network traffic, modify site permissions (\eg access to camera or microphone), bypass security interstitials without user intervention, and change the browser settings. Our attacks work in all major Chromium-based browsers as they a</p>
-      <h3>Impacto para developers</h3>
-      <p>Contexto: The Chromium open-source project has become a fundamental piece of the Web as we know it today, with multiple vendors offering browsers based on its codebase. One of its most popular features is the possibility of altering or enhancing the browser functionality through third-party programs known as browser extensions. Extensions have access to a wide range of capabilities through the use of APIs exposed by Chromium. The Debugger API -- arguably the most powerful of such APIs -- allows extensions to use the Chrome DevTools Protocol (CDP), a capability-rich tool for debugging and instrumenting the browser. In this paper, we describe several vulnerabilities present in the Debugger API and in the granting of capabilities to extensions that can be used by an attacker to take control of the browser, escalate privileges, and break context isolation. We demonstrate their impact by introducing six attacks that allow an attacker to steal user information, monitor network traffic, modify site permissions (\eg access to camera or microphone), bypass security interstitials without user intervention, and change the browser settings. Our attacks work in all major Chromium-based browsers as they a</p>
-      <p class="sources">Fuentes: <a href="https://hdl.handle.net/20.500.12761/1704" rel="noopener">hdl.handle.net</a> · <a href="https://hdl.handle.net/" rel="noopener">hdl.handle.net</a></p>
-    </article>
 
-    <article class="story">
-      <h2>&quot;AICourse360-10X: Fully AI-Designed, AI-Delivered, AI-Assessed, and AI-Feedback Course Dataset&quot;</h2>
-      <p class="summary">&quot;AICourse360-10X : is a research dataset designed to support empirical investigation of a complete artificial-intelligence-operated course lifecycle. The dataset models a course in which AI tools design the curriculum, an AI chatbot delivers instruction, AI systems generate adaptive assessments, AI grading engines mark student work, and AI feedback agents provide personalized formative guidance. The dataset includes learner profiles, weekly learning analytics, chatbot interaction logs, assessment outcomes, feedback quality indicators, and final educational outcomes. It can be used to study AI-mediated learning, automated assessment reliability, learner engagement, trust in AI instruction, feedback effectiveness, academic-integrity risk, and human-intervention requirements in AI-supported education.&quot;</p>
-      <h3>¿Qué pasó?</h3>
-      <p>&quot;AICourse360-10X : is a research dataset designed to support empirical investigation of a complete artificial-intelligence-operated course lifecycle. The dataset models a course in which AI tools design the curriculum, an AI chatbot delivers instruction, AI systems generate adaptive assessments, AI grading engines mark student work, and AI feedback agents provide personalized formative guidance. The dataset includes learner profiles, weekly learning analytics, chatbot interaction logs, assessment outcomes, feedback quality indicators, and final educational outcomes. It can be used to study AI-mediated learning, automated assessment reliability, learner engagement, trust in AI instruction, feedback effectiveness, academic-integrity risk, and human-intervention requirements in AI-supported education.&quot;</p>
-      <h3>¿Por qué importa?</h3>
-      <p>Impacto en la audiencia: &quot;AICourse360-10X : is a research dataset designed to support empirical investigation of a complete artificial-intelligence-operated course lifecycle. The dataset models a course in which AI tools design the curriculum, an AI chatbot delivers instruction, AI systems generate adaptive assessments, AI grading engines mark student work, and AI feedback agents provide personalized formative guidance. The dataset includes learner profiles, weekly learning analytics, chatbot interaction logs, assessment outcomes, feedback quality indicators, and final educational outcomes. It can be used to study AI-mediated learning, automated assessment reliability, learner engagement, trust in AI instruction, feedback effectiveness, academic-integrity risk, and human-intervention requirements in AI-supported education.&quot;</p>
-      <h3>Impacto para developers</h3>
-      <p>Contexto: &quot;AICourse360-10X : is a research dataset designed to support empirical investigation of a complete artificial-intelligence-operated course lifecycle. The dataset models a course in which AI tools design the curriculum, an AI chatbot delivers instruction, AI systems generate adaptive assessments, AI grading engines mark student work, and AI feedback agents provide personalized formative guidance. The dataset includes learner profiles, weekly learning analytics, chatbot interaction logs, assessment outcomes, feedback quality indicators, and final educational outcomes. It can be used to study AI-mediated learning, automated assessment reliability, learner engagement, trust in AI instruction, feedback effectiveness, academic-integrity risk, and human-intervention requirements in AI-supported education.&quot;</p>
-      <p class="sources">Fuentes: <a href="https://doi.org/10.21227/z3h5-vb41" rel="noopener">doi.org</a> · <a href="https://doi.org/" rel="noopener">doi.org</a></p>
-    </article>
-
-    <article class="story">
-      <h2>Debugging Agents in Agent Factory</h2>
-      <p class="summary">The ability to effectively debug agent-oriented applications is vital if agent technologies are to become adopted as a viable alternative for complex systems development. Recent advances in the area have focussed on the provision of support for debugging agent interaction where tools have been provided that allow developers to analyse and debug the messages that are passed between agents. One potential approach for constructing agent-oriented applications is through the use of agent programming languages. Such languages employ mental notions such as beliefs, goals, commitments, and intentions to facilitate the construction of agent programs that specify the high-level behaviour of the agent. This paper describes how debugging has been supported for one such language, namely the Agent Factory Agent Programming Language (AFAPL).</p>
-      <h3>¿Qué pasó?</h3>
-      <p>The ability to effectively debug agent-oriented applications is vital if agent technologies are to become adopted as a viable alternative for complex systems development. Recent advances in the area have focussed on the provision of support for debugging agent interaction where tools have been provided that allow developers to analyse and debug the messages that are passed between agents. One potential approach for constructing agent-oriented applications is through the use of agent programming languages. Such languages employ mental notions such as beliefs, goals, commitments, and intentions to facilitate the construction of agent programs that specify the high-level behaviour of the agent. This paper describes how debugging has been supported for one such language, namely the Agent Factory Agent Programming Language (AFAPL).</p>
-      <h3>¿Por qué importa?</h3>
-      <p>Impacto en la audiencia: The ability to effectively debug agent-oriented applications is vital if agent technologies are to become adopted as a viable alternative for complex systems development. Recent advances in the area have focussed on the provision of support for debugging agent interaction where tools have been provided that allow developers to analyse and debug the messages that are passed between agents. One potential approach for constructing agent-oriented applications is through the use of agent programming languages. Such languages employ mental notions such as beliefs, goals, commitments, and intentions to facilitate the construction of agent programs that specify the high-level behaviour of the agent. This paper describes how debugging has been supported for one such language, namely the Agent Factory Agent Programming Language (AFAPL).</p>
-      <h3>Impacto para developers</h3>
-      <p>Contexto: The ability to effectively debug agent-oriented applications is vital if agent technologies are to become adopted as a viable alternative for complex systems development. Recent advances in the area have focussed on the provision of support for debugging agent interaction where tools have been provided that allow developers to analyse and debug the messages that are passed between agents. One potential approach for constructing agent-oriented applications is through the use of agent programming languages. Such languages employ mental notions such as beliefs, goals, commitments, and intentions to facilitate the construction of agent programs that specify the high-level behaviour of the agent. This paper describes how debugging has been supported for one such language, namely the Agent Factory Agent Programming Language (AFAPL).</p>
-      <p class="sources">Fuentes: <a href="https://doi.org/10.1007/978-3-540-71956-4_14" rel="noopener">doi.org</a> · <a href="https://doi.org/" rel="noopener">doi.org</a></p>
-    </article>
-    </section>
-
-    <section class="skill">
+    <section class="card">
       <h2>Skill de la semana</h2>
-      <p><strong>github-profile-dashboard</strong> (devops-deploy)</p>
-      <p>Elegida por su conexión con &quot;Agent-as-a-Judge: Evaluate Agents with Agents&quot; en esta edición.</p>
+      <p class="name">mui-table-alignment <span class="area">(frontend-ui-ux)</span></p>
+      <p>Elegida por su conexión con &quot;Supplementary material for CP-Agent: Agentic Constraint Programming&quot; en esta edición.</p>
     </section>
-    <section class="tip">
-      <h2>Tip de la semana</h2>
-      <p>separa Agent-as-a-Judge: Evaluate Agents with Agents en tu flujo: anota lo que cambió y ajusta tus dependencias antes del viernes.</p>
+    <section class="card tip">
+      <h2 class="name">Tip de la semana</h2>
+      <p>optimiza una vez al día el changelog de Supplementary material for CP-Agent: Agentic: 5 minutos evitan romper tu deploy.</p>
     </section>
-  </main>
+    </div>
+  </section>  </main>
+
+  <footer>
+    <p>OscarCode Weekly News — generado automáticamente por el agente editorial.</p>
+  </footer>
 </body>
 </html>
