@@ -5,24 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly News 2026-W32 — OscarCode Weekly News</title>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://oscarcode9.github.io/theme.css?v=17">
+  <script src="https://oscarcode9.github.io/theme.js?v=13" defer></script>
   <style>
-  :root {
-    --primary: #bd93f9;
-    --primary-glow: rgba(189, 147, 249, 0.18);
-    --accent: #ff79c6;
-    --success: #50fa7b;
-    --bg-dark: #282a36;
-    --bg-card: #2f3041;
-    --text-primary: #f8f8f2;
-    --text-secondary: #c5c9dd;
-    --text-muted: #8a8fa8;
-    --border: rgba(248, 248, 242, 0.1);
-    --gradient-1: linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%);
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background-color: var(--bg-dark); color: var(--text-primary); font-family: 'Inter', sans-serif; line-height: 1.6; }
   nav {
-    background: rgba(40, 42, 54, 0.92); backdrop-filter: blur(20px);
+    background: var(--nav-bg, rgba(40, 42, 54, 0.92)); backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border); position: fixed; width: 100%; z-index: 9999;
     height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
   }
@@ -32,7 +21,7 @@
   nav ul li a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
   nav ul li a:hover, nav ul li a.active { color: var(--primary); }
   .hero { padding: 150px 24px 60px; text-align: center; }
-  .hero-badge { display: inline-block; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); border: 1px solid rgba(189, 147, 249, 0.3); padding: 6px 14px; border-radius: 999px; margin-bottom: 18px; }
+  .hero-badge { display: inline-block; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); border: 1px solid var(--border); padding: 6px 14px; border-radius: 999px; margin-bottom: 18px; }
   .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 14px; background: var(--gradient-1); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
   .hero .intro { color: var(--text-secondary); font-size: 1.05rem; max-width: 720px; margin: 0 auto; }
   .hero .date { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.8rem; margin-top: 10px; }
@@ -71,83 +60,67 @@
   .empty-first { color: var(--text-muted); padding: 18px 0; }
   .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
   .btn-primary { display: inline-block; background: var(--primary); border: none; border-radius: 999px; padding: 13px 28px; font-weight: 600; color: #fff; text-decoration: none; transition: transform 0.25s, box-shadow 0.3s; }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(189, 147, 249, 0.3); color: #fff; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--primary-glow); color: #fff; }
   .btn-secondary { display: inline-block; background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 13px 28px; font-weight: 600; color: var(--text-primary); text-decoration: none; transition: all 0.25s; }
   .btn-secondary:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-glow); }
   footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 60px; }
+  .nav-subscribe { background: var(--primary); border: none; border-radius: 999px; padding: 8px 18px; font-weight: 600; color: #fff; font-size: 0.85rem; cursor: pointer; transition: transform 0.25s, box-shadow 0.3s; font-family: 'Inter', sans-serif; }
+  .nav-subscribe:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-glow); }
+  .subscribe-modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 20px; }
+  .subscribe-modal.open { display: flex; }
+  .subscribe-modal-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 34px; max-width: 460px; width: 100%; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); position: relative; }
+  .subscribe-modal-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; color: var(--text-primary); }
+  .subscribe-modal-card .sub-lead { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin-bottom: 20px; }
+  .subscribe-modal-card ul { list-style: none; margin: 0 0 20px; }
+  .subscribe-modal-card ul li { color: var(--text-secondary); font-size: 0.9rem; padding: 5px 0 5px 22px; position: relative; }
+  .subscribe-modal-card ul li::before { content: '▸'; position: absolute; left: 4px; color: var(--primary); }
+  .subscribe-modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+  .subscribe-modal-close:hover { color: var(--primary); }
+  #news-subscribe-form { display: flex; gap: 10px; }
+  #news-subscribe-form input { flex: 1; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text-primary); font-size: 0.95rem; font-family: 'Inter', sans-serif; }
+  #news-subscribe-form input:focus { outline: none; border-color: var(--primary); }
+  #news-subscribe-form button { background: var(--primary); border: none; border-radius: 10px; padding: 12px 20px; font-weight: 600; color: #fff; cursor: pointer; font-family: 'Inter', sans-serif; }
+  #news-subscribe-form button:hover { box-shadow: 0 6px 20px var(--primary-glow); }
+  .subscribe-status { margin-top: 14px; font-size: 0.9rem; min-height: 1.2em; color: var(--text-secondary); }
+  .subscribe-status.ok { color: var(--success); }
+  .subscribe-status.err { color: var(--accent); }
 </style>
 </head>
 <body>
   <nav>
-    <a class="brand-logo" href="https://oscarcode9.github.io">OscarCode<span>.</span></a>
+    <a class="brand-logo" href="https://oscarcode9.github.io">{ OscarCode }</a>
     <ul>
       <li><a href="https://oscarcode9.github.io/news" class="">News</a></li>
       <li><a href="https://oscarcode9.github.io/skills.html">Skills</a></li>
       <li><a href="https://oscarcode9.github.io">Inicio</a></li>
+      <li><a href="en/index.html" aria-label="EN" style="font-family: 'Fira Code', monospace; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.8rem; border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px;">EN</a></li>
+      <li><button type="button" class="nav-subscribe" data-subscribe-open>Suscribirse</button></li>
     </ul>
   </nav>
   <main>
   <header class="hero">
     <div class="hero-badge">OscarCode Weekly News · 2026-W32</div>
     <h1>Weekly News 2026-W32</h1>
-    <p class="intro">Lo más relevante que pasó en inteligencia artificial esta semana, explicado sin jerga: 3 historias, un dato curioso y un tip para aprovechar la IA en tu día a día.</p>
+    <p class="intro">Lo más relevante que pasó en inteligencia artificial esta semana, explicado sin jerga: 0 historias, un dato curioso y un tip para aprovechar la IA en tu día a día.</p>
     <p class="date">2026-08-08</p>
     <div class="cta-row">
-      <a class="btn-secondary" href="../index.html">&larr; Volver al índice</a>
+      <a class="btn-secondary" href="../index.html">← Volver al índice</a>
     </div>
   </header>
   <section class="section">
     <div class="container">
       <h2 class="section-title">Historias de la semana</h2>
-
-    <article class="story">
-      <span class="story-tag">arxiv.org</span>
-      <h2>To ChatGPT, or not to ChatGPT: That is the question!</h2>
-      <p class="summary">ChatGPT has become a global sensation. As ChatGPT and other Large Language Models (LLMs) emerge, concerns of misusing them in various ways increase, such as disseminating fake news, plagiarism, manipulating public opinion, cheating, and fraud. Hence, distinguishing AI-generated from human-generated becomes increasingly essential. Researchers have proposed various detection methodologies, ranging from basic binary classifiers to more complex deep-learning models. Some detection techniques rely on statistical characteristics or syntactic patterns, while others incorporate semantic or contextual information to improve accuracy. The primary objective of this study is to provide a comprehensive and contemporary assessment of the most recent techniques in ChatGPT detection. Additionally, we evaluated other AI-generated text detection tools that do not specifically claim to detect ChatGPT-generated content to assess their performance in detecting ChatGPT-generated content. For our evaluation, we have curated a benchmark dataset consisting of prompts from ChatGPT and humans, including diverse questions from medical, open Q&amp;A, and finance domains and user-generated responses from popular so</p>
-      <h3>¿Qué pasó?</h3>
-      <p>ChatGPT has become a global sensation. As ChatGPT and other Large Language Models (LLMs) emerge, concerns of misusing them in various ways increase, such as disseminating fake news, plagiarism, manipulating public opinion, cheating, and fraud. Hence, distinguishing AI-generated from human-generated becomes increasingly essential. Researchers have proposed various detection methodologies, ranging from basic binary classifiers to more complex deep-learning models. Some detection techniques rely on statistical characteristics or syntactic patterns, while others incorporate semantic or contextual information to improve accuracy. The primary objective of this study is to provide a comprehensive and contemporary assessment of the most recent techniques in ChatGPT detection. Additionally, we evaluated other AI-generated text detection tools that do not specifically claim to detect ChatGPT-generated content to assess their performance in detecting ChatGPT-generated content. For our evaluation, we have curated a benchmark dataset consisting of prompts from ChatGPT and humans, including diverse questions from medical, open Q&amp;A, and finance domains and user-generated responses from popular so</p>
-      <h3>¿Por qué importa?</h3>
-      <p>Impacto en la audiencia: ChatGPT has become a global sensation. As ChatGPT and other Large Language Models (LLMs) emerge, concerns of misusing them in various ways increase, such as disseminating fake news, plagiarism, manipulating public opinion, cheating, and fraud. Hence, distinguishing AI-generated from human-generated becomes increasingly essential. Researchers have proposed various detection methodologies, ranging from basic binary classifiers to more complex deep-learning models. Some detection techniques rely on statistical characteristics or syntactic patterns, while others incorporate semantic or contextual information to improve accuracy. The primary objective of this study is to provide a comprehensive and contemporary assessment of the most recent techniques in ChatGPT detection. Additionally, we evaluated other AI-generated text detection tools that do not specifically claim to detect ChatGPT-generated content to assess their performance in detecting ChatGPT-generated content. For our evaluation, we have curated a benchmark dataset consisting of prompts from ChatGPT and humans, including diverse questions from medical, open Q&amp;A, and finance domains and user-generated responses from popular so</p>
-      <h3>Impacto para developers</h3>
-      <p>Contexto: ChatGPT has become a global sensation. As ChatGPT and other Large Language Models (LLMs) emerge, concerns of misusing them in various ways increase, such as disseminating fake news, plagiarism, manipulating public opinion, cheating, and fraud. Hence, distinguishing AI-generated from human-generated becomes increasingly essential. Researchers have proposed various detection methodologies, ranging from basic binary classifiers to more complex deep-learning models. Some detection techniques rely on statistical characteristics or syntactic patterns, while others incorporate semantic or contextual information to improve accuracy. The primary objective of this study is to provide a comprehensive and contemporary assessment of the most recent techniques in ChatGPT detection. Additionally, we evaluated other AI-generated text detection tools that do not specifically claim to detect ChatGPT-generated content to assess their performance in detecting ChatGPT-generated content. For our evaluation, we have curated a benchmark dataset consisting of prompts from ChatGPT and humans, including diverse questions from medical, open Q&amp;A, and finance domains and user-generated responses from popular so</p>
-      <p class="sources">Fuentes: <a href="http://arxiv.org/abs/2304.01487" rel="noopener">arxiv.org</a> · <a href="https://arxiv.org/" rel="noopener">arxiv.org</a></p>
-    </article>
-
-    <article class="story">
-      <span class="story-tag">doi.org</span>
-      <h2>IA Generativa y Ciberseguridad</h2>
-      <p class="summary">La Inteligencia Artificial Generativa (GenAI) se ha consolidado como el catalizador más influyente de la transformación digital contemporánea. Su capacidad para producir contenido original, automatizar análisis complejos y expandir las capacidades cognitivas humanas está redefiniendo procesos empresariales, educativos y gubernamentales. Sin embargo, esta tecnología también reconfigura el panorama de amenazas: informes recientes, como el Microsoft Digital Defense Report 2025 (Microsoft, 2025), el IBM Threat Intelligence Index 2025 (IBM, 2025) y el ENISA Threat Landscape 2025 (ENISA, 2025), evidencian un repunte en ataques hiperpersonalizados, deepfakes operativos y variantes de malware asistidas por IA. Paradójicamente, la GenAI también es la clave para fortalecer los mecanismos de defensa, pues acelera la detección de anomalías y optimiza la respuesta ante incidentes. Este artículo analiza esa dualidad bajo la óptica del NIST Cybersecurity Framework 2.0 (NIST, 2024), con énfasis en la función Govern como base de la gobernanza algorítmica. Asimismo, se examina el uso ético de la tecnología en la academia y la empresa, junto con su impacto en la brecha digital global. Finalmente, se</p>
-      <h3>¿Qué pasó?</h3>
-      <p>La Inteligencia Artificial Generativa (GenAI) se ha consolidado como el catalizador más influyente de la transformación digital contemporánea. Su capacidad para producir contenido original, automatizar análisis complejos y expandir las capacidades cognitivas humanas está redefiniendo procesos empresariales, educativos y gubernamentales. Sin embargo, esta tecnología también reconfigura el panorama de amenazas: informes recientes, como el Microsoft Digital Defense Report 2025 (Microsoft, 2025), el IBM Threat Intelligence Index 2025 (IBM, 2025) y el ENISA Threat Landscape 2025 (ENISA, 2025), evidencian un repunte en ataques hiperpersonalizados, deepfakes operativos y variantes de malware asistidas por IA. Paradójicamente, la GenAI también es la clave para fortalecer los mecanismos de defensa, pues acelera la detección de anomalías y optimiza la respuesta ante incidentes. Este artículo analiza esa dualidad bajo la óptica del NIST Cybersecurity Framework 2.0 (NIST, 2024), con énfasis en la función Govern como base de la gobernanza algorítmica. Asimismo, se examina el uso ético de la tecnología en la academia y la empresa, junto con su impacto en la brecha digital global. Finalmente, se</p>
-      <h3>¿Por qué importa?</h3>
-      <p>Impacto en la audiencia: La Inteligencia Artificial Generativa (GenAI) se ha consolidado como el catalizador más influyente de la transformación digital contemporánea. Su capacidad para producir contenido original, automatizar análisis complejos y expandir las capacidades cognitivas humanas está redefiniendo procesos empresariales, educativos y gubernamentales. Sin embargo, esta tecnología también reconfigura el panorama de amenazas: informes recientes, como el Microsoft Digital Defense Report 2025 (Microsoft, 2025), el IBM Threat Intelligence Index 2025 (IBM, 2025) y el ENISA Threat Landscape 2025 (ENISA, 2025), evidencian un repunte en ataques hiperpersonalizados, deepfakes operativos y variantes de malware asistidas por IA. Paradójicamente, la GenAI también es la clave para fortalecer los mecanismos de defensa, pues acelera la detección de anomalías y optimiza la respuesta ante incidentes. Este artículo analiza esa dualidad bajo la óptica del NIST Cybersecurity Framework 2.0 (NIST, 2024), con énfasis en la función Govern como base de la gobernanza algorítmica. Asimismo, se examina el uso ético de la tecnología en la academia y la empresa, junto con su impacto en la brecha digital global. Finalmente, se</p>
-      <h3>Impacto para developers</h3>
-      <p>Contexto: La Inteligencia Artificial Generativa (GenAI) se ha consolidado como el catalizador más influyente de la transformación digital contemporánea. Su capacidad para producir contenido original, automatizar análisis complejos y expandir las capacidades cognitivas humanas está redefiniendo procesos empresariales, educativos y gubernamentales. Sin embargo, esta tecnología también reconfigura el panorama de amenazas: informes recientes, como el Microsoft Digital Defense Report 2025 (Microsoft, 2025), el IBM Threat Intelligence Index 2025 (IBM, 2025) y el ENISA Threat Landscape 2025 (ENISA, 2025), evidencian un repunte en ataques hiperpersonalizados, deepfakes operativos y variantes de malware asistidas por IA. Paradójicamente, la GenAI también es la clave para fortalecer los mecanismos de defensa, pues acelera la detección de anomalías y optimiza la respuesta ante incidentes. Este artículo analiza esa dualidad bajo la óptica del NIST Cybersecurity Framework 2.0 (NIST, 2024), con énfasis en la función Govern como base de la gobernanza algorítmica. Asimismo, se examina el uso ético de la tecnología en la academia y la empresa, junto con su impacto en la brecha digital global. Finalmente, se</p>
-      <p class="sources">Fuentes: <a href="https://doi.org/10.29236/sistemas.n177a11" rel="noopener">doi.org</a> · <a href="https://doi.org/" rel="noopener">doi.org</a></p>
-    </article>
-
-    <article class="story">
-      <span class="story-tag">publicatio.bibl.u-szeged.hu</span>
-      <h2>With ChatGPT about ChatGPT</h2>
-      <p class="summary">We often say that the need for innovation is indisputable, and the reason in many cases is that the world is changing. But if we think about it more, we change the world through our actions. According to one of the thoughts of Mahatma Gandhi (Mohandas Karamchand Gandhi) (1869–1948), an Indian lawyer and politician, “We must act as we would like to shape the world.” At the same time, we are not, we will not and cannot always be aware of the impact our actions and the innovations we create have and will have on our lives. This is undoubtedly true, that is why it is worthwhile to approach and study each (future) innovation from several points of view: examine and analyze, then draw conclusions about its values and effectiveness and think further. This paper undertakes to reveal with the help of an artificial intelligence (AI) solution, a large language model, the Chat GPT (GenerativePre–trained Transformer), how ChatGPT defines itself, what it thinks about itself, how it answers questions about itself: How predictable it is? What its self–limiting ability is? How provocative it is? What level of text generation it is? etc.Based on the “machine”answers to “human”questions, it can be co</p>
-      <h3>¿Qué pasó?</h3>
-      <p>We often say that the need for innovation is indisputable, and the reason in many cases is that the world is changing. But if we think about it more, we change the world through our actions. According to one of the thoughts of Mahatma Gandhi (Mohandas Karamchand Gandhi) (1869–1948), an Indian lawyer and politician, “We must act as we would like to shape the world.” At the same time, we are not, we will not and cannot always be aware of the impact our actions and the innovations we create have and will have on our lives. This is undoubtedly true, that is why it is worthwhile to approach and study each (future) innovation from several points of view: examine and analyze, then draw conclusions about its values and effectiveness and think further. This paper undertakes to reveal with the help of an artificial intelligence (AI) solution, a large language model, the Chat GPT (GenerativePre–trained Transformer), how ChatGPT defines itself, what it thinks about itself, how it answers questions about itself: How predictable it is? What its self–limiting ability is? How provocative it is? What level of text generation it is? etc.Based on the “machine”answers to “human”questions, it can be co</p>
-      <h3>¿Por qué importa?</h3>
-      <p>Impacto en la audiencia: We often say that the need for innovation is indisputable, and the reason in many cases is that the world is changing. But if we think about it more, we change the world through our actions. According to one of the thoughts of Mahatma Gandhi (Mohandas Karamchand Gandhi) (1869–1948), an Indian lawyer and politician, “We must act as we would like to shape the world.” At the same time, we are not, we will not and cannot always be aware of the impact our actions and the innovations we create have and will have on our lives. This is undoubtedly true, that is why it is worthwhile to approach and study each (future) innovation from several points of view: examine and analyze, then draw conclusions about its values and effectiveness and think further. This paper undertakes to reveal with the help of an artificial intelligence (AI) solution, a large language model, the Chat GPT (GenerativePre–trained Transformer), how ChatGPT defines itself, what it thinks about itself, how it answers questions about itself: How predictable it is? What its self–limiting ability is? How provocative it is? What level of text generation it is? etc.Based on the “machine”answers to “human”questions, it can be co</p>
-      <h3>Impacto para developers</h3>
-      <p>Contexto: We often say that the need for innovation is indisputable, and the reason in many cases is that the world is changing. But if we think about it more, we change the world through our actions. According to one of the thoughts of Mahatma Gandhi (Mohandas Karamchand Gandhi) (1869–1948), an Indian lawyer and politician, “We must act as we would like to shape the world.” At the same time, we are not, we will not and cannot always be aware of the impact our actions and the innovations we create have and will have on our lives. This is undoubtedly true, that is why it is worthwhile to approach and study each (future) innovation from several points of view: examine and analyze, then draw conclusions about its values and effectiveness and think further. This paper undertakes to reveal with the help of an artificial intelligence (AI) solution, a large language model, the Chat GPT (GenerativePre–trained Transformer), how ChatGPT defines itself, what it thinks about itself, how it answers questions about itself: How predictable it is? What its self–limiting ability is? How provocative it is? What level of text generation it is? etc.Based on the “machine”answers to “human”questions, it can be co</p>
-      <p class="sources">Fuentes: <a href="http://publicatio.bibl.u-szeged.hu/34553/1/ANNALS-2024-2-13.pdf" rel="noopener">publicatio.bibl.u-szeged.hu</a> · <a href="https://publicatio.bibl.u-szeged.hu/" rel="noopener">publicatio.bibl.u-szeged.hu</a></p>
-    </article>
+<p class="empty">Esta semana no hay historias verificadas por publicar.</p>
 
 
     <section class="card">
-      <h2>Skill de la semana</h2>
-      <p class="name">mascot-gaze-follow <span class="area">(frontend-ui-ux)</span></p>
-      <p>Elegida por su conexión con &quot;To ChatGPT, or not to ChatGPT: That is the question!&quot; en esta edición.</p>
+      <h2>Dato de la semana</h2>
+      <p class="name">aws-practice-lab-lifecycle <span class="area">(devops-deploy)</span></p>
+      <p>Skill de la semana por su área devops-deploy: aplica su flujo al tema que más te mueva esta edición.</p>
     </section>
     <section class="card tip">
       <h2 class="name">Tip de la semana</h2>
-      <p>combina ChatGPT, not ChatGPT: That the con tu propio contenido: pídele que te explique lo que no entiendas como si tuvieras 12 años.</p>
+      <p>Revisa siempre la fuente antes de compartir una noticia sobre IA: la curiosidad es buena, la verificación también.</p>
     </section>
     </div>
   </section>  </main>
@@ -155,5 +128,81 @@
   <footer>
     <p>OscarCode Weekly News — generado automáticamente por el agente editorial.</p>
   </footer>
+
+  <div id="news-subscribe-modal" class="subscribe-modal" aria-hidden="true">
+    <div class="subscribe-modal-card" role="dialog" aria-modal="true" aria-labelledby="sub-title">
+      <button type="button" class="subscribe-modal-close" data-subscribe-close aria-label="Cerrar">&times;</button>
+      <h2 id="sub-title">Newsletter semanal</h2>
+      <p class="sub-lead">Cada viernes recibes en tu correo lo más relevante que pasó en inteligencia artificial esta semana, explicado sin jerga. Sin spam y con baja en un clic.</p>
+      <ul>
+        <li>Las historias de IA que más importan, verificadas y en simple</li>
+        <li>Un dato curioso para sorprenderte</li>
+        <li>Un tip para aprovechar la IA en tu día a día</li>
+      </ul>
+      <form id="news-subscribe-form" novalidate>
+        <input type="email" name="email" placeholder="tu@correo.com" autocomplete="email" required>
+        <button type="submit">Suscribirme</button>
+      </form>
+      <p class="subscribe-status" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var modal = document.getElementById('news-subscribe-modal');
+  if (!modal) return;
+  var status = modal.querySelector('.subscribe-status');
+  var form = document.getElementById('news-subscribe-form');
+  var apiBase = "https://oscarcode9.github.io/news";
+
+  function open() { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+  function close() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+
+  document.querySelectorAll('[data-subscribe-open]').forEach(function (btn) {
+    btn.addEventListener('click', open);
+  });
+  modal.querySelectorAll('[data-subscribe-close]').forEach(function (btn) {
+    btn.addEventListener('click', close);
+  });
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = form.email.value.trim();
+    status.textContent = '';
+    status.className = 'subscribe-status';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      status.textContent = 'Escribe un correo válido, por ejemplo tu@correo.com';
+      status.classList.add('err');
+      return;
+    }
+    var btn = form.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    fetch(apiBase + '/news/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function (res) {
+      if (res.status === 202) {
+        status.textContent = 'Listo: revisa tu correo y confirma la suscripción.';
+        status.classList.add('ok');
+        form.email.value = '';
+      } else {
+        return res.json().then(function (data) {
+          throw new Error(data && data.error ? data.error : 'No se pudo suscribir');
+        });
+      }
+    }).catch(function (err) {
+      status.textContent = 'Algo falló: ' + (err && err.message ? err.message : 'intenta de nuevo más tarde');
+      status.classList.add('err');
+    }).finally(function () {
+      btn.disabled = false;
+      btn.textContent = 'Suscribirme';
+    });
+  });
+})();
+</script>
 </body>
 </html>
