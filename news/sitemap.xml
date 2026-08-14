@@ -2,6 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://oscarcode9.github.io/news/</loc><changefreq>weekly</changefreq></url>
   <url><loc>https://oscarcode9.github.io/news/en/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://oscarcode9.github.io/news/2026-W33/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://oscarcode9.github.io/news/2026-W33/en/</loc><changefreq>weekly</changefreq></url>
   <url><loc>https://oscarcode9.github.io/news/2026-W32/</loc><changefreq>weekly</changefreq></url>
   <url><loc>https://oscarcode9.github.io/news/2026-W32/en/</loc><changefreq>weekly</changefreq></url>
 </urlset>
