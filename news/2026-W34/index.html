@@ -95,6 +95,19 @@
   .subscribe-status { margin-top: 14px; font-size: 0.9rem; min-height: 1.2em; color: var(--text-secondary); }
   .subscribe-status.ok { color: var(--success); }
   .subscribe-status.err { color: var(--accent); }
+
+  /* mobile-subscribe-fix-v18: modal visible, desplazable y táctil en viewport móvil. */
+  .subscribe-modal { overscroll-behavior: contain; }
+  .subscribe-modal-card { max-height: calc(100dvh - 40px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .subscribe-modal-close { min-width: 44px; min-height: 44px; }
+  @media (max-width: 640px) {
+    .subscribe-modal { align-items: flex-end; padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); }
+    .subscribe-modal-card { max-width: none; max-height: calc(100dvh - 24px); border-radius: 20px; padding: 28px 20px 22px; }
+    .subscribe-modal-card h2 { padding-right: 42px; font-size: 1.3rem; }
+    #news-subscribe-form { flex-direction: column; }
+    #news-subscribe-form input { width: 100%; min-height: 48px; font-size: 16px; }
+    #news-subscribe-form button { width: 100%; min-height: 48px; font-size: 1rem; }
+  }
 </style>
 </head>
 <body>
@@ -293,8 +306,7 @@
     btn.disabled = true;
     btn.textContent = 'Enviando…';
     // Anti header-injection: el email nunca lleva saltos de línea.
-    if (/[
- ]/.test(email) || email.length > 254) {
+    if (/[\r\n\0]/.test(email) || email.length > 254) {
       status.textContent = 'Escribe un correo válido';
       status.classList.add('err');
       btn.disabled = false;
