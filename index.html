@@ -1813,10 +1813,10 @@
         </div>
         <div class="github-cards">
           <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
-            <img src="https://github-readme-stats.vercel.app/api?username=OscarCode9&show_icons=true&theme=dracula&hide_border=true&include_all_commits=true&count_private=false" alt="GitHub stats OscarCode9" loading="lazy" />
+            <img src="https://d39xylrycwr5u7.cloudfront.net/api?username=OscarCode9&show_icons=true&theme=dracula&hide_border=true&include_all_commits=true&count_private=false" alt="GitHub stats OscarCode9" loading="lazy" />
           </a>
           <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
-            <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=OscarCode9&layout=compact&theme=dracula&hide_border=true" alt="Top languages OscarCode9" loading="lazy" />
+            <img src="https://d39xylrycwr5u7.cloudfront.net/api/top-langs/?username=OscarCode9&layout=compact&theme=dracula&hide_border=true" alt="Top languages OscarCode9" loading="lazy" />
           </a>
         </div>
         <div id="github-fallback" style="display:none; text-align:center; padding:18px; background:#21222c; border:1px solid var(--border); border-radius:12px; font-family:'Fira Code',monospace; color:var(--text-secondary); width:100%;"></div>
@@ -1837,7 +1837,7 @@
                   const top = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(' \u00b7 ');
                   fb.innerHTML = '<div style="color:var(--primary);font-weight:700;margin-bottom:6px;"><i class="fab fa-github"></i> OscarCode9 — ' + u.public_repos + ' repos \u00b7 ' + u.followers + ' followers</div><div style="font-size:.85rem;">' + (top||'TypeScript \u00b7 JavaScript \u00b7 Java') + ' \u00b7 <a href="https://github.com/OscarCode9" target="_blank" style="color:var(--primary);">ver perfil \u2192</a></div>';
                 });
-              }).catch(()=>{ fb.textContent = 'GitHub stats temporalmente no disponible (503 vercel) — visita github.com/OscarCode9'; });
+              }).catch(()=>{ fb.textContent = 'GitHub stats temporalmente no disponible (estadísticas) — visita github.com/OscarCode9'; });
               imgs.forEach(i=>i.style.display='none');
             }
           }));
@@ -1845,7 +1845,7 @@
           setTimeout(()=>{ if (failed===0) { let anyBroken=false; imgs.forEach(i=>{ if(!i.complete || i.naturalWidth===0) anyBroken=true; }); if(anyBroken) fb.style.display='block'; }}, 4000);
         })();
         </script>
-        <p class="github-note"><span class="lang-es">Datos via <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">github-readme-stats</a> + <a href="https://ghchart.rshah.org/" target="_blank" rel="noopener">ghchart</a> · si ves "503" cambia a hosting propio (Lambda+CloudFront `github-profile-dashboard-skill`)</span><span class="lang-en">Data via <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">github-readme-stats</a> + <a href="https://ghchart.rshah.org/" target="_blank" rel="noopener">ghchart</a> · if you see "503" switch to self-hosted (Lambda+CloudFront)</span></p>
+        <p class="github-note"><span class="lang-es">Self-hosted <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">github-readme-stats</a> en AWS Lambda + CloudFront <code>d39xylrycwr5u7.cloudfront.net</code> + <a href="https://ghchart.rshah.org/" target="_blank" rel="noopener">ghchart</a> · tema dracula · <a href="https://github.com/OscarCode9" target="_blank">ver perfil →</a></span><span class="lang-en">Self-hosted <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">github-readme-stats</a> on AWS Lambda + CloudFront <code>d39xylrycwr5u7.cloudfront.net</code> + <a href="https://ghchart.rshah.org/" target="_blank" rel="noopener">ghchart</a> · dracula theme · <a href="https://github.com/OscarCode9" target="_blank">view profile →</a></span></p>
       </div>
     </div>
   </section>
