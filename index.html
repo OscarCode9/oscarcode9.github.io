@@ -1137,6 +1137,19 @@
       .hero-mascot { width: 90px; margin-bottom: 8px; }
       .contact-form { padding: 28px 20px; }
     }
+
+    /* GITHUB ACTIVITY — dracula */
+    .github-section { background: linear-gradient(180deg, #1f2030 0%, #282a36 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .github-grid { display: flex; flex-direction: column; gap: 22px; align-items: center; max-width: 960px; margin: 0 auto; }
+    .github-chart { width: 100%; }
+    .github-chart img { width: 100%; border-radius: 12px; background: #21222c; padding: 14px 10px; border: 1px solid var(--border); display: block; }
+    .github-cards { display: grid; grid-template-columns: 1.2fr 0.9fr; gap: 18px; width: 100%; align-items: start; }
+    .github-cards a { display: block; }
+    .github-cards img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; background: #21222c; }
+    .github-note { font-size: 0.78rem; color: var(--text-muted); text-align: center; font-family: 'Fira Code', monospace; }
+    .github-note a { color: var(--primary); text-decoration: none; }
+    .github-note a:hover { text-decoration: underline; }
+    @media (max-width: 900px) { .github-cards { grid-template-columns: 1fr; } }
   </style>
   <script src="public/i18n.js"></script>
 
@@ -1160,6 +1173,7 @@
           <li><a href="#about"><span class="lang-es">Sobre Mí</span><span class="lang-en">About Me</span></a></li>
           <li><a href="#blog">Blog</a></li>
           <li><a href="#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
+          <li><a href="#github"><i class="fab fa-github"></i> GitHub</a></li>
           <li><a href="#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
           <li><a class="lang-toggle" onclick="toggleLanguage()"><i class="fas fa-globe"></i> EN</a></li>
         </ul>
@@ -1173,6 +1187,7 @@
     <li><a href="#about"><span class="lang-es">Sobre Mí</span><span class="lang-en">About Me</span></a></li>
     <li><a href="#blog">Blog</a></li>
           <li><a href="#portfolio"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></a></li>
+    <li><a href="#github"><i class="fab fa-github"></i> GitHub</a></li>
     <li><a href="#contact"><span class="lang-es">Contacto</span><span class="lang-en">Contact</span></a></li>
     <li><a class="lang-toggle" onclick="toggleLanguage()"><i class="fas fa-globe"></i> EN</a></li>
   </ul>
@@ -1779,6 +1794,32 @@
           </div>
           <i class="fas fa-external-link-alt portfolio-arrow"></i>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- GITHUB ACTIVITY -->
+  <section id="github" class="section github-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title"><span class="lang-es">Actividad en GitHub</span><span class="lang-en">GitHub Activity</span></h2>
+        <p class="section-subtitle"><span class="lang-es">73 repos públicos · contribuciones en tiempo real (tema dracula)</span><span class="lang-en">73 public repos · live contributions (dracula theme)</span></p>
+      </div>
+      <div class="github-grid">
+        <div class="github-chart">
+          <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
+            <img src="https://ghchart.rshah.org/bd93f9/OscarCode9" alt="Contribuciones OscarCode9" loading="lazy" onerror="this.style.display='none'" />
+          </a>
+        </div>
+        <div class="github-cards">
+          <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
+            <img src="https://github-readme-stats.vercel.app/api?username=OscarCode9&show_icons=true&theme=dracula&hide_border=true&include_all_commits=true&count_private=false" alt="GitHub stats OscarCode9" loading="lazy" />
+          </a>
+          <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
+            <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=OscarCode9&layout=compact&theme=dracula&hide_border=true" alt="Top languages OscarCode9" loading="lazy" />
+          </a>
+        </div>
+        <p class="github-note"><span class="lang-es">Datos via <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">github-readme-stats</a> + <a href="https://ghchart.rshah.org/" target="_blank" rel="noopener">ghchart</a> · si ves "503" cambia a hosting propio (Lambda+CloudFront `github-profile-dashboard-skill`)</span><span class="lang-en">Data via <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">github-readme-stats</a> + <a href="https://ghchart.rshah.org/" target="_blank" rel="noopener">ghchart</a> · if you see "503" switch to self-hosted (Lambda+CloudFront)</span></p>
       </div>
     </div>
   </section>
