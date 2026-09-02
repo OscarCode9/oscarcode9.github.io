@@ -1138,18 +1138,23 @@
       .contact-form { padding: 28px 20px; }
     }
 
-    /* GITHUB ACTIVITY — dracula */
-    .github-section { background: linear-gradient(180deg, #1f2030 0%, #282a36 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    /* GITHUB ACTIVITY — totally dark (GitHub dark #0d1117) — no blancos */
+    .github-section { background: #0d1117; border-top: 1px solid #21262d; border-bottom: 1px solid #21262d; }
     .github-grid { display: flex; flex-direction: column; gap: 22px; align-items: center; max-width: 960px; margin: 0 auto; }
-    .github-chart { width: 100%; }
-    .github-chart img { width: 100%; border-radius: 12px; background: #21222c; padding: 14px 10px; border: 1px solid var(--border); display: block; }
+    .github-chart { width: 100%; background: #010409; border: 1px solid #30363d; border-radius: 12px; padding: 16px 12px; overflow-x: auto; }
+    .github-chart img { width: 100%; min-width: 640px; display: block; background: transparent; border: none; padding: 0; border-radius: 0;
+      /* totally dark: invert empty #EEEEEE -> #111, hue-rotate keeps bd93f9 purple */
+      filter: invert(1) hue-rotate(180deg) brightness(1.08) contrast(0.95) saturate(1.15); }
+    .github-chart a { display: block; }
     .github-cards { display: grid; grid-template-columns: 1.2fr 0.9fr; gap: 18px; width: 100%; align-items: start; }
-    .github-cards a { display: block; }
-    .github-cards img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; background: #21222c; }
-    .github-note { font-size: 0.78rem; color: var(--text-muted); text-align: center; font-family: 'Fira Code', monospace; }
+    .github-cards a { display: block; background: #010409; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
+    .github-cards img { width: 100%; display: block; background: #0d1117; border: none; border-radius: 12px; }
+    .github-note { font-size: 0.78rem; color: #8b949e; text-align: center; font-family: 'Fira Code', monospace; }
     .github-note a { color: var(--primary); text-decoration: none; }
     .github-note a:hover { text-decoration: underline; }
-    @media (max-width: 900px) { .github-cards { grid-template-columns: 1fr; } }
+    .github-note code { background: #161b22; border: 1px solid #30363d; color: #c9d1d9; padding: 2px 6px; border-radius: 6px; font-size: 0.75rem; }
+    #github-fallback { background: #010409 !important; border-color: #30363d !important; color: #c9d1d9 !important; }
+    @media (max-width: 900px) { .github-cards { grid-template-columns: 1fr; } .github-chart img { min-width: 520px; } }
   </style>
   <script src="public/i18n.js"></script>
 
