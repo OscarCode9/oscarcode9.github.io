@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weekly News 2026-W43 — OscarCode Weekly News</title>
+
+  <meta name="description" content="Weekly News 2026-W43: las noticias de IA más relevantes de la semana, explicadas sin jerga.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="OscarCode Weekly News">
+  <meta property="og:title" content="Weekly News 2026-W43">
+  <meta property="og:description" content="Weekly News 2026-W43: las noticias de IA más relevantes de la semana, explicadas sin jerga.">
+  <meta property="og:url" content="https://oscarcode9.github.io/news/2026-W43/">
+  <link rel="canonical" href="https://oscarcode9.github.io/news/2026-W43/">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Weekly News 2026-W43","description":"Weekly News 2026-W43: las noticias de IA más relevantes de la semana, explicadas sin jerga.","datePublished":"2026-10-23T14:00:47.716Z","inLanguage":"es-MX","url":"https://oscarcode9.github.io/news/2026-W43/","publisher":{"@type":"Organization","name":"OscarCode"}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://oscarcode9.github.io/theme.css?v=17">
+  <script src="https://oscarcode9.github.io/theme.js?v=13" defer></script>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background-color: var(--bg-dark); color: var(--text-primary); font-family: 'Inter', sans-serif; line-height: 1.6; }
+  nav {
+    background: var(--nav-bg, rgba(40, 42, 54, 0.92)); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); position: fixed; width: 100%; z-index: 9999;
+    height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  }
+  .brand-logo { font-family: 'Fira Code', monospace; font-weight: 600; color: var(--primary); text-decoration: none; font-size: 1.3rem; }
+  .brand-logo span { color: var(--accent); }
+  nav ul { list-style: none; display: flex; gap: 22px; }
+  nav ul li a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
+  nav ul li a:hover, nav ul li a.active { color: var(--primary); }
+  .hero { padding: 150px 24px 60px; text-align: center; }
+  .hero-badge { display: inline-block; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); border: 1px solid var(--border); padding: 6px 14px; border-radius: 999px; margin-bottom: 18px; }
+  .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 14px; color: var(--primary); }
+  .hero .intro { color: var(--text-secondary); font-size: 1.05rem; max-width: 720px; margin: 0 auto; }
+  .hero .date { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.8rem; margin-top: 10px; }
+  .section { padding: 40px 24px; }
+  .section > .container { width: 90%; max-width: 900px; margin: 0 auto; }
+  .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; position: relative; display: inline-block; }
+  .section-title::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px; border-radius: 2px; background: var(--primary); }
+  .story { padding: 24px 0; border-bottom: 1px solid var(--border); }
+  .story:first-child { border-top: 1px solid var(--border); }
+  .story-tag { display: inline-block; font-size: 0.7rem; padding: 3px 8px; background: var(--primary-glow); color: var(--primary); border-radius: 4px; margin-bottom: 8px; font-family: 'Fira Code', monospace; }
+  .story h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .story .summary { color: var(--text-secondary); margin-bottom: 12px; }
+  .story h3 { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 4px; }
+  .story p { color: var(--text-secondary); }
+  .story .sources { margin-top: 10px; font-size: 0.8rem; }
+  .story .sources a { color: var(--primary); text-decoration: none; }
+  .story .sources a:hover { text-decoration: underline; }
+  .empty { color: var(--text-muted); padding: 12px 0; }
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+  .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+  .card .name { color: var(--text-primary); font-weight: 600; }
+  .card .area { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+  .card p { color: var(--text-secondary); font-size: 0.95rem; }
+  .card.tip { border-left: 3px solid var(--accent); }
+  .card.tip .name { color: var(--accent); font-family: 'Fira Code', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; }
+  .social { color: var(--text-secondary); padding: 8px 0 24px; }
+  .social h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+  .social ul { list-style: none; }
+  .social li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .previous-list { list-style: none; }
+  .previous-list li { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .previous-list li:first-child { border-top: 1px solid var(--border); }
+  .previous-list a { color: var(--text-primary); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+  .previous-list a:hover { color: var(--primary); }
+  .previous-list .date { color: var(--text-muted); font-family: 'Fira Code', monospace; font-size: 0.75rem; }
+  .empty-first { color: var(--text-muted); padding: 18px 0; }
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .btn-primary { display: inline-block; background: var(--primary); border: none; border-radius: 999px; padding: 13px 28px; font-weight: 600; color: #fff; text-decoration: none; transition: transform 0.25s, box-shadow 0.3s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--primary-glow); color: #fff; }
+  .btn-secondary { display: inline-block; background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 13px 28px; font-weight: 600; color: var(--text-primary); text-decoration: none; transition: all 0.25s; }
+  .btn-secondary:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-glow); }
+  footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 60px; }
+  .nav-subscribe { background: var(--primary); border: none; border-radius: 999px; padding: 8px 18px; font-weight: 600; color: #fff; font-size: 0.85rem; cursor: pointer; transition: transform 0.25s, box-shadow 0.3s; font-family: 'Inter', sans-serif; }
+  .nav-subscribe:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-glow); }
+  .subscribe-modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 20px; }
+  .subscribe-modal.open { display: flex; }
+  .subscribe-modal-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 34px; max-width: 460px; width: 100%; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); position: relative; }
+  .subscribe-modal-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; color: var(--text-primary); }
+  .subscribe-modal-card .sub-lead { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin-bottom: 20px; }
+  .subscribe-modal-card ul { list-style: none; margin: 0 0 20px; }
+  .subscribe-modal-card ul li { color: var(--text-secondary); font-size: 0.9rem; padding: 5px 0 5px 22px; position: relative; }
+  .subscribe-modal-card ul li::before { content: '▸'; position: absolute; left: 4px; color: var(--primary); }
+  .subscribe-modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+  .subscribe-modal-close:hover { color: var(--primary); }
+  #news-subscribe-form { display: flex; gap: 10px; }
+  #news-subscribe-form input { flex: 1; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text-primary); font-size: 0.95rem; font-family: 'Inter', sans-serif; }
+  #news-subscribe-form input:focus { outline: none; border-color: var(--primary); }
+  #news-subscribe-form button { background: var(--primary); border: none; border-radius: 10px; padding: 12px 20px; font-weight: 600; color: #fff; cursor: pointer; font-family: 'Inter', sans-serif; }
+  #news-subscribe-form button:hover { box-shadow: 0 6px 20px var(--primary-glow); }
+  .subscribe-status { margin-top: 14px; font-size: 0.9rem; min-height: 1.2em; color: var(--text-secondary); }
+  .subscribe-status.ok { color: var(--success); }
+  .subscribe-status.err { color: var(--accent); }
+</style>
+</head>
+<body>
+  <nav>
+    <a class="brand-logo" href="https://oscarcode9.github.io">{ OscarCode }</a>
+    <ul>
+      <li><a href="https://oscarcode9.github.io/news" class="">News</a></li>
+      <li><a href="https://oscarcode9.github.io/skills.html">Skills</a></li>
+      <li><a href="https://oscarcode9.github.io">Inicio</a></li>
+      <li><a href="en/index.html" aria-label="EN" style="font-family: 'Fira Code', monospace; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.8rem; border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px;">EN</a></li>
+      <li><button type="button" class="nav-subscribe" data-subscribe-open>Suscribirse</button></li>
+    </ul>
+  </nav>
+  <main>
+  <header class="hero">
+    <div class="hero-badge">OscarCode Weekly News · 2026-W43</div>
+    <h1>Weekly News 2026-W43</h1>
+    <p class="intro">Lo más relevante que pasó en inteligencia artificial esta semana, explicado sin jerga: 5 historias, un dato curioso y un tip para aprovechar la IA en tu día a día.</p>
+    <p class="date">2026-10-23</p>
+    <div class="cta-row">
+      <a class="btn-secondary" href="../index.html">← Volver al índice</a>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Historias de la semana</h2>
+
+    <article class="story">
+      <span class="story-tag">reuters.com</span>
+      <h2>Anthropic unveils Claude Duet AI agent app</h2>
+      
+      <h3>¿Qué pasó?</h3>
+      <p>Anthropic on Wednesday unveiled Claude Duet, a standalone AI agent ​app designed to act as a proactive assistant ‌for professionals and small-business owners, as rivals such as OpenAI and Meta race to develop AI agents that can ​complete work autonomously on users&#39; behalf.</p>
+      <h3>¿Por qué importa?</h3>
+      <p>Esto puede cambiar la forma en que usas la tecnología en tu día a día.</p>
+      <h3>Impacto en tu día a día</h3>
+      <p>Los antecedentes ayudan a entender por qué esta noticia genera conversación.</p>
+      <p class="sources">Fuentes: <a href="https://www.reuters.com/technology/anthropic-unveils-claude-duet-ai-agent-app-2026-10-21/" rel="noopener">reuters.com</a> · <a href="https://reuters.com/" rel="noopener">reuters.com</a></p>
+    </article>
+
+    <article class="story">
+      <span class="story-tag">geeky-gadgets.com</span>
+      <h2>Kimi K3.1, Qwen 4 and a Gemini 4.5 Argon? Nobody Expected THIS</h2>
+      
+      <h3>¿Qué pasó?</h3>
+      <p>Kimi K3.1 and Qwen 4 could disrupt the AI market with competitive pricing. Testing shows these models rival the performance of Opus 5.5 and GPT6 Astra.</p>
+      <h3>¿Por qué importa?</h3>
+      <p>Esto puede cambiar la forma en que usas la tecnología en tu día a día.</p>
+      <h3>Impacto en tu día a día</h3>
+      <p>Los antecedentes ayudan a entender por qué esta noticia genera conversación.</p>
+      <p class="sources">Fuentes: <a href="https://www.geeky-gadgets.com/kimi-k3-qwen-4-testing/" rel="noopener">geeky-gadgets.com</a> · <a href="https://geeky-gadgets.com/" rel="noopener">geeky-gadgets.com</a></p>
+    </article>
+
+    <article class="story">
+      <span class="story-tag">kucoin.com</span>
+      <h2>Moonshot&#39;s Kimi Official Video Reveals the K3.1 Model</h2>
+      
+      <h3>¿Qué pasó?</h3>
+      <p>Huo Xing Cai Jing reports that Moonshot AI&#39;s official Kimi platform released a 24-second video in retro computer style, showing the Kimi Code terminal displayin</p>
+      <h3>¿Por qué importa?</h3>
+      <p>Esto puede cambiar la forma en que usas la tecnología en tu día a día.</p>
+      <h3>Impacto en tu día a día</h3>
+      <p>Los antecedentes ayudan a entender por qué esta noticia genera conversación.</p>
+      <p class="sources">Fuentes: <a href="https://www.kucoin.com/news/flash/moonshot-s-kimi-official-video-reveals-k3-1-model" rel="noopener">kucoin.com</a> · <a href="https://kucoin.com/" rel="noopener">kucoin.com</a></p>
+    </article>
+
+    <article class="story">
+      <span class="story-tag">cryptobriefing.com</span>
+      <h2>Anthropic&#39;s Claude Opus 5.5 tops AI index with 61.7 score</h2>
+      
+      <h3>¿Qué pasó?</h3>
+      <p>The announcement suggests that Anthropic&#39;s Claude Opus 5.5 is currently leading in AI model rankings according to the new index. Markets appear to reflect mixed reactions, as the source&#39;s social media origin reduces perceived impact strength.</p>
+      <h3>¿Por qué importa?</h3>
+      <p>Esto puede cambiar la forma en que usas la tecnología en tu día a día.</p>
+      <h3>Impacto en tu día a día</h3>
+      <p>Los antecedentes ayudan a entender por qué esta noticia genera conversación.</p>
+      <p class="sources">Fuentes: <a href="https://cryptobriefing.com/anthropics-claude-opus-55-tops-ai-index-with-617-score/" rel="noopener">cryptobriefing.com</a> · <a href="https://cryptobriefing.com/" rel="noopener">cryptobriefing.com</a></p>
+    </article>
+
+    <article class="story">
+      <span class="story-tag">msn.com</span>
+      <h2>DeepSeek and Kimi K3: The open-source strategy turning Chinese AI into a geopolitical force</h2>
+      
+      <h3>¿Qué pasó?</h3>
+      <p>Chinese AI models now power 55% of Vercel developer traffic. How DeepSeek V4 and Kimi K3 reshaped global AI—and why Beijing just tried to slow it down.</p>
+      <h3>¿Por qué importa?</h3>
+      <p>Esto puede cambiar la forma en que usas la tecnología en tu día a día.</p>
+      <h3>Impacto en tu día a día</h3>
+      <p>Los antecedentes ayudan a entender por qué esta noticia genera conversación.</p>
+      <p class="sources">Fuentes: <a href="https://www.msn.com/en-us/news/other/deepseek-and-kimi-k3-the-open-source-strategy-turning-chinese-ai-into-a-geopolitical-force/ar-AA2fSiWL" rel="noopener">msn.com</a> · <a href="https://msn.com/" rel="noopener">msn.com</a></p>
+    </article>
+
+
+    <section class="social">
+      <h2>¿Qué habla la gente?</h2>
+      <ul><li>Artificial <span class="date">(1500 menciones)</span></li>
+<li>Inteligencia <span class="date">(1100 menciones)</span></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Dato de la semana</h2>
+      <p class="name">secure-email-infra-config <span class="area">(email-comunicaciones)</span></p>
+      <p>Elegida por su conexión con &quot;Anthropic unveils Claude Duet AI agent app&quot; en esta edición.</p>
+    </section>
+    <section class="card tip">
+      <h2 class="name">Tip de la semana</h2>
+      <p>prueba Anthropic unveils Claude Duet agent antes de pagar por algo: hoy casi todo lo que se anuncia tiene una versión gratis para probar.</p>
+    </section>
+    </div>
+  </section>  </main>
+
+  <footer>
+    <p>OscarCode Weekly News — generado automáticamente por el agente editorial.</p>
+  </footer>
+
+  <div id="news-subscribe-modal" class="subscribe-modal" aria-hidden="true">
+    <div class="subscribe-modal-card" role="dialog" aria-modal="true" aria-labelledby="sub-title">
+      <button type="button" class="subscribe-modal-close" data-subscribe-close aria-label="Cerrar">&times;</button>
+      <h2 id="sub-title">Newsletter semanal</h2>
+      <p class="sub-lead">Cada viernes recibes en tu correo lo más relevante que pasó en inteligencia artificial esta semana, explicado sin jerga. Sin spam y con baja en un clic.</p>
+      <ul>
+        <li>Las historias de IA que más importan, verificadas y en simple</li>
+        <li>Un dato curioso para sorprenderte</li>
+        <li>Un tip para aprovechar la IA en tu día a día</li>
+      </ul>
+      <form id="news-subscribe-form" novalidate>
+        <input type="email" name="email" placeholder="tu@correo.com" autocomplete="email" required maxlength="254" inputmode="email">
+        <input type="text" name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+        <button type="submit">Suscribirme</button>
+      </form>
+      <p class="subscribe-status" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var modal = document.getElementById('news-subscribe-modal');
+  if (!modal) return;
+  var status = modal.querySelector('.subscribe-status');
+  var form = document.getElementById('news-subscribe-form');
+  var apiBase = "https://news.oventlabs.net";
+
+  function open() { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+  function close() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+
+  // Links compartibles: ?subscribe=1 (o #subscribe) abre el modal directo,
+  // p. ej. https://oscarcode9.github.io/news/?subscribe=1
+  if (
+    new URLSearchParams(window.location.search).has('subscribe') ||
+    window.location.hash === '#subscribe'
+  ) {
+    open();
+  }
+
+  // Contador del sitio: visitas (sistema compartido agents.oventlabs.net, el
+  // mismo del sitio principal) + suscriptores (API propia).
+  var statsEl = document.querySelector('[data-news-stats]');
+  var visitsApi = 'https://agents.oventlabs.net/api/visits';
+  function fmt(n) {
+    try { return Number(n).toLocaleString('es-MX'); } catch (e) { return String(n); }
+  }
+  if (statsEl) {
+    // Hit de visita (contador compartido de oventlabs, mismo que el principal)
+    try {
+      fetch(visitsApi + '/hit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: '/news' }),
+        credentials: 'omit',
+      }).catch(function () {});
+    } catch (e) {}
+    fetch(visitsApi + '?path=' + encodeURIComponent('/news'))
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (data && typeof data.count === 'number') {
+          statsEl.textContent = fmt(data.count) + ' visitas';
+        }
+      })
+      .catch(function () {});
+    // Suscriptores del newsletter (API propia)
+    fetch(apiBase + '/news/stats', { headers: { accept: 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (data && typeof data.subscribers === 'number') {
+          statsEl.textContent = statsEl.textContent
+            ? statsEl.textContent + ' · ' + data.subscribers + ' suscriptores'
+            : data.subscribers + ' suscriptores';
+        }
+      })
+      .catch(function () {});
+  }
+  // Beacon de visita: registra el hit y detecta agentes que buscan el sitio.
+  try {
+    fetch(apiBase + '/news/visit?path=' + encodeURIComponent(window.location.pathname), {
+      headers: { accept: 'application/json' },
+      keepalive: true,
+    }).catch(function () {});
+  } catch (e) {}
+
+  document.querySelectorAll('[data-subscribe-open]').forEach(function (btn) {
+    btn.addEventListener('click', open);
+  });
+  modal.querySelectorAll('[data-subscribe-close]').forEach(function (btn) {
+    btn.addEventListener('click', close);
+  });
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = form.email.value.trim();
+    status.textContent = '';
+    status.className = 'subscribe-status';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      status.textContent = 'Escribe un correo válido, por ejemplo tu@correo.com';
+      status.classList.add('err');
+      return;
+    }
+    var btn = form.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    // Anti header-injection: el email nunca lleva saltos de línea.
+    if (/[
+ ]/.test(email) || email.length > 254) {
+      status.textContent = 'Escribe un correo válido';
+      status.classList.add('err');
+      btn.disabled = false;
+      btn.textContent = 'Suscribirme';
+      return;
+    }
+    var payload = { email: email, company: form.company ? form.company.value : '' };
+    fetch(apiBase + '/news/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      if (res.status === 202) {
+        status.textContent = '¡Listo! Ya estás suscrito(a). Revisa tu bandeja para la bienvenida.';
+        status.classList.add('ok');
+        form.email.value = '';
+      } else {
+        return res.json().then(function (data) {
+          throw new Error(data && data.error ? data.error : 'No se pudo suscribir');
+        });
+      }
+    }).catch(function (err) {
+      status.textContent = 'Algo falló: ' + (err && err.message ? err.message : 'intenta de nuevo más tarde');
+      status.classList.add('err');
+    }).finally(function () {
+      btn.disabled = false;
+      btn.textContent = 'Suscribirme';
+    });
+  });
+})();
+</script>
+</body>
+</html>
