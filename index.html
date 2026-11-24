@@ -923,115 +923,6 @@
       font-family: 'Fira Code', monospace;
     }
 
-    /* PORTFOLIO */
-    .portfolio-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-      gap: 24px;
-      max-width: 1200px;
-    }
-
-    .portfolio-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 24px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      text-decoration: none;
-      transition: all 0.3s;
-      position: relative;
-    }
-
-    .portfolio-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(189, 147, 249, 0.1);
-    }
-
-    .portfolio-preview {
-      min-width: 72px;
-      height: 72px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .portfolio-emoji {
-      font-size: 2rem;
-    }
-
-    .portfolio-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .portfolio-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin: 0 0 6px 0;
-      transition: color 0.3s;
-    }
-
-    .portfolio-card:hover .portfolio-title {
-      color: var(--primary);
-    }
-
-    .portfolio-desc {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin: 0 0 12px 0;
-      line-height: 1.5;
-    }
-
-    .portfolio-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .portfolio-tag {
-      display: inline-block;
-      font-size: 0.65rem;
-      padding: 3px 8px;
-      background: rgba(189, 147, 249, 0.08);
-      color: var(--primary);
-      border-radius: 4px;
-      font-family: 'Fira Code', monospace;
-      letter-spacing: 0.02em;
-    }
-
-    .portfolio-arrow {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      transition: all 0.3s;
-      margin-top: 4px;
-      flex-shrink: 0;
-    }
-
-    .portfolio-card:hover .portfolio-arrow {
-      color: var(--primary);
-      transform: translate(3px, -3px);
-    }
-
-    @media (max-width: 500px) {
-      .portfolio-grid {
-        grid-template-columns: 1fr;
-      }
-      .portfolio-card {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .portfolio-preview {
-        width: 100%;
-        height: 56px;
-      }
-    }
-
     /* CONTACT */
     .contact-section { background: var(--bg-dark); }
 
@@ -1284,6 +1175,8 @@
   <script src="visits-badge.js" defer></script>
   <link rel="stylesheet" href="theme.css?v=17">
   <script src="theme.js?v=13"></script>
+  <link rel="stylesheet" href="portfolio.css?v=1">
+  <script src="portfolio.js?v=1" defer></script>
 </head>
 
 <body>
@@ -1841,175 +1734,129 @@
   </section>
 
   <!-- PORTAFOLIO -->
-  <section id="portfolio" class="section">
+  <section id="portfolio" class="section" aria-labelledby="portfolio-heading">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title"><span class="lang-es">Portafolio</span><span class="lang-en">Portfolio</span></h2>
-        <p class="section-subtitle"><span class="lang-es">Proyectos en producción — cosas reales que funcionan</span><span class="lang-en">Production projects — real stuff that works</span></p>
+        <span class="portfolio-eyebrow"><span class="lang-es">SOFTWARE QUE HE CONSTRUIDO</span><span class="lang-en">SOFTWARE I HAVE BUILT</span></span>
+        <h2 id="portfolio-heading" class="section-title"><span class="lang-es">Sistemas reales.
+De la operación a la experiencia.</span><span class="lang-en">Real systems.
+From operations to experiences.</span></h2>
+        <p class="section-subtitle"><span class="lang-es">Plataformas de logística, administración y productos digitales. Una selección de mi trabajo, empezando por los sistemas de mayor alcance operativo.</span><span class="lang-en">Logistics platforms, business systems and digital products. A selection of my work, starting with the broadest operational systems.</span></p>
       </div>
-
-      <div class="portfolio-grid">
-        <!-- OventLabs -->
-        <a href="https://agents.oventlabs.net/" target="_blank" rel="noopener" class="portfolio-card">
-          <div class="portfolio-preview" style="background: linear-gradient(135deg, #1f2030 0%, #1f2030 100%);">
-            <span class="portfolio-emoji"><i class="fas fa-robot"></i></span>
-          </div>
-          <div class="portfolio-info">
-            <h3 class="portfolio-title">OventLabs</h3>
-            <p class="portfolio-desc"><span class="lang-es">Fábrica de software con agentes de IA. Portal de cliente con magic link auth, onboarding, generación de alcance con IA y tracking de requerimientos.</span><span class="lang-en">AI-powered software factory. Client portal with magic link auth, onboarding, AI scope generation and requirements tracking.</span></p>
-            <div class="portfolio-tags">
-              <span class="portfolio-tag">Next.js</span>
-              <span class="portfolio-tag">Prisma</span>
-              <span class="portfolio-tag">PostgreSQL</span>
-              <span class="portfolio-tag">AI</span>
-              <span class="portfolio-tag">Docker</span>
-            </div>
-          </div>
-          <i class="fas fa-external-link-alt portfolio-arrow"></i>
-        </a>
-
-        <!-- TenK -->
-        <a href="https://tenk.oventlabs.com/" target="_blank" rel="noopener" class="portfolio-card">
-          <div class="portfolio-preview" style="background: linear-gradient(135deg, #2a2140 0%, #2a2140 100%);">
-            <span class="portfolio-emoji"><i class="fas fa-microphone"></i></span>
-          </div>
-          <div class="portfolio-info">
-            <h3 class="portfolio-title">TenK</h3>
-            <p class="portfolio-desc"><span class="lang-es">Plataforma de productividad con voice-to-text, tracking de horas y herramientas de desarrollo. Inspirada en la regla de las 10,000 horas.</span><span class="lang-en">Productivity platform with voice-to-text, hour tracking and dev tools. Inspired by the 10,000 hours rule.</span></p>
-            <div class="portfolio-tags">
-              <span class="portfolio-tag">Vue.js</span>
-              <span class="portfolio-tag">Node.js</span>
-              <span class="portfolio-tag">Whisper AI</span>
-              <span class="portfolio-tag">AWS</span>
-            </div>
-          </div>
-          <i class="fas fa-external-link-alt portfolio-arrow"></i>
-        </a>
-
-        <!-- Clínica Truck Driver -->
-        <a href="https://clinica.corporativotruckdriver.com/home" target="_blank" rel="noopener" class="portfolio-card">
-          <div class="portfolio-preview" style="background: linear-gradient(135deg, #1f2030 0%, #22232e 100%);">
-            <span class="portfolio-emoji"><i class="fas fa-hospital"></i></span>
-          </div>
-          <div class="portfolio-info">
-            <h3 class="portfolio-title">Clínica Truck Driver</h3>
-            <p class="portfolio-desc"><span class="lang-es">Sistema de gestión clínica para exámenes médicos de operadores de transporte. Expedientes digitales, citas y reportes.</span><span class="lang-en">Clinical management system for transport operator medical exams. Digital records, appointments and reports.</span></p>
-            <div class="portfolio-tags">
-              <span class="portfolio-tag">Angular</span>
-              <span class="portfolio-tag">Node.js</span>
-              <span class="portfolio-tag">PostgreSQL</span>
-              <span class="portfolio-tag">Docker</span>
-            </div>
-          </div>
-          <i class="fas fa-external-link-alt portfolio-arrow"></i>
-        </a>
-
-        <!-- LogiRed -->
-        <a href="https://logisticred.com/landing" target="_blank" rel="noopener" class="portfolio-card">
-          <div class="portfolio-preview" style="background: linear-gradient(135deg, #1f2030 0%, #1f2030 100%);">
-            <span class="portfolio-emoji"><i class="fas fa-truck"></i></span>
-          </div>
-          <div class="portfolio-info">
-            <h3 class="portfolio-title">LogiRed</h3>
-            <p class="portfolio-desc"><span class="lang-es">Plataforma de logística y transporte. Gestión de operadores, vehículos, rutas y servicios para empresas de autotransporte.</span><span class="lang-en">Logistics and transport platform. Operator, vehicle, route and service management for trucking companies.</span></p>
-            <div class="portfolio-tags">
-              <span class="portfolio-tag">Node.js</span>
-              <span class="portfolio-tag">Express</span>
-              <span class="portfolio-tag">MySQL</span>
-              <span class="portfolio-tag">Flutter</span>
-            </div>
-          </div>
-          <i class="fas fa-external-link-alt portfolio-arrow"></i>
-        </a>
-      </div>
+      <div class="portfolio-toolbar">
+        <div class="portfolio-filters" role="group" aria-label="Filtrar proyectos / Filter projects">
+<button type="button" class="portfolio-filter" data-project-filter="all" aria-pressed="true"><span class="lang-es">Todos</span><span class="lang-en">All</span></button>
+<button type="button" class="portfolio-filter" data-project-filter="operations" aria-pressed="false"><span class="lang-es">Sistemas de gestión</span><span class="lang-en">Business systems</span></button>
+<button type="button" class="portfolio-filter" data-project-filter="digital" aria-pressed="false"><span class="lang-es">Productos digitales</span><span class="lang-en">Digital products</span></button>
+<button type="button" class="portfolio-filter" data-project-filter="ai" aria-pressed="false"><span class="lang-es">Inteligencia artificial</span><span class="lang-en">Artificial intelligence</span></button>
+</div><span class="portfolio-count" data-project-count aria-live="polite" aria-atomic="true"><span class="lang-es">9 proyectos</span><span class="lang-en">9 projects</span></span></div><div class="portfolio-grid">
+<article class="portfolio-card portfolio-featured" data-project="logired" data-category="operations" aria-labelledby="project-logired">
+<button type="button" class="portfolio-preview" data-gallery="[{&quot;src&quot;: &quot;public/portfolio/logired.webp&quot;, &quot;title&quot;: &quot;LogiRed&quot;, &quot;alt&quot;: &quot;LogiRed · Gestión de servicios de transporte con filtros y seguimiento operativo&quot;}]" aria-haspopup="dialog" aria-label="Ampliar captura / Enlarge screenshot: LogiRed"><img src="public/portfolio/logired-thumb.webp" alt="LogiRed · Gestión de servicios de transporte con filtros y seguimiento operativo" width="1000" height="473" loading="lazy" decoding="async"><span class="portfolio-image-label"><i class="fas fa-expand" aria-hidden="true"></i><span class="lang-es">Ampliar captura</span><span class="lang-en">Enlarge screenshot</span></span></button>
+<div class="portfolio-info">
+<span class="portfolio-featured-label"><span class="lang-es">Proyecto destacado</span><span class="lang-en">Featured project</span></span>
+<span class="portfolio-category"><span class="lang-es">Logística &amp; transporte</span><span class="lang-en">Logistics &amp; transportation</span></span><h3 class="portfolio-title" id="project-logired">LogiRed</h3><p class="portfolio-desc"><span class="lang-es">Una plataforma que conecta la operación del transporte: servicios, operadores, unidades, rutas, gastos, nómina y facturación con Carta Porte. Visibilidad y control desde la planeación hasta el cierre de cada viaje.</span><span class="lang-en">A platform connecting transport operations: services, drivers, vehicles, routes, expenses, payroll and invoicing with Carta Porte. Visibility and control from trip planning to completion.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Gestión de flota</span><span class="lang-en">Fleet management</span></span>
+<span class="portfolio-tag"><span class="lang-es">Finanzas</span><span class="lang-en">Finance</span></span>
+<span class="portfolio-tag"><span class="lang-es">Carta Porte</span><span class="lang-en">Carta Porte</span></span>
+</div>
+<div class="portfolio-actions"><a class="portfolio-link" href="https://logisticred.com/landing" target="_blank" rel="noopener noreferrer"><span class="lang-es">Visitar sitio</span><span class="lang-en">Visit website</span><i class="fas fa-external-link-alt" aria-hidden="true"></i></a></div>
+</div></article>
+<article class="portfolio-card" data-project="tia" data-category="operations" aria-labelledby="project-tia">
+<button type="button" class="portfolio-preview" data-gallery="[{&quot;src&quot;: &quot;public/portfolio/tia-mexico.webp&quot;, &quot;title&quot;: &quot;TIA México&quot;, &quot;alt&quot;: &quot;TIA México · Inventario dividido por almacén con disponibilidad y apartados&quot;}]" aria-haspopup="dialog" aria-label="Ampliar captura / Enlarge screenshot: TIA México"><img src="public/portfolio/tia-mexico-thumb.webp" alt="TIA México · Inventario dividido por almacén con disponibilidad y apartados" width="1000" height="470" loading="lazy" decoding="async"><span class="portfolio-image-label"><i class="fas fa-expand" aria-hidden="true"></i><span class="lang-es">Ampliar captura</span><span class="lang-en">Enlarge screenshot</span></span></button>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Inventario &amp; logística</span><span class="lang-en">Inventory &amp; logistics</span></span><h3 class="portfolio-title" id="project-tia">TIA México</h3><p class="portfolio-desc"><span class="lang-es">Control de inventario por almacén, apartados, pedidos, embarques y contenedores. Una operación conectada para distinguir existencias físicas, mercancía en tránsito y piezas reservadas.</span><span class="lang-en">Inventory control by warehouse, reservations, orders, shipments and containers. A connected operation that distinguishes physical stock, goods in transit and reserved items.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Multi-almacén</span><span class="lang-en">Multi-warehouse</span></span>
+<span class="portfolio-tag"><span class="lang-es">Embarques</span><span class="lang-en">Shipments</span></span>
+<span class="portfolio-tag"><span class="lang-es">Cubicaje 3D</span><span class="lang-en">3D load planning</span></span>
+</div>
+<div class="portfolio-actions"><span class="portfolio-private"><span class="lang-es">Sistema de acceso privado</span><span class="lang-en">Private access system</span></span></div>
+</div></article>
+<article class="portfolio-card" data-project="factured" data-category="operations ai" aria-labelledby="project-factured">
+<div class="portfolio-system-banner" aria-hidden="true"><i class="fas fa-file-invoice-dollar"></i><div><strong><span class="lang-es">Facturación conectada.</span><span class="lang-en">Connected invoicing.</span></strong><small><span class="lang-es">CFDI · Pagos · Carta Porte</span><span class="lang-en">CFDI · Payments · Carta Porte</span></small></div></div>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Facturación &amp; automatización</span><span class="lang-en">Invoicing &amp; automation</span></span><h3 class="portfolio-title" id="project-factured">Factured</h3><p class="portfolio-desc"><span class="lang-es">Facturación CFDI 4.0, complementos de pago y Carta Porte en una plataforma multiempresa. Integra clientes, comprobantes y herramientas para operar con asistentes de IA.</span><span class="lang-en">Multi-company platform for CFDI 4.0 invoices, payment receipts and Carta Porte. Connects customers, fiscal documents and tools for working with AI assistants.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">CFDI 4.0</span><span class="lang-en">CFDI 4.0</span></span>
+<span class="portfolio-tag"><span class="lang-es">Multiempresa</span><span class="lang-en">Multi-company</span></span>
+<span class="portfolio-tag"><span class="lang-es">Integración MCP</span><span class="lang-en">MCP integration</span></span>
+</div>
+<div class="portfolio-actions"><span class="portfolio-private"><span class="lang-es">Sistema de acceso privado</span><span class="lang-en">Private access system</span></span></div>
+</div></article>
+<article class="portfolio-card" data-project="cecaop" data-category="operations" aria-labelledby="project-cecaop">
+<div class="portfolio-system-banner" aria-hidden="true"><i class="fas fa-graduation-cap"></i><div><strong><span class="lang-es">Cada constancia, en orden.</span><span class="lang-en">Every certificate, organized.</span></strong><small><span class="lang-es">Control · Consulta · Seguimiento</span><span class="lang-en">Control · Queries · Tracking</span></small></div></div>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Administración &amp; capacitación</span><span class="lang-en">Administration &amp; training</span></span><h3 class="portfolio-title" id="project-cecaop">CECAOP</h3><p class="portfolio-desc"><span class="lang-es">Gestión de constancias, documentos y seguimiento administrativo para centros de capacitación. Consultas de SIAF, reportes por sede y control de folios en una misma operación.</span><span class="lang-en">Certificate, document and administrative management for training centers. SIAF queries, location-based reports and certificate number control in one workflow.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Constancias</span><span class="lang-en">Certificates</span></span>
+<span class="portfolio-tag"><span class="lang-es">Documentos</span><span class="lang-en">Documents</span></span>
+<span class="portfolio-tag"><span class="lang-es">Reportes</span><span class="lang-en">Reports</span></span>
+</div>
+<div class="portfolio-actions"><span class="portfolio-private"><span class="lang-es">Sistema de acceso privado</span><span class="lang-en">Private access system</span></span></div>
+</div></article>
+<article class="portfolio-card" data-project="clinica" data-category="operations" aria-labelledby="project-clinica">
+<div class="portfolio-system-banner" aria-hidden="true"><i class="fas fa-stethoscope"></i><div><strong><span class="lang-es">Tecnología para cuidar.</span><span class="lang-en">Technology for care.</span></strong><small><span class="lang-es">Expedientes · Citas · Reportes</span><span class="lang-en">Records · Appointments · Reports</span></small></div></div>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Salud &amp; gestión clínica</span><span class="lang-en">Healthcare &amp; clinical management</span></span><h3 class="portfolio-title" id="project-clinica">Clínica Truck Driver</h3><p class="portfolio-desc"><span class="lang-es">Sistema de gestión para exámenes médicos de operadores de transporte. Organiza expedientes digitales, citas y reportes para acompañar el trabajo del equipo clínico.</span><span class="lang-en">Management system for transport driver medical examinations. Organizes digital records, appointments and reports to support the clinical team.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Expedientes</span><span class="lang-en">Medical records</span></span>
+<span class="portfolio-tag"><span class="lang-es">Citas</span><span class="lang-en">Appointments</span></span>
+<span class="portfolio-tag"><span class="lang-es">Reportes</span><span class="lang-en">Reports</span></span>
+</div>
+<div class="portfolio-actions"><a class="portfolio-link" href="https://clinica.corporativotruckdriver.com/home" target="_blank" rel="noopener noreferrer"><span class="lang-es">Visitar sitio</span><span class="lang-en">Visit website</span><i class="fas fa-external-link-alt" aria-hidden="true"></i></a></div>
+</div></article>
+<article class="portfolio-card" data-project="mendez" data-category="digital" aria-labelledby="project-mendez">
+<button type="button" class="portfolio-preview" data-gallery="[{&quot;src&quot;: &quot;public/portfolio/mendez-catalogo.webp&quot;, &quot;title&quot;: &quot;Mueblería Méndez&quot;, &quot;alt&quot;: &quot;Mueblería Méndez · Catálogo de muebles y selección de acabados&quot;}, {&quot;src&quot;: &quot;public/portfolio/mendez-configurador.webp&quot;, &quot;title&quot;: &quot;Mueblería Méndez · Configurador 3D&quot;, &quot;alt&quot;: &quot;Mueblería Méndez · Vista de despiece y montaje 3D con selección de acabados&quot;}]" aria-haspopup="dialog" aria-label="Ampliar captura / Enlarge screenshot: Mueblería Méndez"><img src="public/portfolio/mendez-catalogo-thumb.webp" alt="Mueblería Méndez · Catálogo de muebles y selección de acabados" width="1000" height="470" loading="lazy" decoding="async"><span class="portfolio-image-label"><i class="fas fa-expand" aria-hidden="true"></i><span class="lang-es">Ver 2 capturas</span><span class="lang-en">View 2 screenshots</span></span></button>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Catálogo &amp; experiencia 3D</span><span class="lang-en">Catalog &amp; 3D experience</span></span><h3 class="portfolio-title" id="project-mendez">Mueblería Méndez</h3><p class="portfolio-desc"><span class="lang-es">Un catálogo que permite explorar cada mueble antes de elegirlo. Configuración de acabados, medidas, giro de piezas y una experiencia de despiece y montaje en 3D.</span><span class="lang-en">A catalog for exploring furniture before choosing it. Finish customization, dimensions, model rotation and an interactive 3D assembly and exploded view.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Three.js</span><span class="lang-en">Three.js</span></span>
+<span class="portfolio-tag"><span class="lang-es">Configurador 3D</span><span class="lang-en">3D configurator</span></span>
+<span class="portfolio-tag"><span class="lang-es">Comercio digital</span><span class="lang-en">Digital commerce</span></span>
+</div>
+</div></article>
+<article class="portfolio-card" data-project="invitaciones" data-category="digital" aria-labelledby="project-invitaciones">
+<button type="button" class="portfolio-preview" data-gallery="[{&quot;src&quot;: &quot;public/portfolio/oventlabs-invitaciones.webp&quot;, &quot;title&quot;: &quot;OventLabs Invitaciones&quot;, &quot;alt&quot;: &quot;OventLabs Invitaciones · Catálogo de invitaciones digitales para celebraciones&quot;}]" aria-haspopup="dialog" aria-label="Ampliar captura / Enlarge screenshot: OventLabs Invitaciones"><img src="public/portfolio/oventlabs-invitaciones-thumb.webp" alt="OventLabs Invitaciones · Catálogo de invitaciones digitales para celebraciones" width="1000" height="471" loading="lazy" decoding="async"><span class="portfolio-image-label"><i class="fas fa-expand" aria-hidden="true"></i><span class="lang-es">Ampliar captura</span><span class="lang-en">Enlarge screenshot</span></span></button>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Diseño &amp; eventos</span><span class="lang-en">Design &amp; events</span></span><h3 class="portfolio-title" id="project-invitaciones">OventLabs Invitaciones</h3><p class="portfolio-desc"><span class="lang-es">Invitaciones digitales con identidad propia para bodas, XV años y celebraciones. Una experiencia con música, galería, ubicación y confirmaciones para compartir cada evento.</span><span class="lang-en">Digital invitations with a distinctive identity for weddings, quinceañeras and celebrations. Music, galleries, location and RSVPs in a shareable event experience.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Diseño personalizado</span><span class="lang-en">Custom design</span></span>
+<span class="portfolio-tag"><span class="lang-es">RSVP</span><span class="lang-en">RSVP</span></span>
+<span class="portfolio-tag"><span class="lang-es">Experiencia móvil</span><span class="lang-en">Mobile experience</span></span>
+</div>
+<div class="portfolio-actions"><a class="portfolio-link" href="https://invitaciones.oventlabs.net/" target="_blank" rel="noopener noreferrer"><span class="lang-es">Visitar sitio</span><span class="lang-en">Visit website</span><i class="fas fa-external-link-alt" aria-hidden="true"></i></a></div>
+</div></article>
+<article class="portfolio-card" data-project="tenk" data-category="ai digital" aria-labelledby="project-tenk">
+<button type="button" class="portfolio-preview" data-gallery="[{&quot;src&quot;: &quot;public/portfolio/tenk.webp&quot;, &quot;title&quot;: &quot;TenK&quot;, &quot;alt&quot;: &quot;TenK · Seguimiento de horas de práctica y progreso de habilidades con IA&quot;}]" aria-haspopup="dialog" aria-label="Ampliar captura / Enlarge screenshot: TenK"><img src="public/portfolio/tenk-thumb.webp" alt="TenK · Seguimiento de horas de práctica y progreso de habilidades con IA" width="993" height="700" loading="lazy" decoding="async"><span class="portfolio-image-label"><i class="fas fa-expand" aria-hidden="true"></i><span class="lang-es">Ampliar captura</span><span class="lang-en">Enlarge screenshot</span></span></button>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Productividad &amp; aprendizaje con IA</span><span class="lang-en">Productivity &amp; AI learning</span></span><h3 class="portfolio-title" id="project-tenk">TenK</h3><p class="portfolio-desc"><span class="lang-es">Una plataforma para convertir la práctica en progreso. Registro de horas por habilidad, metas, notas, plan semanal y chat con IA para acompañar el aprendizaje.</span><span class="lang-en">A platform that turns practice into progress. Hours tracked by skill, goals, notes, weekly planning and AI chat to support learning.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Seguimiento de hábitos</span><span class="lang-en">Habit tracking</span></span>
+<span class="portfolio-tag"><span class="lang-es">Chat con IA</span><span class="lang-en">AI chat</span></span>
+<span class="portfolio-tag"><span class="lang-es">Progreso visual</span><span class="lang-en">Visual progress</span></span>
+</div>
+<div class="portfolio-actions"><a class="portfolio-link" href="https://tenk.oventlabs.net/" target="_blank" rel="noopener noreferrer"><span class="lang-es">Visitar sitio</span><span class="lang-en">Visit website</span><i class="fas fa-external-link-alt" aria-hidden="true"></i></a></div>
+</div></article>
+<article class="portfolio-card" data-project="oventlabs" data-category="ai digital" aria-labelledby="project-oventlabs">
+<div class="portfolio-system-banner" aria-hidden="true"><i class="fas fa-robot"></i><div><strong><span class="lang-es">De la idea al software.</span><span class="lang-en">From idea to software.</span></strong><small><span class="lang-es">Alcance · Requerimientos · Seguimiento</span><span class="lang-en">Scope · Requirements · Tracking</span></small></div></div>
+<div class="portfolio-info">
+<span class="portfolio-category"><span class="lang-es">Software &amp; agentes de IA</span><span class="lang-en">Software &amp; AI agents</span></span><h3 class="portfolio-title" id="project-oventlabs">OventLabs</h3><p class="portfolio-desc"><span class="lang-es">Portal de clientes para una fábrica de software con agentes de IA. Onboarding, acceso con magic link, generación de alcance y seguimiento de requerimientos en un mismo espacio.</span><span class="lang-en">Client portal for an AI-powered software studio. Onboarding, magic link access, scope generation and requirements tracking in a shared workspace.</span></p><div class="portfolio-tags">
+<span class="portfolio-tag"><span class="lang-es">Agentes de IA</span><span class="lang-en">AI agents</span></span>
+<span class="portfolio-tag"><span class="lang-es">Portal de clientes</span><span class="lang-en">Client portal</span></span>
+<span class="portfolio-tag"><span class="lang-es">Automatización</span><span class="lang-en">Automation</span></span>
+</div>
+<div class="portfolio-actions"><a class="portfolio-link" href="https://agents.oventlabs.net/" target="_blank" rel="noopener noreferrer"><span class="lang-es">Visitar sitio</span><span class="lang-en">Visit website</span><i class="fas fa-external-link-alt" aria-hidden="true"></i></a></div>
+</div></article>
+</div><p class="portfolio-note"><span class="lang-es">Capturas reales de los proyectos. Los sistemas privados se presentan sin compartir accesos.</span><span class="lang-en">Actual project screenshots. Private systems are presented without sharing access.</span></p>
     </div>
   </section>
-
-  <!-- GITHUB ACTIVITY -->
-  <section id="github" class="section github-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title"><span class="lang-es">Actividad en GitHub</span><span class="lang-en">GitHub Activity</span></h2>
-        <p class="section-subtitle"><span class="lang-es">73 repos públicos · contribuciones en tiempo real</span><span class="lang-en">73 public repos · live contributions</span></p>
-      </div>
-      <div class="github-grid">
-        <div class="github-chart">
-          <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
-            <img src="https://ghchart.rshah.org/bd93f9/OscarCode9" alt="Contribuciones OscarCode9" loading="lazy" onerror="this.style.display='none'" />
-          </a>
-        </div>
-        <div class="github-cards">
-          <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
-            <img src="https://d39xylrycwr5u7.cloudfront.net/api?username=OscarCode9&show_icons=true&theme=dracula&hide_border=true&bg_color=0d1117&title_color=bd93f9&text_color=8b949e&icon_color=bd93f9&border_radius=12&include_all_commits=true&count_private=false" alt="GitHub stats OscarCode9" loading="lazy" />
-          </a>
-          <a href="https://github.com/OscarCode9" target="_blank" rel="noopener">
-            <img src="https://d39xylrycwr5u7.cloudfront.net/api/top-langs/?username=OscarCode9&layout=compact&theme=dracula&hide_border=true&bg_color=0d1117&title_color=bd93f9&text_color=8b949e&border_radius=12" alt="Top languages OscarCode9" loading="lazy" />
-          </a>
-        </div>
-        <div id="github-fallback" style="display:none; text-align:center; padding:18px; background:#21222c; border:1px solid var(--border); border-radius:12px; font-family:'Fira Code',monospace; color:var(--text-secondary); width:100%;"></div>
-        <script>
-        (async () => {
-          const fb = document.getElementById('github-fallback');
-          // Si las imágenes vercel están caídas (503), mostramos fallback via GitHub API
-          const imgs = document.querySelectorAll('.github-cards img');
-          let failed = 0;
-          imgs.forEach(img => img.addEventListener('error', () => {
-            failed++;
-            if (failed >= 1) {
-              fb.style.display = 'block';
-              fetch('https://api.github.com/users/OscarCode9').then(r=>r.json()).then(u => {
-                return fetch('https://api.github.com/users/OscarCode9/repos?per_page=100').then(r=>r.json()).then(repos => {
-                  const langs = {};
-                  repos.forEach(x => { if (x.language) langs[x.language] = (langs[x.language]||0)+1; });
-                  const top = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(' \u00b7 ');
-                  fb.innerHTML = '<div style="color:var(--primary);font-weight:700;margin-bottom:6px;"><i class="fab fa-github"></i> OscarCode9 — ' + u.public_repos + ' repos \u00b7 ' + u.followers + ' followers</div><div style="font-size:.85rem;">' + (top||'TypeScript \u00b7 JavaScript \u00b7 Java') + ' \u00b7 <a href="https://github.com/OscarCode9" target="_blank" style="color:var(--primary);">ver perfil \u2192</a></div>';
-                });
-              }).catch(()=>{ fb.textContent = 'GitHub stats temporalmente no disponible (estadísticas) — visita github.com/OscarCode9'; });
-              imgs.forEach(i=>i.style.display='none');
-            }
-          }));
-          // también timeout por si 503 tarda
-          setTimeout(()=>{ if (failed===0) { let anyBroken=false; imgs.forEach(i=>{ if(!i.complete || i.naturalWidth===0) anyBroken=true; }); if(anyBroken) fb.style.display='block'; }}, 4000);
-        })();
-        </script>
-        <script>
-        // Tema claro/oscuro — responde al botón light del sitio (data-theme)
-        (function(){
-          function updateGithubCardsTheme(){
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            document.querySelectorAll('.github-cards img').forEach(img=>{
-              try{
-                const u = new URL(img.src);
-                if(isLight){
-                  u.searchParams.set('theme','default');
-                  u.searchParams.set('bg_color','ffffff');
-                  u.searchParams.set('title_color','7a3bdb');
-                  u.searchParams.set('text_color','24292f');
-                  u.searchParams.set('icon_color','7a3bdb');
-                  u.searchParams.set('border_color','d0d7de');
-                } else {
-                  u.searchParams.set('theme','dracula');
-                  u.searchParams.set('bg_color','0d1117');
-                  u.searchParams.set('title_color','bd93f9');
-                  u.searchParams.set('text_color','8b949e');
-                  u.searchParams.set('icon_color','bd93f9');
-                  u.searchParams.delete('border_color');
-                }
-                const ns = u.toString();
-                if(img.src !== ns) img.src = ns;
-              }catch(e){}
-            });
-          }
-          const obs = new MutationObserver(updateGithubCardsTheme);
-          obs.observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
-          if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateGithubCardsTheme);
-          else updateGithubCardsTheme();
-        })();
-        </script>
-
+  <dialog id="portfolio-lightbox" class="portfolio-dialog" aria-labelledby="portfolio-lightbox-title">
+    <div class="portfolio-dialog-header">
+      <h3 id="portfolio-lightbox-title"></h3>
+      <button type="button" data-gallery-close autofocus><span class="lang-es">Cerrar</span><span class="lang-en">Close</span></button>
+    </div>
+    <img class="portfolio-dialog-image" alt="">
+    <div class="portfolio-dialog-footer">
+      <span><span class="lang-es">Vista del proyecto</span><span class="lang-en">Project view</span> <span class="portfolio-dialog-counter" data-gallery-counter aria-live="polite"></span></span>
+      <div class="portfolio-dialog-controls">
+        <button type="button" data-gallery-step="-1"><span class="lang-es">Anterior</span><span class="lang-en">Previous</span></button>
+        <button type="button" data-gallery-step="1"><span class="lang-es">Siguiente</span><span class="lang-en">Next</span></button>
       </div>
     </div>
-  </section>
+  </dialog>
 
   <!-- SKILLS -->
   <section id="skills" class="section">
